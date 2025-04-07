@@ -1,0 +1,42 @@
+{
+  "name": "fluxori-performance-tests",
+  "version": "1.0.0",
+  "description": "Performance testing suite for Fluxori",
+  "main": "load-testing.js",
+  "scripts": {
+    "load:api": "node load-testing.js --target=api --users=100 --duration=2m --scenario=normal",
+    "load:frontend": "node load-testing.js --target=frontend --users=100 --duration=2m --scenario=normal",
+    "load:all": "node load-testing.js --target=all --users=100 --duration=2m --scenario=normal",
+    "stress:api": "node load-testing.js --target=api --users=500 --duration=5m --scenario=stress",
+    "stress:frontend": "node load-testing.js --target=frontend --users=500 --duration=5m --scenario=stress",
+    "peak:api": "node load-testing.js --target=api --users=200 --duration=3m --scenario=peak",
+    "peak:frontend": "node load-testing.js --target=frontend --users=200 --duration=3m --scenario=peak",
+    "sa-test": "node load-testing.js --target=all --users=100 --duration=2m --scenario=normal --region=za",
+    "db:benchmark": "node database-benchmark.js",
+    "cdn:test": "node cdn-performance.js",
+    "loadbalancer:test": "node load-balancer-failover.js"
+  },
+  "keywords": [
+    "performance",
+    "load-testing",
+    "benchmark",
+    "stress-testing"
+  ],
+  "author": "Fluxori Team",
+  "license": "UNLICENSED",
+  "private": true,
+  "dependencies": {
+    "autocannon": "^7.9.0",
+    "canvas": "^2.10.1",
+    "chart.js": "^3.9.1",
+    "commander": "^9.4.1",
+    "date-fns": "^2.29.3",
+    "firebase-admin": "^11.2.0",
+    "google-auth-library": "^8.5.2",
+    "@google-cloud/firestore": "^6.0.0",
+    "@google-cloud/storage": "^6.5.2"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}

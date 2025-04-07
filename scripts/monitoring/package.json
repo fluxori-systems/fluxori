@@ -1,0 +1,21 @@
+{
+  "name": "fluxori-monitoring-scripts",
+  "version": "1.0.0",
+  "description": "Monitoring and health check scripts for Fluxori",
+  "private": true,
+  "scripts": {
+    "setup-health-checks": "node setup-health-checks.js",
+    "monitor-credits": "node monitor-ai-credits.js",
+    "create-dashboard": "node create-custom-dashboard.js"
+  },
+  "dependencies": {
+    "@google-cloud/logging": "^10.4.0",
+    "@google-cloud/monitoring": "^2.3.5",
+    "chalk": "^4.1.2",
+    "googleapis": "^105.0.0",
+    "yargs": "^17.5.1"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}

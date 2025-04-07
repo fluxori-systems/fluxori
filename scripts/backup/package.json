@@ -1,0 +1,32 @@
+{
+  "name": "fluxori-backup-tools",
+  "version": "1.0.0",
+  "description": "Backup and recovery scripts for Fluxori GCP resources",
+  "main": "backup-and-restore.js",
+  "scripts": {
+    "backup:firestore": "node backup-and-restore.js --action=backup --target=firestore --project=${GCP_PROJECT:-fluxori-prod}",
+    "backup:storage": "node backup-and-restore.js --action=backup --target=storage --project=${GCP_PROJECT:-fluxori-prod}",
+    "backup:all": "node backup-and-restore.js --action=backup --target=all --project=${GCP_PROJECT:-fluxori-prod}",
+    "restore:firestore": "node backup-and-restore.js --action=restore --target=firestore --project=${GCP_PROJECT:-fluxori-prod} --backupId=",
+    "restore:storage": "node backup-and-restore.js --action=restore --target=storage --project=${GCP_PROJECT:-fluxori-prod} --backupId=",
+    "restore:all": "node backup-and-restore.js --action=restore --target=all --project=${GCP_PROJECT:-fluxori-prod} --backupId=",
+    "list-backups": "node backup-and-restore.js --action=list-backups --target=all --project=${GCP_PROJECT:-fluxori-prod}",
+    "cleanup": "node backup-and-restore.js --action=cleanup --target=all --project=${GCP_PROJECT:-fluxori-prod}"
+  },
+  "keywords": [
+    "backup",
+    "gcp",
+    "firestore",
+    "cloud-storage",
+    "disaster-recovery"
+  ],
+  "author": "Fluxori Team",
+  "license": "UNLICENSED",
+  "private": true,
+  "dependencies": {
+    "commander": "^9.4.1"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}

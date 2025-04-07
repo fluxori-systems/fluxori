@@ -1,0 +1,17 @@
+{
+  "name": "fluxori-backup-function",
+  "version": "1.0.0",
+  "description": "Cloud Function to trigger and manage Fluxori backups",
+  "main": "index.js",
+  "scripts": {
+    "deploy": "gcloud functions deploy backupHandler --runtime nodejs14 --trigger-http --region=africa-south1 --memory=1024MB --timeout=540s --project=fluxori-prod"
+  },
+  "dependencies": {
+    "@google-cloud/firestore": "^5.0.2",
+    "@google-cloud/storage": "^6.2.3"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "private": true
+}

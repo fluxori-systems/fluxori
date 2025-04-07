@@ -1,0 +1,137 @@
+# Service Level Objectives (SLOs) for Fluxori Platform
+# This file defines the SLOs for the Fluxori platform
+
+# API Availability SLO
+- service: fluxori-backend
+  displayName: "API Availability"
+  goal: 0.995  # 99.5% uptime
+  rollingPeriod: 86400s  # 24 hours
+  serviceLevelIndicator:
+    requestBased:
+      goodTotalRatio:
+        totalServiceFilter: >
+          resource.type="cloud_run_revision"
+          AND resource.labels.service_name="fluxori-backend"
+          AND metric.type="run.googleapis.com/request_count"
+        goodServiceFilter: >
+          resource.type="cloud_run_revision"
+          AND resource.labels.service_name="fluxori-backend"
+          AND metric.type="run.googleapis.com/request_count"
+          AND metric.labels.response_code_class!="5xx"
+
+# API Latency SLO
+- service: fluxori-backend
+  displayName: "API Latency"
+  goal: 0.95  # 95% of requests under threshold
+  rollingPeriod: 3600s  # 1 hour
+  serviceLevelIndicator:
+    requestBased:
+      distributionCut:
+        distributionFilter: >
+          resource.type="cloud_run_revision"
+          AND resource.labels.service_name="fluxori-backend" 
+          AND metric.type="run.googleapis.com/request_latencies"
+        range:
+          min: 0
+          max: 500  # 500ms threshold
+
+# Frontend Availability SLO
+- service: fluxori-frontend
+  displayName: "Frontend Availability"
+  goal: 0.995  # 99.5% uptime
+  rollingPeriod: 86400s  # 24 hours
+  serviceLevelIndicator:
+    requestBased:
+      goodTotalRatio:
+        totalServiceFilter: >
+          resource.type="cloud_run_revision"
+          AND resource.labels.service_name="fluxori-frontend"
+          AND metric.type="run.googleapis.com/request_count"
+        goodServiceFilter: >
+          resource.type="cloud_run_revision"
+          AND resource.labels.service_name="fluxori-frontend"
+          AND metric.type="run.googleapis.com/request_count"
+          AND metric.labels.response_code_class!="5xx"
+
+# Frontend Latency SLO
+- service: fluxori-frontend
+  displayName: "Frontend Latency"
+  goal: 0.95  # 95% of requests under threshold
+  rollingPeriod: 3600s  # 1 hour
+  serviceLevelIndicator:
+    requestBased:
+      distributionCut:
+        distributionFilter: >
+          resource.type="cloud_run_revision"
+          AND resource.labels.service_name="fluxori-frontend" 
+          AND metric.type="run.googleapis.com/request_latencies"
+        range:
+          min: 0
+          max: 1000  # 1000ms threshold
+
+# Storage Performance SLO
+- service: fluxori-storage
+  displayName: "Storage Performance"
+  goal: 0.99  # 99% of operations are successful
+  rollingPeriod: 86400s  # 24 hours
+  serviceLevelIndicator:
+    requestBased:
+      goodTotalRatio:
+        totalServiceFilter: >
+          resource.type="gcs_bucket"
+          AND resource.labels.bucket_name=~"fluxori-.*-storage"
+          AND metric.type="storage.googleapis.com/api/request_count"
+        goodServiceFilter: >
+          resource.type="gcs_bucket"
+          AND resource.labels.bucket_name=~"fluxori-.*-storage"
+          AND metric.type="storage.googleapis.com/api/request_count"
+          AND metric.labels.response_code="success"
+
+# AI Insights SLO
+- service: fluxori-ai-insights
+  displayName: "AI Insights Response Time"
+  goal: 0.90  # 90% of requests under threshold
+  rollingPeriod: 86400s  # 24 hours
+  serviceLevelIndicator:
+    requestBased:
+      distributionCut:
+        distributionFilter: >
+          resource.type="cloud_run_revision"
+          AND resource.labels.service_name="fluxori-backend"
+          AND metric.type="logging.googleapis.com/user/ai_insight_generation_time"
+        range:
+          min: 0
+          max: 10000  # 10s threshold
+
+# Database Query Performance SLO
+- service: fluxori-firestore
+  displayName: "Database Query Performance"
+  goal: 0.95  # 95% of queries under threshold
+  rollingPeriod: 3600s  # 1 hour
+  serviceLevelIndicator:
+    requestBased:
+      distributionCut:
+        distributionFilter: >
+          resource.type="firestore_instance"
+          AND metric.type="firestore.googleapis.com/document_read_time"
+        range:
+          min: 0
+          max: 100  # 100ms threshold
+
+# Critical Business Flow SLO (Order Processing)
+- service: fluxori-order-processing
+  displayName: "Order Processing"
+  goal: 0.999  # 99.9% of orders processed successfully
+  rollingPeriod: 86400s  # 24 hours
+  serviceLevelIndicator:
+    requestBased:
+      goodTotalRatio:
+        totalServiceFilter: >
+          resource.type="cloud_run_revision"
+          AND resource.labels.service_name="fluxori-backend"
+          AND metric.type="logging.googleapis.com/user/order_processing_count"
+        goodServiceFilter: >
+          resource.type="cloud_run_revision"
+          AND resource.labels.service_name="fluxori-backend"
+          AND metric.type="logging.googleapis.com/user/order_processing_count"
+          AND metric.labels.status="success"

@@ -1,0 +1,32 @@
+{
+  "name": "fluxori-security-tools",
+  "version": "1.0.0",
+  "description": "Security scanning and testing tools for Fluxori",
+  "main": "security-scanning.js",
+  "scripts": {
+    "scan:full": "node security-scanning.js --project=fluxori-prod --scan-type=full --output=./reports",
+    "scan:iam": "node security-scanning.js --project=fluxori-prod --scan-type=iam --output=./reports",
+    "scan:network": "node security-scanning.js --project=fluxori-prod --scan-type=network --output=./reports",
+    "scan:app": "node security-scanning.js --project=fluxori-prod --scan-type=app --output=./reports --api-url=https://api.fluxori.com",
+    "hardening": "./gcp-security-hardening.sh",
+    "penetration-test": "node penetration-testing.js --target=fluxori-prod --api-url=https://api.fluxori.com"
+  },
+  "keywords": [
+    "security",
+    "scanning",
+    "penetration-testing",
+    "gcp-security"
+  ],
+  "author": "Fluxori Team",
+  "license": "UNLICENSED",
+  "private": true,
+  "dependencies": {
+    "commander": "^9.4.1",
+    "google-auth-library": "^8.5.2",
+    "axios": "^1.1.3",
+    "cheerio": "^1.0.0-rc.12"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}

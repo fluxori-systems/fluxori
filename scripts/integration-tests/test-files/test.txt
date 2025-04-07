@@ -1,0 +1,5 @@
+This is a sample text file for integration testing.
+It contains multiple lines of text.
+This file is used to test file uploads and downloads.
+
+It's important to test with different file types to ensure compatibility.

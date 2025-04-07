@@ -1,0 +1,62 @@
+{
+  "name": "fluxori-integration-tests",
+  "version": "1.0.0",
+  "description": "Integration tests for Fluxori platform",
+  "main": "run-tests.js",
+  "scripts": {
+    "test": "jest",
+    "test:dev": "cross-env TEST_ENVIRONMENT=dev jest",
+    "test:staging": "cross-env TEST_ENVIRONMENT=staging jest",
+    "test:prod": "cross-env TEST_ENVIRONMENT=production SKIP_NON_CRITICAL_TESTS=true jest",
+    "test:auth": "jest --testPathPattern=auth",
+    "test:inventory": "jest --testPathPattern=inventory",
+    "test:file": "jest --testPathPattern=storage",
+    "test:ai": "jest --testPathPattern=ai-insights",
+    "test:e2e": "jest --testPathPattern=e2e",
+    "test:ci": "cross-env CI=true jest --ci --reporters=default --reporters=jest-junit",
+    "generate-report": "node generate-report.js"
+  },
+  "keywords": [
+    "integration",
+    "testing",
+    "fluxori"
+  ],
+  "author": "Fluxori Team",
+  "license": "UNLICENSED",
+  "private": true,
+  "jest": {
+    "testEnvironment": "node",
+    "testTimeout": 30000,
+    "reporters": [
+      "default",
+      [
+        "./node_modules/jest-html-reporter",
+        {
+          "pageTitle": "Fluxori Integration Tests Report",
+          "outputPath": "./reports/test-report.html",
+          "includeFailureMsg": true,
+          "includeSuiteFailure": true
+        }
+      ]
+    ],
+    "setupFilesAfterEnv": [
+      "./setup.js"
+    ]
+  },
+  "dependencies": {
+    "@faker-js/faker": "^8.0.2",
+    "@google-cloud/firestore": "^7.1.0",
+    "@google-cloud/storage": "^7.1.0",
+    "axios": "^1.6.0",
+    "chalk": "^4.1.2",
+    "commander": "^11.0.0",
+    "cross-env": "^7.0.3",
+    "dotenv": "^16.3.1",
+    "fs-extra": "^11.1.1",
+    "jest": "^29.7.0",
+    "jest-html-reporter": "^3.10.1",
+    "jest-junit": "^16.0.0",
+    "lodash": "^4.17.21",
+    "uuid": "^9.0.1"
+  }
+}
