@@ -1,44 +1,99 @@
+/**
+ * Repository type definitions for Firestore repositories
+ * These types define the interfaces for repository operations
+ */
+
 import { 
-  Query, 
   DocumentData, 
   DocumentSnapshot,
   FieldValue,
-  Transaction
+  Transaction,
+  QueryDocumentSnapshot
 } from '@google-cloud/firestore';
-import { FirestoreEntity, Timestamp } from '../../../types/google-cloud.types';
+
+import { 
+  FirestoreEntity, 
+  Timestamp, 
+  QueryFilterOperator,
+  QueryOptions as GlobalQueryOptions,
+  TransactionContext
+} from '../../../types/google-cloud.types';
+
+// Repository statistics interface is now defined in repository-stats.ts
+// to avoid circular dependencies
+import { RepositoryStats } from './repository-stats';
 
 /**
- * Interface for repository statistics
+ * Base repository interface that defines common operations
  */
-export interface RepositoryStats {
-  reads: number;
-  writes: number;
-  cacheHits: number;
-  cacheMisses: number;
-  errors: number;
-  lastError?: Error;
-  lastErrorTime?: Date;
+export interface Repository<T> {
+  findById(id: string, options?: any): Promise<T | null>;
+  find(options?: any): Promise<T[]>;
+  create(data: Partial<T>, options?: any): Promise<T>;
+  update(id: string, data: Partial<T>, options?: any): Promise<T>;
+  delete(id: string, options?: any): Promise<void>;
+  count(options?: any): Promise<number>;
+}
+
+/**
+ * Standard query filter definition
+ */
+export interface QueryFilter<T> {
+  field: keyof T | string;
+  operator: QueryFilterOperator;
+  value: any;
+}
+
+/**
+ * Standard query options
+ */
+export interface QueryOptions<T = any> {
+  limit?: number;
+  offset?: number;
+  orderBy?: keyof T | string;
+  direction?: SortDirection;
+}
+
+/**
+ * Sort direction for queries
+ */
+export type SortDirection = 'asc' | 'desc';
+
+/**
+ * Entity reference type for relationships
+ */
+export interface EntityReference {
+  id: string;
+  collection: string;
+}
+
+/**
+ * Base entity with ID field
+ */
+export interface EntityWithId {
+  id: string;
 }
 
 /**
  * Firestore query options for filtering and pagination
  */
 export interface FirestoreQueryOptions<T> {
-  orderBy?: keyof T;
+  orderBy?: keyof T | string;
   direction?: 'asc' | 'desc';
   limit?: number;
   offset?: number;
-  select?: Array<keyof T>;
+  select?: Array<keyof T | string>;
   startAfter?: any;
   endBefore?: any;
+  cache?: boolean;
 }
 
 /**
  * Firestore advanced filter for complex queries
  */
 export interface FirestoreAdvancedFilter<T> {
-  field: keyof T;
-  operator: '<' | '<=' | '==' | '!=' | '>=' | '>' | 'array-contains' | 'array-contains-any' | 'in' | 'not-in';
+  field: keyof T | string;
+  operator: QueryFilterOperator;
   value: any;
 }
 
@@ -53,6 +108,7 @@ export interface CreateDocumentOptions {
   initialVersion?: number;
   ttl?: number;
   customMetadata?: Record<string, any>;
+  transaction?: Transaction;
 }
 
 /**
@@ -63,6 +119,19 @@ export interface FindByIdOptions {
   includeDeleted?: boolean;
   throwIfNotFound?: boolean;
   includeMetadata?: boolean;
+  transaction?: Transaction;
+}
+
+/**
+ * Options for finding multiple documents
+ */
+export interface FindOptions<T> {
+  filter?: Partial<T>;
+  advancedFilters?: FirestoreAdvancedFilter<T>[];
+  queryOptions?: FirestoreQueryOptions<T>;
+  includeDeleted?: boolean;
+  useCache?: boolean;
+  transaction?: Transaction;
 }
 
 /**
@@ -75,6 +144,7 @@ export interface UpdateDocumentOptions {
   lastUpdated?: Date | string;
   incrementVersion?: boolean;
   sanitizeData?: boolean;
+  transaction?: Transaction;
 }
 
 /**
@@ -86,6 +156,7 @@ export interface DeleteDocumentOptions {
   clearCache?: boolean;
   snapshotBeforeDelete?: boolean;
   deleteSubcollections?: boolean;
+  transaction?: Transaction;
 }
 
 /**
@@ -96,6 +167,7 @@ export interface RestoreDocumentOptions {
   returnDocument?: boolean;
   updateVersion?: boolean;
   additionalUpdates?: Record<string, any>;
+  transaction?: Transaction;
 }
 
 /**
@@ -126,6 +198,7 @@ export interface FieldTransformOptions {
   optimisticConcurrency?: {
     lastUpdated: Date;
   };
+  transaction?: Transaction;
 }
 
 /**
@@ -136,16 +209,7 @@ export interface CountDocumentsOptions<T> {
   advancedFilters?: FirestoreAdvancedFilter<T>[];
   includeDeleted?: boolean;
   maxCount?: number;
-}
-
-/**
- * Options for transaction execution
- */
-export interface TransactionExecutionOptions {
-  maxAttempts?: number;
-  readOnly?: boolean;
-  retryDelayMs?: number;
-  timeoutMs?: number;
+  transaction?: Transaction;
 }
 
 /**
@@ -156,6 +220,7 @@ export interface PaginationResult<T> {
   lastDoc: DocumentSnapshot<T> | null;
   hasMore: boolean;
   total?: number;
+  cursor?: string;
 }
 
 /**
@@ -175,4 +240,24 @@ export interface RepoCacheEntry<T> {
   data: T;
   expires: number;
   lastAccessed: number;
+}
+
+/**
+ * Repository configuration options
+ */
+export interface RepositoryOptions {
+  collectionName: string;
+  useSoftDeletes?: boolean;
+  useVersioning?: boolean;
+  enableCache?: boolean;
+  cacheTTLMs?: number;
+  requiredFields?: string[];
+}
+
+/**
+ * Interface for data converters
+ */
+export interface EntityConverter<T extends FirestoreEntity> {
+  toFirestore(entity: T): DocumentData;
+  fromFirestore(snapshot: QueryDocumentSnapshot<DocumentData>): T;
 }

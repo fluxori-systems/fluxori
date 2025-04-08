@@ -1,160 +1,121 @@
 /**
- * Repository Validation
- * 
- * Provides validation functions for Firestore repositories
+ * Validation utilities for repository operations
+ * Provides entity validation for the Firestore repositories
  */
 
-import { Logger } from '@nestjs/common';
-import { Timestamp } from '@google-cloud/firestore';
+import { BadRequestException } from '@nestjs/common';
 import { FirestoreEntity } from '../../../types/google-cloud.types';
 
 /**
- * Options for data validation
+ * Custom error class for repository validation errors
  */
-export interface DataValidationOptions {
-  allowEmpty?: boolean;
-  skipCircularCheck?: boolean;
-  skipUndefinedCheck?: boolean;
-  extraValidators?: Array<(data: Record<string, unknown>) => void>;
+export class RepositoryValidationError extends BadRequestException {
+  constructor(message: string) {
+    super(message);
+    this.name = 'RepositoryValidationError';
+  }
 }
 
 /**
- * Repository validation service
+ * Validate an entity against a schema or rules
  */
-export class RepositoryValidation {
-  private readonly logger: Logger;
-  private readonly requiredFields: string[];
-  
-  /**
-   * Create a new validation service
-   * @param collectionName Collection name for error context
-   * @param requiredFields Fields that must be present on all documents
-   * @param logger Optional logger instance
-   */
-  constructor(
-    private readonly collectionName: string,
-    requiredFields: string[] = [],
-    logger?: Logger
-  ) {
-    this.requiredFields = requiredFields;
-    this.logger = logger || new Logger('RepositoryValidation');
+export function validateEntity<T extends Record<string, any>>(
+  entity: T, 
+  rules: Record<string, any> = {}
+): boolean {
+  // Simple validation - can be expanded with more complex validation logic
+  for (const [key, rule] of Object.entries(rules)) {
+    if (rule.required && (entity[key] === undefined || entity[key] === null)) {
+      throw new RepositoryValidationError(`Missing required field: ${key}`);
+    }
   }
+  return true;
+}
+
+/**
+ * Validate that required fields are present in an entity
+ * @throws BadRequestException if required fields are missing
+ */
+export function validateRequiredFields<T extends FirestoreEntity>(
+  entity: Partial<T>, 
+  requiredFields: string[]
+): void {
+  const missingFields: string[] = [];
   
-  /**
-   * Validates that an ID meets Firestore requirements
-   * @param id Document ID to validate
-   * @throws Error if ID is invalid
-   */
-  validateDocumentId(id: string): void {
-    if (!id) {
-      throw new Error('Document ID cannot be empty');
-    }
-    
-    if (id.includes('/') || id.includes('.') || id.includes('__') || id.includes('..')) {
-      throw new Error('Document ID cannot contain /, ., __, or ..');
-    }
-    
-    if (id.startsWith('.') || id.endsWith('.')) {
-      throw new Error('Document ID cannot start or end with a period');
-    }
-    
-    if (id.length > 1500) {
-      throw new Error('Document ID cannot exceed 1500 bytes');
+  // Check for each required field
+  for (const field of requiredFields) {
+    if (entity[field] === undefined || entity[field] === null) {
+      missingFields.push(field);
     }
   }
   
-  /**
-   * Validates and enforces required fields on a data object
-   * @param data Data object to validate
-   * @throws Error if any required field is missing
-   */
-  validateRequiredFields<T extends Record<string, unknown>>(data: T): void {
-    if (!data || typeof data !== 'object') {
-      throw new Error('Data must be a non-null object');
-    }
-    
-    // Skip validation if no required fields are configured
-    if (!this.requiredFields.length) return;
-    
-    // Check each required field
-    const missingFields = this.requiredFields.filter(field => {
-      return data[field] === undefined || data[field] === null;
-    });
-    
-    // Throw error if any required fields are missing
-    if (missingFields.length > 0) {
-      throw new Error(`Missing required fields: ${missingFields.join(', ')}`);
-    }
+  // Throw error if any required fields are missing
+  if (missingFields.length > 0) {
+    throw new BadRequestException(`Missing required fields: ${missingFields.join(', ')}`);
+  }
+}
+
+/**
+ * Validate that an entity ID exists and has the correct format
+ * @throws BadRequestException if ID is invalid
+ */
+export function validateEntityId(id: string | undefined): void {
+  if (!id) {
+    throw new BadRequestException('Entity ID is required');
   }
   
-  /**
-   * Validates data before saving to Firestore
-   * @param data Data to validate
-   * @param options Additional validation options
-   * @throws Error if data is invalid
-   */
-  validateData<T extends Record<string, unknown>>(data: T, options: DataValidationOptions = {}): void {
-    // Basic type checking
-    if (!data) {
-      throw new Error('Data cannot be null or undefined');
-    }
-    
-    if (typeof data !== 'object') {
-      throw new Error('Data must be an object');
-    }
-    
-    // Check if data is empty when not allowed
-    if (!options.allowEmpty && Object.keys(data).length === 0) {
-      throw new Error('Data object cannot be empty');
-    }
-    
-    // Check for circular references which Firestore can't handle
-    if (!options.skipCircularCheck) {
-      try {
-        JSON.stringify(data);
-      } catch (error) {
-        if (error instanceof TypeError && error.message.includes('circular')) {
-          throw new Error('Data contains circular references which cannot be stored in Firestore');
-        }
-        // Other JSON errors may indicate issues - throw with context
-        throw new Error(`Data validation failed: ${error instanceof Error ? error.message : String(error)}`);
-      }
-    }
-    
-    // Ensure no undefined values (Firestore doesn't accept them)
-    if (!options.skipUndefinedCheck) {
-      this.checkForUndefinedValues(data);
-    }
-    
-    // Run any additional validators
-    if (options.extraValidators) {
-      for (const validator of options.extraValidators) {
-        validator(data);
-      }
-    }
+  if (typeof id !== 'string') {
+    throw new BadRequestException('Entity ID must be a string');
   }
   
-  /**
-   * Recursively checks for undefined values in an object
-   * @param obj Object to check
-   * @param path Current property path for error reporting
-   * @throws Error if undefined values are found
-   */
-  private checkForUndefinedValues(obj: Record<string, unknown>, path: string = ''): void {
-    if (!obj || typeof obj !== 'object') {
-      return;
-    }
-    
-    Object.entries(obj).forEach(([key, value]) => {
-      const currentPath = path ? `${path}.${key}` : key;
-      
-      if (value === undefined) {
-        throw new Error(`Property at path "${currentPath}" has undefined value. Firestore does not accept undefined values.`);
-      }
-      
-      if (value && typeof value === 'object' && !(value instanceof Date) && !(value instanceof Timestamp)) {
-        this.checkForUndefinedValues(value as Record<string, unknown>, currentPath);
-      }
-    });
+  if (id.trim() === '') {
+    throw new BadRequestException('Entity ID cannot be empty');
+  }
+  
+  // Check for invalid characters in ID
+  const invalidChars = /[.\/\[\]#$]/;
+  if (invalidChars.test(id)) {
+    throw new BadRequestException('Entity ID contains invalid characters');
+  }
+}
+
+/**
+ * Check if entity is marked as deleted
+ */
+export function isEntityDeleted<T extends FirestoreEntity>(entity: T): boolean {
+  return Boolean(entity.isDeleted);
+}
+
+/**
+ * Validate that an entity is not deleted
+ * @throws BadRequestException if entity is deleted
+ */
+export function validateEntityNotDeleted<T extends FirestoreEntity>(
+  entity: T, 
+  errorMessage: string = 'Entity is deleted'
+): void {
+  if (isEntityDeleted(entity)) {
+    throw new BadRequestException(errorMessage);
+  }
+}
+
+/**
+ * Validate batch items for a batch operation
+ */
+export function validateBatchItems<T>(
+  items: T[],
+  minItems: number = 1,
+  maxItems: number = 500
+): void {
+  if (!Array.isArray(items)) {
+    throw new BadRequestException('Items must be an array');
+  }
+  
+  if (items.length < minItems) {
+    throw new BadRequestException(`Batch operation requires at least ${minItems} item(s)`);
+  }
+  
+  if (items.length > maxItems) {
+    throw new BadRequestException(`Batch operation cannot exceed ${maxItems} items`);
   }
 }

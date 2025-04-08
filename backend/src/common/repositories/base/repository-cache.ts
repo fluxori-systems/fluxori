@@ -1,270 +1,190 @@
 /**
- * Repository Cache
- * 
- * Provides in-memory caching capabilities for Firestore repositories
+ * Repository cache implementation for Firestore repositories
+ * Provides in-memory caching for repository operations
  */
 
 import { Logger } from '@nestjs/common';
 import { FirestoreEntity } from '../../../types/google-cloud.types';
-import { RepoCacheEntry } from './repository-types';
+import { 
+  RepositoryCacheOptions,
+  RepoCacheEntry
+} from './repository-types';
 
 /**
- * Repository cache for improved read performance
+ * Cache options interface
+ */
+export interface CacheOptions {
+  enabled: boolean;
+  ttlMs: number;
+  maxItems: number;
+  logger?: any;
+}
+
+/**
+ * Default cache configuration
+ */
+export const DEFAULT_CACHE_OPTIONS: RepositoryCacheOptions = {
+  enabled: true,
+  ttlMs: 300000, // 5 minutes
+  maxItems: 1000, // Maximum items to store in cache
+  logger: undefined
+};
+
+/**
+ * Repository cache implementation with TTL and eviction
  */
 export class RepositoryCache<T extends FirestoreEntity> {
-  private cache: Map<string, RepoCacheEntry<T>> | null = null;
-  private readonly logger: Logger;
-  private readonly collectionName: string;
-  private readonly maxCacheItems: number;
-  private readonly cacheTTLMs: number;
-  private cleanupInterval: NodeJS.Timeout | null = null;
-  
-  // Cache statistics
-  private hits = 0;
-  private misses = 0;
-  private evictions = 0;
-  private cleanups = 0;
-  
-  /**
-   * Create a new cache instance
-   * @param collectionName Collection name for logging
-   * @param options Cache configuration options
-   */
-  constructor(
-    collectionName: string,
-    options: {
-      enabled?: boolean;
-      maxItems?: number;
-      ttlMs?: number;
-      logger?: Logger;
-    } = {}
-  ) {
-    this.collectionName = collectionName;
-    this.logger = options.logger || new Logger('RepositoryCache');
-    this.maxCacheItems = options.maxItems || 1000;
-    this.cacheTTLMs = options.ttlMs || 0;
+  private cache: Map<string, RepoCacheEntry<T>> = new Map();
+  private options: RepositoryCacheOptions;
+  private logger: Logger;
+  private lastCleanup: number = Date.now();
+  private readonly CLEANUP_INTERVAL_MS = 60000; // 1 minute
+
+  constructor(cacheOptions?: Partial<RepositoryCacheOptions>) {
+    this.options = { ...DEFAULT_CACHE_OPTIONS, ...cacheOptions };
     
-    // Initialize cache if enabled
-    if (options.enabled && this.cacheTTLMs > 0) {
-      this.cache = new Map();
-      
-      // Set up automatic cleanup every 5 minutes
-      this.cleanupInterval = setInterval(() => this.cleanupExpiredCache(), 5 * 60 * 1000);
-      this.logger.debug(`Cache initialized for ${collectionName} with TTL: ${this.cacheTTLMs}ms`);
+    this.logger = this.options.logger || new Logger('RepositoryCache');
+    
+    // Periodically clean expired entries
+    if (this.options.enabled) {
+      setInterval(() => this.cleanupExpiredEntries(), this.CLEANUP_INTERVAL_MS);
     }
   }
-  
+
   /**
-   * Check if the cache is enabled
+   * Get a value from the cache
    */
-  isEnabled(): boolean {
-    return this.cache !== null;
-  }
-  
-  /**
-   * Get an item from cache
-   * @param id Document ID
-   * @returns Cached item or null if not found or expired
-   */
-  get(id: string): T | null {
-    if (!this.cache) return null;
+  get(key: string): T | undefined {
+    if (!this.options.enabled) return undefined;
     
-    const cacheKey = `${this.collectionName}:${id}`;
-    const cached = this.cache.get(cacheKey);
+    const entry = this.cache.get(key);
+    if (!entry) return undefined;
     
-    // Return from cache if valid and not expired
-    if (cached && cached.expires > Date.now()) {
-      this.hits++;
-      this.logger.debug(`Cache hit for document ${id} in ${this.collectionName}`);
-      
-      // Update last accessed time for LRU tracking
-      cached.lastAccessed = Date.now();
-      this.cache.set(cacheKey, cached);
-      
-      return cached.data;
+    // Check if entry has expired
+    if (Date.now() > entry.expires) {
+      this.cache.delete(key);
+      return undefined;
     }
     
-    // Cache miss or expired
-    if (cached) {
-      // Remove expired item
-      this.cache.delete(cacheKey);
-    }
-    
-    this.misses++;
-    return null;
+    // Update last accessed time and return value
+    entry.lastAccessed = Date.now();
+    return entry.data;
   }
-  
+
   /**
-   * Store an item in cache
-   * @param id Document ID
-   * @param data Document data
-   * @returns True if item was cached
+   * Set a value in the cache
    */
-  set(id: string, data: T): boolean {
-    if (!this.cache || this.cacheTTLMs <= 0) return false;
+  set(key: string, value: T): void {
+    if (!this.options.enabled) return;
     
-    const cacheKey = `${this.collectionName}:${id}`;
-    
-    // Implement cache eviction if we've reached max capacity
-    if (this.cache.size >= this.maxCacheItems) {
+    // Evict items if we've reached capacity
+    if (this.cache.size >= this.options.maxItems) {
       this.evictLeastRecentlyUsed();
     }
     
-    this.cache.set(cacheKey, {
-      data,
-      expires: Date.now() + this.cacheTTLMs,
+    // Calculate expiration time
+    const expires = Date.now() + this.options.ttlMs;
+    
+    // Create cache entry
+    const entry: RepoCacheEntry<T> = {
+      data: value,
+      expires,
       lastAccessed: Date.now()
-    });
+    };
+    
+    this.cache.set(key, entry);
+    
+    // Run cleanup if it's been a while
+    if (Date.now() - this.lastCleanup > this.CLEANUP_INTERVAL_MS) {
+      this.cleanupExpiredEntries();
+    }
+  }
+
+  /**
+   * Check if key exists in cache
+   */
+  has(key: string): boolean {
+    if (!this.options.enabled) return false;
+    
+    const entry = this.cache.get(key);
+    if (!entry) return false;
+    
+    // Check if entry has expired
+    if (Date.now() > entry.expires) {
+      this.cache.delete(key);
+      return false;
+    }
     
     return true;
   }
-  
+
   /**
-   * Remove an item from cache
-   * @param id Document ID
-   * @returns True if item was removed
+   * Delete a value from the cache
    */
-  delete(id: string): boolean {
-    if (!this.cache) return false;
-    
-    const cacheKey = `${this.collectionName}:${id}`;
-    return this.cache.delete(cacheKey);
+  delete(key: string): boolean {
+    if (!this.options.enabled) return false;
+    return this.cache.delete(key);
   }
-  
+
   /**
-   * Clean up expired cache entries
-   * @returns Number of entries removed
+   * Clear the entire cache
    */
-  cleanupExpiredCache(): number {
-    if (!this.cache) return 0;
-    
-    const now = Date.now();
-    let removedCount = 0;
-    
-    for (const [key, entry] of this.cache.entries()) {
-      if (entry.expires <= now) {
-        this.cache.delete(key);
-        removedCount++;
-      }
-    }
-    
-    if (removedCount > 0) {
-      this.cleanups++;
-      this.logger.debug(`Removed ${removedCount} expired items from cache for ${this.collectionName}`);
-    }
-    
-    return removedCount;
-  }
-  
-  /**
-   * Evict least recently used cache entries
-   * @param count Number of entries to evict (default: 1/10 of max)
-   * @returns Number of entries evicted
-   */
-  private evictLeastRecentlyUsed(count?: number): number {
-    if (!this.cache) return 0;
-    
-    // Default to evicting 10% of max cache size
-    const toEvict = count || Math.max(1, Math.floor(this.maxCacheItems / 10));
-    
-    // Sort entries by lastAccessed timestamp (oldest first)
-    const entries = Array.from(this.cache.entries())
-      .sort((a, b) => a[1].lastAccessed - b[1].lastAccessed)
-      .slice(0, toEvict);
-    
-    // Remove the selected entries
-    for (const [key] of entries) {
-      this.cache.delete(key);
-    }
-    
-    this.evictions += entries.length;
-    this.logger.debug(`Evicted ${entries.length} items from cache for ${this.collectionName}`);
-    return entries.length;
-  }
-  
-  /**
-   * Delete multiple items from cache
-   * @param ids Array of document IDs to delete
-   * @returns Number of entries deleted
-   */
-  deleteBatch(ids: string[]): number {
-    if (!this.cache) return 0;
-    
-    let deletedCount = 0;
-    for (const id of ids) {
-      const cacheKey = `${this.collectionName}:${id}`;
-      if (this.cache.delete(cacheKey)) {
-        deletedCount++;
-      }
-    }
-    
-    return deletedCount;
-  }
-  
-  /**
-   * Clear all cache entries
-   * @returns Number of entries cleared
-   */
-  clear(): number {
-    if (!this.cache) return 0;
-    
-    const size = this.cache.size;
+  clear(): void {
+    if (!this.options.enabled) return;
     this.cache.clear();
-    return size;
   }
-  
+
   /**
-   * Get cache statistics
+   * Get the current size of the cache
    */
-  getStats(): {
-    enabled: boolean;
-    size: number;
-    maxSize: number;
-    hits: number;
-    misses: number;
-    hitRate: number;
-    evictions: number;
-    cleanups: number;
-    ttlMs: number;
-  } {
-    const totalRequests = this.hits + this.misses;
-    const hitRate = totalRequests === 0 ? 0 : this.hits / totalRequests;
+  size(): number {
+    return this.cache.size;
+  }
+
+  /**
+   * Evict least recently used items from the cache
+   * @private
+   */
+  private evictLeastRecentlyUsed(): void {
+    if (this.cache.size === 0) return;
     
-    return {
-      enabled: this.isEnabled(),
-      size: this.cache?.size || 0,
-      maxSize: this.maxCacheItems,
-      hits: this.hits,
-      misses: this.misses,
-      hitRate,
-      evictions: this.evictions,
-      cleanups: this.cleanups,
-      ttlMs: this.cacheTTLMs
-    };
-  }
-  
-  /**
-   * Reset cache statistics
-   */
-  resetStats(): void {
-    this.hits = 0;
-    this.misses = 0;
-    this.evictions = 0;
-    this.cleanups = 0;
-  }
-  
-  /**
-   * Clean up resources when the cache is no longer needed
-   */
-  destroy(): void {
-    if (this.cleanupInterval) {
-      clearInterval(this.cleanupInterval);
-      this.cleanupInterval = null;
+    let oldestKey: string | null = null;
+    let oldestTime = Infinity;
+    
+    // Find the least recently used entry
+    Array.from(this.cache.entries()).forEach(([key, entry]) => {
+      if (entry.lastAccessed < oldestTime) {
+        oldestTime = entry.lastAccessed;
+        oldestKey = key;
+      }
+    });
+    
+    // Delete the oldest entry
+    if (oldestKey) {
+      this.cache.delete(oldestKey);
     }
+  }
+
+  /**
+   * Clean up expired entries
+   * @private
+   */
+  private cleanupExpiredEntries(): void {
+    const now = Date.now();
+    this.lastCleanup = now;
     
-    if (this.cache) {
-      this.cache.clear();
-      this.cache = null;
+    let expiredCount = 0;
+    
+    // Remove expired entries
+    Array.from(this.cache.entries()).forEach(([key, entry]) => {
+      if (now > entry.expires) {
+        this.cache.delete(key);
+        expiredCount++;
+      }
+    });
+    
+    if (expiredCount > 0) {
+      this.logger.debug(`Removed ${expiredCount} expired cache entries. Cache size: ${this.cache.size}`);
     }
   }
 }

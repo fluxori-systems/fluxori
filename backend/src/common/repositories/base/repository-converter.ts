@@ -1,93 +1,136 @@
+/**
+ * Data converter utilities for Firestore entities
+ * Provides conversion between Firestore document data and entity objects
+ */
+
 import { 
-  QueryDocumentSnapshot, 
-  DocumentData 
+  DocumentData, 
+  FieldValue, 
+  Timestamp, 
+  QueryDocumentSnapshot 
 } from '@google-cloud/firestore';
+
 import { 
   FirestoreEntity, 
-  FirestoreDataConverter, 
+  FirestoreDataConverter,
   isFirestoreTimestamp 
 } from '../../../types/google-cloud.types';
 
+// Define EntityConverter type directly here to avoid circular imports
+export type EntityConverter<T> = {
+  toFirestore(entity: T): DocumentData;
+  fromFirestore(snapshot: QueryDocumentSnapshot<DocumentData>): T;
+};
+
 /**
- * Firestore Converter
- * 
- * Handles type-safe conversions between application models and Firestore data
+ * Repository converter interface
  */
-export class FirestoreConverter<T extends FirestoreEntity> implements FirestoreDataConverter<T> {
-  /**
-   * Convert model object to Firestore data
-   * @param modelObject Application model object
-   * @returns DocumentData for Firestore
-   */
-  toFirestore(modelObject: T): DocumentData {
-    // Create a shallow copy to avoid modifying the original
-    const data = { ...modelObject };
-    
-    // Remove undefined values that Firestore doesn't support
-    Object.keys(data).forEach(key => {
-      if (data[key] === undefined) {
-        delete data[key];
-      }
-    });
-    
-    return data;
-  }
-  
-  /**
-   * Convert Firestore document to model object
-   * @param snapshot Document snapshot from Firestore
-   * @returns Typed model object
-   */
-  fromFirestore(snapshot: QueryDocumentSnapshot<DocumentData>): T {
-    const data = snapshot.data();
-    
-    // Create typed object with document ID
-    const result = {
-      ...data,
-      id: snapshot.id,
-    } as T;
-    
-    // Convert Firestore Timestamps to JavaScript Dates
-    this.convertTimestamps(result);
-    
-    return result;
-  }
-  
-  /**
-   * Recursively convert Firestore Timestamps to JavaScript Dates
-   * @param obj Object to convert timestamps in
-   */
-  private convertTimestamps(obj: Record<string, any>): void {
-    if (!obj || typeof obj !== 'object') {
-      return;
-    }
-    
-    for (const key in obj) {
-      const value = obj[key];
+export interface RepositoryConverter<T> {
+  toFirestore(entity: T): DocumentData;
+  fromFirestore(snapshot: QueryDocumentSnapshot<DocumentData>): T;
+}
+
+/**
+ * Create a converter for a Firestore entity
+ * This handles converting between our entity model and Firestore's data model
+ */
+export function createEntityConverter<T extends FirestoreEntity>(): EntityConverter<T> {
+  return {
+    /**
+     * Convert entity to Firestore data
+     */
+    toFirestore(entity: T): DocumentData {
+      const documentData: DocumentData = { ...entity };
       
-      // Convert Timestamp directly
-      if (isFirestoreTimestamp(value)) {
-        obj[key] = value.toDate();
-      } 
-      // Handle nested objects and arrays recursively
-      else if (typeof value === 'object' && value !== null) {
-        if (Array.isArray(value)) {
-          // Handle array of objects
-          for (let i = 0; i < value.length; i++) {
-            const item = value[i];
-            if (typeof item === 'object' && item !== null) {
-              if (isFirestoreTimestamp(item)) {
-                value[i] = item.toDate();
-              } else {
-                this.convertTimestamps(item);
-              }
-            }
-          }
-        } else {
-          // Handle nested object
-          this.convertTimestamps(value);
+      // Convert dates to Firestore Timestamps
+      for (const [key, value] of Object.entries(entity as Record<string, any>)) {
+        if (value instanceof Date) {
+          documentData[key] = Timestamp.fromDate(value);
         }
       }
+      
+      return documentData;
+    },
+    
+    /**
+     * Convert Firestore document to entity
+     */
+    fromFirestore(snapshot: QueryDocumentSnapshot<DocumentData>): T {
+      const documentData = snapshot.data();
+      const entity = {
+        ...documentData,
+        id: snapshot.id,
+      } as T;
+
+      // Convert Firestore Timestamps to JavaScript Dates
+      for (const [key, value] of Object.entries(entity as Record<string, any>)) {
+        if (isFirestoreTimestamp(value)) {
+          (entity as Record<string, any>)[key] = value.toDate();
+        }
+      }
+      
+      return entity;
+    }
+  };
+}
+
+/**
+ * Sanitize entity for storage
+ * Removes any fields that should not be stored in Firestore
+ */
+export function sanitizeEntityForStorage<T extends FirestoreEntity>(entity: T): DocumentData {
+  // Create a copy of the entity to avoid modifying the original
+  const sanitized = { ...entity };
+  
+  // List of fields to exclude from storage
+  const excludedFields = ['_id', '_ref', '_path', '_metadata'];
+  
+  // Remove excluded fields
+  for (const field of excludedFields) {
+    if (field in sanitized) {
+      delete sanitized[field];
     }
   }
+  
+  return sanitized;
+}
+
+/**
+ * Apply server timestamps to entity
+ */
+export function applyServerTimestamps<T extends FirestoreEntity>(
+  entity: Partial<T>, 
+  serverTimestampField: FieldValue, 
+  isNewEntity: boolean = false
+): Partial<T> {
+  const result = { ...entity } as any;
+  
+  // Apply timestamp to updateAt always, and createdAt for new entities
+  result.updatedAt = serverTimestampField;
+  
+  if (isNewEntity) {
+    result.createdAt = serverTimestampField;
+  }
+  
+  return result as Partial<T>;
+}
+
+/**
+ * Apply client-side timestamps to entity
+ */
+export function applyClientTimestamps<T extends FirestoreEntity>(
+  entity: Partial<T>, 
+  isNewEntity: boolean = false
+): Partial<T> {
+  const now = new Date();
+  const result = { ...entity } as any;
+  
+  // Apply timestamp to updateAt always, and createdAt for new entities
+  result.updatedAt = now;
+  
+  if (isNewEntity) {
+    result.createdAt = now;
+  }
+  
+  return result as Partial<T>;
 }
