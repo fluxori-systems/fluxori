@@ -252,6 +252,8 @@ export interface RepositoryOptions {
   enableCache?: boolean;
   cacheTTLMs?: number;
   requiredFields?: string[];
+  autoTimestamps?: boolean;
+  validateOnWrite?: boolean;
 }
 
 /**

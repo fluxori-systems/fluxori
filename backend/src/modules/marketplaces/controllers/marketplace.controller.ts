@@ -6,27 +6,23 @@ import {
   Param, 
   Query,
   UseGuards,
-  Request,
   HttpStatus,
   HttpException,
   Logger,
+  Req,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiQuery, ApiBody } from '@nestjs/swagger';
-import { FirebaseAuthGuard } from '../../auth/guards/firebase-auth.guard';
+import { FirebaseAuthGuard, GetUser, DecodedFirebaseToken, AuthUtils } from 'src/common/auth';
 import { MarketplaceAdapterFactory } from '../services/marketplace-adapter.factory';
+import { Request as ExpressRequest } from 'express';
+
+// Define the AuthenticatedRequest type for this controller
+interface AuthenticatedRequest extends ExpressRequest {
+  user: DecodedFirebaseToken;
+}
 import { MarketplaceCredentialsRepository } from '../repositories/marketplace-credentials.repository';
 import { MarketplaceSyncService } from '../services/marketplace-sync.service';
 import { MarketplaceCredentials } from '../interfaces/types';
-
-// Define request type with user property
-interface AuthenticatedRequest {
-  user: {
-    id: string;
-    email: string;
-    role: string;
-    organizationId?: string;
-  };
-}
 
 /**
  * Controller for marketplace operations
@@ -72,8 +68,8 @@ export class MarketplaceController {
     status: HttpStatus.OK, 
     description: 'List of marketplace connections',
   })
-  async getConnections(@Request() req: AuthenticatedRequest) {
-    const organizationId = req.user.organizationId;
+  async getConnections(@GetUser() user: DecodedFirebaseToken) {
+    const organizationId = user.organizationId;
     
     if (!organizationId) {
       throw new HttpException('Organization ID not found in auth token', HttpStatus.BAD_REQUEST);
@@ -115,7 +111,7 @@ export class MarketplaceController {
     description: 'Connection created or updated successfully',
   })
   async createConnection(
-    @Request() req: AuthenticatedRequest,
+    @Req() req: AuthenticatedRequest,
     @Param('marketplaceId') marketplaceId: string,
     @Body() credentials: Record<string, any>,
   ) {
@@ -191,7 +187,7 @@ export class MarketplaceController {
     description: 'Connection test result',
   })
   async testConnection(
-    @Request() req: AuthenticatedRequest,
+    @Req() req: AuthenticatedRequest,
     @Param('marketplaceId') marketplaceId: string,
     @Body() credentials?: Record<string, any>,
   ) {
@@ -234,7 +230,7 @@ export class MarketplaceController {
     description: 'Sync result',
   })
   async syncProductInventory(
-    @Request() req: AuthenticatedRequest,
+    @Req() req: AuthenticatedRequest,
     @Param('productId') productId: string,
   ) {
     const organizationId = req.user.organizationId;
@@ -257,7 +253,7 @@ export class MarketplaceController {
     description: 'Sync result',
   })
   async syncProductPrice(
-    @Request() req: AuthenticatedRequest,
+    @Req() req: AuthenticatedRequest,
     @Param('productId') productId: string,
   ) {
     const organizationId = req.user.organizationId;
@@ -282,7 +278,7 @@ export class MarketplaceController {
     description: 'List of products from the marketplace',
   })
   async getMarketplaceProducts(
-    @Request() req: AuthenticatedRequest,
+    @Req() req: AuthenticatedRequest,
     @Param('marketplaceId') marketplaceId: string,
     @Query('page') page = 0,
     @Query('pageSize') pageSize = 20,
@@ -329,7 +325,7 @@ export class MarketplaceController {
     description: 'Import result',
   })
   async importProduct(
-    @Request() req: AuthenticatedRequest,
+    @Req() req: AuthenticatedRequest,
     @Param('marketplaceId') marketplaceId: string,
     @Param('productId') productId: string,
   ) {
