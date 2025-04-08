@@ -12,8 +12,8 @@ export {
   TenantAwareRepository as TenantRepository
 } from './firestore-base.repository';
 
-// Export core repository types and utilities
-export {
+// Export repository interfaces
+export type {
   Repository,
   RepositoryOptions,
   QueryFilter,
@@ -28,149 +28,69 @@ export {
   FindOptions,
   UpdateDocumentOptions,
   DeleteDocumentOptions,
-  BatchDeleteOptions
-} from './base/repository-types';
+  BatchDeleteOptions,
+  PaginationResult
+} from './types';
 
+// Export validation utilities
 export {
   RepositoryValidationError,
-  validateEntity
-} from './base/repository-validation';
+  validateEntity,
+  validateRequiredFields,
+  validateEntityId,
+  isEntityDeleted,
+  validateBatchItems
+} from './utils/validation';
 
-export {
-  RepositoryTransaction,
-  TransactionOperation
-} from './base/repository-transactions';
-
+// Export cache utilities
 export {
   RepositoryCache,
   CacheOptions
-} from './base/repository-cache';
+} from './utils/cache';
 
+// Export stats utilities
 export {
-  RepositoryStats
-} from './base/repository-stats';
+  RepositoryStats,
+  createRepositoryStats,
+  incrementReads,
+  incrementWrites,
+  incrementCacheHits,
+  incrementCacheMisses,
+  recordError,
+  getStatsSnapshot,
+  resetStats,
+  calculateCacheHitRatio
+} from './utils/stats';
 
-// Export repository utilities
+// Export transaction utilities 
+export {
+  RepositoryTransaction,
+  TransactionOperation,
+  executeTransaction,
+  executeBatch
+} from './utils/transactions';
+
+// Export converter utilities
 export {
   RepositoryConverter,
   EntityConverter
-} from './base/repository-converter';
+} from './utils/converters';
 
-// Import types for utility functions
-import { 
-  QueryFilter,
-  QueryOptions,
-  SortDirection,
-  RepositoryOptions
-} from './base/repository-types';
-
-// Define and export repository utilities
-/**
- * Creates a query filter for a simple equality condition
- */
-export function equalTo<T>(field: keyof T, value: any): QueryFilter<T> {
-  return {
-    field: field as string,
-    operator: '==',
-    value
-  };
-}
-
-/**
- * Creates a query filter for a greater than condition
- */
-export function greaterThan<T>(field: keyof T, value: any): QueryFilter<T> {
-  return {
-    field: field as string,
-    operator: '>',
-    value
-  };
-}
-
-/**
- * Creates a query filter for a less than condition
- */
-export function lessThan<T>(field: keyof T, value: any): QueryFilter<T> {
-  return {
-    field: field as string,
-    operator: '<',
-    value
-  };
-}
-
-/**
- * Creates a query options object with standard pagination
- */
-export function paginatedQuery<T>(
-  page: number = 1, 
-  pageSize: number = 20,
-  orderBy: keyof T | string = 'createdAt',
-  direction: SortDirection = 'desc'
-): QueryOptions<T> {
-  return {
-    limit: pageSize,
-    offset: (page - 1) * pageSize,
-    orderBy: orderBy as string,
-    direction
-  };
-}
-
-/**
- * Creates a standard set of filters for tenant-aware repositories
- */
-export function organizationFilters<T>(
-  organizationId: string,
-  additionalFilters: QueryFilter<T>[] = []
-): QueryFilter<T>[] {
-  return [
-    {
-      field: 'organizationId',
-      operator: '==',
-      value: organizationId
-    },
-    ...additionalFilters
-  ];
-}
-
-/**
- * Creates a standard set of filters for soft-deleted entities
- */
-export function deletedStateFilters<T>(
-  includeDeleted: boolean = false,
-  additionalFilters: QueryFilter<T>[] = []
-): QueryFilter<T>[] {
-  if (!includeDeleted) {
-    return [
-      {
-        field: 'deleted',
-        operator: '==',
-        value: false
-      },
-      ...additionalFilters
-    ];
-  }
-  return additionalFilters;
-}
-
-/**
- * Standard repository factory options
- */
-export const STANDARD_REPOSITORY_OPTIONS: Partial<RepositoryOptions> = {
-  enableCache: true,
-  cacheTTLMs: 300000, // 5 minutes
-  useSoftDeletes: true,
-  autoTimestamps: true,
-  validateOnWrite: true
-};
-
-/**
- * Create repository options with custom settings
- */
-export function createRepositoryOptions(
-  customOptions: Partial<RepositoryOptions> = {}
-): RepositoryOptions {
-  return {
-    ...STANDARD_REPOSITORY_OPTIONS,
-    ...customOptions
-  } as RepositoryOptions;
-}
+// Helper Functions
+export {
+  // Query Filters
+  equalTo,
+  greaterThan,
+  lessThan,
+  
+  // Pagination
+  paginatedQuery,
+  
+  // Common Filters
+  organizationFilters,
+  deletedStateFilters,
+  
+  // Options
+  STANDARD_REPOSITORY_OPTIONS,
+  createRepositoryOptions
+} from './utils/helpers';
