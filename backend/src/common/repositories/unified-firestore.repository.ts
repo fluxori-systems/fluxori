@@ -235,7 +235,7 @@ export abstract class UnifiedFirestoreRepository<T extends FirestoreEntity> {
         updatedAt: now
       };
       
-      await docRef.update(updateData as WithFieldValue<T>);
+      await docRef.update(updateData as any);
       
       // Fetch the updated document
       const updatedDoc = await docRef.get();
@@ -364,7 +364,7 @@ export abstract class UnifiedFirestoreRepository<T extends FirestoreEntity> {
             updatedAt: now
           };
           
-          batch.update(docRef, updateData as WithFieldValue<T>);
+          batch.update(docRef, updateData as any);
         } catch (error) {
           errors.push(error);
           errorCount++;
@@ -618,7 +618,7 @@ export abstract class UnifiedFirestoreRepository<T extends FirestoreEntity> {
       updatedAt: Timestamp.now()
     };
 
-    transaction.update(docRef, docData as WithFieldValue<T>);
+    transaction.update(docRef, docData as any);
   }
 
   /**

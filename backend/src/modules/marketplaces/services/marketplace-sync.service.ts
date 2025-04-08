@@ -52,7 +52,7 @@ export class MarketplaceSyncService {
           // Update stock
           const stockUpdateResult = await adapter.updateStock([{
             sku: product.sku,
-            stockLevel: product.totalStock || 0,
+            stockLevel: product.stockQuantity || 0,
           }]);
           
           results[credential.marketplaceId] = {
@@ -124,9 +124,9 @@ export class MarketplaceSyncService {
           // Update price
           const priceUpdateResult = await adapter.updatePrices([{
             sku: product.sku,
-            price: product.price,
-            compareAtPrice: product.compareAtPrice,
-            currency: product.currency || 'ZAR', // Default to South African Rand
+            price: product.pricing.basePrice,
+            compareAtPrice: product.pricing.salePrice,
+            currency: product.pricing.currency || 'ZAR', // Default to South African Rand
           }]);
           
           results[credential.marketplaceId] = {
@@ -228,21 +228,30 @@ export class MarketplaceSyncService {
       sku: marketplaceProduct.sku,
       name: marketplaceProduct.name,
       description: marketplaceProduct.description || '',
-      price: marketplaceProduct.price,
-      compareAtPrice: marketplaceProduct.compareAtPrice,
-      currency: marketplaceProduct.currency,
-      totalStock: marketplaceProduct.stockLevel,
+      pricing: {
+        basePrice: marketplaceProduct.price,
+        salePrice: marketplaceProduct.compareAtPrice,
+        currency: marketplaceProduct.currency,
+      },
+      stockQuantity: marketplaceProduct.stockLevel,
+      reservedQuantity: 0,
+      availableQuantity: marketplaceProduct.stockLevel,
       status: marketplaceProduct.status === 'active' ? 'ACTIVE' : 'INACTIVE',
-      categories: marketplaceProduct.categories || [],
+      categoryNames: marketplaceProduct.categories || [],
       attributes: marketplaceProduct.attributes || {},
-      externalReferences: {
-        [marketplaceProduct.id]: {
+      externalIds: {
+        [marketplaceProduct.id]: marketplaceProduct.id
+      },
+      metadata: {
+        marketplace: {
           id: marketplaceProduct.id,
           url: marketplaceProduct.marketplaceUrl,
-          marketplace: marketplaceProduct.marketplace || 'unknown'
-        },
+          platform: marketplaceProduct.marketplace || 'unknown'
+        }
       },
-      images: marketplaceProduct.images || [],
+      mainImageUrl: marketplaceProduct.images?.[0],
+      additionalImageUrls: marketplaceProduct.images?.slice(1) || [],
+      hasVariants: false,
       createdAt: new Date(),
       updatedAt: new Date(),
     };

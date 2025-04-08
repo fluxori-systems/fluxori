@@ -26,5 +26,5 @@
       "@shared/*": ["src/shared/*"]
     }
   },
-  "exclude": ["src/templates/**/*"]
+  "exclude": ["src/templates/**/*", "ts_backup/**/*", "dist/migration-tools/**/*"]
 }

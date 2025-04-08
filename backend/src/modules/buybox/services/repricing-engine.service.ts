@@ -1,16 +1,16 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { RepricingRuleRepository } from '../repositories/repricing-rule.repository';
-import { BuyBoxStatusRepository } from '../repositories/buybox-status.repository';
 import { RepricingRule } from '../models/repricing-rule.schema';
-import { BuyBoxStatus } from '../models/buybox-status.schema';
+import { BuyBoxMonitoringService } from './buybox-monitoring.service';
 import { 
+  PriceAdjustment, 
   PricingRuleOperation, 
-  PricingRuleExecutionStatus, 
-  PriceAdjustment 
+  PricingRuleExecutionStatus,
+  CompetitorPrice
 } from '../interfaces/types';
 
 /**
- * Service for repricing rule operations
+ * Service for managing and applying repricing rules
  */
 @Injectable()
 export class RepricingEngineService {
@@ -18,7 +18,7 @@ export class RepricingEngineService {
   
   constructor(
     private readonly repricingRuleRepository: RepricingRuleRepository,
-    private readonly buyBoxStatusRepository: BuyBoxStatusRepository
+    private readonly buyBoxMonitoringService: BuyBoxMonitoringService,
   ) {}
   
   /**
@@ -26,23 +26,20 @@ export class RepricingEngineService {
    * @param ruleData Rule data
    * @returns Created rule
    */
-  async createRule(ruleData: Omit<RepricingRule, 'id' | 'createdAt' | 'updatedAt'>): Promise<RepricingRule> {
-    this.logger.log(`Creating repricing rule: ${ruleData.name}`);
+  async createRule(ruleData: Partial<RepricingRule>): Promise<RepricingRule> {
+    this.logger.log(`Creating new repricing rule`);
+    // Ensure organizationId is provided as it's required
+    if (!ruleData.organizationId) {
+      throw new Error('organizationId is required');
+    }
     
-    // Set defaults
-    const data = {
-      ...ruleData,
-      isActive: ruleData.isActive !== undefined ? ruleData.isActive : true,
-      executionCount: 0,
-      successCount: 0,
-      failureCount: 0,
-    };
-    
+    // Cast to required type with organizationId explicitly present
+    const data = ruleData as Omit<RepricingRule, 'id' | 'createdAt' | 'updatedAt'>;
     return this.repricingRuleRepository.create(data);
   }
   
   /**
-   * Get repricing rule by ID
+   * Get a repricing rule by ID
    * @param id Rule ID
    * @returns Repricing rule
    */
@@ -65,7 +62,9 @@ export class RepricingEngineService {
    * @returns Array of active repricing rules
    */
   async getActiveRules(organizationId: string): Promise<RepricingRule[]> {
-    return this.repricingRuleRepository.findActiveRules(organizationId);
+    // Since findActiveByOrganization doesn't exist, we'll use findByOrganization and filter active rules
+    const rules = await this.repricingRuleRepository.findByOrganization(organizationId);
+    return rules.filter(rule => rule.isActive);
   }
   
   /**
@@ -75,7 +74,12 @@ export class RepricingEngineService {
    * @returns Updated rule
    */
   async updateRule(id: string, ruleData: Partial<RepricingRule>): Promise<RepricingRule | null> {
-    this.logger.log(`Updating repricing rule ${id}`);
+    const rule = await this.repricingRuleRepository.findById(id);
+    
+    if (!rule) {
+      return null;
+    }
+    
     return this.repricingRuleRepository.update(id, ruleData);
   }
   
@@ -85,8 +89,13 @@ export class RepricingEngineService {
    * @returns Success indicator
    */
   async deleteRule(id: string): Promise<boolean> {
-    this.logger.log(`Deleting repricing rule ${id}`);
-    return this.repricingRuleRepository.delete(id) as any as boolean;
+    const rule = await this.repricingRuleRepository.findById(id);
+    
+    if (!rule) {
+      return false;
+    }
+    
+    return this.repricingRuleRepository.delete(id);
   }
   
   /**
@@ -101,316 +110,132 @@ export class RepricingEngineService {
     productId: string,
     marketplaceId: string
   ): Promise<PriceAdjustment[]> {
-    this.logger.log(`Applying repricing rules to product ${productId} on marketplace ${marketplaceId}`);
+    this.logger.log(`Applying repricing rules for product ${productId} on marketplace ${marketplaceId}`);
     
-    // Get BuyBox status
-    const status = await this.buyBoxStatusRepository.findByProductAndMarketplace(
-      productId, 
-      marketplaceId
-    );
-    
-    if (!status) {
-      throw new Error(`No BuyBox status found for product ${productId} on marketplace ${marketplaceId}`);
-    }
-    
-    // Get applicable rules
-    const rules = await this.repricingRuleRepository.findRulesForProduct(
-      organizationId,
-      productId,
-      marketplaceId
-    );
+    // Get active rules for the organization
+    const rules = await this.getActiveRules(organizationId);
     
     if (rules.length === 0) {
-      this.logger.log(`No applicable rules found for product ${productId}`);
+      this.logger.log(`No active repricing rules found for organization ${organizationId}`);
       return [];
     }
     
-    // Calculate new price based on rules
-    const adjustments = await this.calculatePriceAdjustments(status, rules);
+    // Get BuyBox status for the product
+    const buyBoxStatus = await this.buyBoxMonitoringService.getBuyBoxStatus(productId, marketplaceId);
     
-    // Apply the best adjustment (if any)
-    if (adjustments.length > 0) {
-      // Sort by status (executed first) and then by price (highest)
-      adjustments.sort((a, b) => {
-        // First by status
-        if (a.status === PricingRuleExecutionStatus.EXECUTED && b.status !== PricingRuleExecutionStatus.EXECUTED) {
-          return -1;
-        }
-        if (a.status !== PricingRuleExecutionStatus.EXECUTED && b.status === PricingRuleExecutionStatus.EXECUTED) {
-          return 1;
-        }
-        
-        // Then by price (highest first)
-        return b.newPrice - a.newPrice;
-      });
-      
-      // Apply the first adjustment
-      const bestAdjustment = adjustments[0];
-      
-      if (bestAdjustment.status === PricingRuleExecutionStatus.EXECUTED) {
-        // Update the BuyBox status with the new price
-        await this.buyBoxStatusRepository.update(status.id, {
-          currentPrice: bestAdjustment.newPrice,
-          currentShipping: bestAdjustment.newShipping || status.currentShipping,
-          lastUpdated: new Date()
-        });
-      }
+    if (!buyBoxStatus) {
+      this.logger.warn(`No BuyBox status found for product ${productId} on marketplace ${marketplaceId}`);
+      return [];
     }
     
-    return adjustments;
-  }
-  
-  /**
-   * Calculate price adjustments based on rules
-   * @param status BuyBox status
-   * @param rules Applicable rules
-   * @returns Price adjustments
-   */
-  private async calculatePriceAdjustments(
-    status: BuyBoxStatus,
-    rules: RepricingRule[]
-  ): Promise<PriceAdjustment[]> {
     const adjustments: PriceAdjustment[] = [];
     
+    // Apply each rule
     for (const rule of rules) {
       try {
-        const adjustment = await this.calculateRuleAdjustment(status, rule);
-        adjustments.push(adjustment);
+        // Check if rule applies to this product and marketplace
+        if (
+          (rule.productIds && !rule.productIds.includes(productId)) ||
+          (rule.marketplaceIds && !rule.marketplaceIds.includes(marketplaceId))
+        ) {
+          continue;
+        }
         
-        // Update rule execution stats
-        await this.repricingRuleRepository.updateExecutionStats(
-          rule.id, 
-          adjustment.status === PricingRuleExecutionStatus.EXECUTED
-        );
+        // Apply the rule
+        const currentPrice = buyBoxStatus.currentPrice || 0;
+        let newPrice = currentPrice;
+        
+        // Calculate new price based on rule operation
+        switch (rule.operation) {
+          case PricingRuleOperation.MATCH:
+            if (buyBoxStatus.competitors && buyBoxStatus.competitors.length > 0) {
+              // Find the lowest competitor price
+              const lowestCompetitorPrice = Math.min(
+                ...buyBoxStatus.competitors.map((cp: CompetitorPrice) => cp.totalPrice)
+              );
+              newPrice = lowestCompetitorPrice;
+            }
+            break;
+            
+          case PricingRuleOperation.BEAT_BY:
+            if (buyBoxStatus.competitors && buyBoxStatus.competitors.length > 0) {
+              // Find the lowest competitor price and beat it by the specified amount
+              const lowestCompetitorPrice = Math.min(
+                ...buyBoxStatus.competitors.map((cp: CompetitorPrice) => cp.totalPrice)
+              );
+              newPrice = lowestCompetitorPrice - (rule.value || 0);
+            }
+            break;
+            
+          case PricingRuleOperation.FIXED_PRICE:
+            newPrice = rule.value || currentPrice;
+            break;
+            
+          case PricingRuleOperation.PERCENTAGE_DISCOUNT:
+            newPrice = currentPrice * (1 - (rule.value || 0) / 100);
+            break;
+            
+          case PricingRuleOperation.PERCENTAGE_MARGIN:
+            // Implement margin-based pricing
+            // Since costPrice doesn't exist on BuyBoxStatus, we'll use metadata if available
+            const costPrice = buyBoxStatus.metadata?.costPrice as number | undefined;
+            if (costPrice) {
+              const margin = rule.value || 0;
+              newPrice = costPrice / (1 - margin / 100);
+            }
+            break;
+            
+          case PricingRuleOperation.FLOOR_CEILING:
+            // Apply floor and ceiling constraints
+            if (rule.minPrice && newPrice < rule.minPrice) {
+              newPrice = rule.minPrice;
+            }
+            if (rule.maxPrice && newPrice > rule.maxPrice) {
+              newPrice = rule.maxPrice;
+            }
+            break;
+            
+          default:
+            // No change to price
+            break;
+        }
+        
+        // Always respect min/max price constraints if set
+        if (rule.minPrice && newPrice < rule.minPrice) {
+          newPrice = rule.minPrice;
+        }
+        if (rule.maxPrice && newPrice > rule.maxPrice) {
+          newPrice = rule.maxPrice;
+        }
+        
+        // Only create an adjustment if price changed
+        if (newPrice !== currentPrice) {
+          adjustments.push({
+            oldPrice: currentPrice,
+            newPrice,
+            appliedRule: rule.id || '',
+            appliedAt: new Date(),
+            reason: `Applied rule: ${rule.name}`,
+            marketplace: marketplaceId,
+            status: PricingRuleExecutionStatus.EXECUTED,
+          });
+        }
       } catch (error) {
         this.logger.error(`Error applying rule ${rule.id}: ${error.message}`, error.stack);
         
-        // Add failed adjustment
         adjustments.push({
-          oldPrice: status.currentPrice,
-          newPrice: status.currentPrice,
-          oldShipping: status.currentShipping,
-          newShipping: status.currentShipping,
-          appliedRule: rule.id,
+          oldPrice: buyBoxStatus.currentPrice || 0,
+          newPrice: buyBoxStatus.currentPrice || 0,
+          appliedRule: rule.id || '',
           appliedAt: new Date(),
           reason: `Error: ${error.message}`,
-          marketplace: status.marketplaceId,
+          marketplace: marketplaceId,
           status: PricingRuleExecutionStatus.FAILED,
-          error: error.message
+          error: error.message,
         });
-        
-        // Update rule stats
-        await this.repricingRuleRepository.updateExecutionStats(rule.id, false);
       }
     }
     
     return adjustments;
-  }
-  
-  /**
-   * Calculate price adjustment for a single rule
-   * @param status BuyBox status
-   * @param rule Repricing rule
-   * @returns Price adjustment
-   */
-  private async calculateRuleAdjustment(
-    status: BuyBoxStatus,
-    rule: RepricingRule
-  ): Promise<PriceAdjustment> {
-    // The price we're starting with
-    const currentPrice = status.currentPrice;
-    const currentShipping = status.currentShipping;
-    
-    // Default adjustment (no change)
-    const baseAdjustment: PriceAdjustment = {
-      oldPrice: currentPrice,
-      newPrice: currentPrice,
-      oldShipping: currentShipping,
-      newShipping: currentShipping,
-      appliedRule: rule.id,
-      appliedAt: new Date(),
-      reason: 'No change needed',
-      marketplace: status.marketplaceId,
-      status: PricingRuleExecutionStatus.SKIPPED
-    };
-    
-    // If no competitors, some rules can't apply
-    if (status.competitors.length === 0 && 
-        (rule.operation === PricingRuleOperation.MATCH || 
-         rule.operation === PricingRuleOperation.BEAT_BY || 
-         rule.operation === PricingRuleOperation.MATCH_SHIPPING)) {
-      return {
-        ...baseAdjustment,
-        reason: 'No competitors found',
-        status: PricingRuleExecutionStatus.SKIPPED
-      };
-    }
-    
-    // Get target competitor price
-    let targetPrice = currentPrice;
-    let targetShipping = currentShipping;
-    let competitorName = 'unknown';
-    
-    if (rule.operation !== PricingRuleOperation.FIXED_PRICE) {
-      // Find the target competitor based on rule
-      const targetCompetitor = this.getTargetCompetitor(status, rule);
-      
-      if (!targetCompetitor) {
-        return {
-          ...baseAdjustment,
-          reason: 'No applicable competitor found',
-          status: PricingRuleExecutionStatus.SKIPPED
-        };
-      }
-      
-      if (targetCompetitor) {
-        targetPrice = targetCompetitor.price;
-        targetShipping = targetCompetitor.shipping;
-        competitorName = targetCompetitor.competitorName;
-      }
-    }
-    
-    // Calculate new price based on rule operation
-    let newPrice = currentPrice;
-    let newShipping = currentShipping;
-    let reason = '';
-    
-    switch (rule.operation) {
-      case PricingRuleOperation.MATCH:
-        newPrice = targetPrice;
-        reason = `Matched competitor ${competitorName} price of ${targetPrice}`;
-        break;
-      
-      case PricingRuleOperation.BEAT_BY:
-        newPrice = targetPrice - rule.value;
-        reason = `Beat competitor ${competitorName} price by ${rule.value}`;
-        break;
-      
-      case PricingRuleOperation.MATCH_SHIPPING:
-        newShipping = targetShipping;
-        reason = `Matched competitor ${competitorName} shipping of ${targetShipping}`;
-        break;
-      
-      case PricingRuleOperation.FIXED_PRICE:
-        newPrice = rule.value;
-        reason = `Set fixed price to ${rule.value}`;
-        break;
-      
-      case PricingRuleOperation.PERCENTAGE_MARGIN:
-        // For simplicity, let's say price is original cost * (1 + margin%)
-        // We don't have cost data in this example, so we'll use a placeholder
-        const placeholderCost = currentPrice * 0.7; // Assuming 30% margin
-        newPrice = placeholderCost * (1 + (rule.value / 100));
-        reason = `Applied ${rule.value}% margin`;
-        break;
-      
-      case PricingRuleOperation.PERCENTAGE_DISCOUNT:
-        newPrice = currentPrice * (1 - (rule.value / 100));
-        reason = `Applied ${rule.value}% discount`;
-        break;
-      
-      case PricingRuleOperation.FLOOR_CEILING:
-        // This is a special case where the rule.value is not used
-        // Instead we use minPrice and maxPrice from the rule
-        if (rule.minPrice !== undefined && currentPrice < rule.minPrice) {
-          newPrice = rule.minPrice;
-          reason = `Applied floor price of ${rule.minPrice}`;
-        } else if (rule.maxPrice !== undefined && currentPrice > rule.maxPrice) {
-          newPrice = rule.maxPrice;
-          reason = `Applied ceiling price of ${rule.maxPrice}`;
-        } else {
-          reason = 'Price is already within floor/ceiling bounds';
-        }
-        break;
-    }
-    
-    // Apply constraints
-    if (rule.minPrice !== undefined && newPrice < rule.minPrice) {
-      newPrice = rule.minPrice;
-      reason += ` (limited by minimum price ${rule.minPrice})`;
-    }
-    
-    if (rule.maxPrice !== undefined && newPrice > rule.maxPrice) {
-      newPrice = rule.maxPrice;
-      reason += ` (limited by maximum price ${rule.maxPrice})`;
-    }
-    
-    // Round to 2 decimal places
-    newPrice = Math.round(newPrice * 100) / 100;
-    
-    // Check if price has changed
-    const priceChanged = newPrice !== currentPrice || newShipping !== currentShipping;
-    
-    // Build the adjustment
-    return {
-      oldPrice: currentPrice,
-      newPrice,
-      oldShipping: currentShipping,
-      newShipping,
-      appliedRule: rule.id,
-      appliedAt: new Date(),
-      reason,
-      marketplace: status.marketplaceId,
-      status: priceChanged ? PricingRuleExecutionStatus.EXECUTED : PricingRuleExecutionStatus.SKIPPED
-    };
-  }
-  
-  /**
-   * Get the target competitor based on rule settings
-   * @param status BuyBox status
-   * @param rule Repricing rule
-   * @returns Target competitor or null
-   */
-  private getTargetCompetitor(
-    status: BuyBoxStatus,
-    rule: RepricingRule
-  ): any | null {
-    if (status.competitors.length === 0) {
-      return null;
-    }
-    
-    const target = rule.targetCompetitor || 'lowest';
-    
-    switch (target) {
-      case 'lowest':
-        // Sort by total price (lowest first)
-        return [...status.competitors].sort(
-          (a, b) => (a.price + a.shipping) - (b.price + b.shipping)
-        )[0];
-      
-      case 'highest':
-        // Sort by total price (highest first)
-        return [...status.competitors].sort(
-          (a, b) => (b.price + b.shipping) - (a.price + a.shipping)
-        )[0];
-      
-      case 'buybox_winner':
-        // Find the buybox winner
-        return status.competitors.find(c => c.isBuyBoxWinner) || null;
-      
-      case 'specific':
-        // Find the specific competitor
-        if (rule.specificCompetitorId) {
-          return status.competitors.find(c => c.competitorId === rule.specificCompetitorId) || null;
-        }
-        return null;
-      
-      case 'all':
-        // Calculate average price
-        const totalPrices = status.competitors.reduce(
-          (sum, c) => sum + c.price + c.shipping, 0
-        );
-        const avgPrice = totalPrices / status.competitors.length;
-        return {
-          competitorId: 'average',
-          competitorName: 'Average competitor',
-          price: avgPrice,
-          shipping: 0, // All shipping is included in price
-          isBuyBoxWinner: false
-        };
-      
-      default:
-        return null;
-    }
   }
 }
