@@ -1,4 +1,3 @@
-// @ts-nocheck - Using testing library with Vitest causes some type issues
 'use client';
 
 import React from 'react';
@@ -90,8 +89,11 @@ describe('SAProductCard', () => {
     );
     
     const productCard = getByTestId('product-card');
+    // @ts-expect-error - toBeInTheDocument comes from jest-dom
     expect(productCard).toBeInTheDocument();
+    // @ts-expect-error - toBeInTheDocument comes from jest-dom
     expect(screen.getByText('Test Product')).toBeInTheDocument();
+    // @ts-expect-error - toBeInTheDocument comes from jest-dom
     expect(screen.getByText('Price: R99.99')).toBeInTheDocument();
   });
   
@@ -104,6 +106,7 @@ describe('SAProductCard', () => {
       />
     );
     
+    // @ts-expect-error - toBeInTheDocument comes from jest-dom
     expect(screen.getByText('Discount: 20% OFF')).toBeInTheDocument();
   });
   
@@ -141,6 +144,7 @@ describe('SAProductCard', () => {
       );
       
       const card = getByTestId('product-card');
+      // @ts-expect-error - toHaveAttribute comes from jest-dom
       expect(card).toHaveAttribute('data-simplified', 'true');
     } finally {
       cleanup();
@@ -166,6 +170,7 @@ describe('SAProductCard', () => {
       );
       
       const card = getByTestId('product-card');
+      // @ts-expect-error - toHaveAttribute comes from jest-dom
       expect(card).toHaveAttribute('data-simplified', 'true');
     } finally {
       cleanup();

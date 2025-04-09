@@ -4,6 +4,18 @@
 
 This document summarizes the TypeScript error fixes implemented in the Fluxori project, focusing specifically on the frontend codebase. The backend codebase was already TypeScript compliant with minor fixes applied.
 
+## Recent Updates (April 2025)
+
+1. **Targeted Type Error Handling**
+   - Replaced all `@ts-nocheck` pragmas with targeted `@ts-expect-error` comments
+   - Added explanatory comments to each type error for better maintenance
+   - All test files now pass TypeScript compilation with minimal suppression
+
+2. **Documentation Improvements**
+   - Updated README.md with TypeScript compliance status
+   - Expanded this document with future recommendations
+   - Added notes about the targeted approach to type safety
+
 ## Initial Error Count
 
 - **Frontend**: 155 TypeScript errors (up from 122 due to improved type checking)
@@ -47,7 +59,7 @@ This document summarizes the TypeScript error fixes implemented in the Fluxori p
    - Updated `/frontend/src/testing/utils/networkTesting.ts` to be type-compatible
 
 4. **Test Files**
-   - Added @ts-nocheck to problematic test files:
+   - Replaced @ts-nocheck with targeted @ts-expect-error comments in:
      - `/frontend/src/components/south-african/__tests__/SAProductCard.spec.tsx`
      - `/frontend/src/lib/ui/components/__tests__/Button.spec.tsx`
      - `/frontend/src/lib/ui/components/__tests__/Container.spec.tsx`
@@ -66,7 +78,8 @@ This document summarizes the TypeScript error fixes implemented in the Fluxori p
    - Changed null to undefined for onchange property
 
 3. **Pragmatic Approach to Test Files**
-   - Used @ts-nocheck for test files with complex assertions
+   - Initially used @ts-nocheck for test files with complex assertions
+   - Later replaced with targeted @ts-expect-error comments to improve type safety
    - Fixed type issues in NetworkInformation mocks
    - Ensured consistent approach across all test files
 
@@ -83,8 +96,10 @@ This document summarizes the TypeScript error fixes implemented in the Fluxori p
 
 ## Future Recommendations
 
-1. Consider migrating from `@ts-nocheck` to more targeted `@ts-expect-error` comments
+1. ✅ Migrated from `@ts-nocheck` to more targeted `@ts-expect-error` comments
 2. Explore better TypeScript integration with Vitest and Jest-DOM
 3. Create a central testing utility that handles all mock needs with proper typing
 4. Standardize testing patterns across the codebase
 5. Consider using TypeScript Plugin for testing libraries to get better type safety
+6. Consider updating type declarations to eliminate the need for @ts-expect-error annotations
+7. Evaluate upgrading to newer versions of testing libraries with better TypeScript support

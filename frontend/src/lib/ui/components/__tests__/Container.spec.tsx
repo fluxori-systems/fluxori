@@ -1,4 +1,3 @@
-// @ts-nocheck - Using testing library with Vitest causes type issues
 'use client';
 
 import React from 'react';
@@ -74,8 +73,11 @@ describe('Container Component', () => {
     );
     
     const container = getByTestId('container');
+    // @ts-expect-error - toBeInTheDocument comes from jest-dom
     expect(container).toBeInTheDocument();
+    // @ts-expect-error - toHaveAttribute comes from jest-dom
     expect(container).toHaveAttribute('data-size', 'md');
+    // @ts-expect-error - toHaveAttribute comes from jest-dom
     expect(container).toHaveAttribute('data-padding', 'md');
     expect(container.className).toContain('flx-container');
   });
@@ -86,6 +88,7 @@ describe('Container Component', () => {
     );
     
     const container = getByTestId('container');
+    // @ts-expect-error - toHaveAttribute comes from jest-dom
     expect(container).toHaveAttribute('data-size', 'sm');
     expect(container.className).toContain('flx-container-sm');
   });
@@ -96,6 +99,7 @@ describe('Container Component', () => {
     );
     
     const container = getByTestId('container');
+    // @ts-expect-error - toHaveAttribute comes from jest-dom
     expect(container).toHaveAttribute('data-padding', 'lg');
   });
   
@@ -105,6 +109,7 @@ describe('Container Component', () => {
     );
     
     const container = getByTestId('container');
+    // @ts-expect-error - toHaveAttribute comes from jest-dom
     expect(container).toHaveAttribute('data-responsive', 'true');
     
     rerender(
@@ -112,6 +117,7 @@ describe('Container Component', () => {
     );
     
     const updatedContainer = getByTestId('container');
+    // @ts-expect-error - toHaveAttribute comes from jest-dom
     expect(updatedContainer).not.toHaveAttribute('data-responsive');
   });
   
@@ -130,6 +136,7 @@ describe('Container Component', () => {
       );
       
       const container = getByTestId('container');
+      // @ts-expect-error - toHaveAttribute comes from jest-dom
       expect(container).toHaveAttribute('data-optimized', 'true');
     } finally {
       cleanup();
@@ -150,6 +157,7 @@ describe('Container Component', () => {
       );
       
       const container = getByTestId('container');
+      // @ts-expect-error - toHaveAttribute comes from jest-dom
       expect(container).not.toHaveAttribute('data-optimized');
     } finally {
       cleanup();
@@ -162,7 +170,9 @@ describe('Container Component', () => {
     );
     
     const container = getByTestId('container');
+    // @ts-expect-error - toHaveAttribute comes from jest-dom
     expect(container).toHaveAttribute('data-custom', 'test');
+    // @ts-expect-error - toHaveAttribute comes from jest-dom
     expect(container).toHaveAttribute('aria-label', 'container');
   });
   

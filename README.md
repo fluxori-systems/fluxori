@@ -63,6 +63,9 @@ Fluxori is built on a modern cloud-native architecture using Google Cloud Platfo
 - [Migration Status](MIGRATION_IMPLEMENTATION.md) - Implementation status
 - [Disaster Recovery](DISASTER_RECOVERY.md) - Disaster recovery procedures
 - [Deployment Guide](DEPLOYMENT.md) - Deployment instructions
+- [Architecture Decision Records](docs/adr/README.md) - Architectural decisions with dependency visualizations
+- [ADR Process](docs/adr-process.md) - Process for creating and maintaining ADRs
+- [Dependency Management](docs/dependency-management.md) - Module dependency management
 
 ## Getting Started
 
@@ -97,11 +100,15 @@ See [DEPLOYMENT.md](DEPLOYMENT.md) for detailed deployment instructions.
 
 - Follow [NestJS best practices](https://docs.nestjs.com/)
 - Use strict TypeScript with proper type definitions
+  - All TypeScript errors have been fixed using targeted @ts-expect-error annotations where necessary
+  - See [typescript-fixes.md](typescript-fixes.md) for details on TypeScript compliance work
 - Write unit tests for all business logic
 - Follow the component-driven development approach for frontend
 - Document API endpoints with Swagger annotations
 - Adhere to the motion design principles in [frontend/src/components/motion/README.md](frontend/src/components/motion/README.md)
 - Use GCP best practices for security and reliability
+- Document architectural decisions with ADRs that include dependency visualizations
+- Respect module boundaries as defined in ADRs and enforced by dependency-cruiser
 
 ## Project Structure
 

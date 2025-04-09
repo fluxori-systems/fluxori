@@ -1,4 +1,3 @@
-// @ts-nocheck - Using testing library with Vitest causes type issues
 'use client';
 
 import React from 'react';
@@ -69,10 +68,15 @@ describe('Button Component', () => {
     );
     
     const button = getByTestId('button');
+    // @ts-expect-error - toBeInTheDocument comes from jest-dom
     expect(button).toBeInTheDocument();
+    // @ts-expect-error - toHaveAttribute comes from jest-dom
     expect(button).toHaveAttribute('data-variant', 'default');
+    // @ts-expect-error - toHaveAttribute comes from jest-dom
     expect(button).toHaveAttribute('data-size', 'medium');
+    // @ts-expect-error - toHaveAttribute comes from jest-dom
     expect(button).toHaveAttribute('data-intent', 'primary');
+    // @ts-expect-error - toBeDisabled comes from jest-dom
     expect(button).not.toBeDisabled();
   });
   
@@ -82,14 +86,17 @@ describe('Button Component', () => {
     );
     
     let button = getByTestId('button');
+    // @ts-expect-error - toHaveAttribute comes from jest-dom
     expect(button).toHaveAttribute('data-variant', 'outline');
     
     rerender(<Button variant="text">Text Button</Button>);
     button = getByTestId('button');
+    // @ts-expect-error - toHaveAttribute comes from jest-dom
     expect(button).toHaveAttribute('data-variant', 'text');
     
     rerender(<Button variant="filled">Filled Button</Button>);
     button = getByTestId('button');
+    // @ts-expect-error - toHaveAttribute comes from jest-dom
     expect(button).toHaveAttribute('data-variant', 'filled');
   });
   
@@ -99,14 +106,17 @@ describe('Button Component', () => {
     );
     
     let button = getByTestId('button');
+    // @ts-expect-error - toHaveAttribute comes from jest-dom
     expect(button).toHaveAttribute('data-intent', 'success');
     
     rerender(<Button intent="error">Error Button</Button>);
     button = getByTestId('button');
+    // @ts-expect-error - toHaveAttribute comes from jest-dom
     expect(button).toHaveAttribute('data-intent', 'error');
     
     rerender(<Button intent="warning">Warning Button</Button>);
     button = getByTestId('button');
+    // @ts-expect-error - toHaveAttribute comes from jest-dom
     expect(button).toHaveAttribute('data-intent', 'warning');
   });
   
@@ -131,6 +141,7 @@ describe('Button Component', () => {
     );
     
     const button = getByTestId('button');
+    // @ts-expect-error - toBeDisabled comes from jest-dom
     expect(button).toBeDisabled();
     
     TestingLibrary.fireEvent.click(button);
@@ -143,10 +154,12 @@ describe('Button Component', () => {
     );
     
     let button = getByTestId('button');
+    // @ts-expect-error - toHaveAttribute comes from jest-dom
     expect(button).toHaveAttribute('data-size', 'small');
     
     rerender(<Button size="large">Large Button</Button>);
     button = getByTestId('button');
+    // @ts-expect-error - toHaveAttribute comes from jest-dom
     expect(button).toHaveAttribute('data-size', 'large');
   });
   
@@ -158,7 +171,9 @@ describe('Button Component', () => {
     );
     
     const button = getByTestId('button');
+    // @ts-expect-error - toHaveAttribute comes from jest-dom
     expect(button).toHaveAttribute('aria-label', 'Custom Button');
+    // @ts-expect-error - toHaveAttribute comes from jest-dom
     expect(button).toHaveAttribute('data-custom', 'test-value');
   });
 });
