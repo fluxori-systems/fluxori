@@ -1,0 +1,24 @@
+{
+  "name": "fluxori-adr-tools",
+  "version": "1.0.0",
+  "description": "Tools for managing Architecture Decision Records with dependency visualizations",
+  "private": true,
+  "scripts": {
+    "create-adr": "ts-node adr-tools.ts create",
+    "update-adr-index": "ts-node adr-tools.ts update-index",
+    "update-adr-status": "ts-node adr-tools.ts update-status",
+    "regen-adr-viz": "ts-node adr-tools.ts regen-viz",
+    "generate-viz": "ts-node generate-adr-dependencies.ts",
+    "generate-mermaid": "ts-node generate-mermaid.ts",
+    "generate-index": "ts-node generate-adr-index.ts",
+    "render-adr": "ts-node markdown-renderer.ts render-file",
+    "render-all-adrs": "ts-node markdown-renderer.ts render-directory --input=../../docs/adr --output=../../docs/adr-html",
+    "test": "node test-adr-tools.js"
+  },
+  "dependencies": {
+    "ts-node": "^10.9.1",
+    "typescript": "^4.9.3",
+    "dependency-cruiser": "^12.0.0",
+    "marked": "^4.3.0"
+  }
+}
