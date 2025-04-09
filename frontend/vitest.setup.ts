@@ -10,6 +10,7 @@ import * as matchers from '@testing-library/jest-dom/matchers';
 // Import DOM/global mocks
 import { setupMockBrowserAPIs } from './src/testing/mocks/browser-apis';
 import { setupMockPlatformAPIs } from './src/testing/mocks/platform-apis';
+import { applyTypeAugmentations } from './src/testing/types/vitest-augmentations';
 
 // Mock IntersectionObserver
 class MockIntersectionObserver {
@@ -53,16 +54,19 @@ Object.defineProperty(window, 'ResizeObserver', {
 });
 
 // Setup network connection API for tests
+const connectionMock = {
+  effectiveType: '4g',
+  downlink: 10,
+  rtt: 50,
+  saveData: false,
+  onchange: undefined,
+  addEventListener: vi.fn(),
+  removeEventListener: vi.fn(),
+  dispatchEvent: vi.fn(() => true)
+};
+
 Object.defineProperty(navigator, 'connection', {
-  value: {
-    effectiveType: '4g',
-    downlink: 10,
-    rtt: 50,
-    saveData: false,
-    addEventListener: vi.fn(),
-    removeEventListener: vi.fn(),
-    dispatchEvent: vi.fn(() => true)
-  },
+  value: connectionMock,
   configurable: true,
   writable: true
 });
@@ -139,7 +143,7 @@ vi.mock('./src/lib/design-system/theme/ThemeContext', () => {
       },
     }),
   };
-}, { virtual: true });
+});
 
 // Mock the motion context
 vi.mock('./src/lib/motion/context/MotionContext', () => {
@@ -151,14 +155,16 @@ vi.mock('./src/lib/motion/context/MotionContext', () => {
       isReducedMotion: false,
     }),
   };
-}, { virtual: true });
+});
 
 // Add mock browser APIs
 setupMockBrowserAPIs();
 setupMockPlatformAPIs();
 
+// Apply vitest type augmentations
+applyTypeAugmentations();
+
 // Extend Vitest's expect with Jest-DOM matchers
 expect.extend(matchers);
 
-// For debugging
 console.log('Vitest setup completed');

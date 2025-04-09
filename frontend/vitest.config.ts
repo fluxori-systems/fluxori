@@ -1,4 +1,9 @@
 /// <reference types="vitest" />
+/// <reference path="./src/testing/types/global.d.ts" />
+/// <reference path="./src/testing/types/testing.d.ts" />
+/// <reference path="./src/testing/types/vitest-mock.d.ts" />
+/// <reference path="./src/testing/types/testing-library.d.ts" />
+
 import { defineConfig } from 'vitest/config';
 import react from '@vitejs/plugin-react';
 import path from 'path';
@@ -8,7 +13,7 @@ export default defineConfig({
   test: {
     environment: 'jsdom',
     globals: true,
-    setupFiles: ['./vitest.setup.ts'],
+    setupFiles: ['./vitest.setup.ts', './src/testing/config/setup.ts'],
     include: ['**/*.{test,spec}.{ts,tsx}'],
     exclude: ['node_modules'],
     coverage: {
@@ -19,6 +24,7 @@ export default defineConfig({
         'src/**/*.test.{ts,tsx}',
         'src/**/*.spec.{ts,tsx}',
         'src/types/**/*',
+        'src/testing/**/*',
       ],
     },
   },

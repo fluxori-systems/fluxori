@@ -1,22 +1,12 @@
 /**
  * Type declarations for Navigator extensions used in testing
+ * 
+ * Note: This file should be imported before other navigator extensions
+ * to ensure consistent global type definitions.
  */
 
-interface NavigatorConnection {
-  effectiveType: string;
-  downlink: number;
-  rtt: number;
-  saveData: boolean;
-  addEventListener: (type: string, listener: EventListenerOrEventListenerObject) => void;
-  removeEventListener: (type: string, listener: EventListenerOrEventListenerObject) => void;
-  dispatchEvent: (event: Event) => boolean;
-}
+// The NetworkInformation interface is now defined in testing.d.ts
+// This file ensures that it's consistently used across the application
 
-// Extend the Navigator interface to include the connection property
-declare global {
-  interface Navigator {
-    connection?: NavigatorConnection;
-  }
-}
-
+// Make sure there are no duplicate type declarations
 export {};

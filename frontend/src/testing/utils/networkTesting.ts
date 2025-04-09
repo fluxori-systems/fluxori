@@ -6,7 +6,7 @@
  */
 
 import { vi } from 'vitest';
-import { MockNetworkInformation } from '../mocks/platform-apis';
+import { createConnectionMock } from '../types/vitest-augmentations';
 
 /**
  * Network quality presets for South African market
@@ -55,7 +55,7 @@ export type NetworkQualityPreset = keyof typeof NetworkQuality;
 /**
  * Network test configuration
  */
-export interface NetworkTestConfig extends Partial<MockNetworkInformation> {
+export interface NetworkTestConfig extends Partial<NetworkInformation> {
   preset?: NetworkQualityPreset;
 }
 
@@ -70,15 +70,12 @@ export function setupNetworkConditions(config: NetworkTestConfig = {}) {
   const preset = config.preset ? NetworkQuality[config.preset] : undefined;
   
   // Create mock with preset or custom values
-  const connectionMock = {
-    effectiveType: config.effectiveType || preset?.effectiveType || '4g',
-    downlink: config.downlink ?? preset?.downlink ?? 10,
-    rtt: config.rtt ?? preset?.rtt ?? 100,
-    saveData: config.saveData ?? preset?.saveData ?? false,
-    addEventListener: vi.fn(),
-    removeEventListener: vi.fn(),
-    dispatchEvent: vi.fn(() => true)
-  };
+  const connectionMock = createConnectionMock({
+    effectiveType: config.effectiveType || preset?.effectiveType,
+    downlink: config.downlink ?? preset?.downlink,
+    rtt: config.rtt ?? preset?.rtt,
+    saveData: config.saveData ?? preset?.saveData,
+  });
   
   // Apply mock to navigator
   Object.defineProperty(navigator, 'connection', {
@@ -87,37 +84,37 @@ export function setupNetworkConditions(config: NetworkTestConfig = {}) {
     writable: true,
   });
   
-  // Create an update function to change network conditions mid-test
+  // Create a safe way to update the connection mock
   const updateNetworkConditions = (newConfig: NetworkTestConfig = {}) => {
     const preset = newConfig.preset ? NetworkQuality[newConfig.preset] : undefined;
     
-    // Update existing connection object with new values
-    if (newConfig.effectiveType || preset?.effectiveType) {
-      connectionMock.effectiveType = newConfig.effectiveType || preset?.effectiveType || connectionMock.effectiveType;
-    }
+    // Create a new mock with updated values
+    const newConnectionMock = createConnectionMock({
+      effectiveType: newConfig.effectiveType || preset?.effectiveType || connectionMock.effectiveType,
+      downlink: newConfig.downlink ?? preset?.downlink ?? connectionMock.downlink,
+      rtt: newConfig.rtt ?? preset?.rtt ?? connectionMock.rtt,
+      saveData: newConfig.saveData ?? preset?.saveData ?? connectionMock.saveData,
+    });
     
-    if (newConfig.downlink !== undefined || preset?.downlink !== undefined) {
-      connectionMock.downlink = newConfig.downlink ?? preset?.downlink ?? connectionMock.downlink;
-    }
+    // Apply new mock to navigator
+    Object.defineProperty(navigator, 'connection', {
+      value: newConnectionMock,
+      configurable: true,
+      writable: true,
+    });
     
-    if (newConfig.rtt !== undefined || preset?.rtt !== undefined) {
-      connectionMock.rtt = newConfig.rtt ?? preset?.rtt ?? connectionMock.rtt;
-    }
-    
-    if (newConfig.saveData !== undefined || preset?.saveData !== undefined) {
-      connectionMock.saveData = newConfig.saveData ?? preset?.saveData ?? connectionMock.saveData;
-    }
-    
-    // Simulate a change event (create event only if dispatchEvent exists)
-    if (typeof connectionMock.dispatchEvent === 'function') {
+    // Simulate a change event
+    try {
       const changeEvent = new Event('change');
-      connectionMock.dispatchEvent(changeEvent);
+      newConnectionMock.dispatchEvent(changeEvent);
+    } catch (e) {
+      console.warn('Could not dispatch connection change event', e);
     }
     
-    return connectionMock;
+    return newConnectionMock;
   };
   
-  // Return the mock, update function, and cleanup function
+  // Return utilities
   return {
     connection: connectionMock,
     updateNetworkConditions,
@@ -134,22 +131,22 @@ export function setupNetworkConditions(config: NetworkTestConfig = {}) {
 /**
  * Higher-order function for testing components with different network conditions
  */
-export function withNetworkConditions<T extends (...args: any[]) => any>(
-  testFn: T,
+export function withNetworkConditions<T>(
+  testFn: (utils: { updateNetworkConditions: (config?: NetworkTestConfig) => NetworkInformation }, ...args: any[]) => T,
   networkConfig: NetworkTestConfig
-): T {
-  return (async (...args: any[]) => {
+): (...args: any[]) => Promise<T> {
+  return async (...args: any[]) => {
     // Setup network conditions
-    const { cleanup, updateNetworkConditions } = setupNetworkConditions(networkConfig);
+    const networkUtils = setupNetworkConditions(networkConfig);
     
     try {
       // Run the test with the ability to update network conditions
-      return await testFn({ updateNetworkConditions }, ...args);
+      return await testFn({ updateNetworkConditions: networkUtils.updateNetworkConditions }, ...args);
     } finally {
       // Clean up
-      cleanup();
+      networkUtils.cleanup();
     }
-  }) as T;
+  };
 }
 
 /**
@@ -160,20 +157,19 @@ export function describeWithNetworkConditions(
   testFn: (utils: { network: ReturnType<typeof setupNetworkConditions> }) => void
 ) {
   describe(name, () => {
-    // Initialize this before the tests run
-    let networkUtils = setupNetworkConditions();
+    let networkUtils: ReturnType<typeof setupNetworkConditions>;
     
     beforeEach(() => {
       // Re-initialize in each test to ensure clean state
       networkUtils = setupNetworkConditions();
+      
+      // Execute the test function with the network utilities
+      testFn({ network: networkUtils });
     });
     
     afterEach(() => {
       // Clean up after each test
       networkUtils.cleanup();
     });
-    
-    // Execute the test function with the network utilities
-    testFn({ network: networkUtils });
   });
 }

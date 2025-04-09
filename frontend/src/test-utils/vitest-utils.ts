@@ -50,15 +50,16 @@ export function createNavigatorConnectionMock({
   rtt = 50,
   saveData = false,
   metered = false
-} = {}) {
+} = {}): Partial<NetworkInformation> {
   return {
     effectiveType,
     downlink,
     rtt,
     saveData,
-    metered,
-    addEventListener: vi.fn(),
-    removeEventListener: vi.fn()
+    onchange: undefined, // Changed null to undefined
+    addEventListener: vi.fn() as unknown as NetworkInformation['addEventListener'],
+    removeEventListener: vi.fn() as unknown as NetworkInformation['removeEventListener'],
+    dispatchEvent: vi.fn().mockReturnValue(true) as unknown as NetworkInformation['dispatchEvent'],
   };
 }
 
@@ -81,12 +82,12 @@ export function setupAnimationMocks() {
   }
 
   // Mock cancelAnimationFrame
-  global.cancelAnimationFrame = vi.fn();
+  global.cancelAnimationFrame = (handle: number): void => {};
 
   return {
     cleanup: () => {
       // Reset mocks if needed
-      vi.restoreAllMocks();
+      vi.resetAllMocks();
     }
   };
 }
