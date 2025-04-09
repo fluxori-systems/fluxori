@@ -1,0 +1,31 @@
+name: TypeScript Validation
+
+on:
+  pull_request:
+    paths:
+      - 'frontend/**/*.ts'
+      - 'frontend/**/*.tsx'
+      - 'backend/**/*.ts'
+
+jobs:
+  typescript-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+      
+      - name: Install Frontend Dependencies
+        run: cd frontend && npm ci
+      
+      - name: TypeScript Check (Frontend)
+        run: cd frontend && npx tsc --noEmit
+      
+      - name: Install Backend Dependencies
+        run: cd backend && npm ci
+      
+      - name: TypeScript Check (Backend)
+        run: cd backend && npx tsc --noEmit
