@@ -1,83 +1,19 @@
 'use client';
 
 import { useEffect, useState, useMemo } from 'react';
-import { useConnectionQuality } from '../../ui/hooks/useConnection';
+import type { ConnectionQualityResult, SADeviceProfile, SANetworkProfile, 
+        SAPerformanceRecommendation, SouthAfricanMarketOptimizations,
+        SA_CONNECTION_THRESHOLDS as TSA_CONNECTION_THRESHOLDS, 
+        SAPerformanceThresholds } from '../interfaces';
+import { useConnectionService } from '../services/connection-service.interface';
 
-/**
- * Regional connection quality thresholds for South Africa
- * These are calibrated specifically for the South African market
- * where connectivity can vary significantly between urban and rural areas
- */
-export const SA_CONNECTION_THRESHOLDS = {
-  // South Africa has limited 5G and primarily relies on 4G/LTE
-  HIGH_SPEED: 2.5, // 2.5 Mbps+ considered good in SA
-  MEDIUM_SPEED: 1.0, // 1.0-2.5 Mbps common in urban areas
-  LOW_SPEED: 0.5, // 0.5-1.0 Mbps common in many townships/peri-urban
-  POOR_SPEED: 0.2, // Below 0.5 Mbps common in rural areas
-  
-  // Round-trip time thresholds (ms)
-  GOOD_RTT: 150, // Good experience for most apps
-  MEDIUM_RTT: 300, // Acceptable for most applications
-  POOR_RTT: 450, // Challenging for interactive applications
-  VERY_POOR_RTT: 600, // Very difficult for real-time applications
-};
-
-/**
- * Device profiles common in the South African market
- */
-export enum SADeviceProfile {
-  HIGH_END = 'high-end',
-  MID_RANGE = 'mid-range',
-  ENTRY_LEVEL = 'entry-level',
-  BASIC = 'basic',
-  FEATURE_PHONE = 'feature-phone'
-}
-
-/**
- * Network profiles common in the South African market
- */
-export enum SANetworkProfile {
-  URBAN_FIBER = 'urban-fiber',
-  URBAN_LTE = 'urban-lte',
-  PERI_URBAN = 'peri-urban',
-  TOWNSHIP = 'township',
-  RURAL = 'rural',
-  METERED_CONNECTION = 'metered-connection'
-}
-
-/**
- * Performance recommendations for South African market
- */
-export interface SAPerformanceRecommendation {
-  type: 'critical' | 'important' | 'suggested';
-  name: string;
-  description: string;
-  implemented: boolean;
-}
-
-/**
- * South African market optimizations result
- */
-export interface SouthAfricanMarketOptimizations {
-  deviceProfile: SADeviceProfile;
-  networkProfile: SANetworkProfile;
-  isSouthAfrican: boolean;
-  isRural: boolean;
-  isMetered: boolean;
-  recommendations: SAPerformanceRecommendation[];
-  shouldReduceMotion: boolean;
-  shouldReduceDataUsage: boolean;
-  shouldReduceJavascript: boolean;
-  shouldUseLowResImages: boolean;
-  shouldDeferNonEssential: boolean;
-  shouldUsePlaceholders: boolean;
-  additionalLatencyMs: number;
-}
+// Import the constants from the interfaces file
+import { SA_CONNECTION_THRESHOLDS } from '../interfaces/connection.interface';
 
 // Device detection logic to identify common South African devices
 function detectSADeviceProfile(): SADeviceProfile {
   if (typeof navigator === 'undefined') {
-    return SADeviceProfile.MID_RANGE; // Default for SSR
+    return 'MID_RANGE' as SADeviceProfile; // Default for SSR
   }
 
   const userAgent = navigator.userAgent.toLowerCase();
@@ -85,61 +21,61 @@ function detectSADeviceProfile(): SADeviceProfile {
   
   // Feature phones often have Opera Mini or specific browser signatures
   if (userAgent.includes('opera mini') || userAgent.includes('kaios')) {
-    return SADeviceProfile.FEATURE_PHONE;
+    return 'FEATURE_PHONE' as SADeviceProfile;
   }
   
   // Basic smartphones often have low memory and older Android versions
   if (memory <= 1 || userAgent.includes('android 5.') || userAgent.includes('android 6.')) {
-    return SADeviceProfile.BASIC;
+    return 'BASIC' as SADeviceProfile;
   }
   
   // Entry-level devices (common in SA market)
   if (memory <= 2 || userAgent.includes('android 7.') || userAgent.includes('android 8.')) {
-    return SADeviceProfile.ENTRY_LEVEL;
+    return 'ENTRY_LEVEL' as SADeviceProfile;
   }
   
   // Mid-range devices (common in SA urban areas)
   if (memory <= 4 || userAgent.includes('android 9.') || userAgent.includes('android 10.')) {
-    return SADeviceProfile.MID_RANGE;
+    return 'MID_RANGE' as SADeviceProfile;
   }
   
   // Remaining are high-end devices
-  return SADeviceProfile.HIGH_END;
+  return 'HIGH_END' as SADeviceProfile;
 }
 
 // Network detection logic to determine South African network profiles
-function detectSANetworkProfile(connectionQuality: ReturnType<typeof useConnectionQuality>): SANetworkProfile {
+function detectSANetworkProfile(connectionQuality: ConnectionQualityResult): SANetworkProfile {
   // Use connection quality from SA-calibrated connection quality assessment
   if (connectionQuality.isMetered) {
-    return SANetworkProfile.METERED_CONNECTION;
+    return 'METERED_CONNECTION' as SANetworkProfile;
   }
   
   if (!connectionQuality.downlinkSpeed) {
-    return SANetworkProfile.PERI_URBAN; // Default if no data available
+    return 'PERI_URBAN' as SANetworkProfile; // Default if no data available
   }
   
   // High-end fiber connections (mostly in wealthy urban areas)
   if (connectionQuality.downlinkSpeed > 5 && connectionQuality.rtt && connectionQuality.rtt < 100) {
-    return SANetworkProfile.URBAN_FIBER;
+    return 'URBAN_FIBER' as SANetworkProfile;
   }
   
   // LTE connections (urban areas)
   if (connectionQuality.downlinkSpeed > 2 && connectionQuality.rtt && connectionQuality.rtt < 200) {
-    return SANetworkProfile.URBAN_LTE;
+    return 'URBAN_LTE' as SANetworkProfile;
   }
   
   // Peri-urban connections (suburbs and smaller towns)
   if (connectionQuality.downlinkSpeed > 1) {
-    return SANetworkProfile.PERI_URBAN;
+    return 'PERI_URBAN' as SANetworkProfile;
   }
   
   // Township connections (densely populated areas)
   if (connectionQuality.downlinkSpeed > 0.5) {
-    return SANetworkProfile.TOWNSHIP;
+    return 'TOWNSHIP' as SANetworkProfile;
   }
   
   // Rural connections (low bandwidth, high latency)
-  return SANetworkProfile.RURAL;
+  return 'RURAL' as SANetworkProfile;
 }
 
 // Generate recommendations based on device and network profiles
@@ -155,7 +91,7 @@ function generateRecommendations(deviceProfile: SADeviceProfile, networkProfile:
   });
   
   // Device-specific recommendations
-  if (deviceProfile === SADeviceProfile.FEATURE_PHONE || deviceProfile === SADeviceProfile.BASIC) {
+  if (deviceProfile === 'FEATURE_PHONE' || deviceProfile === 'BASIC') {
     recommendations.push({
       type: 'critical',
       name: 'Minimal JavaScript',
@@ -172,7 +108,7 @@ function generateRecommendations(deviceProfile: SADeviceProfile, networkProfile:
   }
   
   // Network-specific recommendations
-  if (networkProfile === SANetworkProfile.RURAL || networkProfile === SANetworkProfile.TOWNSHIP) {
+  if (networkProfile === 'RURAL' || networkProfile === 'TOWNSHIP') {
     recommendations.push({
       type: 'critical',
       name: 'Minimize requests',
@@ -188,7 +124,7 @@ function generateRecommendations(deviceProfile: SADeviceProfile, networkProfile:
     });
   }
   
-  if (networkProfile === SANetworkProfile.METERED_CONNECTION) {
+  if (networkProfile === 'METERED_CONNECTION') {
     recommendations.push({
       type: 'critical',
       name: 'Data saver mode',
@@ -206,17 +142,17 @@ function generateRecommendations(deviceProfile: SADeviceProfile, networkProfile:
  */
 function calculateAdditionalLatency(networkProfile: SANetworkProfile): number {
   switch (networkProfile) {
-    case SANetworkProfile.RURAL:
+    case 'RURAL':
       return 300;
-    case SANetworkProfile.TOWNSHIP:
+    case 'TOWNSHIP':
       return 150;
-    case SANetworkProfile.PERI_URBAN:
+    case 'PERI_URBAN':
       return 75;
-    case SANetworkProfile.URBAN_LTE:
+    case 'URBAN_LTE':
       return 30;
-    case SANetworkProfile.URBAN_FIBER:
+    case 'URBAN_FIBER':
       return 0;
-    case SANetworkProfile.METERED_CONNECTION:
+    case 'METERED_CONNECTION':
       return 100;
     default:
       return 50;
@@ -227,11 +163,23 @@ function calculateAdditionalLatency(networkProfile: SANetworkProfile): number {
  * Hook that provides South African market-specific optimizations
  * Implements the dependency inversion pattern to avoid circular dependencies
  */
-// Main hook - can be accessed via this name or the aliased name below
 export function useSouthAfricanMarketOptimizations(): SouthAfricanMarketOptimizations {
-  const connectionQuality = useConnectionQuality();
-  const [deviceProfile, setDeviceProfile] = useState<SADeviceProfile>(SADeviceProfile.MID_RANGE);
+  // Get connection service through the connection service interface
+  const connectionService = useConnectionService();
+  const [connectionQuality, setConnectionQuality] = useState<ConnectionQualityResult>(
+    connectionService.getConnectionQuality()
+  );
+  const [deviceProfile, setDeviceProfile] = useState<SADeviceProfile>('MID_RANGE' as SADeviceProfile);
   const [isClient, setIsClient] = useState(false);
+  
+  // Subscribe to connection changes
+  useEffect(() => {
+    const unsubscribe = connectionService.subscribeToConnectionChanges(
+      (newQuality) => setConnectionQuality(newQuality)
+    );
+    
+    return unsubscribe;
+  }, [connectionService]);
   
   // Client-side only detection
   useEffect(() => {
@@ -258,7 +206,7 @@ export function useSouthAfricanMarketOptimizations(): SouthAfricanMarketOptimiza
   );
   
   // Determine if rural connection (high latency, low bandwidth)
-  const isRural = networkProfile === SANetworkProfile.RURAL;
+  const isRural = networkProfile === 'RURAL';
   
   // Flag for South African user - this would typically come from GeoIP detection
   // For this implementation, we're assuming all users are South African
@@ -266,34 +214,34 @@ export function useSouthAfricanMarketOptimizations(): SouthAfricanMarketOptimiza
   
   // Optimization flags
   const shouldReduceMotion = 
-    deviceProfile === SADeviceProfile.BASIC || 
-    deviceProfile === SADeviceProfile.FEATURE_PHONE || 
-    networkProfile === SANetworkProfile.RURAL;
+    deviceProfile === 'BASIC' || 
+    deviceProfile === 'FEATURE_PHONE' || 
+    networkProfile === 'RURAL';
     
   const shouldReduceDataUsage = 
     connectionQuality.isDataSaver || 
     connectionQuality.isMetered || 
-    networkProfile === SANetworkProfile.RURAL || 
-    networkProfile === SANetworkProfile.TOWNSHIP || 
-    networkProfile === SANetworkProfile.METERED_CONNECTION;
+    networkProfile === 'RURAL' || 
+    networkProfile === 'TOWNSHIP' || 
+    networkProfile === 'METERED_CONNECTION';
     
   const shouldReduceJavascript = 
-    deviceProfile === SADeviceProfile.BASIC || 
-    deviceProfile === SADeviceProfile.FEATURE_PHONE;
+    deviceProfile === 'BASIC' || 
+    deviceProfile === 'FEATURE_PHONE';
     
   const shouldUseLowResImages = 
     shouldReduceDataUsage || 
-    deviceProfile === SADeviceProfile.BASIC || 
-    deviceProfile === SADeviceProfile.FEATURE_PHONE;
+    deviceProfile === 'BASIC' || 
+    deviceProfile === 'FEATURE_PHONE';
     
   const shouldDeferNonEssential = 
-    networkProfile !== SANetworkProfile.URBAN_FIBER || 
-    deviceProfile === SADeviceProfile.ENTRY_LEVEL || 
-    deviceProfile === SADeviceProfile.BASIC;
+    networkProfile !== 'URBAN_FIBER' || 
+    deviceProfile === 'ENTRY_LEVEL' || 
+    deviceProfile === 'BASIC';
     
   const shouldUsePlaceholders = 
-    networkProfile === SANetworkProfile.RURAL || 
-    networkProfile === SANetworkProfile.TOWNSHIP;
+    networkProfile === 'RURAL' || 
+    networkProfile === 'TOWNSHIP';
   
   return {
     deviceProfile,
@@ -318,21 +266,21 @@ export const useSouthAfricanMarket = useSouthAfricanMarketOptimizations;
 /**
  * Hook that provides performance thresholds calibrated for South African market
  */
-export function useSAPerformanceThresholds() {
+export function useSAPerformanceThresholds(): SAPerformanceThresholds {
   const { networkProfile, deviceProfile } = useSouthAfricanMarketOptimizations();
   
   // Adjust animation duration based on network profile
   const getAnimationDuration = (baseDuration: number): number => {
     switch (networkProfile) {
-      case SANetworkProfile.RURAL:
+      case 'RURAL':
         return baseDuration * 0.25; // 75% reduction
-      case SANetworkProfile.TOWNSHIP:
+      case 'TOWNSHIP':
         return baseDuration * 0.4; // 60% reduction
-      case SANetworkProfile.PERI_URBAN:
+      case 'PERI_URBAN':
         return baseDuration * 0.6; // 40% reduction
-      case SANetworkProfile.URBAN_LTE:
+      case 'URBAN_LTE':
         return baseDuration * 0.8; // 20% reduction
-      case SANetworkProfile.METERED_CONNECTION:
+      case 'METERED_CONNECTION':
         return baseDuration * 0.3; // 70% reduction
       default:
         return baseDuration;
@@ -341,15 +289,15 @@ export function useSAPerformanceThresholds() {
   
   // Determine image quality based on network and device
   const getImageQuality = (): 'low' | 'medium' | 'high' => {
-    if (deviceProfile === SADeviceProfile.FEATURE_PHONE || 
-        deviceProfile === SADeviceProfile.BASIC ||
-        networkProfile === SANetworkProfile.RURAL) {
+    if (deviceProfile === 'FEATURE_PHONE' || 
+        deviceProfile === 'BASIC' ||
+        networkProfile === 'RURAL') {
       return 'low';
     }
     
-    if (deviceProfile === SADeviceProfile.ENTRY_LEVEL || 
-        networkProfile === SANetworkProfile.TOWNSHIP ||
-        networkProfile === SANetworkProfile.METERED_CONNECTION) {
+    if (deviceProfile === 'ENTRY_LEVEL' || 
+        networkProfile === 'TOWNSHIP' ||
+        networkProfile === 'METERED_CONNECTION') {
       return 'medium';
     }
     
