@@ -1,79 +1,63 @@
+'use strict';
+
 /**
- * ESLint rule to enforce 'use client' directive in components using client-side features
+ * Rule to enforce the 'use client' directive in client components
  */
 module.exports = {
   meta: {
-    type: 'suggestion',
+    type: 'problem',
     docs: {
-      description: "Enforce 'use client' directive in components using client-side features",
+      description: "Enforce 'use client' directive at the top of client component files",
       category: 'Best Practices',
       recommended: true,
     },
     fixable: 'code',
-    schema: []
+    schema: [],
   },
+
   create(context) {
-    // Client-side hooks that require 'use client' directive
-    const clientHooks = [
-      'useRouter', 'useSearchParams', 'usePathname', 'useParams', // Next.js routing hooks
-      'useState', 'useEffect', 'useCallback', 'useMemo', 'useRef', // React hooks
-      'useForm', // react-hook-form
-      'useDisclosure', 'useHover', 'useFocus', 'useClickOutside', // Mantine hooks
+    // Components that should always be client components
+    const CLIENT_COMPONENT_INDICATORS = [
+      'useState', 'useEffect', 'useRef', 'useCallback', 'useMemo', 'useContext',
+      'onClick', 'onChange', 'onSubmit', 'onBlur', 'onFocus', 'onKeyDown', 'onKeyUp',
+      'useRouter', 'useSearchParams', 'usePathname', 'useSelectedLayoutSegment'
     ];
-
-    // Client-side event handlers
-    const clientEventProps = [
-      'onClick', 'onChange', 'onSubmit', 'onBlur', 'onFocus',
-      'onMouseEnter', 'onMouseLeave', 'onKeyDown', 'onKeyUp', 'onKeyPress'
-    ];
-
-    let hasClientFeatures = false;
-    let hasUseClientDirective = false;
-    let isComponentFile = false;
 
     return {
       Program(node) {
-        // Reset state for each file
-        hasClientFeatures = false;
-        hasUseClientDirective = false;
+        // Skip if this is a non-React file
+        if (!context.getFilename().match(/\.(jsx|tsx)$/)) return;
         
-        // Check if file looks like a component (has JSX, exports a function, etc.)
-        isComponentFile = node.body.some(statement => 
-          statement.type === 'ExportDefaultDeclaration' || 
-          statement.type === 'ExportNamedDeclaration'
-        );
+        // Skip if this is not a component file
+        if (context.getFilename().match(/(\.d\.ts|\.test\.|\.spec\.|types\.ts)/)) return;
         
-        // Check for 'use client' directive
-        if (node.body.length > 0 && 
-            node.body[0].type === 'ExpressionStatement' &&
-            node.body[0].directive === 'use client') {
-          hasUseClientDirective = true;
+        let hasUseClientDirective = false;
+        let hasClientFeature = false;
+        
+        // Check if 'use client' directive exists
+        for (const item of node.body) {
+          if (item.type === 'ExpressionStatement' && 
+              item.directive === 'use client') {
+            hasUseClientDirective = true;
+            break;
+          }
         }
-      },
-      
-      // Detect React hook usage
-      CallExpression(node) {
-        if (node.callee.type === 'Identifier' && 
-            clientHooks.includes(node.callee.name)) {
-          hasClientFeatures = true;
+        
+        // Scan the file for client component indicators
+        const sourceCode = context.getSourceCode().getText();
+        for (const indicator of CLIENT_COMPONENT_INDICATORS) {
+          if (sourceCode.includes(indicator)) {
+            hasClientFeature = true;
+            break;
+          }
         }
-      },
-      
-      // Detect event handlers in JSX
-      JSXAttribute(node) {
-        const attrName = node.name.name;
-        if (clientEventProps.includes(attrName)) {
-          hasClientFeatures = true;
-        }
-      },
-      
-      'Program:exit'(node) {
-        // Only report if this is a component file with client features but no directive
-        if (isComponentFile && hasClientFeatures && !hasUseClientDirective) {
+        
+        // If there are client features but no 'use client' directive, report an error
+        if (hasClientFeature && !hasUseClientDirective) {
           context.report({
-            node: node,
-            message: "Component uses client-side features but lacks 'use client' directive",
-            fix: (fixer) => {
+            node,
+            message: "Missing 'use client' directive at the top of the file. Client components must include this directive.",
+            fix(fixer) {
               return fixer.insertTextBefore(node, "'use client';\n\n");
             }
           });

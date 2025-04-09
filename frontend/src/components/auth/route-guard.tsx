@@ -85,7 +85,7 @@ export default function RouteGuard({
   return (
     <Center style={{ height: '50vh' }}>
       <Stack ta="center">
-        <ThemeIcon size="xl" radius="xl" color="red">
+        <ThemeIcon size="xl" radius="xl" c="red">
           <IconLock size={24} />
         </ThemeIcon>
         <Text>Unauthorized access</Text>

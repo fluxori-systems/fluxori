@@ -2,6 +2,36 @@
 
 This document summarizes the TypeScript error fixes implemented in the Fluxori frontend codebase.
 
+## Latest Updates (April 2025)
+
+### Jest to Vitest Migration Completed
+- ✅ Completely migrated from Jest to Vitest as our standard testing framework
+- ✅ Fixed SAProductCard tests to work properly with TypeScript and Vitest
+- ✅ Implemented UI component mocks that preserve attributes and event handlers
+- ✅ Created enhanced screen query functions for attribute-based element selection
+- ✅ Implemented network-aware testing utilities for South African market components
+
+### Testing Infrastructure Improvements
+- Fixed import errors in test files (`screen`, `fireEvent`, etc.)
+- Updated render utility to properly export testing functions
+- Standardized use of renderWithProviders across test files
+- Fixed type issues in test cleanup functions and mock functions
+- Created `tsconfig.test.json` with special settings for test files
+- Added proper Vitest type augmentations with Jest DOM matchers
+- Implemented enhanced mocking for browser APIs and React hooks
+
+### TSConfig Enhancements
+- Added types for testing libraries in tsconfig.json
+- Added paths for testing utilities
+- Used looser rules for test files to reduce noise
+- Created test-specific tsconfig for deeper type checking in tests
+
+### Automated Fixes
+- Created script to fix common test file issues
+- Automated imports and mockImplementation fixes
+- Fixed cleanupConnection type errors
+- Updated paths to testing utilities
+
 ## Browser API Type Extensions
 
 ### Navigator Connection API
@@ -72,6 +102,87 @@ This document summarizes the TypeScript error fixes implemented in the Fluxori f
 - Changed regular imports to type-only imports where appropriate
 - Used `import type { ... }` syntax for interface imports
 - Reduced potential circular dependencies through type-only imports
+
+## Network-Aware Testing Capabilities
+
+We've developed comprehensive testing utilities for the South African market that enable:
+
+1. **Dynamic Network Condition Testing**
+   ```typescript
+   test('adapts to changing network conditions', async () => {
+     const { updateNetworkConditions, cleanup } = setupNetworkConditions({ preset: 'HIGH' });
+     renderWithProviders(<SAProductCard title="Dynamic Card" price={100} />);
+     
+     // Test with good connection
+     expect(screen.queryByAttribute('data-simplified', 'true')).toBeNull();
+     
+     // Switch to poor connection
+     updateNetworkConditions({ preset: 'POOR' });
+     
+     // Verify component adapts
+     expect(screen.queryByAttribute('data-simplified', 'true')).not.toBeNull();
+     
+     cleanup();
+   });
+   ```
+
+2. **Testing South African Network Conditions**
+   ```typescript
+   // Typical network conditions in different regions of South Africa
+   const { cleanup } = setupNetworkConditions({ 
+     preset: 'LOW',  // Rural/township connection
+     saveData: true  // Common in prepaid mobile plans
+   });
+   ```
+
+3. **Test Helper Functions for Network Conditions**
+   ```typescript
+   // Run a full suite of tests across different network conditions
+   describeWithNetworkConditions('NetworkAwareComponent', ({ network }) => {
+     test('renders on good connection', () => {
+       // Test with default connection
+       renderWithProviders(<NetworkAwareComponent />);
+       // Expectations...
+     });
+     
+     test('renders on poor connection', () => {
+       // Update to poor connection
+       network.updateNetworkConditions({ preset: 'POOR' });
+       renderWithProviders(<NetworkAwareComponent />);
+       // Expectations...
+     });
+   });
+   ```
+
+## Recommended Next Steps
+
+1. Fix the remaining TypeScript errors in test files using our updated pattern:
+   ```bash
+   npm run test -- --typecheck
+   ```
+
+2. Fix UI component tests import paths:
+   ```bash
+   node scripts/fix-test-files.js --path src/lib/ui/components/__tests__
+   ```
+
+3. Update Mantine component mocks to properly support component exports:
+   ```typescript
+   vi.mock('@mantine/core', async () => {
+     return {
+       Alert: props => React.createElement('div', props, props.children),
+       Menu: {
+         Target: props => React.createElement('div', props, props.children),
+         Dropdown: props => React.createElement('div', props, props.children),
+       },
+       // Other components...
+     };
+   });
+   ```
+
+4. Fix the type augmentations in testing files to eliminate remaining TypeScript errors
+
+5. For CI/CD pipelines, use the updated TypeScript configuration that properly supports Vitest
 
 ## Future Considerations
 

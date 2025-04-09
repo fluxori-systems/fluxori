@@ -55,6 +55,7 @@ export {
 export type { 
   MotionMode, 
   ConnectionQuality, 
+  ConnectionQualityResult,
   AnimationMode, 
   AnimationParams
 } from '../shared/types';

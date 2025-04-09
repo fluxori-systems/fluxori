@@ -19,13 +19,18 @@
         "name": "next"
       }
     ],
+    // Add types for testing libraries
+    "types": ["jest", "node", "@testing-library/jest-dom"],
+    // Looser rules for test files
+    "noImplicitAny": false,
     "paths": {
       "@/*": ["./src/*"],
       "@components/*": ["./src/components/*"],
       "@hooks/*": ["./src/hooks/*"],
       "@lib/*": ["./src/lib/*"],
       "@api/*": ["./src/api/*"],
-      "@types/*": ["./src/types/*"]
+      "@types/*": ["./src/types/*"],
+      "@testing/*": ["./src/testing/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

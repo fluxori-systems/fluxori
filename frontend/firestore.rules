@@ -1,0 +1,269 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Check if the user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    // Check if the user has a specific role
+    function hasRole(role) {
+      return isAuthenticated() && 
+             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == role;
+    }
+    
+    // Check if the user has at least one of the specified roles
+    function hasAnyRole(roles) {
+      let userRole = get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role;
+      return isAuthenticated() && (userRole in roles || userRole == 'admin');
+    }
+    
+    // Check if the user has a specific permission
+    function hasPermission(permission) {
+      let user = get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+      
+      // Admins have all permissions
+      if (user.role == 'admin') {
+        return true;
+      }
+      
+      // Check if user has explicit permission
+      return user.permissions != null && permission in user.permissions;
+    }
+    
+    // Check if the user is an admin
+    function isAdmin() {
+      return hasRole('admin');
+    }
+    
+    // Check if the user is a manager or admin
+    function isManagerOrAdmin() {
+      let userRole = get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role;
+      return isAuthenticated() && (userRole == 'manager' || userRole == 'admin');
+    }
+    
+    // Check if the user belongs to the organization
+    function belongsToOrganization(organizationId) {
+      return isAuthenticated() && 
+             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.organizationId == organizationId;
+    }
+    
+    // Check if the user is the owner of the document
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    // Check if organization ID matches in request
+    function matchesOrganizationId(organizationId) {
+      return request.resource.data.organizationId == organizationId;
+    }
+    
+    // Common timestamp validations
+    function hasValidTimestamps() {
+      let hasRequiredFields = request.resource.data.keys().hasAll(['createdAt', 'updatedAt']);
+      let createdAtNotChanged = resource == null || 
+                               (resource.data.createdAt == request.resource.data.createdAt);
+      let updatedAtIsNow = request.resource.data.updatedAt is timestamp && 
+                           request.time.toMillis() - request.resource.data.updatedAt.toMillis() < 60000;
+      
+      return hasRequiredFields && createdAtNotChanged && updatedAtIsNow;
+    }
+    
+    // Prevent deletion of documents (use isDeleted flag instead)
+    function preventDeletion() {
+      return !request.resource.data.keys().hasAny(['isDeleted', 'deletedAt']) || 
+             (resource.data.isDeleted == false && 
+              request.resource.data.isDeleted == true && 
+              request.resource.data.deletedAt is timestamp);
+    }
+    
+    // Common organization-scoped document rules
+    function commonOrganizationRules(organizationId) {
+      return belongsToOrganization(organizationId) && 
+             matchesOrganizationId(organizationId) && 
+             hasValidTimestamps() && 
+             preventDeletion();
+    }
+    
+    // ===== Rules for organization collection =====
+    match /organizations/{organizationId} {
+      // Only admins can read any organization, users can read their own
+      allow read: if isAdmin() || belongsToOrganization(organizationId);
+      
+      // Only admins can create organizations
+      allow create: if isAdmin() && hasValidTimestamps();
+      
+      // Only admins or organization admins can update
+      allow update: if (isAdmin() || (belongsToOrganization(organizationId) && hasRole('admin'))) && 
+                      hasValidTimestamps() && 
+                      preventDeletion();
+      
+      // No true deletion allowed, only soft delete
+      allow delete: if false;
+      
+      // Organization Invitations subcollection
+      match /invitations/{invitationId} {
+        allow read: if isAdmin() || belongsToOrganization(organizationId);
+        allow create: if (isAdmin() || (belongsToOrganization(organizationId) && hasRole('admin'))) && 
+                         hasValidTimestamps() && 
+                         matchesOrganizationId(organizationId);
+        allow update: if (isAdmin() || (belongsToOrganization(organizationId) && hasRole('admin'))) && 
+                         hasValidTimestamps();
+        allow delete: if isAdmin() || (belongsToOrganization(organizationId) && hasRole('admin'));
+      }
+    }
+    
+    // ===== Rules for users collection =====
+    match /users/{userId} {
+      // Users can read their own profile
+      allow read: if isOwner(userId);
+      
+      // Organization admins can read members of their organization
+      allow read: if isAuthenticated() && 
+                    (resource.data.organizationId != null) && 
+                    belongsToOrganization(resource.data.organizationId) && 
+                    (hasRole('admin') || hasPermission('users:read'));
+      
+      // Global admins can read any user profile
+      allow read: if isAdmin();
+      
+      // User registration - create their own profile
+      allow create: if isAuthenticated() && 
+                       isOwner(userId) && 
+                       hasValidTimestamps() && 
+                       (!request.resource.data.keys().hasAny(['organizationId']) || 
+                         request.resource.data.organizationId == null || 
+                         request.resource.data.organizationId != '');
+      
+      // Users can update their own profile fields, but not sensitive fields
+      allow update: if isOwner(userId) && 
+                      hasValidTimestamps() && 
+                      preventDeletion() && 
+                      // Cannot change role, organization, permissions unless admin
+                      !request.resource.data.diff(resource.data).affectedKeys().hasAny(['role', 'organizationId', 'permissions', 'accessibleFeatures']);
+      
+      // Organization admins can update org members' roles and permissions
+      allow update: if isAuthenticated() && 
+                      resource.data.organizationId != null && 
+                      belongsToOrganization(resource.data.organizationId) && 
+                      hasRole('admin') && 
+                      hasValidTimestamps() && 
+                      preventDeletion() && 
+                      userId != request.auth.uid && // Can't change own role
+                      matchesOrganizationId(resource.data.organizationId);
+      
+      // Super admins (system-level) can update any user
+      allow update: if isAdmin() && 
+                      hasValidTimestamps() && 
+                      preventDeletion();
+      
+      // No deletion allowed, only soft delete
+      allow delete: if false;
+    }
+    
+    // ===== Rules for organization_invitations collection =====
+    match /organization_invitations/{invitationId} {
+      // Anyone can read invitations by token for verification
+      allow read: if request.query.limit <= 10 && 
+                    request.query.where.size() > 0 && 
+                    'token' in request.query.where[0][1];
+      
+      // Organization members can read their organization's invitations
+      allow read: if isAuthenticated() && 
+                    belongsToOrganization(resource.data.organizationId) && 
+                    (hasRole('admin') || hasPermission('users:read'));
+      
+      // Invited user can read their own invitation
+      allow read: if isAuthenticated() && 
+                    resource.data.email == request.auth.token.email;
+      
+      // Only organization admins or users with permission can create invitations
+      allow create: if isAuthenticated() && 
+                      belongsToOrganization(request.resource.data.organizationId) && 
+                      (hasRole('admin') || hasPermission('users:write')) && 
+                      hasValidTimestamps() && 
+                      request.resource.data.invitedById == request.auth.uid;
+      
+      // Organization admins or users with permission can update invitations
+      allow update: if isAuthenticated() && 
+                      belongsToOrganization(resource.data.organizationId) && 
+                      (hasRole('admin') || hasPermission('users:write')) && 
+                      hasValidTimestamps();
+      
+      // Invited user can accept/decline their own invitation
+      allow update: if isAuthenticated() && 
+                      resource.data.email == request.auth.token.email && 
+                      resource.data.status == 'pending' && 
+                      (request.resource.data.status == 'accepted' || request.resource.data.status == 'declined') && 
+                      resource.data.keys().hasAll(request.resource.data.keys()) &&
+                      request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'updatedAt']);
+      
+      // Organization admins or users with permission can delete invitations
+      allow delete: if isAuthenticated() && 
+                      belongsToOrganization(resource.data.organizationId) && 
+                      (hasRole('admin') || hasPermission('users:write'));
+    }
+    
+    // ===== Rules for products collection =====
+    match /products/{productId} {
+      allow read: if isAuthenticated() && belongsToOrganization(resource.data.organizationId);
+      allow create: if commonOrganizationRules(request.resource.data.organizationId);
+      allow update: if commonOrganizationRules(resource.data.organizationId);
+      allow delete: if false;
+    }
+    
+    // ===== Rules for product_categories collection =====
+    match /product_categories/{categoryId} {
+      allow read: if isAuthenticated() && belongsToOrganization(resource.data.organizationId);
+      allow create: if commonOrganizationRules(request.resource.data.organizationId);
+      allow update: if commonOrganizationRules(resource.data.organizationId);
+      allow delete: if false;
+    }
+    
+    // ===== Rules for product_brands collection =====
+    match /product_brands/{brandId} {
+      allow read: if isAuthenticated() && belongsToOrganization(resource.data.organizationId);
+      allow create: if commonOrganizationRules(request.resource.data.organizationId);
+      allow update: if commonOrganizationRules(resource.data.organizationId);
+      allow delete: if false;
+    }
+    
+    // ===== Rules for stock_levels collection =====
+    match /stock_levels/{stockLevelId} {
+      allow read: if isAuthenticated() && belongsToOrganization(resource.data.organizationId);
+      allow create: if commonOrganizationRules(request.resource.data.organizationId);
+      allow update: if commonOrganizationRules(resource.data.organizationId);
+      allow delete: if false;
+    }
+    
+    // ===== Rules for stock_movements collection =====
+    match /stock_movements/{movementId} {
+      allow read: if isAuthenticated() && belongsToOrganization(resource.data.organizationId);
+      allow create: if commonOrganizationRules(request.resource.data.organizationId) && 
+                      request.resource.data.createdById == request.auth.uid;
+      // Stock movements should be immutable once created
+      allow update: if false;
+      allow delete: if false;
+    }
+    
+    // ===== Rules for warehouses collection =====
+    match /warehouses/{warehouseId} {
+      allow read: if isAuthenticated() && belongsToOrganization(resource.data.organizationId);
+      allow create: if commonOrganizationRules(request.resource.data.organizationId);
+      allow update: if commonOrganizationRules(resource.data.organizationId);
+      allow delete: if false;
+    }
+    
+    // ===== Rules for inventory_counts collection =====
+    match /inventory_counts/{countId} {
+      allow read: if isAuthenticated() && belongsToOrganization(resource.data.organizationId);
+      allow create: if commonOrganizationRules(request.resource.data.organizationId) && 
+                      request.resource.data.createdById == request.auth.uid;
+      allow update: if isAuthenticated() && 
+                      belongsToOrganization(resource.data.organizationId) && 
+                      hasValidTimestamps();
+      allow delete: if false;
+    }
+  }
+}

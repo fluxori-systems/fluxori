@@ -7,5 +7,31 @@
  * enabling dependency inversion to avoid circular dependencies.
  */
 
-export * from './motion-types';
-export * from './motion-tokens';
+// Re-export types using 'export type' to prevent ambiguous exports
+export type { 
+  MotionMode,
+  AnimationMode,
+  AnimationParams,
+  AnimationStrategyConfig,
+  ConfidenceLevel,
+  ConnectionQuality,
+  ConnectionQualityResult,
+  NetworkCondition
+} from './motion-types';
+
+export type {
+  MotionDurations,
+  MotionEasings,
+  AIAnimationTokens,
+  ComplexityPreset,
+  NetworkAnimationPreset
+} from './motion-tokens';
+
+// Export non-type values
+export { 
+  durations, 
+  easings, 
+  aiAnimations, 
+  complexityPresets,
+  networkAnimationPresets
+} from './motion-tokens';

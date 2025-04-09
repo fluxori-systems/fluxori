@@ -1,0 +1,166 @@
+{
+  "extends": [
+    "next/core-web-vitals",
+    "plugin:storybook/recommended",
+    "plugin:import/recommended",
+    "plugin:import/typescript"
+  ],
+  "plugins": [
+    "import",
+    "boundaries"
+  ],
+  "rules": {
+    "import/order": [
+      "warn",
+      {
+        "groups": [
+          "builtin",
+          "external",
+          "internal",
+          ["parent", "sibling"],
+          "index",
+          "object",
+          "type"
+        ],
+        "newlines-between": "always",
+        "alphabetize": {
+          "order": "asc",
+          "caseInsensitive": true
+        },
+        "pathGroups": [
+          {
+            "pattern": "react",
+            "group": "external",
+            "position": "before"
+          },
+          {
+            "pattern": "next/**",
+            "group": "external",
+            "position": "before"
+          },
+          {
+            "pattern": "@mantine/**",
+            "group": "external",
+            "position": "before"
+          },
+          {
+            "pattern": "@/components/**",
+            "group": "internal",
+            "position": "before"
+          },
+          {
+            "pattern": "@/lib/**",
+            "group": "internal",
+            "position": "before"
+          }
+        ],
+        "pathGroupsExcludedImportTypes": ["builtin"]
+      }
+    ],
+    "import/no-cycle": "error",
+    "import/no-unresolved": "error",
+    "import/named": "error",
+    "import/no-restricted-paths": [
+      "error",
+      {
+        "zones": [
+          {
+            "target": "src/components",
+            "from": "src/app",
+            "message": "Components should not depend on pages"
+          },
+          {
+            "target": "src/lib/ui",
+            "from": "src/components",
+            "message": "UI library should not depend on app components"
+          },
+          {
+            "target": "src/lib/ui",
+            "from": "src/app",
+            "message": "UI library should not depend on pages"
+          }
+        ]
+      }
+    ]
+  },
+  "settings": {
+    "import/resolver": {
+      "typescript": {
+        "project": "./tsconfig.json"
+      },
+      "node": {
+        "extensions": [".js", ".jsx", ".ts", ".tsx"]
+      }
+    },
+    "boundaries/elements": [
+      {
+        "type": "page",
+        "pattern": "src/app"
+      },
+      {
+        "type": "component",
+        "pattern": "src/components"
+      },
+      {
+        "type": "hook",
+        "pattern": "src/hooks"
+      },
+      {
+        "type": "context",
+        "pattern": "src/contexts"
+      },
+      {
+        "type": "api",
+        "pattern": "src/api"
+      },
+      {
+        "type": "lib",
+        "pattern": "src/lib"
+      },
+      {
+        "type": "type",
+        "pattern": "src/types"
+      }
+    ],
+    "boundaries/ignore": ["**/*.test.*", "**/*.spec.*", "**/*.stories.*"]
+  },
+  "overrides": [
+    {
+      "files": ["**/*.{ts,tsx}"],
+      "rules": {
+        "boundaries/element-types": [
+          "error",
+          {
+            "default": "disallow",
+            "rules": [
+              {
+                "from": ["page"],
+                "allow": ["component", "hook", "context", "api", "lib", "type"]
+              },
+              {
+                "from": ["component"],
+                "allow": ["component", "hook", "lib", "type", "context", "api"]
+              },
+              {
+                "from": ["hook"],
+                "allow": ["hook", "lib", "type", "api", "context"]
+              },
+              {
+                "from": ["context"],
+                "allow": ["hook", "type", "api"]
+              },
+              {
+                "from": ["api"],
+                "allow": ["type", "lib"]
+              },
+              {
+                "from": ["lib"],
+                "allow": ["lib", "type"]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

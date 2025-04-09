@@ -3,6 +3,9 @@ import { MantineProvider } from '@mantine/core';
 import { Notifications } from '@mantine/notifications';
 import '@mantine/core/styles.css';
 import '@mantine/notifications/styles.css';
+import '@/styles/globals.css';
+import { ThemeProvider } from '@/lib/design-system';
+import { AppProvider } from './app-provider';
 
 export const metadata: Metadata = {
   title: 'Fluxori - Inventory & Marketplace Management Platform',
@@ -23,10 +26,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <MantineProvider defaultColorScheme="light">
-          <Notifications position="top-right" zIndex={1000} />
-          {children}
-        </MantineProvider>
+        <ThemeProvider defaultColorMode="light">
+          <MantineProvider defaultColorScheme="light">
+            <AppProvider>
+              <Notifications position="top-right" zIndex={1000} />
+              {children}
+            </AppProvider>
+          </MantineProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

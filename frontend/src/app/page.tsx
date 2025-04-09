@@ -19,7 +19,7 @@ export default function HomePage() {
               href="/login" 
               size="lg" 
               leftSection={<IconShoppingCart size={20} />}
-              color="blue"
+              c="blue"
             >
               Get Started
             </Button>
@@ -43,7 +43,7 @@ export default function HomePage() {
         
         <SimpleGrid
           cols={{ base: 1, sm: 2, md: 3 }}
-          spacing="md"
+          gap="md"
         >
           <FeatureCard
             title="Multi-Channel Management"
@@ -67,7 +67,7 @@ export default function HomePage() {
         <div style={{ textAlign: 'center', marginTop: '60px' }}>
           <Button 
             size="lg" 
-            color="blue" 
+            c="blue" 
             leftSection={<IconShoppingCart size={20} />}
             fullWidth
             style={{ maxWidth: '300px' }}

@@ -33,7 +33,7 @@ export default function UsersPage() {
         <Card withBorder shadow="xs" padding="lg">
           <Stack gap="md">
             <Alert 
-              color="blue" 
+              c="blue" 
               icon={<IconAlertCircle size={16} />}
             >
               <Text fw={500} mb="xs">Role Definitions</Text>
@@ -53,9 +53,9 @@ export default function UsersPage() {
             <Title order={4}>Permission Matrix</Title>
             
             <Group>
-              <Badge color="red">Admin</Badge>
-              <Badge color="blue">Manager</Badge>
-              <Badge color="green">User</Badge>
+              <Badge c="red">Admin</Badge>
+              <Badge c="blue">Manager</Badge>
+              <Badge c="green">User</Badge>
             </Group>
             
             <Button loading={loading} onClick={() => setLoading(!loading)}>

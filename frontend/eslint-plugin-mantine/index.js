@@ -1,6 +1,5 @@
-/**
- * ESLint plugin for enforcing Mantine UI and Next.js best practices
- */
+'use strict';
+
 module.exports = {
   rules: {
     'no-deprecated-props': require('./rules/no-deprecated-props'),
@@ -10,8 +9,8 @@ module.exports = {
     recommended: {
       plugins: ['mantine'],
       rules: {
-        'mantine/no-deprecated-props': 'warn',
-        'mantine/enforce-client-directive': 'warn'
+        'mantine/no-deprecated-props': 'error',
+        'mantine/enforce-client-directive': 'error'
       }
     }
   }

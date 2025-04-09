@@ -93,7 +93,7 @@ function UnauthorizedContent() {
             <List.Item>
               <Group>
                 <Text fw={500}>Role:</Text>
-                <Badge color={
+                <Badge c={
                   user?.role === 'admin' ? 'red' : 
                   user?.role === 'manager' ? 'blue' : 
                   user?.role === 'user' ? 'green' : 'gray'
@@ -105,7 +105,7 @@ function UnauthorizedContent() {
             
             {requiredPermission && (
               <List.Item>
-                <Alert color="yellow" icon={<IconAlertTriangle size={16} />} mt="sm">
+                <Alert c="yellow" icon={<IconAlertTriangle size={16} />} mt="sm">
                   <Text>
                     This page requires the <Badge>{requiredPermission}</Badge> permission,
                     which your account doesn't have.
@@ -116,7 +116,7 @@ function UnauthorizedContent() {
             
             {requiredRole && (
               <List.Item>
-                <Alert color="yellow" icon={<IconAlertTriangle size={16} />} mt="sm">
+                <Alert c="yellow" icon={<IconAlertTriangle size={16} />} mt="sm">
                   <Text>
                     This page requires the <Badge>{requiredRole}</Badge> role,
                     but your role is <Badge>{user?.role || 'undefined'}</Badge>.
@@ -155,7 +155,7 @@ function UnauthorizedContent() {
           </Button>
           
           <Button 
-            color="red" 
+            c="red" 
             variant="outline"
             leftSection={<IconLogout size={16} />}
             onClick={handleLogout}

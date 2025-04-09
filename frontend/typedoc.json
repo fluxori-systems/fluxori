@@ -1,0 +1,36 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "entryPoints": ["./src"],
+  "entryPointStrategy": "expand",
+  "out": "docs/api-docs",
+  "name": "Fluxori Frontend Documentation",
+  "excludePrivate": true,
+  "excludeProtected": false,
+  "excludeExternals": true,
+  "includeVersion": true,
+  "categorizeByGroup": true,
+  "categoryOrder": ["Component", "Context", "Hook", "Utility", "Type", "*"],
+  "groupOrder": ["Components", "Contexts", "Hooks", "Utilities", "Types", "*"],
+  "sort": ["visibility", "alphabetical"],
+  "visibilityFilters": {
+    "protected": true,
+    "private": false,
+    "inherited": true,
+    "external": false
+  },
+  "navigationLinks": {
+    "GitHub": "https://github.com/fluxori",
+    "Documentation": "https://docs.fluxori.com"
+  },
+  "searchInComments": true,
+  "disableSources": false,
+  "sourceLinkTemplate": "https://github.com/fluxori/{path}#L{line}",
+  "readme": "README.md",
+  "tsconfig": "./tsconfig.json",
+  "plugin": ["typedoc-plugin-merge-modules"],
+  "theme": "default",
+  "validation": {
+    "invalidLink": true,
+    "notDocumented": false
+  }
+}

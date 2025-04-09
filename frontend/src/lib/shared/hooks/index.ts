@@ -8,3 +8,5 @@
  */
 
 export * from './useSouthAfricanMarketOptimizations';
+export * from './useAnimationPerformance';
+export * from './usePerformanceMonitoring';

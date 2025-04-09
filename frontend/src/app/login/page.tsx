@@ -188,14 +188,14 @@ function LoginContent() {
           
           {/* Session expired message */}
           {sessionExpired && (
-            <Alert color="yellow" icon={<IconAlertCircle size={16} />} mb="md">
+            <Alert c="yellow" icon={<IconAlertCircle size={16} />} mb="md">
               Your session has expired. Please log in again.
             </Alert>
           )}
           
           {/* Email verification success message */}
           {emailVerification && (
-            <Alert color="green" icon={<IconAlertCircle size={16} />} mb="md">
+            <Alert c="green" icon={<IconAlertCircle size={16} />} mb="md">
               Email verified successfully. You can now log in.
             </Alert>
           )}
@@ -203,7 +203,7 @@ function LoginContent() {
           {/* Error message */}
           {error && (
             <Alert 
-              color={error.includes('sent') ? 'green' : 'red'} 
+              c={error.includes('sent') ? 'green' : 'red'} 
               icon={<IconAlertCircle size={16} />} 
               mb="md"
             >

@@ -196,14 +196,14 @@ function RegisterContent() {
           
           {/* Error message */}
           {error && (
-            <Alert color="red" icon={<IconAlertCircle size={16} />} mb="md">
+            <Alert c="red" icon={<IconAlertCircle size={16} />} mb="md">
               {error}
             </Alert>
           )}
           
           {/* Invitation token message */}
           {inviteToken && (
-            <Alert color="blue" icon={<IconAlertCircle size={16} />} mb="md">
+            <Alert c="blue" icon={<IconAlertCircle size={16} />} mb="md">
               You've been invited to join an organization. Complete registration to accept.
             </Alert>
           )}
@@ -321,7 +321,7 @@ function RegisterContent() {
                   )}
                   
                   {inviteToken && (
-                    <Alert color="green" icon={<IconCheck size={16} />}>
+                    <Alert c="green" icon={<IconCheck size={16} />}>
                       You'll be joining an existing organization via invitation.
                     </Alert>
                   )}

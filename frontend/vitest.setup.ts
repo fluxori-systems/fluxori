@@ -4,7 +4,12 @@
  */
 
 import '@testing-library/jest-dom';
-import { vi } from 'vitest';
+import { vi, expect } from 'vitest';
+import * as matchers from '@testing-library/jest-dom/matchers';
+
+// Import DOM/global mocks
+import { setupMockBrowserAPIs } from './src/testing/mocks/browser-apis';
+import { setupMockPlatformAPIs } from './src/testing/mocks/platform-apis';
 
 // Mock IntersectionObserver
 class MockIntersectionObserver {
@@ -20,7 +25,6 @@ Object.defineProperty(window, 'IntersectionObserver', {
 });
 
 // Mock window.matchMedia
-// @ts-ignore - Complex mock structure
 Object.defineProperty(window, 'matchMedia', {
   writable: true,
   value: vi.fn().mockImplementation(query => ({
@@ -48,63 +52,7 @@ Object.defineProperty(window, 'ResizeObserver', {
   value: MockResizeObserver
 });
 
-// Mock scrollTo
-window.scrollTo = vi.fn();
-
-// Mock requestAnimationFrame
-global.requestAnimationFrame = callback => {
-  setTimeout(callback, 0);
-  return 0;
-};
-
-// Mock cancelAnimationFrame
-global.cancelAnimationFrame = vi.fn();
-
-// Mock GSAP
-vi.mock('gsap', () => {
-  return {
-    // @ts-ignore - Complex mock structure
-    to: vi.fn().mockReturnValue({
-      kill: vi.fn()
-    }),
-    // @ts-ignore - Complex mock structure
-    from: vi.fn().mockReturnValue({
-      kill: vi.fn()
-    }),
-    set: vi.fn(),
-    // @ts-ignore - Complex mock structure
-    timeline: vi.fn().mockReturnValue({
-      to: vi.fn().mockReturnThis(),
-      from: vi.fn().mockReturnThis(),
-      kill: vi.fn()
-    }),
-    registerPlugin: vi.fn(),
-    core: {
-      Animation: vi.fn(),
-      PropTween: vi.fn(),
-      SimpleTimeline: vi.fn()
-    },
-    gsap: {
-      // @ts-ignore - Complex mock structure
-      to: vi.fn().mockReturnValue({
-        kill: vi.fn()
-      }),
-      // @ts-ignore - Complex mock structure
-      from: vi.fn().mockReturnValue({
-        kill: vi.fn()
-      }),
-      set: vi.fn(),
-      // @ts-ignore - Complex mock structure
-      timeline: vi.fn().mockReturnValue({
-        to: vi.fn().mockReturnThis(),
-        from: vi.fn().mockReturnThis(),
-        kill: vi.fn()
-      })
-    }
-  };
-});
-
-// Setup for network detection API
+// Setup network connection API for tests
 Object.defineProperty(navigator, 'connection', {
   value: {
     effectiveType: '4g',
@@ -112,9 +60,11 @@ Object.defineProperty(navigator, 'connection', {
     rtt: 50,
     saveData: false,
     addEventListener: vi.fn(),
-    removeEventListener: vi.fn()
+    removeEventListener: vi.fn(),
+    dispatchEvent: vi.fn(() => true)
   },
-  configurable: true
+  configurable: true,
+  writable: true
 });
 
 // Mock Next.js router
@@ -133,7 +83,82 @@ vi.mock('next/navigation', () => ({
   useSearchParams: () => new URLSearchParams(),
 }));
 
-// Add custom matchers for UI components if needed
-// expect.extend(customMatchers);
+// IMPORTANT: Don't mock React hooks directly
+// This causes "Invalid hook call" errors
 
-// Add any additional setup needed for Vitest
+// Mock GSAP
+vi.mock('gsap', () => {
+  // Create properly typed mock GSAP functions
+  const createTween = () => ({ kill: vi.fn() });
+  
+  const createTimelineFunction = () => {
+    return function() {
+      return {
+        to: vi.fn().mockReturnThis(),
+        from: vi.fn().mockReturnThis(),
+        fromTo: vi.fn().mockReturnThis(),
+        kill: vi.fn()
+      };
+    };
+  };
+  
+  return {
+    to: vi.fn(() => createTween()),
+    from: vi.fn(() => createTween()),
+    set: vi.fn(),
+    timeline: createTimelineFunction(),
+    registerPlugin: vi.fn(),
+    core: {
+      Animation: vi.fn(),
+      PropTween: vi.fn(),
+      SimpleTimeline: vi.fn()
+    },
+    gsap: {
+      to: vi.fn(() => createTween()),
+      from: vi.fn(() => createTween()),
+      set: vi.fn(),
+      timeline: createTimelineFunction()
+    }
+  };
+});
+
+// Mock the theme context
+vi.mock('./src/lib/design-system/theme/ThemeContext', () => {
+  return {
+    ThemeProvider: ({ children }) => children,
+    useTheme: () => ({
+      colorMode: 'light',
+      setColorMode: vi.fn(),
+      toggleColorMode: vi.fn(),
+      tokens: {
+        colors: {},
+        spacing: {},
+        typography: {},
+        radii: {},
+        shadows: {},
+      },
+    }),
+  };
+}, { virtual: true });
+
+// Mock the motion context
+vi.mock('./src/lib/motion/context/MotionContext', () => {
+  return {
+    MotionProvider: ({ children }) => children,
+    useMotion: () => ({
+      motionMode: 'full',
+      setMotionMode: vi.fn(),
+      isReducedMotion: false,
+    }),
+  };
+}, { virtual: true });
+
+// Add mock browser APIs
+setupMockBrowserAPIs();
+setupMockPlatformAPIs();
+
+// Extend Vitest's expect with Jest-DOM matchers
+expect.extend(matchers);
+
+// For debugging
+console.log('Vitest setup completed');

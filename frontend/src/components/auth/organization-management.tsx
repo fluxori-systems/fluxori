@@ -61,7 +61,7 @@ export default function OrganizationManagement() {
         <Title order={4} mb="md">Team Members</Title>
         
         {!user?.organizationId ? (
-          <Alert color="blue" icon={<IconAlertCircle size={16} />}>
+          <Alert c="blue" icon={<IconAlertCircle size={16} />}>
             You are not part of any organization.
           </Alert>
         ) : (
@@ -71,7 +71,7 @@ export default function OrganizationManagement() {
             </Text>
             
             <Group>
-              <Badge color={isAdmin ? 'red' : 'blue'}>
+              <Badge c={isAdmin ? 'red' : 'blue'}>
                 {isAdmin ? 'Admin' : 'Member'}
               </Badge>
             </Group>
@@ -84,13 +84,13 @@ export default function OrganizationManagement() {
           <Title order={4} mb="md">Invite Team Members</Title>
           
           {error && (
-            <Alert color="red" icon={<IconAlertCircle size={16} />} mb="md">
+            <Alert c="red" icon={<IconAlertCircle size={16} />} mb="md">
               {error}
             </Alert>
           )}
           
           {success && (
-            <Alert color="green" icon={<IconAlertCircle size={16} />} mb="md">
+            <Alert c="green" icon={<IconAlertCircle size={16} />} mb="md">
               {success}
             </Alert>
           )}
