@@ -28,32 +28,32 @@ export default function AICreditsPage() {
 
   return (
     <Container size="lg" py="xl">
-      <Stack spacing="xl">
+      <Stack gap="xl">
         <Title order={1}>AI Credits</Title>
-        <Text color="dimmed">Manage your AI credit balance and usage.</Text>
+        <Text c="dimmed">Manage your AI credit balance and usage.</Text>
         
         <Card shadow="sm" p="lg" withBorder>
           <Title order={3} size="h4" mb="xl">Current Credits</Title>
           
-          <Stack spacing="md">
-            <Group position="apart">
+          <Stack gap="md">
+            <Group justify="apart">
               <Text>Available Credits:</Text>
-              <Text weight={700}>{credits.available}</Text>
+              <Text fw={700}>{credits.available}</Text>
             </Group>
             
-            <Group position="apart">
+            <Group justify="apart">
               <Text>Used This Month:</Text>
-              <Text weight={700}>{credits.used}</Text>
+              <Text fw={700}>{credits.used}</Text>
             </Group>
             
-            <Group position="apart">
+            <Group justify="apart">
               <Text>Monthly Limit:</Text>
-              <Text weight={700}>{credits.limit}</Text>
+              <Text fw={700}>{credits.limit}</Text>
             </Group>
             
-            <Group position="apart">
+            <Group justify="apart">
               <Text>Reset Date:</Text>
-              <Text weight={700}>{credits.resetDate.toLocaleDateString()}</Text>
+              <Text fw={700}>{credits.resetDate.toLocaleDateString()}</Text>
             </Group>
           </Stack>
         </Card>
@@ -65,26 +65,26 @@ export default function AICreditsPage() {
             Need more AI credits? Purchase additional credits to increase your monthly limit.
           </Text>
           
-          <Group position="apart">
+          <Group justify="apart">
             <div>
-              <Text weight={700}>Standard Package</Text>
-              <Text color="dimmed" size="sm">5,000 credits for $50</Text>
+              <Text fw={700}>Standard Package</Text>
+              <Text c="dimmed" size="sm">5,000 credits for $50</Text>
             </div>
             <Button onClick={handlePurchaseCredits}>Purchase</Button>
           </Group>
           
-          <Group position="apart" mt="xl">
+          <Group justify="apart" mt="xl">
             <div>
-              <Text weight={700}>Premium Package</Text>
-              <Text color="dimmed" size="sm">12,000 credits for $100</Text>
+              <Text fw={700}>Premium Package</Text>
+              <Text c="dimmed" size="sm">12,000 credits for $100</Text>
             </div>
             <Button onClick={handlePurchaseCredits}>Purchase</Button>
           </Group>
           
-          <Group position="apart" mt="xl">
+          <Group justify="apart" mt="xl">
             <div>
-              <Text weight={700}>Enterprise Package</Text>
-              <Text color="dimmed" size="sm">30,000 credits for $200</Text>
+              <Text fw={700}>Enterprise Package</Text>
+              <Text c="dimmed" size="sm">30,000 credits for $200</Text>
             </div>
             <Button onClick={handlePurchaseCredits}>Purchase</Button>
           </Group>

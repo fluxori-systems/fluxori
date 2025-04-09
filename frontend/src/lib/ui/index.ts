@@ -1,14 +1,24 @@
-// UI Component Library
+/**
+ * Fluxori UI Component Library
+ * Enhanced components that integrate with the design system and motion framework
+ * Implements dependency inversion pattern to avoid circular dependencies
+ */
 
-// Export all components
+// Export all enhanced components
 export * from './components';
 
-// Export these Mantine components directly
+// Export shared types
+export * from './types';
+
+// Export utility functions 
+export * from './utils';
+
+// Export hooks
+export * from './hooks';
+
+// Export these Mantine components directly (to be replaced with enhanced versions in future)
 export {
-  Container,
   Paper,
-  Title,
-  Card,
   AppShell,
   Avatar,
   Badge,
@@ -26,10 +36,25 @@ export {
   ActionIcon,
   Burger,
   Table,
-  Alert,
   ThemeIcon,
   Box,
   Center,
   Loader,
   LoadingOverlay,
+  Title,
 } from '@mantine/core';
+
+// Export shared services and hooks through dependency inversion
+// Instead of direct imports from Motion module, use shared interfaces
+export { 
+  useAnimationService, 
+  useConnectionService 
+} from '../shared/services';
+
+// Instead of direct exports, re-export from shared module
+export type { 
+  MotionMode, 
+  ConnectionQuality, 
+  AnimationMode, 
+  AnimationParams
+} from '../shared/types';

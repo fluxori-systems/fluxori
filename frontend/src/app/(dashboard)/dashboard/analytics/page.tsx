@@ -32,40 +32,40 @@ export default function AnalyticsPage() {
 
   return (
     <Container size="lg" py="xl">
-      <Stack spacing="xl">
+      <Stack gap="xl">
         <Title order={1}>Analytics Dashboard</Title>
-        <Text color="dimmed">View your AI usage and metrics.</Text>
+        <Text c="dimmed">View your AI usage and metrics.</Text>
         
         <Grid>
           <Grid.Col span={{ base: 12, md: 6, lg: 3 }}>
             <Card shadow="sm" p="lg" withBorder>
               <Title order={3} size="h4" mb="md">Total Credits</Title>
-              <Text weight={700} size="xl">995</Text>
-              <Text color="dimmed" size="sm">Last 7 days</Text>
+              <Text fw={700} size="xl">995</Text>
+              <Text c="dimmed" size="sm">Last 7 days</Text>
             </Card>
           </Grid.Col>
           
           <Grid.Col span={{ base: 12, md: 6, lg: 3 }}>
             <Card shadow="sm" p="lg" withBorder>
               <Title order={3} size="h4" mb="md">Total Requests</Title>
-              <Text weight={700} size="xl">385</Text>
-              <Text color="dimmed" size="sm">Last 7 days</Text>
+              <Text fw={700} size="xl">385</Text>
+              <Text c="dimmed" size="sm">Last 7 days</Text>
             </Card>
           </Grid.Col>
           
           <Grid.Col span={{ base: 12, md: 6, lg: 3 }}>
             <Card shadow="sm" p="lg" withBorder>
               <Title order={3} size="h4" mb="md">Avg Cost per Request</Title>
-              <Text weight={700} size="xl">2.58</Text>
-              <Text color="dimmed" size="sm">Credits per request</Text>
+              <Text fw={700} size="xl">2.58</Text>
+              <Text c="dimmed" size="sm">Credits per request</Text>
             </Card>
           </Grid.Col>
           
           <Grid.Col span={{ base: 12, md: 6, lg: 3 }}>
             <Card shadow="sm" p="lg" withBorder>
               <Title order={3} size="h4" mb="md">Remaining Credits</Title>
-              <Text weight={700} size="xl">4,005</Text>
-              <Text color="dimmed" size="sm">Credits available</Text>
+              <Text fw={700} size="xl">4,005</Text>
+              <Text c="dimmed" size="sm">Credits available</Text>
             </Card>
           </Grid.Col>
         </Grid>
@@ -75,13 +75,13 @@ export default function AnalyticsPage() {
             <Card shadow="sm" p="lg" withBorder>
               <Title order={3} size="h4" mb="xl">Daily Usage</Title>
               
-              <Stack spacing="sm">
+              <Stack gap="sm">
                 {dailyUsage.map((day) => (
-                  <Group key={day.date} position="apart">
+                  <Group key={day.date} justify="apart">
                     <Text>{new Date(day.date).toLocaleDateString()}</Text>
-                    <Group spacing="xl">
-                      <Text weight={500}>{day.totalCredits} credits</Text>
-                      <Text color="dimmed">{day.totalRequests} requests</Text>
+                    <Group gap="xl">
+                      <Text fw={500}>{day.totalCredits} credits</Text>
+                      <Text c="dimmed">{day.totalRequests} requests</Text>
                     </Group>
                   </Group>
                 ))}
@@ -93,14 +93,14 @@ export default function AnalyticsPage() {
             <Card shadow="sm" p="lg" withBorder h="100%">
               <Title order={3} size="h4" mb="xl">Model Usage</Title>
               
-              <Stack spacing="md">
+              <Stack gap="md">
                 {modelUsage.map((model) => (
                   <div key={model.model}>
-                    <Group position="apart" mb="xs">
-                      <Text weight={500}>{model.model}</Text>
+                    <Group justify="apart" mb="xs">
+                      <Text fw={500}>{model.model}</Text>
                       <Text size="sm">{model.percentageOfTotal}%</Text>
                     </Group>
-                    <Text size="sm" color="dimmed" mb="md">
+                    <Text size="sm" c="dimmed" mb="md">
                       {model.totalCredits} credits ({model.totalRequests} requests)
                     </Text>
                   </div>

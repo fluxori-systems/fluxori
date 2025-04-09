@@ -38,9 +38,9 @@ export default function AdminCreditsPage() {
 
   return (
     <Container size="lg" py="xl">
-      <Stack spacing="xl">
+      <Stack gap="xl">
         <Title order={1}>Credit Management</Title>
-        <Text color="dimmed">Manage AI credit allocations for organizations.</Text>
+        <Text c="dimmed">Manage AI credit allocations for organizations.</Text>
         
         <Card shadow="sm" p="lg" withBorder>
           <Title order={3} size="h4" mb="xl">Organization Credit Allotments</Title>
