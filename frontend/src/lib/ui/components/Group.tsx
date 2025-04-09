@@ -1,34 +1,66 @@
-import { Group as MantineGroup, GroupProps as MantineGroupProps } from '@mantine/core';
+'use client';
+
+import { Group as MantineGroup } from '@mantine/core';
 import { forwardRef, ReactNode } from 'react';
-import type { MantineSpacing } from '@mantine/core';
 
 // Define appropriate justify content values for TypeScript safety
 type JustifyContent = 'flex-start' | 'flex-end' | 'center' | 'space-between' | 'space-around' | 'space-evenly';
 
-export interface GroupProps extends Omit<MantineGroupProps, 'spacing'> {
-  // Required prop for proper JSX element typing
+export interface GroupProps {
+  /** Group content */
   children?: ReactNode;
   
-  // Legacy prop support with proper typing
-  spacing?: MantineSpacing;
+  /** Gap between elements (modern prop) */
+  gap?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | string | number;
+  
+  /** Legacy spacing prop (mapped to gap) */
+  spacing?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | string | number;
+  
+  /** Horizontal content alignment (modern prop) */
+  justify?: JustifyContent;
+  
+  /** Legacy position prop (mapped to justify) */
   position?: 'left' | 'center' | 'right' | 'apart';
+  
+  /** Vertical alignment */
+  align?: 'stretch' | 'center' | 'flex-start' | 'flex-end';
+  
+  /** Wrap elements */
+  wrap?: 'wrap' | 'nowrap' | 'wrap-reverse';
+  
+  /** Additional className */
+  className?: string;
+  
+  /** Additional style */
+  style?: React.CSSProperties;
+  
+  /** Other props */
+  [key: string]: any;
 }
 
 /**
- * Group component that supports both modern Mantine v7 props and legacy position/spacing props
+ * Group component with proper TypeScript typing
+ * and legacy prop support
  */
 export const Group = forwardRef<HTMLDivElement, GroupProps>(
-  ({ children, spacing, position, ...props }, ref) => {
+  ({ 
+    children, 
+    spacing, 
+    gap: gapProp, 
+    position, 
+    justify: justifyProp, 
+    ...props 
+  }, ref) => {
     // Map legacy props to Mantine v7 props
-    const gap = spacing !== undefined ? spacing : props.gap;
-    const justify = position ? mapPositionToJustify(position) : props.justify;
+    const gap = spacing !== undefined ? spacing : gapProp;
+    const justify = position !== undefined ? mapPositionToJustify(position) : justifyProp;
     
     return (
       <MantineGroup 
         ref={ref} 
-        {...props} 
         gap={gap} 
-        justify={justify as JustifyContent}
+        justify={justify}
+        {...props}
       >
         {children}
       </MantineGroup>

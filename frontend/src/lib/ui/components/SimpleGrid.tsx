@@ -1,47 +1,37 @@
-import { SimpleGrid as MantineSimpleGrid, SimpleGridProps as MantineSimpleGridProps } from '@mantine/core';
+'use client';
+
+import { SimpleGrid as MantineSimpleGrid } from '@mantine/core';
 import { forwardRef, ReactNode } from 'react';
-import type { MantineSpacing } from '@mantine/core';
 
-// Properly typed breakpoint object
-export interface BreakpointObject {
-  maxWidth: string | number;
-  cols: number;
-  spacing?: MantineSpacing;
-}
-
-export interface SimpleGridProps extends Omit<MantineSimpleGridProps, 'spacing'> {
-  // Required prop for proper JSX element typing
+export interface SimpleGridProps {
+  /** Grid content */
   children?: ReactNode;
   
-  // Legacy prop support
-  spacing?: MantineSpacing;
-  breakpoints?: BreakpointObject[];
+  /** Number of columns */
+  cols: number;
+  
+  /** Gap between elements */
+  spacing?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | string | number;
+  
+  /** Additional className */
+  className?: string;
+  
+  /** Additional style */
+  style?: React.CSSProperties;
+  
+  /** Other props */
+  [key: string]: any;
 }
 
 /**
- * SimpleGrid component with proper type safety for breakpoints and spacing
+ * SimpleGrid component with proper TypeScript typing
  */
 export const SimpleGrid = forwardRef<HTMLDivElement, SimpleGridProps>(
-  ({ children, spacing, breakpoints, ...props }, ref) => {
-    // In Mantine v7, verticalSpacing is used instead of spacing/gap
-    const gridProps = { ...props };
-    
-    if (spacing !== undefined) {
-      // Apply spacing to the appropriate prop
-      (gridProps as any).verticalSpacing = spacing;
-      (gridProps as any).horizontalSpacing = spacing;
-    }
-    
-    // Create responsive object for breakpoints if needed
-    const responsiveProps = breakpoints 
-      ? { breakpoints: breakpoints.map(bp => ({ ...bp })) } 
-      : {};
-    
+  ({ children, ...props }, ref) => {
     return (
       <MantineSimpleGrid 
-        ref={ref} 
-        {...gridProps} 
-        {...responsiveProps} 
+        ref={ref}
+        {...props}
       >
         {children}
       </MantineSimpleGrid>

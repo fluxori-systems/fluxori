@@ -1,40 +1,100 @@
-import { Text as MantineText, TextProps as MantineTextProps } from '@mantine/core';
-import { forwardRef } from 'react';
-import type { ReactNode } from 'react';
-import type { MantineSize } from '@mantine/core';
+'use client';
 
-// Define font weight type since MantineFontWeight isn't exported
-type FontWeight = 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900 | 'normal' | 'bold' | 'bolder' | 'lighter';
+import { Text as MantineText } from '@mantine/core';
+import { forwardRef, ReactNode } from 'react';
 
-// Extend the Mantine TextProps to include children and additional properties
-export interface TextProps extends Omit<MantineTextProps, 'fw' | 'ta' | 'fs'> {
-  // Required prop for proper JSX element typing
+// Define font weight type
+type FontWeight = 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900;
+
+export interface TextProps {
+  /** Text content */
   children?: ReactNode;
   
-  // Legacy props support, explicitly typed
+  /** Additional className */
+  className?: string;
+  
+  /** Additional style */
+  style?: React.CSSProperties;
+  
+  /** Font size */
+  fz?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | string | number;
+  
+  /** Legacy size property (mapped to fz) */
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | string | number;
+  
+  /** Font weight */
+  fw?: FontWeight;
+  
+  /** Legacy weight property (mapped to fw) */
   weight?: FontWeight;
-  fw?: FontWeight;  // fontWeight shorthand
-  ta?: 'left' | 'center' | 'right'; // textAlign shorthand
-  fs?: MantineSize | number | string; // fontSize shorthand
+  
+  /** Text alignment */
+  ta?: 'left' | 'center' | 'right' | 'justify';
+  
+  /** Legacy align property (mapped to ta) */
+  align?: 'left' | 'center' | 'right' | 'justify';
+  
+  /** Text color */
+  c?: string;
+  
+  /** Legacy color property (mapped to c) */
+  color?: string;
+  
+  /** Truncate text with ellipsis */
+  truncate?: boolean | 'start' | 'end';
+  
+  /** Line clamp */
+  lineClamp?: number;
+  
+  /** Inline or block element */
+  inline?: boolean;
+  
+  /** Inherit font properties */
+  inherit?: boolean;
+  
+  /** Gradient configuration */
+  gradient?: { from: string; to: string; deg?: number };
+  
+  /** Render as span instead of p */
+  span?: boolean;
+  
+  /** Component to render as */
+  component?: React.ElementType;
+  
+  /** Other props */
+  [key: string]: any;
 }
 
 /**
  * Text component that properly supports ReactNode children and legacy prop names
  */
 export const Text = forwardRef<HTMLParagraphElement, TextProps>(
-  ({ children, weight, fw, ta, fs, ...props }, ref) => {
+  ({ 
+    children, 
+    weight, 
+    fw: fwProp, 
+    align, 
+    ta: taProp, 
+    size, 
+    fz: fzProp, 
+    color, 
+    c: cProp, 
+    ...props 
+  }, ref) => {
     // Map legacy props to Mantine v7 props
-    const fontWeight = weight || fw;
-    const textAlign = ta;
-    const fontSize = fs;
+    const fw = weight !== undefined ? weight : fwProp;
+    const ta = align !== undefined ? align : taProp;
+    const fz = size !== undefined ? size : fzProp;
+    const c = color !== undefined ? color : cProp;
     
     return (
       <MantineText 
         ref={ref} 
-        {...props} 
-        fz={fontSize || props.fz}
-        fw={fontWeight} 
-        ta={textAlign} 
+        fw={fw} 
+        ta={ta}
+        fz={fz}
+        c={c}
+        {...props}
       >
         {children}
       </MantineText>

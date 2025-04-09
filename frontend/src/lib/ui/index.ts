@@ -1,7 +1,9 @@
-// Re-export all components
+// UI Component Library
+
+// Export all components
 export * from './components';
 
-// Re-export from Mantine for convenience
+// Export these Mantine components directly
 export {
   Container,
   Paper,
@@ -24,6 +26,10 @@ export {
   ActionIcon,
   Burger,
   Table,
-  Menu as MantineMenu,
-  Grid as MantineGrid
+  Alert,
+  ThemeIcon,
+  Box,
+  Center,
+  Loader,
+  LoadingOverlay,
 } from '@mantine/core';

@@ -1,23 +1,78 @@
-import { Menu as MantineMenu, MenuProps as MantineMenuProps, MenuItemProps, MenuTargetProps, MenuDropdownProps, MenuDividerProps, MenuLabelProps } from '@mantine/core';
+'use client';
+
+import { Menu as MantineMenu } from '@mantine/core';
 import { forwardRef, ReactNode } from 'react';
 import type { ForwardRefExoticComponent, RefAttributes } from 'react';
 
-// Properly typed Menu Item props
-export interface ExtendedMenuItemProps extends Omit<MenuItemProps, 'leftSection'> {
+// Menu main component props
+export interface MenuProps {
+  /** Menu content */
   children?: ReactNode;
-  icon?: ReactNode;
-  leftSection?: ReactNode;
-  color?: string;
+  
+  /** Whether the menu is opened */
+  opened?: boolean;
+  
+  /** Called when opened state changes */
+  onChange?: (opened: boolean) => void;
+  
+  /** Close the menu when an item is clicked */
+  closeOnItemClick?: boolean;
+  
+  /** Control menu opening delay in ms */
+  openDelay?: number;
+  
+  /** Control menu closing delay in ms */
+  closeDelay?: number;
+  
+  /** Additional className */
+  className?: string;
+  
+  /** Other props */
+  [key: string]: any;
 }
 
-// Menu main component props
-export interface MenuProps extends MantineMenuProps {
+// Menu Item props
+export interface MenuItemProps {
+  /** Item content */
   children?: ReactNode;
+  
+  /** Left section content */
+  leftSection?: ReactNode;
+  
+  /** Legacy icon prop (mapped to leftSection) */
+  icon?: ReactNode;
+  
+  /** Right section content */
+  rightSection?: ReactNode;
+  
+  /** Legacy rightIcon prop (mapped to rightSection) */
+  rightIcon?: ReactNode;
+  
+  /** Text color */
+  c?: string;
+  
+  /** Legacy color prop (mapped to c) */
+  color?: string;
+  
+  /** Disabled state */
+  disabled?: boolean;
+  
+  /** Called when item is clicked */
+  onClick?: React.MouseEventHandler<HTMLButtonElement>;
+  
+  /** Additional className */
+  className?: string;
+  
+  /** Component to render as */
+  component?: React.ElementType;
+  
+  /** Other props */
+  [key: string]: any;
 }
 
 // Full type definition for the composite Menu component
-export interface MenuComponent extends ForwardRefExoticComponent<MenuProps> {
-  Item: ForwardRefExoticComponent<ExtendedMenuItemProps & RefAttributes<HTMLButtonElement>>;
+export interface MenuComponent extends ForwardRefExoticComponent<MenuProps & RefAttributes<HTMLDivElement>> {
+  Item: ForwardRefExoticComponent<MenuItemProps & RefAttributes<HTMLButtonElement>>;
   Target: typeof MantineMenu.Target;
   Dropdown: typeof MantineMenu.Dropdown;
   Divider: typeof MantineMenu.Divider;
@@ -25,28 +80,32 @@ export interface MenuComponent extends ForwardRefExoticComponent<MenuProps> {
 }
 
 // Main Menu component
-const MenuComponent = forwardRef<HTMLDivElement, MenuProps>((props, ref) => {
+const MenuBase = forwardRef<HTMLDivElement, MenuProps>(({ ...props }, ref) => {
   return <MantineMenu {...props} />;
 });
 
 // Item subcomponent with proper typing
-const Item = forwardRef<HTMLButtonElement, ExtendedMenuItemProps>(
-  ({ children, icon, color, ...props }, ref) => {
-    return (
-      <MantineMenu.Item
-        ref={ref}
-        {...props}
-        leftSection={icon || props.leftSection}
-        c={color || props.c}
-      >
-        {children}
-      </MantineMenu.Item>
-    );
-  }
-);
+const Item = forwardRef<HTMLButtonElement, MenuItemProps>(({ children, icon, rightIcon, leftSection: leftSectionProp, rightSection: rightSectionProp, color, c: cProp, ...props }, ref) => {
+  // Map legacy props to Mantine v7 props
+  const leftSection = icon !== undefined ? icon : leftSectionProp;
+  const rightSection = rightIcon !== undefined ? rightIcon : rightSectionProp;
+  const c = color !== undefined ? color : cProp;
+  
+  return (
+    <MantineMenu.Item
+      ref={ref}
+      leftSection={leftSection}
+      rightSection={rightSection}
+      c={c}
+      {...props}
+    >
+      {children}
+    </MantineMenu.Item>
+  );
+});
 
 // Create composite component with proper type casting
-export const Menu = Object.assign(MenuComponent, {
+export const Menu = Object.assign(MenuBase, {
   Item,
   Target: MantineMenu.Target,
   Dropdown: MantineMenu.Dropdown,
@@ -54,5 +113,5 @@ export const Menu = Object.assign(MenuComponent, {
   Label: MantineMenu.Label
 }) as MenuComponent;
 
-MenuComponent.displayName = 'Menu';
+MenuBase.displayName = 'Menu';
 Item.displayName = 'Menu.Item';

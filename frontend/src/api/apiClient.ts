@@ -1,3 +1,5 @@
+'use client';
+
 import axios, { AxiosInstance, InternalAxiosRequestConfig, AxiosResponse, AxiosError } from 'axios';
 
 // Import types
@@ -38,7 +40,7 @@ import {
 /**
  * Creates and returns a properly typed API client instance
  */
-function getApiClient(): AxiosInstance {
+export function getApiClient(): AxiosInstance {
   const baseURL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
   
   const client = axios.create({
@@ -100,6 +102,9 @@ export interface AdminAPI {
     monthlyLimit: number;
   }) => Promise<{ success: boolean }>;
 }
+
+// Export the direct axios instance for simpler API calls
+export const apiClient = getApiClient();
 
 // Main API client with all sections
 export const api = {
@@ -190,25 +195,25 @@ export const api = {
       return response.data;
     },
     
-    getUsageHistory: async (params?: UsageHistoryParams): Promise<UsageRecord[]> => {
+    getUsageHistory: async (params: UsageHistoryParams = {}): Promise<UsageRecord[]> => {
       const client = getApiClient();
       const response = await client.get<UsageRecord[]>('/ai-credits/usage-history', { params });
       return response.data;
     },
     
-    getUsageByDay: async (params?: UsageByDayParams): Promise<DailyUsage[]> => {
+    getUsageByDay: async (params: UsageByDayParams = {}): Promise<DailyUsage[]> => {
       const client = getApiClient();
       const response = await client.get<DailyUsage[]>('/ai-credits/usage-by-day', { params });
       return response.data;
     },
     
-    getUsageByModel: async (params?: UsageByModelParams): Promise<ModelUsage[]> => {
+    getUsageByModel: async (params: UsageByModelParams = {}): Promise<ModelUsage[]> => {
       const client = getApiClient();
       const response = await client.get<ModelUsage[]>('/ai-credits/usage-by-model', { params });
       return response.data;
     },
     
-    getUsageByEndpoint: async (params?: UsageByModelParams): Promise<EndpointUsage[]> => {
+    getUsageByEndpoint: async (params: UsageByModelParams = {}): Promise<EndpointUsage[]> => {
       const client = getApiClient();
       const response = await client.get<EndpointUsage[]>('/ai-credits/usage-by-endpoint', { params });
       return response.data;
