@@ -100,6 +100,13 @@ export interface LineHeightScale {
   normal: number;
   relaxed: number;
   loose: number;
+  // Specific line heights from design system
+  micro: number;
+  caption: number;
+  body: number;
+  h3: number;
+  h2: number;
+  h1: number;
 }
 
 /**
@@ -120,7 +127,8 @@ export interface LetterSpacingScale {
 export interface TypographySystem {
   fonts: {
     base: string; // Inter
-    heading: string; // Space Grotesk
+    heading?: string; // Space Grotesk (optional)
+    agent: string; // Agent font
     mono: string; // For code examples
   };
   fontSizes: FontSizeScale;
@@ -132,6 +140,14 @@ export interface TypographySystem {
   };
   lineHeights: LineHeightScale;
   letterSpacings: LetterSpacingScale;
+  styles?: {
+    [key: string]: {
+      fontFamily: string;
+      fontSize: string;
+      fontWeight: string;
+      lineHeight: string;
+    };
+  };
 }
 
 /**

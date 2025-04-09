@@ -10,7 +10,7 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run --config src/testing/config/vitest.config.ts",
     "test:watch": "vitest --config src/testing/config/vitest.config.ts",
-    "test:coverage": "vitest run --coverage --config src/testing/config/vitest.config.ts", 
+    "test:coverage": "vitest run --coverage --config src/testing/config/vitest.config.ts",
     "test:ui": "vitest --ui --config src/testing/config/vitest.config.ts",
     "cypress": "cypress open",
     "cypress:run": "cypress run",

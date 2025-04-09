@@ -494,7 +494,7 @@ export function useSAPerformanceThresholds(): SAPerformanceThresholds {
   };
   
   // Agent Appropriateness Framework helper - NEW
-  const determineAgentAppropriateness = (
+  const getAgentAppropriateness = (
     taskComplexity: 'low' | 'medium' | 'high',
     valueImpact: number
   ): AgentAppropriateness => {
@@ -521,7 +521,7 @@ export function useSAPerformanceThresholds(): SAPerformanceThresholds {
     connectionThresholds: SA_CONNECTION_THRESHOLDS,
     
     // Agent Appropriateness Framework helpers - NEW
-    determineAgentAppropriateness,
+    determineAgentAppropriateness: getAgentAppropriateness,
     calculateDataCostForOperation
   };
 }
