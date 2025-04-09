@@ -48,6 +48,14 @@ export interface SouthAfricanPerformanceData {
   runPerformanceAnalysis: () => void;
 }
 
+// Network information interface for narrowing
+interface NetworkInfo {
+  downlink?: number;
+  rtt?: number;
+  effectiveType?: string;
+  saveData?: boolean;
+}
+
 /**
  * Hook to access South African market-specific performance data
  * 
@@ -80,10 +88,10 @@ export function useSouthAfricanPerformance(): SouthAfricanPerformanceData {
     // Convert capabilities to format expected by getDeviceProfile
     const profileCapabilities = {
       memory: capabilities.memory,
-      cpuCores: capabilities.hardwareConcurrency,
-      pixelRatio: capabilities.screenDimensions?.dpr,
-      screenWidth: capabilities.screenDimensions?.width,
-      screenHeight: capabilities.screenDimensions?.height,
+      cpuCores: capabilities.hardwareConcurrency || 1,
+      pixelRatio: capabilities.screenDimensions?.dpr || 1,
+      screenWidth: capabilities.screenDimensions?.width || 1024,
+      screenHeight: capabilities.screenDimensions?.height || 768,
       isLowEndDevice: capabilities.cpuPerformance === 'low'
     };
     
@@ -91,18 +99,26 @@ export function useSouthAfricanPerformance(): SouthAfricanPerformanceData {
     const detectedDeviceProfile = getDeviceProfile(profileCapabilities);
     setDeviceProfile(detectedDeviceProfile || null);
     
-    // Get network conditions
-    // In a real app, you'd use the Network Information API
-    // Here we're making a reasonable guess based on device capabilities
-    const networkConditions: any = {};
+    // Safely access navigator.connection with proper type handling
+    const networkConditions: NetworkInfo = {};
     
-    if (typeof navigator !== 'undefined' && 'connection' in navigator) {
-      const conn = (navigator as any).connection;
+    if (typeof navigator !== 'undefined' && navigator.connection) {
+      const conn = navigator.connection;
       
-      if (conn) {
+      // Only set properties if they exist
+      if (typeof conn.downlink === 'number') {
         networkConditions.downlink = conn.downlink;
+      }
+      
+      if (typeof conn.rtt === 'number') {
         networkConditions.rtt = conn.rtt;
+      }
+      
+      if (typeof conn.effectiveType === 'string') {
         networkConditions.effectiveType = conn.effectiveType;
+      }
+      
+      if (typeof conn.saveData === 'boolean') {
         networkConditions.saveData = conn.saveData;
       }
     } else {
@@ -126,13 +142,14 @@ export function useSouthAfricanPerformance(): SouthAfricanPerformanceData {
   // Refresh insights from the analytics service
   const refreshInsights = useCallback(() => {
     // Get all insights
-    const allInsights = defaultPerformanceAnalyticsService.getInsights();
+    const allInsights = defaultPerformanceAnalyticsService.getAllInsights();
     setInsights(allInsights);
   }, []);
   
   // Run a performance analysis manually
   const runPerformanceAnalysis = useCallback(() => {
-    defaultPerformanceAnalyticsService.analyzePerformanceData();
+    // Generate new insights
+    defaultPerformanceAnalyticsService.generateInsights();
     refreshInsights();
   }, [refreshInsights]);
   

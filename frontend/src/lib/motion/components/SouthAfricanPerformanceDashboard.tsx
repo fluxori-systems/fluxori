@@ -13,6 +13,12 @@ import {
 } from '../data/device-profiles';
 import { defaultPerformanceMonitoringService } from '../services/performance/performance-monitoring.service';
 
+// Network information type for narrowing in checks
+type ConnectionType = {
+  downlink?: number;
+  saveData?: boolean;
+};
+
 /**
  * Dashboard component specifically for South African market performance monitoring
  * Shows insights, recommendations, and device/network profiles relevant to SA market
@@ -44,9 +50,27 @@ export const SouthAfricanPerformanceDashboard: React.FC = () => {
   
   // Fetch insights with the current filter
   const fetchInsights = () => {
-    const filter = severityFilter !== 'all' ? { minSeverity: severityFilter } : undefined;
-    const latestInsights = defaultPerformanceAnalyticsService.getInsights(filter);
+    let latestInsights = defaultPerformanceAnalyticsService.getAllInsights();
+    
+    // Filter by severity if needed
+    if (severityFilter !== 'all') {
+      latestInsights = latestInsights.filter(insight => 
+        getSeverityLevel(insight.severity) >= getSeverityLevel(severityFilter as any)
+      );
+    }
+    
     setInsights(latestInsights);
+  };
+  
+  // Helper to convert severity to numeric level for comparison
+  const getSeverityLevel = (severity: string): number => {
+    switch (severity) {
+      case 'critical': return 4;
+      case 'high': return 3;
+      case 'medium': return 2;
+      case 'low': return 1;
+      default: return 0;
+    }
   };
   
   // Detect device and network profiles
@@ -57,11 +81,11 @@ export const SouthAfricanPerformanceDashboard: React.FC = () => {
     
     // Find matching device profile
     const profileCapabilities = {
-      memory: capabilities.memory,
-      cpuCores: capabilities.hardwareConcurrency,
-      pixelRatio: capabilities.screenDimensions?.dpr,
-      screenWidth: capabilities.screenDimensions?.width,
-      screenHeight: capabilities.screenDimensions?.height,
+      memory: capabilities.memory || 4096,
+      cpuCores: capabilities.hardwareConcurrency || 4,
+      pixelRatio: capabilities.screenDimensions?.dpr || 1,
+      screenWidth: capabilities.screenDimensions?.width || 1280,
+      screenHeight: capabilities.screenDimensions?.height || 800,
       isLowEndDevice: capabilities.cpuPerformance === 'low'
     };
     
@@ -78,11 +102,16 @@ export const SouthAfricanPerformanceDashboard: React.FC = () => {
       }
     }
     
-    // Get network profile based on connection quality
-    // This is a simplification - in real app would use actual network conditions
-    const isLowBandwidth = 
-      capabilities.cpuPerformance === 'low' || 
-      window.navigator.connection?.saveData;
+    // Safely check navigator.connection with proper type handling
+    let isLowBandwidth = capabilities.cpuPerformance === 'low';
+    
+    // Type guard to safely access navigator.connection properties
+    if (typeof navigator !== 'undefined' && navigator.connection) {
+      const connection = navigator.connection as ConnectionType;
+      if (connection.saveData === true) {
+        isLowBandwidth = true;
+      }
+    }
     
     if (isLowBandwidth) {
       // Find a township or rural profile
@@ -101,7 +130,9 @@ export const SouthAfricanPerformanceDashboard: React.FC = () => {
   
   // Trigger analytics collection
   const triggerAnalysis = () => {
-    defaultPerformanceAnalyticsService.analyzePerformanceData();
+    // Generate new insights from analytics service
+    const newInsights = defaultPerformanceAnalyticsService.generateInsights();
+    // Refresh the insights display
     fetchInsights();
   };
   

@@ -4,34 +4,22 @@
  * This file provides strongly typed mocks for platform-specific APIs.
  */
 
-import { vi, type MockInstance } from 'vitest';
-
-/**
- * Network information API mock with proper types
- */
-export interface MockNetworkInformation {
-  effectiveType: string;
-  downlink: number;
-  rtt: number;
-  saveData: boolean;
-  addEventListener: (type: string, listener: EventListener, options?: boolean | AddEventListenerOptions) => void;
-  removeEventListener: (type: string, listener: EventListener, options?: boolean | EventListenerOptions) => void;
-  dispatchEvent: (event: Event) => boolean;
-}
+import { vi } from 'vitest';
 
 /**
  * Creates a properly typed navigator.connection mock
  */
-function createConnectionMock(config: Partial<MockNetworkInformation> = {}): MockNetworkInformation {
+function createConnectionMock(config: Partial<NetworkInformation> = {}): NetworkInformation {
   return {
     effectiveType: config.effectiveType || '4g',
-    downlink: config.downlink !== undefined ? config.downlink : 10,
-    rtt: config.rtt !== undefined ? config.rtt : 100,
-    saveData: config.saveData !== undefined ? config.saveData : false,
-    addEventListener: vi.fn(),
-    removeEventListener: vi.fn(),
-    dispatchEvent: vi.fn(() => true)
-  };
+    downlink: config.downlink ?? 10,
+    rtt: config.rtt ?? 100,
+    saveData: config.saveData ?? false,
+    onchange: undefined,
+    addEventListener: vi.fn() as unknown as NetworkInformation['addEventListener'],
+    removeEventListener: vi.fn() as unknown as NetworkInformation['removeEventListener'],
+    dispatchEvent: vi.fn().mockReturnValue(true) as unknown as NetworkInformation['dispatchEvent']
+  } as NetworkInformation;
 }
 
 // Basic GSAP API shared types

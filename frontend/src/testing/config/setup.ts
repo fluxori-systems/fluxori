@@ -8,9 +8,14 @@ import { vi, expect } from 'vitest';
 import * as matchers from '@testing-library/jest-dom/matchers';
 import { setupMockBrowserAPIs } from '../mocks/browser-apis';
 import { setupMockPlatformAPIs } from '../mocks/platform-apis';
+import React from 'react';
 
-// Import navigator type augmentation
+// Import type augmentations
+import '../types/vitest-augmentations';
 import '../augmentations/navigator';
+
+// Fix Vitest matchers for jest-dom
+expect.extend(matchers);
 
 // Configure Vitest
 vi.mock('next/navigation', () => ({
@@ -103,16 +108,28 @@ vi.mock('../../lib/ui/utils/use-combined-refs', () => {
 // SIMPLIFIED COMPONENT MOCKS - Aggressively replacing components to fix tests
 // This is needed to avoid issues with React hooks in tests
 
+// Create a simple component factory to avoid repetition
+const createMockComponent = (name) => {
+  return {
+    [name]: ({ children, ...props }) => ({ 
+      type: name, 
+      className: name, 
+      children, 
+      ...props 
+    })
+  };
+};
+
 // Mock Mantine UI components to avoid hook issues
 vi.mock('@mantine/core', () => {
   return {
-    Text: ({ children, ...props }) => ({ type: 'Text', children, ...props }),
-    Alert: ({ children, ...props }) => ({ type: 'Alert', children, ...props }),
-    Button: ({ children, ...props }) => ({ type: 'Button', children, ...props }),
-    Card: ({ children, ...props }) => ({ type: 'Card', children, ...props }),
-    Grid: ({ children, ...props }) => ({ type: 'Grid', children, ...props }),
-    Group: ({ children, ...props }) => ({ type: 'Group', children, ...props }),
-    Stack: ({ children, ...props }) => ({ type: 'Stack', children, ...props }),
+    ...createMockComponent('Text'),
+    ...createMockComponent('Alert'),
+    ...createMockComponent('Button'),
+    ...createMockComponent('Card'),
+    ...createMockComponent('Grid'),
+    ...createMockComponent('Group'),
+    ...createMockComponent('Stack'),
     Menu: {
       Root: ({ children, ...props }) => ({ type: 'Menu.Root', children, ...props }),
       Target: ({ children, ...props }) => ({ type: 'Menu.Target', children, ...props }),
@@ -130,31 +147,23 @@ vi.mock('@mantine/core', () => {
 
 // Mock our UI components
 vi.mock('../../lib/ui', () => {
-  const createComponent = (displayName) => {
-    const Component = ({ children, ...props }) => {
-      // Create a mock component that just returns its props
-      return { type: displayName, children, ...props };
-    };
-    return Component;
-  };
-
   return {
-    Alert: createComponent('Alert'),
-    Button: createComponent('Button'),
-    Card: createComponent('Card'),
-    Container: createComponent('Container'),
-    FormField: createComponent('FormField'),
-    Grid: createComponent('Grid'),
-    Group: createComponent('Group'),
+    Alert: ({ children, ...props }) => ({ type: 'Alert', className: 'Alert', children, ...props }),
+    Button: ({ children, ...props }) => ({ type: 'Button', className: 'Button', children, ...props }),
+    Card: ({ children, ...props }) => ({ type: 'Card', className: 'Card', children, ...props }),
+    Container: ({ children, ...props }) => ({ type: 'Container', className: 'Container', children, ...props }),
+    FormField: ({ children, ...props }) => ({ type: 'FormField', className: 'FormField', children, ...props }),
+    Grid: ({ children, ...props }) => ({ type: 'Grid', className: 'Grid', children, ...props }),
+    Group: ({ children, ...props }) => ({ type: 'Group', className: 'Group', children, ...props }),
     Menu: {
-      Root: createComponent('Menu.Root'),
-      Target: createComponent('Menu.Target'),
-      Dropdown: createComponent('Menu.Dropdown'),
-      Item: createComponent('Menu.Item'),
-      Divider: createComponent('Menu.Divider'),
+      Root: ({ children, ...props }) => ({ type: 'Menu.Root', children, ...props }),
+      Target: ({ children, ...props }) => ({ type: 'Menu.Target', children, ...props }),
+      Dropdown: ({ children, ...props }) => ({ type: 'Menu.Dropdown', children, ...props }),
+      Item: ({ children, ...props }) => ({ type: 'Menu.Item', children, ...props }),
+      Divider: (props) => ({ type: 'Menu.Divider', ...props }),
     },
-    Stack: createComponent('Stack'),
-    Text: createComponent('Text'),
+    Stack: ({ children, ...props }) => ({ type: 'Stack', className: 'Stack', children, ...props }),
+    Text: ({ children, ...props }) => ({ type: 'Text', className: 'Text', children, ...props }),
   };
 });
 
@@ -166,7 +175,7 @@ vi.mock('../../lib/ui/components/Alert', () => {
       const dataAttrs = {};
       if (networkAware) {
         // Check navigator.connection to determine network quality
-        const connection = navigator.connection || {};
+        const connection = navigator.connection || {} as NetworkInformation;
         const downlink = connection.downlink || 10;
         const rtt = connection.rtt || 50;
         const saveData = connection.saveData || false;
@@ -183,15 +192,17 @@ vi.mock('../../lib/ui/components/Alert', () => {
       return {
         type: 'div',
         className: `alert alert-${variant || 'default'} alert-${color || 'info'}`,
-        children: (
-          <>
-            {title && <div className="alert-title">{title}</div>}
-            <div className="alert-content">{children}</div>
-            {withCloseButton && (
-              <button className="alert-close" onClick={onClose} role="button" aria-label="Close" />
-            )}
-          </>
-        ),
+        children: [
+          title ? { type: 'div', className: 'alert-title', children: title } : null,
+          { type: 'div', className: 'alert-content', children },
+          withCloseButton ? { 
+            type: 'button', 
+            className: 'alert-close', 
+            onClick: onClose, 
+            role: 'button', 
+            'aria-label': 'Close' 
+          } : null
+        ].filter(Boolean),
         style: { borderRadius: radius ? `var(--radius-${radius})` : undefined },
         ...dataAttrs,
         ...props
@@ -224,18 +235,31 @@ vi.mock('../../lib/ui/components/FormField', () => {
       return {
         type: 'div',
         className: `form-field ${intent ? `form-field-${intent}` : ''}`,
-        children: (
-          <>
-            {label && (
-              <label className="form-field-label">
-                {label} {required && <span className="form-field-required">*</span>}
-              </label>
-            )}
-            <div className="form-field-input">{children}</div>
-            {description && <div className="form-field-description">{description}</div>}
-            {error && <div className="form-field-error" role="alert">{error}</div>}
-          </>
-        ),
+        children: [
+          label ? {
+            type: 'label',
+            className: 'form-field-label',
+            children: required 
+              ? [label, { type: 'span', className: 'form-field-required', children: '*' }]
+              : label
+          } : null,
+          {
+            type: 'div',
+            className: 'form-field-input',
+            children
+          },
+          description ? {
+            type: 'div',
+            className: 'form-field-description',
+            children: description
+          } : null,
+          error ? {
+            type: 'div',
+            className: 'form-field-error',
+            role: 'alert',
+            children: error
+          } : null
+        ].filter(Boolean),
         ...props
       };
     }
@@ -319,6 +343,22 @@ vi.mock('../../lib/motion/gsap/gsap-business', () => {
   };
 });
 
+// Setup mock navigator.connection
+Object.defineProperty(navigator, 'connection', {
+  value: {
+    effectiveType: '4g',
+    downlink: 10,
+    rtt: 50,
+    saveData: false,
+    addEventListener: vi.fn(),
+    removeEventListener: vi.fn(),
+    dispatchEvent: vi.fn().mockReturnValue(true),
+    onchange: undefined
+  } as NetworkInformation,
+  configurable: true,
+  writable: true
+});
+
 // Set up environment variables for testing
 process.env.NEXT_PUBLIC_API_URL = 'https://api.test.fluxori.com';
 process.env.NEXT_PUBLIC_ENV = 'test';
@@ -327,8 +367,36 @@ process.env.NEXT_PUBLIC_ENV = 'test';
 setupMockBrowserAPIs();
 setupMockPlatformAPIs();
 
-// Extend Vitest's expect with Jest-DOM matchers
-expect.extend(matchers);
+// Extend expect matchers
+expect.extend({
+  ...matchers,
+  toBeInTheDocument() {
+    const { isNot, promise } = this;
+    return { 
+      pass: Boolean(this.utils.getSingleElement(this.actual)),
+      message: () => `expected element ${isNot ? 'not ' : ''}to be in the document`,
+      promise
+    };
+  },
+  toHaveAttribute(element, attr, value) {
+    const { isNot, promise } = this;
+    const hasAttr = element.hasAttribute(attr);
+    const attrValue = element.getAttribute(attr);
+    
+    return {
+      pass: value === undefined 
+        ? hasAttr 
+        : hasAttr && attrValue === value,
+      message: () => {
+        if (value === undefined) {
+          return `expected element ${isNot ? 'not ' : ''}to have attribute "${attr}"`;
+        }
+        return `expected element ${isNot ? 'not ' : ''}to have attribute "${attr}" with value "${value}"`;
+      },
+      promise
+    };
+  },
+});
 
-// Setup completed
+// Console log completion
 console.log('Test environment setup completed');

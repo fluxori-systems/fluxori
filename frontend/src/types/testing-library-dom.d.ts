@@ -3,6 +3,43 @@
  * Provides types for DOM testing library functions
  */
 
+// Jest-dom matchers
+interface JestDomMatchers<R = void> {
+  toBeInTheDocument(): R;
+  toBeVisible(): R;
+  toBeEmpty(): R;
+  toBeDisabled(): R;
+  toBeEnabled(): R;
+  toBeInvalid(): R;
+  toBeRequired(): R;
+  toBeValid(): R;
+  toHaveAttribute(attr: string, value?: string | RegExp): R;
+  toHaveClass(...classNames: string[]): R;
+  toHaveFocus(): R;
+  toHaveFormValues(expectedValues: Record<string, any>): R;
+  toHaveStyle(css: string | Record<string, any>): R;
+  toHaveTextContent(text: string | RegExp, options?: { normalizeWhitespace: boolean }): R;
+  toHaveValue(value?: string | string[] | number | null): R;
+  toHaveDisplayValue(value: string | RegExp | Array<string | RegExp>): R;
+  toBeChecked(): R;
+  toBePartiallyChecked(): R;
+  toHaveDescription(text?: string | RegExp): R;
+  toContainElement(element: HTMLElement | null): R;
+  toContainHTML(htmlText: string): R;
+  toHaveErrorMessage(text?: string | RegExp): R;
+}
+
+// Extend Vitest
+declare module 'vitest' {
+  interface Assertion<T = any> extends JestDomMatchers<Assertion<T>> {}
+  interface AsymmetricMatchersContaining extends JestDomMatchers<void> {}
+}
+
+// Extend Jest for backwards compatibility
+declare namespace jest {
+  interface Matchers<R> extends JestDomMatchers<R> {}
+}
+
 declare module '@testing-library/dom' {
   // Query variants
   type QueryFunction<T extends Element = Element> = (
@@ -52,27 +89,6 @@ declare module '@testing-library/dom' {
     mouseEnter: (element: Element, options?: {}) => boolean;
     mouseLeave: (element: Element, options?: {}) => boolean;
     submit: (element: Element, options?: {}) => boolean;
-  }
-
-  // Matchers for jest-dom
-  interface ExtendedMatchers<R> {
-    toBeInTheDocument(): R;
-    toBeVisible(): R;
-    toBeDisabled(): R;
-    toBeEnabled(): R;
-    toBeEmpty(): R;
-    toBeInvalid(): R;
-    toBeRequired(): R;
-    toBeValid(): R;
-    toBeChecked(): R;
-    toHaveAttribute(attr: string, value?: any): R;
-    toHaveClass(...classNames: string[]): R;
-    toHaveFocus(): R;
-    toHaveStyle(css: string | Record<string, any>): R;
-    toHaveTextContent(text: string | RegExp): R;
-    toHaveValue(value: any): R;
-    toContainElement(element: HTMLElement | null): R;
-    toContainHTML(htmlText: string): R;
   }
 
   // Export functions

@@ -20,11 +20,11 @@ const mockSAProductCard = (props: SAProductCardProps) => {
     forceDataSaver = false 
   } = props;
   
-  // Check connection quality
-  const conn = navigator.connection || {} as NetworkInformation;
-  const downlink = conn.downlink || 10;
-  const rtt = conn.rtt || 50;
-  const saveData = conn.saveData || false;
+  // Check connection quality with proper type safety
+  const conn = navigator.connection;
+  const downlink = conn?.downlink ?? 10;
+  const rtt = conn?.rtt ?? 50;
+  const saveData = conn?.saveData ?? false;
   
   // Determine if we should show the simplified view
   const isSlowConnection = downlink < 2 || rtt > 200;
@@ -71,7 +71,7 @@ describe('SAProductCard', () => {
       removeEventListener: vi.fn(),
       dispatchEvent: vi.fn().mockReturnValue(true),
       onchange: undefined
-    } as unknown as NetworkInformation;
+    } as NetworkInformation;
     
     Object.defineProperty(navigator, 'connection', {
       value: connectionMock,
@@ -89,11 +89,8 @@ describe('SAProductCard', () => {
     );
     
     const productCard = getByTestId('product-card');
-    // @ts-expect-error - toBeInTheDocument comes from jest-dom
     expect(productCard).toBeInTheDocument();
-    // @ts-expect-error - toBeInTheDocument comes from jest-dom
     expect(screen.getByText('Test Product')).toBeInTheDocument();
-    // @ts-expect-error - toBeInTheDocument comes from jest-dom
     expect(screen.getByText('Price: R99.99')).toBeInTheDocument();
   });
   
@@ -106,7 +103,6 @@ describe('SAProductCard', () => {
       />
     );
     
-    // @ts-expect-error - toBeInTheDocument comes from jest-dom
     expect(screen.getByText('Discount: 20% OFF')).toBeInTheDocument();
   });
   
@@ -144,7 +140,6 @@ describe('SAProductCard', () => {
       );
       
       const card = getByTestId('product-card');
-      // @ts-expect-error - toHaveAttribute comes from jest-dom
       expect(card).toHaveAttribute('data-simplified', 'true');
     } finally {
       cleanup();
@@ -170,7 +165,6 @@ describe('SAProductCard', () => {
       );
       
       const card = getByTestId('product-card');
-      // @ts-expect-error - toHaveAttribute comes from jest-dom
       expect(card).toHaveAttribute('data-simplified', 'true');
     } finally {
       cleanup();

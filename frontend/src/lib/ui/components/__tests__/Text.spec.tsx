@@ -50,7 +50,7 @@ vi.mock('../Text', () => ({
     
     if (networkAware) {
       // Check navigator.connection to determine network quality
-      const connection = navigator.connection || {} as NetworkInformation;
+      const connection = navigator.connection;
       const downlink = connection?.downlink ?? 10;
       const saveData = connection?.saveData ?? false;
       
@@ -92,7 +92,6 @@ describe('Text Component', () => {
     const { getByTestId } = renderWithProviders(<Text>Sample Text</Text>);
     
     const textElement = getByTestId('text-component');
-    // @ts-expect-error - toBeInTheDocument comes from jest-dom
     expect(textElement).toBeInTheDocument();
     expect(textElement.textContent).toBe('Sample Text');
     expect(textElement.className).toContain('flx-text');
@@ -147,7 +146,6 @@ describe('Text Component', () => {
       );
       
       const textElement = getByTestId('text-component');
-      // @ts-expect-error - toHaveAttribute comes from jest-dom
       expect(textElement).toHaveAttribute('data-network-optimized', 'true');
     } finally {
       cleanup();
@@ -167,7 +165,6 @@ describe('Text Component', () => {
       );
       
       const textElement = getByTestId('text-component');
-      // @ts-expect-error - toHaveAttribute comes from jest-dom
       expect(textElement).toHaveAttribute('data-network-optimized', 'true');
     } finally {
       cleanup();
@@ -185,7 +182,6 @@ describe('Text Component', () => {
     );
     
     const textElement = getByTestId('text-component');
-    // @ts-expect-error - toHaveAttribute comes from jest-dom
     expect(textElement).toHaveAttribute('data-animation-type', 'fade');
   });
   
@@ -195,9 +191,7 @@ describe('Text Component', () => {
     );
     
     const textElement = getByTestId('text-component');
-    // @ts-expect-error - toHaveAttribute comes from jest-dom
     expect(textElement).toHaveAttribute('data-line-height', 'tight');
-    // @ts-expect-error - toHaveAttribute comes from jest-dom
     expect(textElement).toHaveAttribute('data-letter-spacing', 'wide');
   });
 });
