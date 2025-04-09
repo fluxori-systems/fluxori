@@ -1,55 +1,98 @@
 /**
  * Motion tokens for the Fluxori Motion Framework
  * Extends the design system motion tokens with GSAP-specific values
+ * Implementation of the Fluid Efficiency and Precision & Accuracy motion principles
  */
 
 /**
  * Interface for motion duration values
  */
 export interface MotionDurations {
-  instant: number;  // 0.1s
-  fast: number;     // 0.2s
-  normal: number;   // 0.3s
-  slow: number;     // 0.5s
-  fadeIn: number;   // 0.4s
-  fadeOut: number;  // 0.3s
-  stagger: number;  // 0.05s (stagger between elements)
+  // Animation types with specific durations from design spec
+  microInteraction: number; // 100-150ms
+  elementTransition: number; // 200-300ms
+  pageTransition: number;    // 300-400ms
+  dataVisualization: number; // 500-800ms
+  agentThinking: number;     // Ongoing
+  highStakesConfirmation: number; // 400-600ms
+  
+  // Fade-specific durations
+  fadeIn: number;
+  fadeOut: number;
+  
+  // Staggering values
+  stagger: number;
+  
+  // Legacy values for backward compatibility
+  instant: number;
+  fast: number;
+  normal: number;
+  slow: number;
 }
 
 /**
  * Interface for easing functions (GSAP compatible)
  */
 export interface MotionEasings {
+  // Animation purpose-specific easings
+  standard: string;   // General UI transitions
+  emphasis: string;   // Attention-grabbing animations
+  decelerate: string; // Elements entering the screen
+  accelerate: string; // Elements leaving the screen
+  sharp: string;      // Quick, energetic movements
+  pageTransition: string; // Special easing for page transitions
+  
+  // Basic easings
   easeIn: string;
   easeOut: string;
   easeInOut: string;
+  
+  // Sine easings (gentle)
   easeInSine: string;
   easeOutSine: string;
   easeInOutSine: string;
+  
+  // Quad easings (medium acceleration)
   easeInQuad: string;
   easeOutQuad: string;
   easeInOutQuad: string;
+  
+  // Cubic easings (stronger acceleration)
   easeInCubic: string;
   easeOutCubic: string;
   easeInOutCubic: string;
+  
+  // Quart easings (even stronger acceleration)
   easeInQuart: string;
   easeOutQuart: string;
   easeInOutQuart: string;
+  
+  // Quint easings (very strong acceleration)
   easeInQuint: string;
   easeOutQuint: string;
   easeInOutQuint: string;
+  
+  // Expo easings (explosive)
   easeInExpo: string;
   easeOutExpo: string;
   easeInOutExpo: string;
+  
+  // Circ easings (circular)
   easeInCirc: string;
   easeOutCirc: string;
   easeInOutCirc: string;
+  
+  // Back easings (slight overshoot)
   easeInBack: string;
   easeOutBack: string;
   easeInOutBack: string;
+  
+  // Elastic easings (springy)
   easeInElastic: string;
   easeOutElastic: string;
   easeInOutElastic: string;
+  
+  // Bounce easings (bouncy)
   easeInBounce: string;
   easeOutBounce: string;
   easeInOutBounce: string;
@@ -62,6 +105,7 @@ export type ConfidenceLevel = 'low' | 'medium' | 'high' | 'verifying' | 'process
 
 /**
  * Interface for AI-specific animation patterns
+ * Implements the Purposeful Intelligence motion principle
  */
 export interface AIAnimationTokens {
   thinking: {
@@ -87,15 +131,29 @@ export interface AIAnimationTokens {
 
 /**
  * Duration values in seconds (GSAP format)
+ * Follows the Animation Timing Reference from the design spec
  */
 export const durations: MotionDurations = {
+  // Animation-type specific durations
+  microInteraction: 0.15,
+  elementTransition: 0.25,
+  pageTransition: 0.35,
+  dataVisualization: 0.6,
+  agentThinking: 0.8,
+  highStakesConfirmation: 0.5,
+  
+  // Fade-specific durations
+  fadeIn: 0.4,
+  fadeOut: 0.3,
+  
+  // Staggering value
+  stagger: 0.05,
+  
+  // Legacy values
   instant: 0.1,
   fast: 0.2,
   normal: 0.3,
   slow: 0.5,
-  fadeIn: 0.4,
-  fadeOut: 0.3,
-  stagger: 0.05,
 };
 
 /**
@@ -103,6 +161,14 @@ export const durations: MotionDurations = {
  * Providing a comprehensive set of options for different animation needs
  */
 export const easings: MotionEasings = {
+  // Purpose-specific easings
+  standard: 'power2.inOut',
+  emphasis: 'back.out(1.3)',
+  decelerate: 'power1.out',
+  accelerate: 'power2.in',
+  sharp: 'expo.out',
+  pageTransition: 'power3.inOut',
+  
   // Basic easings
   easeIn: 'power2.in',
   easeOut: 'power2.out',
@@ -161,6 +227,7 @@ export const easings: MotionEasings = {
 
 /**
  * Specific animation patterns for AI-related components
+ * Implements the Ambient Awareness design principle
  */
 export const aiAnimations: AIAnimationTokens = {
   thinking: {
@@ -206,6 +273,7 @@ export const aiAnimations: AIAnimationTokens = {
 /**
  * Animation complexity presets for different motion modes
  * Tailored for the South African market with bandwidth considerations
+ * Implements the South African Optimization design principle
  */
 export interface ComplexityPreset {
   disableGSAP: boolean;
@@ -215,9 +283,11 @@ export interface ComplexityPreset {
   maxActiveAnimations: number;
   disableStaggering: boolean;
   reduceNetworkAnimations: boolean; // Whether to reduce animation complexity for network performance
+  dataCost: 'minimal' | 'low' | 'medium' | 'high'; // Indicator of data usage impact
+  cpuUsage: number; // Estimated CPU usage percentage (target < 5%)
 }
 
-export const complexityPresets: Record<'full' | 'reduced' | 'minimal', ComplexityPreset> = {
+export const complexityPresets: Record<'full' | 'reduced' | 'minimal' | 'critical', ComplexityPreset> = {
   full: {
     disableGSAP: false,
     reduceDuration: 1.0,
@@ -226,6 +296,8 @@ export const complexityPresets: Record<'full' | 'reduced' | 'minimal', Complexit
     maxActiveAnimations: Infinity,
     disableStaggering: false,
     reduceNetworkAnimations: false,
+    dataCost: 'medium',
+    cpuUsage: 4.5,
   },
   reduced: {
     disableGSAP: false,
@@ -235,6 +307,8 @@ export const complexityPresets: Record<'full' | 'reduced' | 'minimal', Complexit
     maxActiveAnimations: 5,
     disableStaggering: false,
     reduceNetworkAnimations: true,
+    dataCost: 'low',
+    cpuUsage: 3.0,
   },
   minimal: {
     disableGSAP: false, // Still use GSAP but with minimal settings
@@ -244,5 +318,18 @@ export const complexityPresets: Record<'full' | 'reduced' | 'minimal', Complexit
     maxActiveAnimations: 2,
     disableStaggering: true,
     reduceNetworkAnimations: true,
+    dataCost: 'minimal',
+    cpuUsage: 1.5,
+  },
+  critical: {
+    disableGSAP: true, // Disable GSAP entirely
+    reduceDuration: 0.3, // 70% faster
+    useSimpleEasings: true,
+    disableParticles: true,
+    maxActiveAnimations: 1,
+    disableStaggering: true,
+    reduceNetworkAnimations: true,
+    dataCost: 'minimal',
+    cpuUsage: 0.5,
   },
 };

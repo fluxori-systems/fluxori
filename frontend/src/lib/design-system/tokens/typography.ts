@@ -1,6 +1,7 @@
 /**
  * Typography tokens for the Fluxori Design System
  * Implements a comprehensive typography system using Inter and Space Grotesk fonts
+ * Based on the Agent-First Interface design philosophy
  */
 
 import { TypographySystem, FontSizeScale, LineHeightScale, LetterSpacingScale } from '../types/tokens';
@@ -10,15 +11,15 @@ import { TypographySystem, FontSizeScale, LineHeightScale, LetterSpacingScale } 
  * Uses rem units for better accessibility and responsiveness
  */
 export const fontSizes: FontSizeScale = {
-  '2xs': '0.625rem', // 10px
-  xs: '0.75rem',     // 12px
-  sm: '0.875rem',    // 14px
-  md: '1rem',        // 16px
-  lg: '1.125rem',    // 18px
-  xl: '1.25rem',     // 20px
-  '2xl': '1.5rem',   // 24px
-  '3xl': '1.875rem', // 30px
-  '4xl': '2.25rem',  // 36px
+  '2xs': '0.75rem',  // 12px (Micro)
+  xs: '0.875rem',    // 14px (Small/Caption)
+  sm: '1rem',        // 16px (Body, Agent Responses)
+  md: '1.25rem',     // 20px (H3)
+  lg: '1.5rem',      // 24px (H2)
+  xl: '1.75rem',     // 28px (H1)
+  '2xl': '2rem',     // 32px
+  '3xl': '2.25rem',  // 36px
+  '4xl': '2.5rem',   // 40px
   '5xl': '3rem',     // 48px
   '6xl': '3.75rem',  // 60px
 };
@@ -34,6 +35,13 @@ export const lineHeights: LineHeightScale = {
   normal: 1.5,
   relaxed: 1.625,
   loose: 2,
+  // Specific line heights from design system
+  micro: 1.333,    // 16px/12px
+  caption: 1.428,   // 20px/14px
+  body: 1.5,       // 24px/16px
+  h3: 1.4,         // 28px/20px
+  h2: 1.333,       // 32px/24px
+  h1: 1.285,       // 36px/28px
 };
 
 /**
@@ -52,11 +60,12 @@ export const letterSpacings: LetterSpacingScale = {
 /**
  * Complete typography system
  * Defines our font families, sizes, weights, line heights, and letter spacings
+ * Uses Inter for UI elements and Space Grotesk for AI-generated content
  */
 export const typography: TypographySystem = {
   fonts: {
     base: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji"',
-    heading: '"Space Grotesk", Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
+    agent: '"Space Grotesk", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
     mono: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
   },
   fontSizes,
@@ -68,6 +77,63 @@ export const typography: TypographySystem = {
   },
   lineHeights,
   letterSpacings,
+  // Specific text styles from design system
+  styles: {
+    h1: {
+      fontFamily: 'base',
+      fontSize: 'xl',
+      fontWeight: 'bold',
+      lineHeight: 'h1',
+    },
+    h2: {
+      fontFamily: 'base',
+      fontSize: 'lg',
+      fontWeight: 'semibold',
+      lineHeight: 'h2',
+    },
+    h3: {
+      fontFamily: 'base',
+      fontSize: 'md',
+      fontWeight: 'semibold',
+      lineHeight: 'h3',
+    },
+    body: {
+      fontFamily: 'base',
+      fontSize: 'sm',
+      fontWeight: 'regular',
+      lineHeight: 'body',
+    },
+    small: {
+      fontFamily: 'base',
+      fontSize: 'xs',
+      fontWeight: 'regular',
+      lineHeight: 'caption',
+    },
+    micro: {
+      fontFamily: 'base',
+      fontSize: '2xs',
+      fontWeight: 'medium',
+      lineHeight: 'micro',
+    },
+    agentResponse: {
+      fontFamily: 'agent',
+      fontSize: 'sm',
+      fontWeight: 'regular',
+      lineHeight: 'body',
+    },
+    dataViz: {
+      fontFamily: 'agent',
+      fontSize: 'xs',
+      fontWeight: 'medium',
+      lineHeight: 'caption',
+    },
+    code: {
+      fontFamily: 'mono',
+      fontSize: 'xs',
+      fontWeight: 'regular',
+      lineHeight: 'caption',
+    },
+  },
 };
 
 /**

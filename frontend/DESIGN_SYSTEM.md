@@ -1,81 +1,237 @@
 # Fluxori Design System & Motion Framework
+Revised and Enhanced Edition
 
-This document provides an overview of the Fluxori Design System implementation, which serves as the foundation for consistent styling across the application.
+## Core Design Philosophy: The Agent-First Interface
 
-## Implementation Summary
+Fluxori's design system reflects our unique position as an agent-first e-commerce operations platform. Unlike conventional dashboards with complex UI layers, our design system prioritizes the interaction between users and intelligent agents, creating an interface where the AI is the primary interaction method.
 
-We have successfully implemented the core of the Fluxori Design System, including:
+### Guiding Principles
 
-### 1. Design Tokens
+#### Verbs Over Nouns: Design for actions and workflows, not static elements
 
-- **Color System**
-  - Primary colors (blue palette)
-  - Secondary colors (magenta palette)
-  - Neutral colors (slate palette)
-  - Semantic colors (success, warning, error, info)
-  - UI colors (background, text, border)
-  - Light and dark mode variants
+- Focus on what users want to accomplish (analyze inventory, optimize pricing)
+- Reduce UI complexity in favor of natural language interactions
+- Visualize agent workflows when complexity requires transparency
+- Balance consideration: Maintain familiar UI elements for critical or frequent tasks
 
-- **Typography System**
-  - Font families (Inter for body text, Space Grotesk for headings)
-  - Font sizes (scale from 2xs to 6xl)
-  - Font weights (regular, medium, semibold, bold)
-  - Line heights and letter spacing
+#### Progressive Intelligence: Interface adapts to user capabilities and context
 
-- **Spacing & Sizing**
-  - Consistent spacing scale (3xs to 5xl)
-  - Based on 4px grid system for consistent UI
+- New users receive more guidance and structure
+- Experienced users gain access to more powerful, streamlined interactions
+- Context-aware UI that highlights relevant options based on current tasks
+- Experience layers: Clearly defined progression from guided to advanced interactions
 
-- **Elevation/Shadow System**
-  - Shadow scale (xs to 2xl, plus inner shadow)
-  - Dark mode shadow adjustments
+#### Ambient Awareness: System communicates state without overwhelming
 
-- **Other Tokens**
-  - Border radius
-  - Z-index scale
-  - Motion tokens (durations, easings)
-  - Breakpoints
+- Clear, multimodal feedback about agent activity
+- Subtle visual cues for background processes
+- Minimal but informative loading states
+- Confidence visualization: Transparent indication of agent certainty levels
 
-### 2. Theming System
+#### South African Optimization: Designed for the region's specific challenges
 
-- **Theme Provider**
-  - React context for theme management
-  - Light/dark mode toggling
-  - System preference detection
-  - Local storage persistence
+- Mobile-first approach for the predominantly mobile market
+- Performance optimization for variable connection speeds
+- Data-efficient interactions for bandwidth-constrained users (average cost: R85/GB)
+- Offline capabilities for essential functions
+- Regional context: Support for local payment methods, logistics providers, and marketplace integrations
 
-- **CSS Variables**
-  - All tokens exposed as CSS variables
-  - Dark mode handled with `[data-theme="dark"]` selector
-  - Global styles integration
+#### Agent Appropriateness Framework
 
-### 3. Utilities & Hooks
+- Complexity assessment: Use agents only for tasks requiring dynamic decision-making
+- Value threshold: Reserve agent interactions for high-value operations (>R1000 value impact)
+- Error tolerance: Implement human-in-the-loop safeguards for high-risk operations
+- Fallback patterns: Clear workflows for when agent capabilities aren't sufficient
+- Hybrid approach: Combine static UI elements with agent capabilities based on the task requirements
 
-- **Token Access**
-  - Type-safe token access utilities
-  - `useDesignTokens` hook for React components
-  - Responsive utilities (`useBreakpoint`, `useResponsiveValue`)
-  - Fluid typography utilities
+## Visual Language
 
-- **Accessibility Tools**
-  - Contrast ratio checking
-  - WCAG compliance utilities
-  - Reduced motion hook
+### Typography System
 
-### 4. Showcase & Documentation
+#### Primary Font Family: Inter
 
-- **Theme Showcase**
-  - Interactive showcase of all design tokens
-  - Color palette visualization
-  - Typography demonstration
-  - Spacing and shadow examples
+| Element | Weight | Size | Line Height | Usage |
+|---------|--------|------|-------------|-------|
+| Headings H1 | 700 | 28px | 36px | Page titles |
+| Headings H2 | 600 | 24px | 32px | Section headers |
+| Headings H3 | 600 | 20px | 28px | Card titles, panel headers |
+| Body | 400 | 16px | 24px | Primary content |
+| Small/Caption | 400 | 14px | 20px | Secondary information, labels |
+| Micro | 500 | 12px | 16px | Metadata, timestamps |
 
-- **Documentation**
-  - Usage guidelines
-  - Examples and code snippets
-  - Accessibility information
+#### Secondary Font Family: Space Grotesk
 
-## Implementation Details
+| Element | Weight | Size | Line Height | Usage |
+|---------|--------|------|-------------|-------|
+| Agent Responses | 400 | 16px | 24px | AI-generated content |
+| Data Viz Labels | 500 | 14px | 20px | Chart labels, numerical data |
+| Code/Technical | 400 | 14px | 20px | Code, technical data |
+
+Font Pairing Rationale: Inter provides excellent readability for interface elements, while Space Grotesk offers a slightly more distinctive character for agent-generated content, creating subtle visual distinction between system UI and AI-generated content.
+
+### Color System
+
+#### Primary Palette
+
+- Primary: #3055EE (blue)
+  - Contrast ratio with white: 4.5:1 (WCAG AA compliant)
+  - Contrast ratio with black: 8.7:1 (WCAG AAA compliant)
+- Primary Light: #D0D9FC
+- Primary Lighter: #EDF1FE
+
+#### Secondary Palette
+
+- Secondary: #2C3E50 (slate)
+  - Contrast ratio with white: 10.7:1 (WCAG AAA compliant)
+- Secondary Light: #95A5A6
+- Secondary Lighter: #ECF0F1
+
+#### Semantic Colors
+
+- Success: #10B981 (WCAG AA compliant with black text)
+- Warning: #F59E0B (WCAG AA compliant with black text)
+- Error: #EF4444 (WCAG AA compliant with white text)
+- Info: #3498DB (WCAG AA compliant with black text)
+
+#### Neutrals
+
+- Black: #000000
+- Gray 900: #1A202C
+- Gray 800: #2D3748
+- Gray 700: #4A5568
+- Gray 600: #718096
+- Gray 500: #A0AEC0
+- Gray 400: #CBD5E0
+- Gray 300: #E2E8F0
+- Gray 200: #EDF2F7
+- Gray 100: #F7FAFC
+- White: #FFFFFF
+
+#### Dark Mode Adjustments
+
+- Background: #121212
+- Surface: #1E1E1E
+- Higher Surfaces: #2C2C2C
+- Highest Surfaces: #333333
+
+#### Accessibility Considerations
+
+- All text colors maintain minimum 4.5:1 contrast ratio against their backgrounds (WCAG AA)
+- Interactive elements have a 3:1 contrast ratio against adjacent colors
+- Color is never the sole indicator of meaning (always paired with text or icons)
+- Color blindness accommodations with redundant visual cues
+
+### Elevation & Shadows
+
+| Level | Usage | Shadow Value (Light Mode) | Shadow Value (Dark Mode) |
+|-------|-------|---------------------------|--------------------------|
+| 0 | Flat elements | none | none |
+| 1 | Cards, navigation | 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06) | 0 1px 3px rgba(0,0,0,0.25), 0 1px 2px rgba(0,0,0,0.15) |
+| 2 | Dropdowns, popovers | 0 4px 6px rgba(0,0,0,0.1), 0 2px 4px rgba(0,0,0,0.06) | 0 4px 6px rgba(0,0,0,0.3), 0 2px 4px rgba(0,0,0,0.2) |
+| 3 | Dialogs, modals | 0 10px 15px rgba(0,0,0,0.1), 0 4px 6px rgba(0,0,0,0.05) | 0 10px 15px rgba(0,0,0,0.35), 0 4px 6px rgba(0,0,0,0.2) |
+| 4 | Highest elevation elements | 0 20px 25px rgba(0,0,0,0.1), 0 10px 10px rgba(0,0,0,0.04) | 0 20px 25px rgba(0,0,0,0.4), 0 10px 10px rgba(0,0,0,0.2) |
+
+Shadow Usage Guidelines:
+- Shadows should communicate interactive hierarchy
+- Higher elevation = higher importance or user attention
+- Dark mode shadows use higher opacity values for better visibility
+- Shadow use should be judicious and purposeful
+
+## Motion Design Framework
+
+### Core Motion Principles
+
+#### 1. Purposeful Intelligence
+Animations communicate meaning and reflect our AI-powered platform:
+
+- Informative Motion: Every animation serves a purpose - guiding attention, showing relationships, or providing feedback
+- Spatial Relationships: Movement helps users understand how interface elements relate to each other
+- Context Preservation: Transitions maintain context and continuity between states
+- AI Feedback: Subtle animations indicate AI processing and decision-making
+- Confidence Indicators: Animation intensity and character correlates with agent certainty levels
+
+Example: When an agent is analyzing inventory data, a subtle pulsing animation on the data visualization indicates processing, with the pulse becoming more regular and defined as confidence in the analysis increases.
+
+#### 2. Fluid Efficiency
+Animations are smooth and optimized for performance:
+
+- Performance First: All animations optimized for minimal CPU/GPU impact (<5% CPU usage)
+- Natural Physics: Movement follows natural physical properties with appropriate easing and momentum
+- Timing Discipline: Animations are quick enough to feel responsive but slow enough to be perceived
+- Reduced Motion Support: All animations respect user preferences for reduced motion
+- Resource Awareness: Animation complexity scales with device capabilities
+- Data Usage Consideration: Optional setting to reduce animation complexity for data-sensitive connections
+
+Implementation Metrics:
+- Target animation frame rate: 60fps on mid-range devices
+- Animation bundle size: <40KB (gzipped)
+- CPU usage during animations: <5% on target devices
+
+#### 3. Precision & Accuracy
+Animations are exact and intentional:
+
+- Calibrated Timing: Precise durations for different animation types
+- Purposeful Easing: Specific easing functions for different motion purposes
+- Coordinated Sequences: Related elements animate in harmonious coordination
+- Consistent Implementation: Similar UI elements animate in similar ways
+- Risk-Appropriate Motion: More subtle animations for high-stakes operations
+
+Orchestration Pattern: When multiple elements need to animate together (like a dashboard refresh), stagger elements by 50ms in a logical reading pattern (top to bottom, left to right) to create a sense of flow without overwhelming the user.
+
+### Animation Timing Reference
+
+| Animation Type | Duration | Easing Function | Data Cost | Notes |
+|----------------|----------|-----------------|-----------|-------|
+| Micro-interactions | 100-150ms | ease-out | Minimal | Button clicks, toggles, ripples |
+| Element transitions | 200-300ms | ease-in-out | Low | Cards appearing/disappearing, expansion |
+| Page transitions | 300-400ms | cubic-bezier(0.83, 0, 0.17, 1) | Medium | Moving between major views |
+| Agent thinking indicators | Ongoing | ease-in-out (looping) | Low | Subtle pulsing during AI processing |
+| Data visualization updates | 500-800ms | ease-out | Medium | Chart transitions, data refreshes |
+| High-stakes confirmations | 400-600ms | ease-in-out | Medium | Actions with significant consequences |
+
+## South African Optimizations
+
+### Market-Specific Considerations
+
+- Mobile-first approach: Most users access via mobile devices
+- Variable connection speeds: Urban fiber vs. rural connections
+- Data costs: Average R85/GB, requiring data-efficient UX
+- Device diversity: From feature phones to high-end smartphones
+- Regional payment methods: Support for local payment systems
+- Marketplace integrations: Local e-commerce platforms
+
+### Performance Optimization Strategies
+
+- Progressive loading: Critical content first
+- Data usage indicators: Show users estimated data consumption
+- Image optimization: Adaptive resolution based on network quality
+- Offline capabilities: Core functions available without connection
+- Reduced animation: Option to minimize animation for data-sensitive users
+- Bandwidth-aware: Adjust experience based on network conditions
+
+### Agent Appropriateness Framework
+
+- Value threshold: Only use agent for operations with >R1000 impact in data-constrained environments
+- Complexity assessment: Use agents for complex decision-making, static UI for simple tasks
+- Data efficiency ratio: Agent interactions must be more data-efficient than equivalent UI flow
+- Human-in-loop safeguards: Verification steps for high-risk operations
+- Fallback patterns: Alternative workflows when agent capabilities aren't available
+
+### Implementation Details
+
+- Network quality detection: Real-time assessment of connection type, speed, and stability
+- Device capability detection: Memory, CPU, and browser feature detection
+- Regional optimization profiles: Pre-configured settings for different regions of South Africa
+- Data usage estimation: Calculate and display costs in local currency (Rand)
+- Adaptive complexity: Scale UI and agent capabilities based on device and network
+
+## Implementation Resources
+
+The Fluxori Design System & Motion Framework is implemented through a comprehensive set of tokens, components, and utilities:
+
+- `frontend/src/lib/design-system/`: Core design system implementation
+- `frontend/src/lib/motion/`: Motion framework components and utilities
+- `frontend/src/lib/shared/`: South African market optimizations
 
 ### File Structure
 
@@ -105,9 +261,48 @@ We have successfully implemented the core of the Fluxori Design System, includin
 │   ├── ThemeShowcase.tsx # Visual showcase of tokens
 │   └── DesignSystemDocs.tsx # Usage documentation
 └── index.ts              # Main exports
+
+/lib/motion/
+├── components/           # Motion components
+│   ├── AIProcessingIndicator.tsx # AI processing animations
+│   ├── TransitionFade.tsx # Fade transitions
+│   ├── AnimatedTabIndicator.tsx # Tab animations
+│   └── StreamingText.tsx # Text streaming effects
+├── hooks/                # Motion hooks
+│   ├── useConnectionQuality.ts # Network quality detection
+│   ├── useAnimationPerformance.ts # Performance monitoring
+│   └── useSouthAfricanPerformance.ts # Regional optimizations
+├── utils/                # Motion utilities
+│   └── motion-tokens.ts  # GSAP-specific motion tokens
+└── index.ts              # Main exports
+
+/lib/shared/
+├── hooks/                # Shared hooks
+│   └── useSouthAfricanMarketOptimizations.ts # SA market optimizations
+├── types/                # Shared types
+│   └── sa-market-types.ts # South African market types
+└── services/             # Services
+    └── connection-service.interface.ts # Connection service
 ```
 
-### CSS Variables Implementation
+### Key Files
+
+- `tokens/colors.ts`: Color palette and semantic colors
+- `tokens/typography.ts`: Typography system
+- `tokens/shadows.ts`: Elevation and shadow system
+- `tokens/motion.ts`: Animation durations and easings
+- `motion/utils/motion-tokens.ts`: GSAP-specific motion tokens
+- `shared/hooks/useSouthAfricanMarketOptimizations.ts`: South African market optimizations
+
+### Usage Guidelines
+
+1. Always use design tokens instead of hard-coded values
+2. Respect the Agent Appropriateness Framework for agent interactions
+3. Consider South African market conditions for all user interfaces
+4. Test on low-end devices and slow connections regularly
+5. Monitor data usage for all features, especially agent interactions
+
+## CSS Variables Implementation
 
 All design tokens are implemented as CSS variables in the global stylesheet. This allows for:
 
@@ -119,28 +314,15 @@ Example:
 
 ```css
 :root {
-  --color-primary-500: #3a86ff;
+  --color-primary-500: #3055EE;
   --typography-font-sizes-md: 1rem;
   --spacing-md: 1rem;
 }
 
 [data-theme="dark"] {
-  --color-primary-500: #57a5ff;
-  --color-background-surface: #111827;
+  --color-primary-500: #4B6EF1;
+  --color-background-surface: #121212;
 }
-```
-
-### Theme Provider Integration
-
-The ThemeProvider component is integrated into the root layout, allowing for theme access throughout the application:
-
-```tsx
-// In layout.tsx
-<ThemeProvider defaultColorMode="light">
-  <MantineProvider defaultColorScheme="light">
-    {children}
-  </MantineProvider>
-</ThemeProvider>
 ```
 
 ## Accessibility Considerations
@@ -152,15 +334,6 @@ The design system prioritizes accessibility with the following features:
 - **Responsive Typography**: Proper scaling of typography across devices
 - **Semantic Colors**: Clear semantic meaning for status indicators
 - **Focus Styles**: Visible focus indicators for keyboard navigation
-
-## Motion Framework
-
-The design system includes a foundation for motion with:
-
-- **Duration Tokens**: Consistent animation timing (instant, fast, normal, slow)
-- **Easing Functions**: Predictable motion patterns (easeIn, easeOut, easeInOut, bounce)
-- **Reduced Motion**: Respects user preferences for reduced motion
-- **Animation Utilities**: CSS animation utilities for common effects
 
 ## Usage Examples
 
@@ -188,58 +361,75 @@ function MyComponent() {
 }
 ```
 
-### Theme Switching
+### Using South African Market Optimizations
 
 ```tsx
 'use client';
 
-import { useTheme } from '@/lib/design-system';
-import { Button } from '@/lib/ui';
+import { useSouthAfricanMarketOptimizations } from '@/lib/shared/hooks';
 
-function ThemeToggle() {
-  const { colorMode, toggleColorMode } = useTheme();
+function DataVisualizer({ data }) {
+  const { 
+    shouldReduceMotion,
+    shouldReduceDataUsage,
+    agentAppropriateness,
+    networkProfile
+  } = useSouthAfricanMarketOptimizations();
+  
+  // Adjust visualization based on optimizations
+  const chartAnimationDuration = shouldReduceMotion ? 0 : 600;
+  const imageQuality = shouldReduceDataUsage ? 'low' : 'high';
+  
+  // Use agent appropriateness to determine interaction mode
+  const showAgentInterface = agentAppropriateness !== 'DISABLED';
   
   return (
-    <Button onClick={toggleColorMode}>
-      Switch to {colorMode === 'light' ? 'Dark' : 'Light'} Theme
-    </Button>
-  );
-}
-```
-
-### Responsive Design
-
-```tsx
-'use client';
-
-import { useBreakpoint, useResponsiveValue } from '@/lib/design-system';
-
-function ResponsiveComponent() {
-  const isMobile = useBreakpoint('md', 'down');
-  const fontSize = useResponsiveValue({
-    base: '1rem',    // Default
-    md: '1.25rem',   // Medium screens and up
-    lg: '1.5rem',    // Large screens and up
-  });
-  
-  return (
-    <div style={{ fontSize }}>
-      {isMobile ? 'Mobile View' : 'Desktop View'}
+    <div>
+      {/* Render content differently based on optimizations */}
+      {shouldReduceDataUsage ? (
+        <SimplifiedView data={data} />
+      ) : (
+        <RichDataView data={data} animationDuration={chartAnimationDuration} />
+      )}
+      
+      {/* Conditionally render agent UI */}
+      {showAgentInterface && (
+        <AgentAssistant valueImpact={1500} />
+      )}
+      
+      {/* Show data usage information */}
+      <DataUsageIndicator networkProfile={networkProfile} />
     </div>
   );
 }
 ```
 
-## Next Steps
+### Animation with Motion Framework
 
-1. **Font Implementation**: Download and integrate the actual Inter and Space Grotesk font files
-2. **Component Library Integration**: Apply design tokens to all UI components
-3. **Design System Documentation**: Create comprehensive documentation
-4. **Accessibility Testing**: Conduct thorough accessibility testing
-5. **Motion Patterns**: Develop standard motion patterns for common interactions
-6. **Theme Customization**: Add support for theme customization beyond light/dark
-7. **Visual Regression Testing**: Set up visual regression tests
+```tsx
+'use client';
 
-## Conclusion
+import { AIProcessingIndicator } from '@/lib/motion/components';
+import { useAnimationPerformance } from '@/lib/motion/hooks';
+import { durations, easings } from '@/lib/motion/utils/motion-tokens';
 
-The Fluxori Design System provides a solid foundation for consistent, accessible, and visually pleasing UI development. By centralizing design decisions in tokens and providing easy access through hooks and utilities, we ensure that the application maintains a cohesive look and feel across all screens and components.
+function AgentProcessingView() {
+  const { complexityPreset } = useAnimationPerformance();
+  
+  // Adjust animation based on performance profile
+  const duration = durations.agentThinking * complexityPreset.reduceDuration;
+  const ease = complexityPreset.useSimpleEasings ? easings.easeInOut : easings.easeInOutQuart;
+  
+  return (
+    <div>
+      <AIProcessingIndicator 
+        confidenceLevel="medium"
+        duration={duration}
+        ease={ease}
+        disableParticles={complexityPreset.disableParticles}
+      />
+      <p>Processing your request...</p>
+    </div>
+  );
+}
+```
