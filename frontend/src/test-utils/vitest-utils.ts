@@ -7,24 +7,24 @@ import { vi } from 'vitest';
 import React from 'react';
 import { render } from '@testing-library/react';
 
-// Theme Provider mock
-export const MockThemeProvider: React.FC<{children: React.ReactNode}> = ({ children }) => {
-  return <>{children}</>;
+// Theme Provider mock (using a regular function to avoid JSX in .ts files)
+export const MockThemeProvider = ({ children }: {children: React.ReactNode}) => {
+  return React.createElement(React.Fragment, null, children);
 };
 
-// Motion Provider mock
-export const MockMotionProvider: React.FC<{children: React.ReactNode}> = ({ children }) => {
-  return <>{children}</>;
+// Motion Provider mock (using a regular function to avoid JSX in .ts files)
+export const MockMotionProvider = ({ children }: {children: React.ReactNode}) => {
+  return React.createElement(React.Fragment, null, children);
 };
 
-// Mock providers for testing components
+// Mock providers for testing components (using createElement instead of JSX)
 export function renderWithProviders(ui: React.ReactElement) {
   return render(
-    <MockThemeProvider>
-      <MockMotionProvider>
-        {ui}
-      </MockMotionProvider>
-    </MockThemeProvider>
+    React.createElement(
+      MockThemeProvider, 
+      null, 
+      React.createElement(MockMotionProvider, null, ui)
+    )
   );
 }
 
