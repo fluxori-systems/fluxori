@@ -1,10 +1,14 @@
 import { describe, it, expect, vi } from 'vitest';
 import type { 
-  IConnectionService
+  IConnectionService,
+  ConnectionQualityResult
 } from '../services/connection-service.interface';
 import { CONNECTION_SERVICE_KEY } from '../services/connection-service.interface';
 import type {
-  IAnimationService
+  IAnimationService,
+  AnimationStrategyConfig,
+  AnimationParams,
+  ComponentAnimationConfig
 } from '../services/animation-service.interface';
 import { ANIMATION_SERVICE_KEY } from '../services/animation-service.interface';
 import {
@@ -16,28 +20,45 @@ import {
   getConnectionService
 } from '../services/service-registry';
 
-// Mock service implementations
-const createMockConnectionService = (): IConnectionService => ({
-  getConnectionQuality: vi.fn().mockReturnValue({
+// Mock service implementations with proper TypeScript types
+const createMockConnectionService = (): IConnectionService => {
+  // Create properly typed mock functions
+  const getConnectionQuality = vi.fn<[], ConnectionQualityResult>().mockReturnValue({
     quality: 'medium',
     isDataSaver: false,
     isMetered: false,
-  }),
-  subscribeToConnectionChanges: vi.fn().mockImplementation((callback) => {
+  });
+  
+  const subscribeToConnectionChanges = vi.fn<
+    [(quality: ConnectionQualityResult) => void], 
+    () => void
+  >().mockImplementation((callback) => {
     callback({
       quality: 'medium',
       isDataSaver: false,
       isMetered: false,
     });
     return vi.fn();
-  }),
-  isDataSaverEnabled: vi.fn().mockReturnValue(false),
-  isConnectionMetered: vi.fn().mockReturnValue(false),
-});
+  });
+  
+  const isDataSaverEnabled = vi.fn<[], boolean>().mockReturnValue(false);
+  const isConnectionMetered = vi.fn<[], boolean>().mockReturnValue(false);
 
-const createMockAnimationService = (): IAnimationService => ({
-  animateComponent: vi.fn(),
-  getAnimationStrategy: vi.fn().mockReturnValue({
+  return {
+    getConnectionQuality,
+    subscribeToConnectionChanges,
+    isDataSaverEnabled,
+    isConnectionMetered,
+  };
+};
+
+const createMockAnimationService = (): IAnimationService => {
+  // Create properly typed mock functions
+  const animateComponent = vi.fn<[ComponentAnimationConfig], () => void>().mockImplementation(() => {
+    return () => {}; // Return cleanup function
+  });
+  
+  const getAnimationStrategy = vi.fn<[AnimationStrategyConfig], AnimationParams>().mockReturnValue({
     enabled: true,
     durationMultiplier: 1.0,
     useSimpleEasings: false,
@@ -45,15 +66,23 @@ const createMockAnimationService = (): IAnimationService => ({
     maxActiveAnimations: Infinity,
     disableStaggering: false,
     scaleMultiplier: 1.0,
-  }),
-  shouldReduceMotion: vi.fn().mockReturnValue(false),
-  getMotionMode: vi.fn().mockReturnValue('full'),
-});
+  });
+  
+  const shouldReduceMotion = vi.fn<[], boolean>().mockReturnValue(false);
+  const getMotionMode = vi.fn<[], string>().mockReturnValue('full');
+
+  return {
+    animateComponent,
+    getAnimationStrategy,
+    shouldReduceMotion,
+    getMotionMode,
+  };
+};
 
 describe('Service Registry', () => {
   beforeEach(() => {
     // Clear registry before each test
-    ServiceRegistry['services'] = new Map();
+    (ServiceRegistry as any)['services'] = new Map();
   });
   
   it('should register and retrieve services', () => {
