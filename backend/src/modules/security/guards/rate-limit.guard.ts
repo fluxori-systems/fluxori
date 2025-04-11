@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { Request } from 'express';
-import * as Redis from 'ioredis';
+import Redis from 'ioredis';
 import { ConfigService } from '@nestjs/config';
 
 import { ObservabilityService } from '../../../common/observability';
@@ -41,7 +41,7 @@ export interface RateLimitConfig {
 @Injectable()
 export class RateLimitGuard implements CanActivate {
   private readonly logger = new Logger(RateLimitGuard.name);
-  private readonly redis: Redis.Redis | null = null;
+  private readonly redis: Redis | null = null;
   private readonly useMemoryFallback: boolean;
   private readonly memoryStore: Map<string, { count: number; resetTime: number }> = new Map();
   
@@ -155,13 +155,14 @@ export class RateLimitGuard implements CanActivate {
     parts.push(this.getClientIp(request));
     
     // Add user ID if configured
-    if (config.scopeByUser && request.user?.id) {
-      parts.push(`user:${request.user.id}`);
+    const user = (request as any).user;
+    if (config.scopeByUser && user?.id) {
+      parts.push(`user:${user.id}`);
     }
     
     // Add organization ID if configured
-    if (config.scopeByOrganization && request.user?.organizationId) {
-      parts.push(`org:${request.user.organizationId}`);
+    if (config.scopeByOrganization && user?.organizationId) {
+      parts.push(`org:${user.organizationId}`);
     }
     
     return parts.join(':');
@@ -202,22 +203,24 @@ export class RateLimitGuard implements CanActivate {
       // Get the TTL
       multi.ttl(key);
       
-      const [currentStr, newCount, ttl] = await multi.exec().then(results => 
-        results!.map(result => (result[0] ? null : result[1])));
+      const results = await multi.exec();
+      const [currentStr, newCount, ttl] = results ? 
+        results.map((result: any) => (result[0] ? null : result[1])) : 
+        [null, 1, config.windowSecs];
       
       // If this is a new key, set the expiration
       if (currentStr === null || ttl === -1) {
         await this.redis!.expire(key, config.windowSecs);
       }
       
-      const current = Number(newCount);
+      const current = Number(newCount || 1);
       const allowed = current <= config.limit;
       
       return {
         allowed,
         current,
         limit: config.limit,
-        ttl: ttl === -1 ? config.windowSecs : ttl,
+        ttl: ttl === -1 ? config.windowSecs : Number(ttl || config.windowSecs),
       };
     } catch (error) {
       this.logger.error(`Redis rate limit error: ${error.message}`, error.stack);
@@ -270,12 +273,13 @@ export class RateLimitGuard implements CanActivate {
     const now = Date.now();
     let expiredCount = 0;
     
-    for (const [key, entry] of this.memoryStore.entries()) {
+    // Convert to array first to avoid the need for downlevelIteration
+    Array.from(this.memoryStore.entries()).forEach(([key, entry]) => {
       if (entry.resetTime <= now) {
         this.memoryStore.delete(key);
         expiredCount++;
       }
-    }
+    });
     
     if (expiredCount > 0) {
       this.logger.debug(`Cleaned up ${expiredCount} expired rate limit entries`);

@@ -56,7 +56,7 @@ export function SouthAfricanMarketProvider({
 /**
  * Hook to access South African market optimizations from context
  */
-export function useSouthAfricanMarket(): SouthAfricanMarketOptimizations {
+export function useSouthAfricanMarketContext(): SouthAfricanMarketOptimizations {
   const context = useContext(SouthAfricanMarketContext);
   
   // If context is not available, use the hook directly

@@ -1,5 +1,5 @@
 import { Injectable, Logger, Inject } from '@nestjs/common';
-import { DLP } from '@google-cloud/dlp';
+import * as DLP from '@google-cloud/dlp';
 import { ConfigService } from '@nestjs/config';
 
 import { ObservabilityService } from '../../../common/observability';
@@ -11,7 +11,7 @@ import { ObservabilityService } from '../../../common/observability';
 @Injectable()
 export class DlpService {
   private readonly logger = new Logger(DlpService.name);
-  private readonly dlpClient: DLP;
+  private readonly dlpClient: any;
   private readonly projectId: string;
   
   constructor(
@@ -19,10 +19,10 @@ export class DlpService {
     private readonly configService: ConfigService,
     private readonly observability: ObservabilityService,
   ) {
-    this.projectId = this.configService.get<string>('GCP_PROJECT_ID');
+    this.projectId = this.configService.get<string>('GCP_PROJECT_ID') || '';
     
     // Initialize GCP DLP client
-    this.dlpClient = new DLP();
+    this.dlpClient = new DLP.DlpServiceClient();
     
     this.logger.log('DLP service initialized');
   }
@@ -63,7 +63,7 @@ export class DlpService {
       const minLikelihood = config?.minLikelihood || 'LIKELY';
       
       // Configure the inspection request
-      const request = {
+      const request: Record<string, any> = {
         parent: `projects/${this.projectId}/locations/global`,
         inspectConfig: {
           infoTypes,
@@ -83,7 +83,7 @@ export class DlpService {
       const findings = response.result?.findings || [];
       
       // Extract info types from the findings
-      const detectedInfoTypes = findings.map(finding => finding.infoType?.name || 'UNKNOWN');
+      const detectedInfoTypes = findings.map((finding: Record<string, any>) => finding.infoType?.name || 'UNKNOWN');
       
       // Record metrics
       this.observability.incrementCounter('dlp.scan.count');
@@ -94,9 +94,13 @@ export class DlpService {
       span.setAttribute('dlp.findings.count', findings.length);
       span.end();
       
+      // Deduplicate info types using object instead of Set to avoid ES2015 requirement
+      const uniqueInfoTypes: Record<string, boolean> = {};
+      detectedInfoTypes.forEach((type: string) => { uniqueInfoTypes[type] = true; });
+      
       return {
         hasSensitiveInfo: findings.length > 0,
-        infoTypes: [...new Set(detectedInfoTypes)], // Deduplicate info types
+        infoTypes: Object.keys(uniqueInfoTypes),
       };
     } catch (error) {
       span.recordException(error);
@@ -146,7 +150,7 @@ export class DlpService {
       const replaceWith = config?.replaceWith || '[REDACTED]';
       
       // Configure the redaction request
-      const request = {
+      const request: Record<string, any> = {
         parent: `projects/${this.projectId}/locations/global`,
         inspectConfig: {
           infoTypes,
@@ -165,25 +169,27 @@ export class DlpService {
               },
             ],
           },
-          // Alternatively, use a custom replacement string
-          // This overrides the replaceWithInfoTypeConfig above
-          ...(replaceWith !== '[REDACTED]' && {
-            infoTypeTransformations: {
-              transformations: [
-                {
-                  primitiveTransformation: {
-                    replaceConfig: {
-                      newValue: {
-                        stringValue: replaceWith,
-                      },
+        },
+      };
+      
+      // Add custom replacement string if specified
+      if (replaceWith !== '[REDACTED]') {
+        request.deidentifyConfig = {
+          infoTypeTransformations: {
+            transformations: [
+              {
+                primitiveTransformation: {
+                  replaceConfig: {
+                    newValue: {
+                      stringValue: replaceWith,
                     },
                   },
                 },
-              ],
-            },
-          }),
-        },
-      };
+              },
+            ],
+          },
+        };
+      }
       
       // Execute the redaction
       const [response] = await this.dlpClient.deidentifyContent(request);
@@ -225,7 +231,7 @@ export class DlpService {
     
     try {
       // Configure the masking request
-      const request = {
+      const request: Record<string, any> = {
         parent: `projects/${this.projectId}/locations/global`,
         inspectConfig: {
           infoTypes: [{ name: pattern }],

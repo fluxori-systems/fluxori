@@ -101,13 +101,22 @@ export function getDefaultServices(): DefaultServices {
   // Create minimal placeholder services that do nothing
   // These will be used if the actual implementations can't be loaded
   const nullAnimationService: IAnimationService = {
-    animateElement: () => Promise.resolve(),
-    createAnimation: () => ({ id: 'null', play: () => Promise.resolve(), stop: () => {} }),
-    setGlobalAnimationScale: () => {},
-    getGlobalAnimationScale: () => 1,
-    enableAnimations: () => {},
-    disableAnimations: () => {},
-    isAnimationEnabled: () => true
+    animateComponent: () => () => {},
+    getAnimationStrategy: () => ({
+      enabled: true,
+      durationMultiplier: 1,
+      useSimpleEasings: false,
+      reduceComplexity: false,
+      maxActiveAnimations: 10,
+      disableStaggering: false,
+      scaleMultiplier: 1
+    }),
+    shouldReduceMotion: () => false,
+    getMotionMode: () => 'full',
+    startPerformanceMonitoring: () => 0,
+    recordAnimationFrame: () => {},
+    stopPerformanceMonitoring: () => {},
+    getPerformanceAnalysis: () => null
   };
   
   const nullConnectionService: IConnectionService = {
@@ -119,19 +128,15 @@ export function getDefaultServices(): DefaultServices {
     }),
     subscribeToConnectionChanges: () => () => {},
     isDataSaverEnabled: () => false,
-    getNetworkType: () => 'unknown',
-    getEffectiveConnectionType: () => '4g',
-    getDownlinkSpeed: () => 10,
-    getRTT: () => 100,
-    simulateConnectionType: () => {}
+    isConnectionMetered: () => false
   };
   
   try {
     // Try to dynamically load the actual services
     // In a real environment, this would be provided by the motion module
     // This dynamic import keeps us from having a build-time dependency
-    if (typeof window !== 'undefined' && window.__DEFAULT_SERVICES) {
-      return window.__DEFAULT_SERVICES;
+    if (typeof window !== 'undefined' && (window as any).__DEFAULT_SERVICES) {
+      return (window as any).__DEFAULT_SERVICES;
     }
     
     // For development or SSR where window isn't available

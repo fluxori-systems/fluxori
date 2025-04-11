@@ -32,11 +32,11 @@ export interface MarketplaceProduct {
   compareAtPrice?: number;
   currency: string;
   stockLevel: number;
-  status: 'active' | 'inactive' | 'pending' | 'rejected';
+  status: "active" | "inactive" | "pending" | "rejected";
   categories?: string[];
   images?: string[];
   attributes?: Record<string, any>;
-  variants?: Omit<MarketplaceProduct, 'variants'>[];
+  variants?: Omit<MarketplaceProduct, "variants">[];
   marketplaceUrl?: string;
   createdAt: Date;
   updatedAt: Date;
@@ -58,7 +58,7 @@ export interface PriceUpdatePayload {
 
 export interface StatusUpdatePayload {
   sku: string;
-  status: 'active' | 'inactive';
+  status: "active" | "inactive";
 }
 
 export interface MarketplaceOrder {
@@ -163,14 +163,14 @@ export interface OperationResult<T> {
 }
 
 export interface ProductFilterOptions {
-  status?: 'active' | 'inactive' | 'all';
+  status?: "active" | "inactive" | "all";
   category?: string;
   search?: string;
   minPrice?: number;
   maxPrice?: number;
   updatedSince?: Date;
   sortBy?: string;
-  sortDirection?: 'asc' | 'desc';
+  sortDirection?: "asc" | "desc";
   [key: string]: any;
 }
 

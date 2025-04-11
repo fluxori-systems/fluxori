@@ -4,8 +4,26 @@
  */
 
 /// <reference types="@testing-library/react" />
+/// <reference types="@testing-library/jest-dom" />
 
-// No custom augmentations needed - we're using the types
-// from the packages directly
+// Augment the expect interface with custom matchers
+declare global {
+  namespace Vi {
+    interface Assertion {
+      toBeInTheDocument(): void;
+      toHaveAttribute(attr: string, value?: string): void;
+      toHaveClass(className: string): void;
+      toHaveTextContent(text: string): void;
+      toBeVisible(): void;
+      toBeDisabled(): void;
+      toBeEnabled(): void;
+      toBeChecked(): void;
+      toBeEmpty(): void;
+      toHaveFocus(): void;
+      toHaveStyle(css: Record<string, any>): void;
+      toHaveValue(value: any): void;
+    }
+  }
+}
 
 export {};

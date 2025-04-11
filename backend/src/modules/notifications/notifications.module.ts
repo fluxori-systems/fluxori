@@ -1,13 +1,11 @@
-import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { Module } from "@nestjs/common";
+import { ConfigModule } from "@nestjs/config";
 
 /**
  * Notifications module for handling system notifications
  */
 @Module({
-  imports: [
-    ConfigModule,
-  ],
+  imports: [ConfigModule],
   controllers: [],
   providers: [],
   exports: [],

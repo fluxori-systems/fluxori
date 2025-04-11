@@ -1,5 +1,5 @@
 import { Injectable, Logger, Inject } from '@nestjs/common';
-import { AccessContextManager } from '@google-cloud/access-context-manager';
+import { AccessContextManagerClient } from '@google-cloud/access-context-manager';
 import { ServiceUsageClient } from '@google-cloud/service-usage';
 import { ConfigService } from '@nestjs/config';
 
@@ -15,7 +15,7 @@ import { ObservabilityService } from '../../../common/observability';
 @Injectable()
 export class VpcServiceControlsService implements IVpcServiceControlsService {
   private readonly logger = new Logger(VpcServiceControlsService.name);
-  private readonly accessContextManager: AccessContextManager;
+  private readonly accessContextManager: AccessContextManagerClient;
   private readonly serviceUsageClient: ServiceUsageClient;
   private readonly projectId: string;
   private readonly organizationId: string;
@@ -25,11 +25,11 @@ export class VpcServiceControlsService implements IVpcServiceControlsService {
     private readonly configService: ConfigService,
     private readonly observability: ObservabilityService,
   ) {
-    this.projectId = this.configService.get<string>('GCP_PROJECT_ID');
-    this.organizationId = this.configService.get<string>('GCP_ORGANIZATION_ID');
+    this.projectId = this.configService.get<string>('GCP_PROJECT_ID') || '';
+    this.organizationId = this.configService.get<string>('GCP_ORGANIZATION_ID') || '';
     
     // Initialize GCP clients
-    this.accessContextManager = new AccessContextManager();
+    this.accessContextManager = new AccessContextManagerClient();
     this.serviceUsageClient = new ServiceUsageClient();
     
     this.logger.log('VPC Service Controls service initialized');
@@ -107,7 +107,7 @@ export class VpcServiceControlsService implements IVpcServiceControlsService {
    * Create a new access level
    */
   private async createAccessLevel(level: VpcScConfiguration['accessLevels'][0], parent: string): Promise<void> {
-    const accessLevelConfig = {
+    const accessLevelConfig: Record<string, any> = {
       parent,
       accessLevel: {
         name: `${parent}/accessLevels/${level.name}`,
@@ -127,7 +127,7 @@ export class VpcServiceControlsService implements IVpcServiceControlsService {
    * Update an existing access level
    */
   private async updateAccessLevel(level: VpcScConfiguration['accessLevels'][0], name: string): Promise<void> {
-    const accessLevelConfig = {
+    const accessLevelConfig: Record<string, any> = {
       name,
       title: level.title,
       description: level.description,
@@ -231,7 +231,7 @@ export class VpcServiceControlsService implements IVpcServiceControlsService {
       projectId => `projects/${projectId}`
     );
     
-    const perimeterConfig = {
+    const perimeterConfig: Record<string, any> = {
       parent,
       servicePerimeter: {
         name: `${parent}/servicePerimeters/${perimeter.name}`,
@@ -263,7 +263,7 @@ export class VpcServiceControlsService implements IVpcServiceControlsService {
       projectId => `projects/${projectId}`
     );
     
-    const perimeterConfig = {
+    const perimeterConfig: Record<string, any> = {
       name,
       title: perimeter.title,
       description: perimeter.description,
@@ -303,7 +303,7 @@ export class VpcServiceControlsService implements IVpcServiceControlsService {
   /**
    * Format ingress rules into API format
    */
-  private formatIngressPolicies(ingressRules?: VpcScConfiguration['perimeters'][0]['ingressRules']): any[] {
+  private formatIngressPolicies(ingressRules?: VpcScConfiguration['perimeters'][0]['ingressRules']): Record<string, any>[] {
     if (!ingressRules || ingressRules.length === 0) {
       return [];
     }
@@ -332,7 +332,7 @@ export class VpcServiceControlsService implements IVpcServiceControlsService {
   /**
    * Format egress rules into API format
    */
-  private formatEgressPolicies(egressRules?: VpcScConfiguration['perimeters'][0]['egressRules']): any[] {
+  private formatEgressPolicies(egressRules?: VpcScConfiguration['perimeters'][0]['egressRules']): Record<string, any>[] {
     if (!egressRules || egressRules.length === 0) {
       return [];
     }
@@ -485,7 +485,7 @@ export class VpcServiceControlsService implements IVpcServiceControlsService {
       }
       
       // Simulate perimeter status based on configuration
-      const perimeters = this.options.vpcServiceControls.perimeters.map(p => ({
+      const perimeters = this.options.vpcServiceControls.perimeters.map((p: Record<string, any>) => ({
         name: p.name,
         status: 'active' as const,
         lastUpdated: new Date(),

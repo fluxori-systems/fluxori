@@ -7,16 +7,28 @@
  * the UI and Motion modules to prevent circular dependencies.
  */
 
-// Re-export types
-// Use 'export type' to prevent ambiguous re-exports
+// Re-export types from unified sa-market-types
+export type { 
+  ConnectionQuality,
+  ConnectionQualityResult,
+  SAPerformanceRecommendation,
+  SAPerformanceThresholds,
+  SouthAfricanMarketOptimizations
+} from './types/sa-market-types';
+
+export { 
+  SADeviceProfile, 
+  SANetworkProfile,
+  SA_CONNECTION_THRESHOLDS
+} from './types/sa-market-types';
+
+// Re-export types from motion-types
 export type { 
   MotionMode,
   AnimationMode,
   AnimationParams,
   AnimationStrategyConfig,
   ConfidenceLevel,
-  ConnectionQuality,
-  ConnectionQualityResult,
   NetworkCondition
 } from './types/motion-types';
 
@@ -61,10 +73,8 @@ export {
 // Re-export South African market optimizations
 export {
   useSouthAfricanMarketOptimizations,
-  useSAPerformanceThresholds,
-  SADeviceProfile,
-  SANetworkProfile,
-  SA_CONNECTION_THRESHOLDS
+  useSouthAfricanMarket,
+  useSAPerformanceThresholds
 } from './hooks/useSouthAfricanMarketOptimizations';
 
 // Re-export South African market components

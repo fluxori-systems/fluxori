@@ -14,10 +14,14 @@ export type {
   AnimationParams,
   AnimationStrategyConfig,
   ConfidenceLevel,
-  ConnectionQuality,
-  ConnectionQualityResult,
   NetworkCondition
 } from './motion-types';
+
+// Export South African market types
+export type {
+  ConnectionQuality,
+  ConnectionQualityResult
+} from './sa-market-types';
 
 export type {
   MotionDurations,

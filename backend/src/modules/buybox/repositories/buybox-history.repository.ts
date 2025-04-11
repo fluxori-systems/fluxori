@@ -1,26 +1,36 @@
-import { Injectable, Logger } from '@nestjs/common';
-import { FirestoreConfigService } from '../../../config/firestore.config';
-import { FirestoreBaseRepository } from '../../../common/repositories/firestore-base.repository';
-import { BuyBoxHistory } from '../models/buybox-history.schema';
-import { BuyBoxStatus as BuyBoxStatusEnum } from '../interfaces/types';
+import { Injectable, Logger } from "@nestjs/common";
+
+import { FirestoreConfigService } from "src/config/firestore.config";
+
+import {
+  FirestoreBaseRepository,
+  QueryFilter as FirestoreAdvancedFilter,
+} from "src/common/repositories";
+
+import { BuyBoxStatus as BuyBoxStatusEnum } from "../interfaces/types";
+import { BuyBoxHistory } from "../models/buybox-history.schema";
 
 /**
  * Repository for BuyBox History entities
  */
 @Injectable()
 export class BuyBoxHistoryRepository extends FirestoreBaseRepository<BuyBoxHistory> {
-  // Collection name in Firestore
-  protected readonly collectionName = 'buybox_history';
-  
+  protected readonly logger = new Logger(BuyBoxHistoryRepository.name);
+
   constructor(firestoreConfigService: FirestoreConfigService) {
-    super(firestoreConfigService, {
+    super(firestoreConfigService, "buybox_history", {
       useSoftDeletes: true,
       useVersioning: true,
       enableCache: false, // No caching for history items
-      requiredFields: ['organizationId', 'productId', 'marketplaceId', 'timestamp'],
+      requiredFields: [
+        "organizationId",
+        "productId",
+        "marketplaceId",
+        "timestamp",
+      ],
     });
   }
-  
+
   /**
    * Find history by organization ID
    * @param organizationId Organization ID
@@ -29,18 +39,18 @@ export class BuyBoxHistoryRepository extends FirestoreBaseRepository<BuyBoxHisto
    */
   async findByOrganization(
     organizationId: string,
-    limit: number = 100
+    limit: number = 100,
   ): Promise<BuyBoxHistory[]> {
-    return this.findAll(
-      { organizationId },
-      {
-        orderBy: 'timestamp',
-        direction: 'desc',
-        limit
-      }
-    );
+    return this.find({
+      filter: { organizationId } as Partial<BuyBoxHistory>,
+      queryOptions: {
+        orderBy: "timestamp",
+        direction: "desc",
+        limit,
+      },
+    });
   }
-  
+
   /**
    * Find history by product ID
    * @param productId Product ID
@@ -49,18 +59,18 @@ export class BuyBoxHistoryRepository extends FirestoreBaseRepository<BuyBoxHisto
    */
   async findByProduct(
     productId: string,
-    limit: number = 100
+    limit: number = 100,
   ): Promise<BuyBoxHistory[]> {
-    return this.findAll(
-      { productId },
-      {
-        orderBy: 'timestamp',
-        direction: 'desc',
-        limit
-      }
-    );
+    return this.find({
+      filter: { productId } as Partial<BuyBoxHistory>,
+      queryOptions: {
+        orderBy: "timestamp",
+        direction: "desc",
+        limit,
+      },
+    });
   }
-  
+
   /**
    * Find history by product and marketplace
    * @param productId Product ID
@@ -71,21 +81,21 @@ export class BuyBoxHistoryRepository extends FirestoreBaseRepository<BuyBoxHisto
   async findByProductAndMarketplace(
     productId: string,
     marketplaceId: string,
-    limit: number = 100
+    limit: number = 100,
   ): Promise<BuyBoxHistory[]> {
-    return this.findAll(
-      { 
+    return this.find({
+      filter: {
         productId,
-        marketplaceId
+        marketplaceId,
+      } as Partial<BuyBoxHistory>,
+      queryOptions: {
+        orderBy: "timestamp",
+        direction: "desc",
+        limit,
       },
-      {
-        orderBy: 'timestamp',
-        direction: 'desc',
-        limit
-      }
-    );
+    });
   }
-  
+
   /**
    * Find history with advanced filtering
    * @param params Query parameters
@@ -103,55 +113,60 @@ export class BuyBoxHistoryRepository extends FirestoreBaseRepository<BuyBoxHisto
   }): Promise<BuyBoxHistory[]> {
     // Start with basic filter object
     const filter: Partial<BuyBoxHistory> = {};
-    
+
     // Add equality filters
     if (params.organizationId) filter.organizationId = params.organizationId;
     if (params.productId) filter.productId = params.productId;
     if (params.marketplaceId) filter.marketplaceId = params.marketplaceId;
     if (params.status) filter.status = params.status;
-    
+
     // Basic query options
     const options = {
-      orderBy: 'timestamp' as keyof BuyBoxHistory,
-      direction: 'desc' as 'asc' | 'desc',
+      orderBy: "timestamp" as keyof BuyBoxHistory,
+      direction: "desc" as "asc" | "desc",
       limit: params.limit,
-      offset: params.offset
+      offset: params.offset,
     };
-    
+
     // Execute the query
-    let histories = await this.findAll(filter, options);
-    
+    let histories = await this.find({
+      filter,
+      queryOptions: options,
+    });
+
     // Apply date filtering
     if (params.fromDate) {
       const fromDate = new Date(params.fromDate);
-      histories = histories.filter(history => {
-        const timestamp = history.timestamp instanceof Date 
-          ? history.timestamp 
-          : new Date(history.timestamp as any);
+      histories = histories.filter((history) => {
+        const timestamp =
+          history.timestamp instanceof Date
+            ? history.timestamp
+            : new Date(history.timestamp as any);
         return timestamp >= fromDate;
       });
     }
-    
+
     if (params.toDate) {
       const toDate = new Date(params.toDate);
-      histories = histories.filter(history => {
-        const timestamp = history.timestamp instanceof Date 
-          ? history.timestamp 
-          : new Date(history.timestamp as any);
+      histories = histories.filter((history) => {
+        const timestamp =
+          history.timestamp instanceof Date
+            ? history.timestamp
+            : new Date(history.timestamp as any);
         return timestamp <= toDate;
       });
     }
-    
+
     return histories;
   }
-  
+
   /**
    * Create history entry from BuyBox status
    * @param status BuyBox status to record
    * @returns Created history item
    */
   async createFromStatus(status: any): Promise<BuyBoxHistory> {
-    const historyData: Omit<BuyBoxHistory, 'id' | 'createdAt' | 'updatedAt'> = {
+    const historyData: Omit<BuyBoxHistory, "id" | "createdAt" | "updatedAt"> = {
       organizationId: status.organizationId,
       productId: status.productId,
       productSku: status.productSku,
@@ -165,12 +180,12 @@ export class BuyBoxHistoryRepository extends FirestoreBaseRepository<BuyBoxHisto
       currency: status.currency,
       competitors: status.competitors || [],
       buyBoxWinner: status.buyBoxWinner,
-      metadata: status.metadata || {}
+      metadata: status.metadata || {},
     };
-    
+
     return this.create(historyData);
   }
-  
+
   /**
    * Delete history older than a certain date
    * @param organizationId Organization ID
@@ -179,26 +194,27 @@ export class BuyBoxHistoryRepository extends FirestoreBaseRepository<BuyBoxHisto
    */
   async deleteOlderThan(
     organizationId: string,
-    olderThan: Date
+    olderThan: Date,
   ): Promise<number> {
     // Find all history items for this organization
     const histories = await this.findByOrganization(organizationId, 1000);
-    
+
     // Filter for items older than the given date
-    const toDelete = histories.filter(history => {
-      const timestamp = history.timestamp instanceof Date 
-        ? history.timestamp 
-        : new Date(history.timestamp as any);
+    const toDelete = histories.filter((history) => {
+      const timestamp =
+        history.timestamp instanceof Date
+          ? history.timestamp
+          : new Date(history.timestamp as any);
       return timestamp < olderThan;
     });
-    
+
     // Delete the items
     let deletedCount = 0;
     for (const history of toDelete) {
       await this.delete(history.id);
       deletedCount++;
     }
-    
+
     return deletedCount;
   }
 }

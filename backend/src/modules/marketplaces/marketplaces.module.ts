@@ -1,21 +1,20 @@
-import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { Module } from "@nestjs/common";
+import { ConfigModule } from "@nestjs/config";
 
 // Repositories
-import { MarketplaceCredentialsRepository } from './repositories/marketplace-credentials.repository';
+import { MarketplaceController } from "./controllers/marketplace.controller";
+import { MarketplaceCredentialsRepository } from "./repositories/marketplace-credentials.repository";
 
 // Services
-import { MarketplaceAdapterFactory } from './services/marketplace-adapter.factory';
-import { MarketplaceSyncService } from './services/marketplace-sync.service';
+import { MarketplaceAdapterFactory } from "./services/marketplace-adapter.factory";
+import { MarketplaceSyncService } from "./services/marketplace-sync.service";
 
 // Controllers
-import { MarketplaceController } from './controllers/marketplace.controller';
 
-// Import services directly instead of the module
-import { InventoryService } from '../inventory/services/inventory.service';
-
-// GCP Services
-import { FirestoreConfigService } from '../../config/firestore.config';
+// Import modules and tokens for cross-module dependencies
+import { FirestoreConfigService } from "../../config/firestore.config";
+import { InventoryModule } from "../inventory/inventory.module";
+import { PRODUCT_SERVICE_TOKEN } from "../../shared/tokens";
 
 /**
  * Marketplaces module for integrating with various e-commerce platforms
@@ -23,37 +22,28 @@ import { FirestoreConfigService } from '../../config/firestore.config';
 @Module({
   imports: [
     ConfigModule,
-    // Import the inventory module to access InventoryService
-    // We'll use forwardRef to avoid circular dependencies
+    // Import the inventory module to access IProductService via token
+    InventoryModule,
   ],
-  controllers: [
-    MarketplaceController,
-  ],
+  controllers: [MarketplaceController],
   providers: [
     // Repositories
     MarketplaceCredentialsRepository,
-    
+
     // Services
     MarketplaceAdapterFactory,
     MarketplaceSyncService,
-    
+
     // GCP Services
     FirestoreConfigService,
-    
+
     // Register adapter factory as a single instance
     {
-      provide: 'MARKETPLACE_ADAPTERS_FACTORY',
+      provide: "MARKETPLACE_ADAPTERS_FACTORY",
       useExisting: MarketplaceAdapterFactory,
     },
-    
-    // Provide a mock InventoryService until we have direct dependency
-    {
-      provide: InventoryService,
-      useValue: {
-        getProductById: (id: string, organizationId?: string) => Promise.resolve({ id, organizationId }),
-        createProduct: (product: any) => Promise.resolve(product),
-      },
-    },
+
+    // We no longer need to provide a mock InventoryService, since we import the real one through the token
   ],
   exports: [
     MarketplaceAdapterFactory,

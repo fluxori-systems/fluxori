@@ -1,6 +1,7 @@
-import { Injectable, UnauthorizedException, Logger } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import * as admin from 'firebase-admin';
+import { Injectable, UnauthorizedException, Logger } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
+
+import * as admin from "firebase-admin";
 
 /**
  * Firebase Authentication service
@@ -13,8 +14,8 @@ export class FirebaseAuthService {
 
   constructor(private configService: ConfigService) {
     // Initialize Firebase Admin SDK
-    const projectId = this.configService.get<string>('GCP_PROJECT_ID');
-    
+    const projectId = this.configService.get<string>("GCP_PROJECT_ID");
+
     if (!admin.apps.length) {
       this.firebaseApp = admin.initializeApp({
         credential: admin.credential.applicationDefault(),
@@ -35,7 +36,7 @@ export class FirebaseAuthService {
       return await this.firebaseApp.auth().verifyIdToken(idToken);
     } catch (error) {
       this.logger.error(`Invalid Firebase ID token: ${error.message}`);
-      throw new UnauthorizedException('Invalid authentication token');
+      throw new UnauthorizedException("Invalid authentication token");
     }
   }
 
@@ -46,7 +47,11 @@ export class FirebaseAuthService {
    * @param displayName User's display name
    * @returns The newly created user
    */
-  async createUser(email: string, password: string, displayName?: string): Promise<admin.auth.UserRecord> {
+  async createUser(
+    email: string,
+    password: string,
+    displayName?: string,
+  ): Promise<admin.auth.UserRecord> {
     try {
       return await this.firebaseApp.auth().createUser({
         email,
@@ -95,8 +100,8 @@ export class FirebaseAuthService {
    * @returns The updated user record
    */
   async updateUser(
-    uid: string, 
-    updateData: admin.auth.UpdateRequest
+    uid: string,
+    updateData: admin.auth.UpdateRequest,
   ): Promise<admin.auth.UserRecord> {
     try {
       return await this.firebaseApp.auth().updateUser(uid, updateData);
@@ -139,9 +144,14 @@ export class FirebaseAuthService {
    * @param additionalClaims Additional claims to include in the token
    * @returns The custom token
    */
-  async createCustomToken(uid: string, additionalClaims?: object): Promise<string> {
+  async createCustomToken(
+    uid: string,
+    additionalClaims?: object,
+  ): Promise<string> {
     try {
-      return await this.firebaseApp.auth().createCustomToken(uid, additionalClaims);
+      return await this.firebaseApp
+        .auth()
+        .createCustomToken(uid, additionalClaims);
     } catch (error) {
       this.logger.error(`Failed to create custom token: ${error.message}`);
       throw error;

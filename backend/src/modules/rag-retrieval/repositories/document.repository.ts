@@ -1,8 +1,12 @@
-import { Injectable, Logger } from '@nestjs/common';
-import { FirestoreConfigService } from '../../../config/firestore.config';
-import { FirestoreBaseRepository } from '../../../common/repositories/firestore-base.repository';
-import { Document } from '../models/document.schema';
-import { DocumentStatus, DocumentType } from '../interfaces/types';
+import { Injectable, Logger } from "@nestjs/common";
+
+import {
+  FirestoreBaseRepository,
+  FirestoreAdvancedFilter,
+} from "../../../common/repositories";
+import { FirestoreConfigService } from "../../../config/firestore.config";
+import { DocumentStatus, DocumentType } from "../interfaces/types";
+import { Document } from "../models/document.schema";
 
 /**
  * Repository for Document entities
@@ -10,45 +14,55 @@ import { DocumentStatus, DocumentType } from '../interfaces/types';
 @Injectable()
 export class DocumentRepository extends FirestoreBaseRepository<Document> {
   // Collection name in Firestore
-  protected readonly collectionName = 'documents';
-  
+  protected readonly collectionName = "documents";
+
   constructor(firestoreConfigService: FirestoreConfigService) {
-    super(firestoreConfigService, {
+    super(firestoreConfigService, "documents", {
       useSoftDeletes: true,
       useVersioning: true,
       enableCache: true,
       cacheTTLMs: 5 * 60 * 1000, // 5 minutes
-      requiredFields: ['organizationId', 'title', 'documentType', 'status'],
+      requiredFields: ["organizationId", "title", "documentType", "status"],
     });
   }
-  
+
   /**
    * Find documents by organization ID
    * @param organizationId Organization ID
    * @returns Array of documents
    */
   async findByOrganization(organizationId: string): Promise<Document[]> {
-    return this.findAll({ organizationId });
+    return this.find({
+      advancedFilters: [
+        { field: "organizationId", operator: "==", value: organizationId },
+      ],
+    });
   }
-  
+
   /**
    * Find documents by type
    * @param documentType Document type
    * @returns Array of documents
    */
   async findByType(documentType: DocumentType): Promise<Document[]> {
-    return this.findAll({ documentType });
+    return this.find({
+      advancedFilters: [
+        { field: "documentType", operator: "==", value: documentType },
+      ],
+    });
   }
-  
+
   /**
    * Find documents by status
    * @param status Document status
    * @returns Array of documents
    */
   async findByStatus(status: DocumentStatus): Promise<Document[]> {
-    return this.findAll({ status });
+    return this.find({
+      advancedFilters: [{ field: "status", operator: "==", value: status }],
+    });
   }
-  
+
   /**
    * Find documents with advanced filtering
    * @param params Query parameters
@@ -66,61 +80,97 @@ export class DocumentRepository extends FirestoreBaseRepository<Document> {
     limit?: number;
     offset?: number;
   }): Promise<Document[]> {
-    // Start with basic filter object
-    const filter: Partial<Document> = {};
-    
-    // Add equality filters
-    if (params.organizationId) filter.organizationId = params.organizationId;
-    if (params.documentType) filter.documentType = params.documentType;
-    if (params.status) filter.status = params.status;
-    if (params.isIndexed !== undefined) filter.isIndexed = params.isIndexed;
-    if (params.isPublic !== undefined) filter.isPublic = params.isPublic;
-    
-    // Basic query options
-    const options = {
-      orderBy: 'createdAt' as keyof Document,
-      direction: 'desc' as 'asc' | 'desc',
-      limit: params.limit,
-      offset: params.offset
-    };
-    
+    // Build advanced filters
+    const advancedFilters: FirestoreAdvancedFilter<Document>[] = [];
+
+    // Add filters
+    if (params.organizationId) {
+      advancedFilters.push({
+        field: "organizationId",
+        operator: "==",
+        value: params.organizationId,
+      });
+    }
+
+    if (params.documentType) {
+      advancedFilters.push({
+        field: "documentType",
+        operator: "==",
+        value: params.documentType,
+      });
+    }
+
+    if (params.status) {
+      advancedFilters.push({
+        field: "status",
+        operator: "==",
+        value: params.status,
+      });
+    }
+
+    if (params.isIndexed !== undefined) {
+      advancedFilters.push({
+        field: "isIndexed",
+        operator: "==",
+        value: params.isIndexed,
+      });
+    }
+
+    if (params.isPublic !== undefined) {
+      advancedFilters.push({
+        field: "isPublic",
+        operator: "==",
+        value: params.isPublic,
+      });
+    }
+
     // Execute the query
-    let documents = await this.findAll(filter, options);
-    
+    let documents = await this.find({
+      advancedFilters,
+      queryOptions: {
+        orderBy: "createdAt",
+        direction: "desc",
+        limit: params.limit,
+        offset: params.offset,
+      },
+    });
+
     // Apply post-query filters that can't be done in Firestore directly
     if (params.tags && params.tags.length > 0) {
       const tagsToCheck = params.tags;
-      documents = documents.filter(doc => {
+      documents = documents.filter((doc) => {
         if (!doc.tags) return false;
         const docTags = doc.tags;
-        return tagsToCheck.some(tag => docTags.includes(tag));
+        return tagsToCheck.some((tag) => docTags.includes(tag));
       });
     }
-    
+
     // Date filtering
     if (params.fromDate) {
       const fromDate = new Date(params.fromDate);
-      documents = documents.filter(doc => {
-        const createdAt = doc.createdAt instanceof Date 
-          ? doc.createdAt 
-          : new Date(doc.createdAt as any);
+      documents = documents.filter((doc) => {
+        const createdAt =
+          doc.createdAt instanceof Date
+            ? doc.createdAt
+            : new Date(doc.createdAt as any);
         return createdAt >= fromDate;
       });
     }
-    
+
     if (params.toDate) {
       const toDate = new Date(params.toDate);
-      documents = documents.filter(doc => {
-        const createdAt = doc.createdAt instanceof Date 
-          ? doc.createdAt 
-          : new Date(doc.createdAt as any);
+      documents = documents.filter((doc) => {
+        const createdAt =
+          doc.createdAt instanceof Date
+            ? doc.createdAt
+            : new Date(doc.createdAt as any);
         return createdAt <= toDate;
       });
     }
-    
+
     return documents;
   }
-  
+
   /**
    * Update document status
    * @param id Document ID
@@ -131,21 +181,21 @@ export class DocumentRepository extends FirestoreBaseRepository<Document> {
   async updateStatus(
     id: string,
     status: DocumentStatus,
-    error?: string
+    error?: string,
   ): Promise<Document | null> {
     const updates: Partial<Document> = { status };
-    
+
     if (error) {
       updates.processingError = error;
     }
-    
+
     if (status === DocumentStatus.INDEXED) {
       updates.lastIndexedAt = new Date();
     }
-    
+
     return this.update(id, updates);
   }
-  
+
   /**
    * Mark document as indexed
    * @param id Document ID
@@ -156,17 +206,17 @@ export class DocumentRepository extends FirestoreBaseRepository<Document> {
   async markAsIndexed(
     id: string,
     chunkCount: number,
-    tokenCount: number
+    tokenCount: number,
   ): Promise<Document | null> {
     return this.update(id, {
       status: DocumentStatus.INDEXED,
       isIndexed: true,
       chunkCount,
       tokenCount,
-      lastIndexedAt: new Date()
+      lastIndexedAt: new Date(),
     });
   }
-  
+
   /**
    * Find documents that need indexing
    * @param organizationId Organization ID
@@ -175,37 +225,37 @@ export class DocumentRepository extends FirestoreBaseRepository<Document> {
    */
   async findPendingIndexing(
     organizationId: string,
-    limit: number = 10
+    limit: number = 10,
   ): Promise<Document[]> {
     return this.findWithFilters({
       organizationId,
       status: DocumentStatus.PENDING,
       isIndexed: false,
-      limit
+      limit,
     });
   }
-  
+
   /**
    * Count documents by status for an organization
    * @param organizationId Organization ID
    * @returns Count by status
    */
   async countByStatus(
-    organizationId: string
+    organizationId: string,
   ): Promise<Record<DocumentStatus, number>> {
     const documents = await this.findByOrganization(organizationId);
-    
+
     // Initialize counts
     const counts: Record<string, number> = {};
-    Object.values(DocumentStatus).forEach(status => {
+    Object.values(DocumentStatus).forEach((status) => {
       counts[status] = 0;
     });
-    
+
     // Count by status
-    documents.forEach(doc => {
+    documents.forEach((doc) => {
       counts[doc.status] = (counts[doc.status] || 0) + 1;
     });
-    
+
     return counts as Record<DocumentStatus, number>;
   }
 }

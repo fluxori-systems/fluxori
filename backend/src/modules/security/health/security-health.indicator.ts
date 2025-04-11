@@ -1,5 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { HealthIndicator, HealthIndicatorResult, HealthCheckError } from '@nestjs/terminus';
+import { HealthIndicator, HealthIndicatorResult } from '@nestjs/terminus';
+import { HealthCheckError } from '@nestjs/terminus/dist/health-check';
 
 import { SecurityService } from '../services/security.service';
 import { CredentialManagerService } from '../services/credential-manager.service';
@@ -74,7 +75,7 @@ export class SecurityHealthIndicator extends HealthIndicator {
         
         this.observability.error(
           'Security health check failed',
-          new Error(unhealthyComponents),
+          unhealthyComponents,
           SecurityHealthIndicator.name
         );
       }
@@ -101,10 +102,11 @@ export class SecurityHealthIndicator extends HealthIndicator {
       span.recordException(error);
       span.end();
       
-      this.logger.error(`Security health check failed: ${error.message}`, error.stack);
+      const errorMsg = error instanceof Error ? error.message : String(error);
+      this.logger.error(`Security health check failed: ${errorMsg}`);
       
       const result = this.getStatus(key, false, {
-        error: error.message,
+        error: errorMsg,
       });
       
       throw new HealthCheckError('Security health check failed', result);
@@ -177,27 +179,27 @@ export class SecurityHealthIndicator extends HealthIndicator {
       
       // Process file scanner health
       components.fileScanner = fileScannerHealth.status === 'fulfilled'
-        ? { status: fileScannerHealth.value.status, ...fileScannerHealth.value }
+        ? { status: fileScannerHealth.value.status }
         : { status: 'unhealthy', error: fileScannerHealth.reason?.message || 'Unknown error' };
       
       // Process DLP health
       components.dlp = dlpHealth.status === 'fulfilled'
-        ? { status: dlpHealth.value.status, ...dlpHealth.value }
+        ? { status: dlpHealth.value.status }
         : { status: 'unhealthy', error: dlpHealth.reason?.message || 'Unknown error' };
       
       // Process VPC Service Controls health
       components.vpcServiceControls = vpcHealth.status === 'fulfilled'
-        ? { status: vpcHealth.value.status, ...vpcHealth.value }
+        ? { status: vpcHealth.value.status }
         : { status: 'unhealthy', error: vpcHealth.reason?.message || 'Unknown error' };
       
       // Process Cloud Armor health
       components.cloudArmor = cloudArmorHealth.status === 'fulfilled'
-        ? { status: cloudArmorHealth.value.status, ...cloudArmorHealth.value }
+        ? { status: cloudArmorHealth.value.status }
         : { status: 'unhealthy', error: cloudArmorHealth.reason?.message || 'Unknown error' };
       
       // Process Credential Manager health
       components.credentialManager = credentialManagerHealth.status === 'fulfilled'
-        ? { status: credentialManagerHealth.value.status, ...credentialManagerHealth.value }
+        ? { status: credentialManagerHealth.value.status }
         : { status: 'unhealthy', error: credentialManagerHealth.reason?.message || 'Unknown error' };
       
       // Determine overall status
@@ -247,7 +249,8 @@ export class SecurityHealthIndicator extends HealthIndicator {
       return await checkFn() as T & { status: string };
     } catch (error) {
       this.logger.error(`Health check failed for ${name}: ${error.message}`, error.stack);
-      return { status: 'unhealthy', error: error.message } as T & { status: string };
+      const result = { status: 'unhealthy', error: error.message };
+      return result as unknown as T & { status: string };
     }
   }
 }

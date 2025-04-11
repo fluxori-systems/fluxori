@@ -5,8 +5,9 @@ import {
   HttpException,
   HttpStatus,
   Logger,
-} from '@nestjs/common';
-import { Request, Response } from 'express';
+} from "@nestjs/common";
+
+import { Request, Response } from "express";
 
 /**
  * Global exception filter that handles all exceptions thrown in the application
@@ -21,18 +22,20 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     const request = ctx.getRequest<Request>();
 
     // Determine the status code and error message
-    const status = exception instanceof HttpException
-      ? exception.getStatus()
-      : HttpStatus.INTERNAL_SERVER_ERROR;
+    const status =
+      exception instanceof HttpException
+        ? exception.getStatus()
+        : HttpStatus.INTERNAL_SERVER_ERROR;
 
-    const message = exception instanceof HttpException
-      ? exception.message
-      : 'Internal server error';
+    const message =
+      exception instanceof HttpException
+        ? exception.message
+        : "Internal server error";
 
     // Log the error
     this.logger.error(
       `${request.method} ${request.url} - ${status} ${message}`,
-      exception instanceof Error ? exception.stack : '',
+      exception instanceof Error ? exception.stack : "",
     );
 
     // Send a standardized error response
@@ -42,7 +45,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       path: request.url,
       method: request.method,
       message,
-      ...(process.env.NODE_ENV === 'development' && {
+      ...(process.env.NODE_ENV === "development" && {
         stack: exception instanceof Error ? exception.stack : undefined,
       }),
     });

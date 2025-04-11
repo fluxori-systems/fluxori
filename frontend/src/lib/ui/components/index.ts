@@ -22,6 +22,27 @@ export { Alert } from './Alert';
 
 // Agent-focused components
 export { AgentMessage } from './AgentMessage';
+export { 
+  AgentConversation,
+  AgentConversationProvider,
+  useAgentConversation,
+  AgentInput,
+  AgentToolUsage,
+  AgentStateIndicator,
+  AgentConfidenceDisplay,
+  AgentInteractiveElement,
+  AgentSuggestionChip
+} from './agent';
+
+// Dashboard components
+export { 
+  DashboardLayout,
+  DashboardGrid,
+  DashboardSection,
+  DashboardCard,
+  MetricCard,
+  ChartCard
+} from './dashboard';
 
 // Demo and documentation
 export { ComponentShowcase } from './ComponentShowcase';

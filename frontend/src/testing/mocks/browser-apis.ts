@@ -5,16 +5,7 @@
  * for testing components that interact with browser features.
  */
 
-import { vi, type MockInstance } from 'vitest';
-
-/**
- * Helper function to create properly typed mock functions
- */
-export function createTypedMock<T = any>(
-  implementation?: (...args: any[]) => T
-): MockInstance<T> {
-  return vi.fn<any[], T>(implementation) as MockInstance<T>;
-}
+import { vi } from 'vitest';
 
 /**
  * Mock IntersectionObserver implementation with proper types
@@ -55,40 +46,26 @@ export class MockResizeObserver implements ResizeObserver {
 }
 
 /**
- * MediaQueryList-like object for testing
- */
-export interface MediaQueryListMock {
-  matches: boolean;
-  media: string;
-  onchange: ((this: MediaQueryList, ev: MediaQueryListEvent) => any) | null;
-  addListener: (callback: (ev: MediaQueryListEvent) => any) => void;
-  removeListener: (callback: (ev: MediaQueryListEvent) => any) => void;
-  addEventListener: (type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions) => void;
-  removeEventListener: (type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions) => void;
-  dispatchEvent: (event: Event) => boolean;
-}
-
-/**
  * Create a MediaQueryList-like object for testing
  */
-export function createMediaQueryListMock(media: string, matches: boolean = false): MediaQueryListMock {
+export function createMediaQueryListMock(media: string, matches: boolean = false): MediaQueryList {
   return {
     matches,
     media,
     onchange: null, 
-    addListener: vi.fn(),
-    removeListener: vi.fn(),
-    addEventListener: vi.fn(),
-    removeEventListener: vi.fn(),
-    dispatchEvent: vi.fn(() => true)
-  };
+    addListener: vi.fn() as unknown as MediaQueryList['addListener'],
+    removeListener: vi.fn() as unknown as MediaQueryList['removeListener'],
+    addEventListener: vi.fn() as unknown as MediaQueryList['addEventListener'],
+    removeEventListener: vi.fn() as unknown as MediaQueryList['removeEventListener'],
+    dispatchEvent: vi.fn().mockReturnValue(true) as unknown as MediaQueryList['dispatchEvent']
+  } as MediaQueryList;
 }
 
 /**
  * Create a properly typed matchMedia function for testing
  */
 export function createMatchMediaMock(defaultMatches: boolean = false) {
-  return function matchMedia(query: string): MediaQueryListMock {
+  return function matchMedia(query: string): MediaQueryList {
     return createMediaQueryListMock(query, defaultMatches);
   };
 }

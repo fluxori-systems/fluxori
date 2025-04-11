@@ -1,11 +1,17 @@
-import { DocumentBuilder, SwaggerCustomOptions } from '@nestjs/swagger';
+import { INestApplication } from "@nestjs/common";
+import {
+  DocumentBuilder,
+  SwaggerCustomOptions,
+  SwaggerModule,
+} from "@nestjs/swagger";
 
 /**
  * Swagger configuration options
  */
 export const swaggerConfig = new DocumentBuilder()
-  .setTitle('Fluxori API')
-  .setDescription(`
+  .setTitle("Fluxori API")
+  .setDescription(
+    `
 ## Fluxori Inventory & Marketplace Management Platform API
 
 This API provides access to Fluxori's inventory management, marketplace integration, and AI-powered insights.
@@ -17,6 +23,7 @@ This API provides access to Fluxori's inventory management, marketplace integrat
 - **Order Management:** Track and process orders from multiple channels
 - **AI Insights:** Get AI-powered recommendations for pricing, inventory, and more
 - **RAG Retrieval:** Semantically search through your documents and knowledge base
+- **Observability:** Comprehensive monitoring, tracing, and metrics collection
 
 ### Authentication
 
@@ -26,27 +33,31 @@ The token should be included in the Authorization header as a Bearer token.
 ### Rate Limiting
 
 API requests are subject to rate limiting to ensure fair usage.
-  `)
-  .setVersion('1.0')
-  .addTag('Authentication', 'User authentication and authorization')
-  .addTag('Users', 'User management operations')
-  .addTag('Organizations', 'Organization management')
-  .addTag('Inventory', 'Product and stock management')
-  .addTag('Marketplaces', 'Marketplace integrations and channel management')
-  .addTag('Orders', 'Order processing and management')
-  .addTag('BuyBox', 'Price monitoring and repricing rules')
-  .addTag('AI Insights', 'AI-powered business insights')
-  .addTag('Notifications', 'System and user notifications')
-  .addTag('RAG Retrieval', 'Semantic search and knowledge base')
-  .addTag('International Trade', 'International shipping and compliance')
+  `,
+  )
+  .setVersion("1.0")
+  .addTag("Authentication", "User authentication and authorization")
+  .addTag("Users", "User management operations")
+  .addTag("Organizations", "Organization management")
+  .addTag("Inventory", "Product and stock management")
+  .addTag("Marketplaces", "Marketplace integrations and channel management")
+  .addTag("Orders", "Order processing and management")
+  .addTag("BuyBox", "Price monitoring and repricing rules")
+  .addTag("AI Insights", "AI-powered business insights")
+  .addTag("Notifications", "System and user notifications")
+  .addTag("RAG Retrieval", "Semantic search and knowledge base")
+  .addTag("International Trade", "International shipping and compliance")
+  .addTag("Health", "System health monitoring endpoints")
+  .addTag("Metrics", "System metrics and performance monitoring")
+  .addTag("Feature Flags", "Feature flag management")
   .addBearerAuth(
     {
-      type: 'http',
-      scheme: 'bearer',
-      bearerFormat: 'JWT',
-      in: 'header',
+      type: "http",
+      scheme: "bearer",
+      bearerFormat: "JWT",
+      in: "header",
     },
-    'JWT-auth',
+    "JWT-auth",
   )
   .build();
 
@@ -56,11 +67,11 @@ API requests are subject to rate limiting to ensure fair usage.
 export const swaggerUiOptions: SwaggerCustomOptions = {
   swaggerOptions: {
     persistAuthorization: true,
-    docExpansion: 'none',
+    docExpansion: "none",
     filter: true,
     displayRequestDuration: true,
   },
-  customSiteTitle: 'Fluxori API Documentation',
+  customSiteTitle: "Fluxori API Documentation",
   customCss: `
     .swagger-ui .topbar { display: none }
     .swagger-ui .info { margin: 30px 0 }
@@ -70,3 +81,11 @@ export const swaggerUiOptions: SwaggerCustomOptions = {
     .swagger-ui .info__license { display: flex }
   `,
 };
+
+/**
+ * Setup Swagger documentation for the application
+ */
+export function setupSwagger(app: INestApplication): void {
+  const document = SwaggerModule.createDocument(app, swaggerConfig);
+  SwaggerModule.setup("docs", app, document, swaggerUiOptions);
+}

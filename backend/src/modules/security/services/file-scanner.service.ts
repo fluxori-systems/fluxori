@@ -27,7 +27,7 @@ export class FileScannerService {
     private readonly configService: ConfigService,
     private readonly observability: ObservabilityService,
   ) {
-    this.projectId = this.configService.get<string>('GCP_PROJECT_ID');
+    this.projectId = this.configService.get<string>('GCP_PROJECT_ID') || '';
     this.scanBucket = this.configService.get<string>('SCAN_BUCKET') || `${this.projectId}-file-scanning`;
     this.resultsBucket = this.configService.get<string>('SCAN_RESULTS_BUCKET') || `${this.projectId}-scan-results`;
     this.scannerFunctionName = this.configService.get<string>('SCANNER_FUNCTION_NAME') || 'fileScannerFunction';

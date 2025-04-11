@@ -6,7 +6,7 @@ import { FormField } from '@/lib/ui/components/FormField';
 import { PerformanceButton } from '@/lib/ui/components/PerformanceButton';
 import { useConnectionQuality } from '@/lib/motion/hooks/useServices';
 import { useMotionMode } from '@/lib/motion/hooks/useServices';
-import { ConnectionQuality } from '@/lib/shared/types/motion-types';
+import type { ConnectionQuality } from '@/lib/shared/types/sa-market-types';
 import { ConnectionQualitySimulator } from '@/lib/motion/components/ConnectionQualitySimulator';
 import { PerformanceDashboard } from '@/lib/motion/components/PerformanceDashboard';
 

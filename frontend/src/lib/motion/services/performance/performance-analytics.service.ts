@@ -171,7 +171,9 @@ export class SouthAfricanPerformanceAnalyticsService {
         dpr: 2
       },
       deviceType: 'mobile',
-      cpuPerformance: 'medium'
+      cpuPerformance: 'medium',
+      gpuTier: 'medium',
+      isHighResolutionScreen: true
     };
     
     const deviceProfile = getDeviceProfile(deviceCapabilities) || southAfricanDeviceProfiles[1]; // Mid-range as default

@@ -1,17 +1,29 @@
-import { describe, it, test, expect, vi, beforeEach, afterEach } from 'vitest';
-import { createTypedMock } from '../../../testing/mocks/browser-apis';
+/**
+ * Service Registry and Interface Tests
+ * 
+ * This file tests that the service interfaces and registry work correctly with
+ * proper TypeScript typing.
+ */
+
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+
+// Import interface types directly to ensure we're testing against the actual interfaces
 import type { 
   IConnectionService,
   ConnectionQualityResult
 } from '../services/connection-service.interface';
 import { CONNECTION_SERVICE_KEY } from '../services/connection-service.interface';
+
 import type {
-  IAnimationService,
-  AnimationStrategyConfig,
-  AnimationParams,
-  ComponentAnimationConfig
+  IAnimationService, 
+  ComponentAnimationConfig,
+  PerformanceMonitoringSettings,
+  AnimationFrameRecord,
+  PerformanceAnalysisResult
 } from '../services/animation-service.interface';
+import type { AnimationStrategyConfig } from '../types/motion-types';
 import { ANIMATION_SERVICE_KEY } from '../services/animation-service.interface';
+
 import {
   SERVICE_KEYS,
   ServiceRegistry,
@@ -21,67 +33,96 @@ import {
   getConnectionService
 } from '../services/service-registry';
 
-// Mock service implementations with proper TypeScript types
-const createMockConnectionService = (): IConnectionService => {
-  // Create properly typed mock functions
-  const getConnectionQuality = vi.fn<[], ConnectionQualityResult>().mockReturnValue({
+// Type for animation parameters
+interface AnimationParams {
+  enabled: boolean;
+  durationMultiplier: number;
+  useSimpleEasings: boolean;
+  reduceComplexity: boolean;
+  maxActiveAnimations: number;
+  disableStaggering: boolean;
+  scaleMultiplier: number;
+}
+
+// Create a fully typed mock ConnectionService implementation
+class MockConnectionService implements IConnectionService {
+  getConnectionQuality(): ConnectionQualityResult {
+    return {
       quality: 'medium',
-    isDataSaver: false,
-    isMetered: false,
+      isDataSaver: false,
+      isMetered: false,
+    } as ConnectionQualityResult;
+  }
   
-    });
-  
-  const subscribeToConnectionChanges = vi.fn<
-    [(quality: ConnectionQualityResult) => void], 
-    () => void
-  >().mockImplementation((callback) => {
+  subscribeToConnectionChanges(callback: (quality: ConnectionQualityResult) => void): () => void {
     callback({
       quality: 'medium',
       isDataSaver: false,
       isMetered: false,
-    });
-    return createTypedMock();
-  });
-  
-  const isDataSaverEnabled = vi.fn<[], boolean>().mockReturnValue(false);
-  const isConnectionMetered = vi.fn<[], boolean>().mockReturnValue(false);
-
-  return {
-    getConnectionQuality,
-    subscribeToConnectionChanges,
-    isDataSaverEnabled,
-    isConnectionMetered,
-  };
-};
-
-const createMockAnimationService = (): IAnimationService => {
-  // Create properly typed mock functions
-  const animateComponent = vi.fn<[ComponentAnimationConfig], () => void>().mockImplementation(() => {
+    } as ConnectionQualityResult);
     return () => {}; // Return cleanup function
-  });
+  }
   
-  const getAnimationStrategy = vi.fn<[AnimationStrategyConfig], AnimationParams>().mockReturnValue({
+  isDataSaverEnabled(): boolean {
+    return false;
+  }
+  
+  isConnectionMetered(): boolean {
+    return false;
+  }
+}
+
+// Create a fully typed mock AnimationService implementation
+class MockAnimationService implements IAnimationService {
+  animateComponent(config: ComponentAnimationConfig): () => void {
+    return () => {}; // Return cleanup function
+  }
+  
+  getAnimationStrategy(config: AnimationStrategyConfig): AnimationParams {
+    return {
       enabled: true,
-    durationMultiplier: 1.0,
-    useSimpleEasings: false,
-    reduceComplexity: false,
-    maxActiveAnimations: Infinity,
-    disableStaggering: false,
-    scaleMultiplier: 1.0,
+      durationMultiplier: 1.0,
+      useSimpleEasings: false,
+      reduceComplexity: false,
+      maxActiveAnimations: Infinity,
+      disableStaggering: false,
+      scaleMultiplier: 1.0,
+    };
+  }
   
-    });
+  shouldReduceMotion(): boolean {
+    return false;
+  }
   
-  const shouldReduceMotion = vi.fn<[], boolean>().mockReturnValue(false);
-  const getMotionMode = vi.fn<[], string>().mockReturnValue('full');
+  getMotionMode(): string {
+    return 'full';
+  }
+  
+  // Add missing methods required by IAnimationService
+  startPerformanceMonitoring(settings: PerformanceMonitoringSettings): number {
+    return 1;
+  }
+  
+  recordAnimationFrame(record: AnimationFrameRecord): void {
+    // No-op implementation
+  }
+  
+  stopPerformanceMonitoring(settings: PerformanceMonitoringSettings): void {
+    // No-op implementation
+  }
+  
+  getPerformanceAnalysis(settings: PerformanceMonitoringSettings): PerformanceAnalysisResult | null {
+    return {
+      hasIssues: false,
+      severityLevel: 0,
+      averageFrameTime: 16,
+      maxFrameTime: 33,
+      dropRate: 0
+    };
+  }
+}
 
-  return {
-    animateComponent,
-    getAnimationStrategy,
-    shouldReduceMotion,
-    getMotionMode,
-  };
-};
-
+// Tests for the service registry pattern
 describe('Service Registry', () => {
   beforeEach(() => {
     // Clear registry before each test
@@ -89,8 +130,8 @@ describe('Service Registry', () => {
   });
   
   it('should register and retrieve services', () => {
-    const mockConnectionService = createMockConnectionService();
-    const mockAnimationService = createMockAnimationService();
+    const mockConnectionService = new MockConnectionService();
+    const mockAnimationService = new MockAnimationService();
     
     // Register services
     ServiceRegistry.register(SERVICE_KEYS.CONNECTION_SERVICE, mockConnectionService);
@@ -114,8 +155,8 @@ describe('Service Registry', () => {
   });
   
   it('should use helper functions to register and retrieve services', () => {
-    const mockConnectionService = createMockConnectionService();
-    const mockAnimationService = createMockAnimationService();
+    const mockConnectionService = new MockConnectionService();
+    const mockAnimationService = new MockAnimationService();
     
     // Register using helper functions
     registerConnectionService(mockConnectionService);
@@ -142,7 +183,7 @@ describe('Service Registry', () => {
     expect(ServiceRegistry.has(SERVICE_KEYS.CONNECTION_SERVICE)).toBe(false);
     
     // Register connection service
-    const mockConnectionService = createMockConnectionService();
+    const mockConnectionService = new MockConnectionService();
     registerConnectionService(mockConnectionService);
     
     // Now should be registered
@@ -154,8 +195,8 @@ describe('Service Registry', () => {
   
   it('should maintain TypeScript interface compliance', () => {
     // This test validates at compile-time that our interfaces match implementation
-    const mockConnectionService = createMockConnectionService();
-    const mockAnimationService = createMockAnimationService();
+    const mockConnectionService = new MockConnectionService();
+    const mockAnimationService = new MockAnimationService();
     
     // These lines will fail TypeScript compilation if interfaces don't match
     const connectionService: IConnectionService = mockConnectionService;
@@ -172,5 +213,17 @@ describe('Service Registry', () => {
     // Simple runtime check
     expect(retrievedConnectionService).toBe(mockConnectionService);
     expect(retrievedAnimationService).toBe(mockAnimationService);
+    
+    // Call methods to verify typing
+    const connectionQuality = retrievedConnectionService.getConnectionQuality();
+    expect(connectionQuality).toHaveProperty('quality');
+    
+    const cleanup = retrievedAnimationService.animateComponent({
+      ref: { current: null },
+      enabled: true,
+      mode: 'appear',
+      properties: { opacity: 1 }
+    });
+    expect(typeof cleanup).toBe('function');
   });
 });

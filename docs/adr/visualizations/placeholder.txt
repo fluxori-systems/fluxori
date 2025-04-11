@@ -1,0 +1,10 @@
+This is a placeholder file for the visualizations directory.
+In a real implementation, this directory would contain SVG files and metadata for ADR visualizations generated using the scripts in /scripts/adr/.
+
+The visualizations would be generated using dependency-cruiser and would show module dependencies relevant to each ADR.
+
+Examples of visualization files that would be generated:
+- adr-001-module-boundary-enforcement.svg
+- adr-001-module-boundary-enforcement.txt
+- adr-002-repository-pattern-implementation.svg
+- adr-002-repository-pattern-implementation.txt

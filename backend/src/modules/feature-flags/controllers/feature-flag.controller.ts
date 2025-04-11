@@ -11,9 +11,15 @@ import {
   BadRequestException,
   NotFoundException,
   Logger,
-} from '@nestjs/common';
-import { FirebaseAuthGuard, GetUser } from 'src/common/auth';
-import { FeatureFlagService } from '../services/feature-flag.service';
+} from "@nestjs/common";
+
+import {
+  FirebaseAuthGuard,
+  GetUser,
+  DecodedFirebaseToken,
+  AuthUtils,
+} from "src/common/auth";
+
 import {
   FeatureFlag,
   FeatureFlagDTO,
@@ -22,10 +28,10 @@ import {
   Environment,
   FlagEvaluationContext,
   FlagEvaluationResult,
-} from '../interfaces/types';
-import { DecodedFirebaseToken, AuthUtils } from 'src/common/auth';
+} from "../interfaces/types";
+import { FeatureFlagService } from "../services/feature-flag.service";
 
-@Controller('feature-flags')
+@Controller("feature-flags")
 @UseGuards(FirebaseAuthGuard)
 export class FeatureFlagController {
   private readonly logger = new Logger(FeatureFlagController.name);
@@ -49,17 +55,19 @@ export class FeatureFlagController {
    */
   @Get()
   async getAllFlags(
-    @Query('environment') environment?: Environment,
+    @Query("environment") environment?: Environment,
   ): Promise<FeatureFlag[]> {
-    this.logger.log(`Getting all feature flags${environment ? ` for environment: ${environment}` : ''}`);
+    this.logger.log(
+      `Getting all feature flags${environment ? ` for environment: ${environment}` : ""}`,
+    );
     return this.featureFlagService.getAllFlags(environment);
   }
 
   /**
    * Get a feature flag by ID
    */
-  @Get(':id')
-  async getFlagById(@Param('id') id: string): Promise<FeatureFlag> {
+  @Get(":id")
+  async getFlagById(@Param("id") id: string): Promise<FeatureFlag> {
     this.logger.log(`Getting feature flag by ID: ${id}`);
     return this.featureFlagService.getFlagById(id);
   }
@@ -67,8 +75,8 @@ export class FeatureFlagController {
   /**
    * Get a feature flag by key
    */
-  @Get('key/:key')
-  async getFlagByKey(@Param('key') key: string): Promise<FeatureFlag> {
+  @Get("key/:key")
+  async getFlagByKey(@Param("key") key: string): Promise<FeatureFlag> {
     this.logger.log(`Getting feature flag by key: ${key}`);
     return this.featureFlagService.getFlagByKey(key);
   }
@@ -76,9 +84,9 @@ export class FeatureFlagController {
   /**
    * Update a feature flag
    */
-  @Patch(':id')
+  @Patch(":id")
   async updateFlag(
-    @Param('id') id: string,
+    @Param("id") id: string,
     @Body() flagDTO: Partial<FeatureFlagDTO>,
     @GetUser() user: any,
   ): Promise<FeatureFlag> {
@@ -89,9 +97,9 @@ export class FeatureFlagController {
   /**
    * Toggle a feature flag's enabled status
    */
-  @Patch(':id/toggle')
+  @Patch(":id/toggle")
   async toggleFlag(
-    @Param('id') id: string,
+    @Param("id") id: string,
     @Body() toggleDTO: FeatureFlagToggleDTO,
     @GetUser() user: any,
   ): Promise<FeatureFlag> {
@@ -102,9 +110,9 @@ export class FeatureFlagController {
   /**
    * Delete a feature flag
    */
-  @Delete(':id')
+  @Delete(":id")
   async deleteFlag(
-    @Param('id') id: string,
+    @Param("id") id: string,
     @GetUser() user: any,
   ): Promise<{ success: boolean }> {
     this.logger.log(`Deleting feature flag: ${id}`);
@@ -115,8 +123,8 @@ export class FeatureFlagController {
   /**
    * Get audit logs for a feature flag
    */
-  @Get(':id/audit-logs')
-  async getAuditLogs(@Param('id') id: string): Promise<FeatureFlagAuditLog[]> {
+  @Get(":id/audit-logs")
+  async getAuditLogs(@Param("id") id: string): Promise<FeatureFlagAuditLog[]> {
     this.logger.log(`Getting audit logs for feature flag: ${id}`);
     return this.featureFlagService.getAuditLogs(id);
   }
@@ -124,78 +132,91 @@ export class FeatureFlagController {
   /**
    * Evaluate a feature flag for the current context
    */
-  @Post('evaluate/:key')
+  @Post("evaluate/:key")
   async evaluateFlag(
-    @Param('key') key: string,
+    @Param("key") key: string,
     @Body() context: FlagEvaluationContext,
     @GetUser() user: any,
   ): Promise<FlagEvaluationResult> {
     this.logger.debug(`Evaluating feature flag: ${key}`);
-    
+
     // Merge the user context with the provided context
     const mergedContext: FlagEvaluationContext = {
       ...context,
       userId: context.userId || user.id,
       userRole: context.userRole || user.role,
-      organizationId: context.organizationId || user.organizationId
+      organizationId: context.organizationId || user.organizationId,
     };
-    
+
     return this.featureFlagService.evaluateFlag(key, mergedContext);
   }
 
   /**
    * Check if a feature flag is enabled for the current context
    */
-  @Post('is-enabled/:key')
+  @Post("is-enabled/:key")
   async isEnabled(
-    @Param('key') key: string,
+    @Param("key") key: string,
     @Body() context: FlagEvaluationContext,
     @GetUser() user: DecodedFirebaseToken,
   ): Promise<{ enabled: boolean }> {
     this.logger.debug(`Checking if feature flag is enabled: ${key}`);
-    
+
     // Merge the user context with the provided context using our common auth utilities
     const mergedContext: FlagEvaluationContext = {
       ...context,
       userId: context.userId || user.uid,
       userRole: context.userRole || user.role,
-      organizationId: context.organizationId || user.organizationId
+      organizationId: context.organizationId || user.organizationId,
     };
-    
+
     // Log additional context if the user is in an organization
-    if (mergedContext.organizationId && AuthUtils.isInOrganization(user, mergedContext.organizationId)) {
-      this.logger.debug(`User belongs to evaluated organization: ${mergedContext.organizationId}`);
+    if (
+      mergedContext.organizationId &&
+      AuthUtils.isInOrganization(user, mergedContext.organizationId)
+    ) {
+      this.logger.debug(
+        `User belongs to evaluated organization: ${mergedContext.organizationId}`,
+      );
     }
-    
-    const isEnabled = await this.featureFlagService.isEnabled(key, mergedContext);
+
+    const isEnabled = await this.featureFlagService.isEnabled(
+      key,
+      mergedContext,
+    );
     return { enabled: isEnabled };
   }
 
   /**
    * Evaluate multiple feature flags at once
    */
-  @Post('evaluate-batch')
+  @Post("evaluate-batch")
   async evaluateBatchFlags(
-    @Body() data: { keys: string[], context: FlagEvaluationContext },
+    @Body() data: { keys: string[]; context: FlagEvaluationContext },
     @GetUser() user: any,
   ): Promise<Record<string, FlagEvaluationResult>> {
-    this.logger.debug(`Evaluating batch of feature flags: ${data.keys.join(', ')}`);
-    
+    this.logger.debug(
+      `Evaluating batch of feature flags: ${data.keys.join(", ")}`,
+    );
+
     // Merge the user context with the provided context
     const mergedContext: FlagEvaluationContext = {
       ...data.context,
       userId: data.context.userId || user.id,
       userRole: data.context.userRole || user.role,
-      organizationId: data.context.organizationId || user.organizationId
+      organizationId: data.context.organizationId || user.organizationId,
     };
-    
+
     const results: Record<string, FlagEvaluationResult> = {};
-    
+
     // Evaluate each flag
     for (const key of data.keys) {
-      results[key] = await this.featureFlagService.evaluateFlag(key, mergedContext);
+      results[key] = await this.featureFlagService.evaluateFlag(
+        key,
+        mergedContext,
+      );
     }
-    
+
     return results;
   }
 }

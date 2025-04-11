@@ -1,108 +1,139 @@
-import { Injectable, Logger } from '@nestjs/common';
-import { FirestoreConfigService } from '../../../config/firestore.config';
-import { FirestoreBaseRepository } from '../../../common/repositories/firestore-base.repository';
-import { Product } from '../models/product.schema';
-import { ProductStatus } from '../interfaces/types';
+import { Injectable, Logger } from "@nestjs/common";
+
+import {
+  FirestoreBaseRepository,
+  FirestoreAdvancedFilter,
+} from "../../../common/repositories";
+import { FirestoreConfigService } from "../../../config/firestore.config";
+import { ProductStatus } from "../interfaces/types";
+import { Product } from "../models/product.schema";
 
 /**
  * Repository for Product entities
  */
 @Injectable()
 export class ProductRepository extends FirestoreBaseRepository<Product> {
-  // Collection name in Firestore
-  protected readonly collectionName = 'products';
-  
+  protected readonly logger = new Logger(ProductRepository.name);
+
   constructor(firestoreConfigService: FirestoreConfigService) {
-    super(firestoreConfigService, {
+    super(firestoreConfigService, "products", {
       useSoftDeletes: true,
       useVersioning: true,
       enableCache: true,
       cacheTTLMs: 5 * 60 * 1000, // 5 minutes
-      requiredFields: ['organizationId', 'sku', 'name', 'status'],
+      requiredFields: ["organizationId", "sku", "name", "status"],
     });
   }
-  
+
   /**
    * Find products by organization ID
    * @param organizationId Organization ID
    * @returns Array of products
    */
   async findByOrganization(organizationId: string): Promise<Product[]> {
-    return this.findAll({ organizationId });
+    return this.find({
+      advancedFilters: [
+        { field: "organizationId", operator: "==", value: organizationId },
+      ],
+    });
   }
-  
+
   /**
    * Find products by SKU
    * @param organizationId Organization ID
    * @param sku Product SKU
    * @returns Product or null if not found
    */
-  async findBySku(organizationId: string, sku: string): Promise<Product | null> {
-    const results = await this.findAll({ 
-      organizationId, 
-      sku 
+  async findBySku(
+    organizationId: string,
+    sku: string,
+  ): Promise<Product | null> {
+    const results = await this.find({
+      advancedFilters: [
+        { field: "organizationId", operator: "==", value: organizationId },
+        { field: "sku", operator: "==", value: sku },
+      ],
     });
-    
+
     return results.length > 0 ? results[0] : null;
   }
-  
+
   /**
    * Find products by barcode
    * @param organizationId Organization ID
    * @param barcode Product barcode
    * @returns Product or null if not found
    */
-  async findByBarcode(organizationId: string, barcode: string): Promise<Product | null> {
-    const results = await this.findAll({ 
-      organizationId,
-      barcode
+  async findByBarcode(
+    organizationId: string,
+    barcode: string,
+  ): Promise<Product | null> {
+    const results = await this.find({
+      advancedFilters: [
+        { field: "organizationId", operator: "==", value: organizationId },
+        { field: "barcode", operator: "==", value: barcode },
+      ],
     });
-    
+
     return results.length > 0 ? results[0] : null;
   }
-  
+
   /**
    * Find products by status
    * @param organizationId Organization ID
    * @param status Product status
    * @returns Array of products
    */
-  async findByStatus(organizationId: string, status: ProductStatus): Promise<Product[]> {
-    return this.findAll({ 
-      organizationId, 
-      status 
+  async findByStatus(
+    organizationId: string,
+    status: ProductStatus,
+  ): Promise<Product[]> {
+    return this.find({
+      advancedFilters: [
+        { field: "organizationId", operator: "==", value: organizationId },
+        { field: "status", operator: "==", value: status },
+      ],
     });
   }
-  
+
   /**
    * Find products by category
    * @param organizationId Organization ID
    * @param categoryId Category ID
    * @returns Array of products
    */
-  async findByCategory(organizationId: string, categoryId: string): Promise<Product[]> {
+  async findByCategory(
+    organizationId: string,
+    categoryId: string,
+  ): Promise<Product[]> {
     // Fetch all products for the organization
     const products = await this.findByOrganization(organizationId);
-    
+
     // Filter products that have the category ID in their categoryIds array
-    return products.filter(product => 
-      product.categoryIds && product.categoryIds.includes(categoryId)
+    return products.filter(
+      (product) =>
+        product.categoryIds && product.categoryIds.includes(categoryId),
     );
   }
-  
+
   /**
    * Find products by brand
    * @param organizationId Organization ID
    * @param brandId Brand ID
    * @returns Array of products
    */
-  async findByBrand(organizationId: string, brandId: string): Promise<Product[]> {
-    return this.findAll({ 
-      organizationId, 
-      brandId 
+  async findByBrand(
+    organizationId: string,
+    brandId: string,
+  ): Promise<Product[]> {
+    return this.find({
+      advancedFilters: [
+        { field: "organizationId", operator: "==", value: organizationId },
+        { field: "brandId", operator: "==", value: brandId },
+      ],
     });
   }
-  
+
   /**
    * Find products with low stock
    * @param organizationId Organization ID
@@ -111,19 +142,19 @@ export class ProductRepository extends FirestoreBaseRepository<Product> {
   async findLowStock(organizationId: string): Promise<Product[]> {
     // Get all products for the organization
     const products = await this.findByOrganization(organizationId);
-    
+
     // Filter products with low stock
-    return products.filter(product => {
+    return products.filter((product) => {
       // Check if product has a threshold defined
       if (product.stockLevelThreshold) {
         return product.availableQuantity <= product.stockLevelThreshold.low;
       }
-      
+
       // Default low stock level if no threshold is defined
       return product.availableQuantity <= 5;
     });
   }
-  
+
   /**
    * Update product stock quantities
    * @param id Product ID
@@ -134,18 +165,18 @@ export class ProductRepository extends FirestoreBaseRepository<Product> {
   async updateStock(
     id: string,
     stockQuantity: number,
-    reservedQuantity: number
+    reservedQuantity: number,
   ): Promise<Product | null> {
     // Calculate available quantity
     const availableQuantity = Math.max(0, stockQuantity - reservedQuantity);
-    
+
     return this.update(id, {
       stockQuantity,
       reservedQuantity,
-      availableQuantity
+      availableQuantity,
     });
   }
-  
+
   /**
    * Search products by text
    * @param organizationId Organization ID
@@ -154,26 +185,28 @@ export class ProductRepository extends FirestoreBaseRepository<Product> {
    */
   async searchProducts(
     organizationId: string,
-    searchText: string
+    searchText: string,
   ): Promise<Product[]> {
     // Get all products for the organization
     const products = await this.findByOrganization(organizationId);
-    
+
     // Normalize search text
     const normalizedSearch = searchText.toLowerCase().trim();
-    
+
     // Filter products based on search text
-    return products.filter(product => {
+    return products.filter((product) => {
       const name = product.name.toLowerCase();
       const sku = product.sku.toLowerCase();
-      const description = product.description?.toLowerCase() || '';
-      
-      return name.includes(normalizedSearch) || 
-             sku.includes(normalizedSearch) || 
-             description.includes(normalizedSearch);
+      const description = product.description?.toLowerCase() || "";
+
+      return (
+        name.includes(normalizedSearch) ||
+        sku.includes(normalizedSearch) ||
+        description.includes(normalizedSearch)
+      );
     });
   }
-  
+
   /**
    * Find products with advanced filtering
    * @param params Query parameters
@@ -194,76 +227,110 @@ export class ProductRepository extends FirestoreBaseRepository<Product> {
     limit?: number;
     offset?: number;
   }): Promise<Product[]> {
-    // Get all products for the organization
-    let products = await this.findByOrganization(params.organizationId);
-    
-    // Apply filters
+    // Create advanced filters
+    const advancedFilters: FirestoreAdvancedFilter<Product>[] = [
+      { field: "organizationId", operator: "==", value: params.organizationId },
+    ];
+
+    // Add optional filters
     if (params.status) {
-      products = products.filter(product => product.status === params.status);
+      advancedFilters.push({
+        field: "status",
+        operator: "==",
+        value: params.status,
+      });
     }
-    
+
+    if (params.brandId) {
+      advancedFilters.push({
+        field: "brandId",
+        operator: "==",
+        value: params.brandId,
+      });
+    }
+
+    if (params.hasVariants !== undefined) {
+      advancedFilters.push({
+        field: "hasVariants",
+        operator: "==",
+        value: params.hasVariants,
+      });
+    }
+
+    // First pass with basic filters
+    let products = await this.find({
+      advancedFilters,
+      queryOptions: {
+        orderBy: "name",
+        limit: params.limit,
+        offset: params.offset,
+      },
+    });
+
+    // Some filters need post-processing
     if (params.categoryId) {
-      products = products.filter(product => 
-        product.categoryIds && params.categoryId && product.categoryIds.includes(params.categoryId)
+      products = products.filter(
+        (product) =>
+          product.categoryIds &&
+          params.categoryId &&
+          product.categoryIds.includes(params.categoryId),
       );
     }
-    
-    if (params.brandId) {
-      products = products.filter(product => product.brandId === params.brandId);
-    }
-    
+
     if (params.priceMin !== undefined) {
-      products = products.filter(product => product.pricing && product.pricing.basePrice >= (params.priceMin || 0));
+      products = products.filter(
+        (product) =>
+          product.pricing &&
+          product.pricing.basePrice >= (params.priceMin || 0),
+      );
     }
-    
+
     if (params.priceMax !== undefined) {
-      products = products.filter(product => product.pricing && product.pricing.basePrice <= (params.priceMax || Number.MAX_VALUE));
+      products = products.filter(
+        (product) =>
+          product.pricing &&
+          product.pricing.basePrice <= (params.priceMax || Number.MAX_VALUE),
+      );
     }
-    
+
     if (params.stockMin !== undefined) {
-      products = products.filter(product => (product.availableQuantity || 0) >= (params.stockMin || 0));
+      products = products.filter(
+        (product) => (product.availableQuantity || 0) >= (params.stockMin || 0),
+      );
     }
-    
+
     if (params.stockMax !== undefined) {
-      products = products.filter(product => (product.availableQuantity || 0) <= (params.stockMax || Number.MAX_VALUE));
+      products = products.filter(
+        (product) =>
+          (product.availableQuantity || 0) <=
+          (params.stockMax || Number.MAX_VALUE),
+      );
     }
-    
-    if (params.hasVariants !== undefined) {
-      products = products.filter(product => product.hasVariants === params.hasVariants);
-    }
-    
+
     if (params.tags && params.tags.length > 0) {
       const tagsToCheck = params.tags;
-      products = products.filter(product => {
+      products = products.filter((product) => {
         if (!product.tags) return false;
         const productTags = product.tags;
-        return tagsToCheck.some(tag => productTags.includes(tag));
+        return tagsToCheck.some((tag) => productTags.includes(tag));
       });
     }
-    
+
     if (params.searchText) {
       const normalizedSearch = params.searchText.toLowerCase().trim();
-      products = products.filter(product => {
+      products = products.filter((product) => {
         const name = product.name.toLowerCase();
         const sku = product.sku.toLowerCase();
-        const description = product.description?.toLowerCase() || '';
-        
-        return name.includes(normalizedSearch) || 
-               sku.includes(normalizedSearch) || 
-               description.includes(normalizedSearch);
+        const description = product.description?.toLowerCase() || "";
+
+        return (
+          name.includes(normalizedSearch) ||
+          sku.includes(normalizedSearch) ||
+          description.includes(normalizedSearch)
+        );
       });
     }
-    
-    // Sort by name
-    products.sort((a, b) => a.name.localeCompare(b.name));
-    
-    // Apply pagination
-    if (params.offset !== undefined || params.limit !== undefined) {
-      const start = params.offset || 0;
-      const end = params.limit ? start + params.limit : undefined;
-      products = products.slice(start, end);
-    }
-    
+
     return products;
   }
 }

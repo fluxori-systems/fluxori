@@ -3,7 +3,7 @@
  * 
  * A comprehensive framework for animations and transitions
  * with a focus on accessibility, performance, and consistent
- * animation patterns for the South African market.
+ * animation patterns optimized for the South African market.
  */
 
 // Context
@@ -27,6 +27,10 @@ export type {
   HighlightAnimationOptions,
   ShakeAnimationOptions
 } from './hooks/useGSAPAnimation';
+export { useSouthAfricanPerformance } from './hooks/useSouthAfricanPerformance';
+export type { SouthAfricanPerformanceData } from './hooks/useSouthAfricanPerformance';
+export { useAnimationPerformance } from './hooks/useAnimationPerformance';
+export { usePerformanceMonitoring } from './hooks/usePerformanceMonitoring';
 
 // Components
 export { AIProcessingIndicator } from './components/AIProcessingIndicator';
@@ -39,6 +43,9 @@ export { IconFeedback } from './components/IconFeedback';
 export type { IconFeedbackProps } from './components/IconFeedback';
 export { AnimatedTabIndicator } from './components/AnimatedTabIndicator';
 export type { AnimatedTabIndicatorProps } from './components/AnimatedTabIndicator';
+export { ConnectionQualitySimulator } from './components/ConnectionQualitySimulator';
+export { default as SouthAfricanOptimizedContainer } from './components/SouthAfricanOptimizedContainer';
+export { default as AIResponseOptimizer } from './components/AIResponseOptimizer';
 
 // Utils
 export { 
@@ -73,3 +80,19 @@ export {
   PhysicsUtils,
   CustomEasingUtils
 } from './gsap/gsap-business';
+
+// South African market optimizations
+export { 
+  getDeviceProfile, 
+  getNetworkProfile,
+  southAfricanDeviceProfiles,
+  southAfricanNetworkProfiles
+} from './data/device-profiles';
+export type { 
+  DeviceProfile,
+  NetworkProfile,
+  DeviceType,
+  NetworkProvider,
+  LocationType,
+  ProcessorTier
+} from './data/device-profiles';

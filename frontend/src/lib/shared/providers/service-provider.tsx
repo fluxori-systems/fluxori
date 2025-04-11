@@ -114,7 +114,7 @@ export function useMotion(): MotionContextType {
     // Try to dynamically get the real motion context
     // In a real environment, this would be provided by the motion module
     // but we decouple it via this dynamic import
-    return window.__MOTION_CONTEXT_HOOK ? window.__MOTION_CONTEXT_HOOK() : defaultMotionContext;
+    return (window as any).__MOTION_CONTEXT_HOOK ? (window as any).__MOTION_CONTEXT_HOOK() : defaultMotionContext;
   } catch (e) {
     // If anything fails, return the default
     return defaultMotionContext;

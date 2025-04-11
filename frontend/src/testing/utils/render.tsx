@@ -8,61 +8,24 @@
 import React, { ReactElement, ReactNode } from 'react';
 import { vi } from 'vitest';
 import { act } from 'react-dom/test-utils';
-import type { RenderOptions } from '@testing-library/react';
+import * as rtl from '@testing-library/react';
+import '@testing-library/jest-dom';
 
-// Import from testing-library with renamed exports to avoid type conflicts
-import {
-  render as testingLibraryRender,
-  screen as testingLibraryScreen,
-  fireEvent as testingLibraryFireEvent,
-  waitFor as testingLibraryWaitFor
+// Import all needed TestingLibrary exports to make them centrally available
+import { 
+  render, 
+  screen, 
+  fireEvent, 
+  waitFor
 } from '@testing-library/react';
 
 // Import type augmentations
-import '../augmentations/vitest';
+import '../types/testing-library';
+import '../types/testing';
 
 // Context providers
 import { ThemeProvider } from '../../lib/design-system/theme/ThemeContext';
 import { MotionProvider } from '../../lib/motion/context/MotionContext';
-
-/**
- * Custom within function that provides proper typing for element queries
- */
-export function within(element: HTMLElement) {
-  return {
-    getByText: (text: string | RegExp) => {
-      const nodes = Array.from(element.querySelectorAll('*'));
-      const found = nodes.find(n => n.textContent && 
-        (typeof text === 'string' 
-          ? n.textContent.includes(text)
-          : text.test(n.textContent)
-        )
-      );
-      if (!found) throw new Error(`Unable to find text: ${text}`);
-      return found as HTMLElement;
-    },
-    queryByText: (text: string | RegExp) => {
-      const nodes = Array.from(element.querySelectorAll('*'));
-      const found = nodes.find(n => n.textContent && 
-        (typeof text === 'string' 
-          ? n.textContent.includes(text)
-          : text.test(n.textContent)
-        )
-      );
-      return found as HTMLElement || null;
-    },
-    getByAttribute: (attribute: string, value: string) => {
-      const selector = `[${attribute}="${value}"]`;
-      const found = element.querySelector(selector);
-      if (!found) throw new Error(`Unable to find element with attribute ${attribute}="${value}"`);
-      return found as HTMLElement;
-    },
-    queryByAttribute: (attribute: string, value: string) => {
-      const selector = `[${attribute}="${value}"]`;
-      return element.querySelector(selector) as HTMLElement || null;
-    }
-  };
-}
 
 // Simplified mock ServiceProvider that doesn't try to register services
 function ServiceProvider({ children }: { children: ReactNode }): ReactElement {
@@ -117,9 +80,9 @@ function AllProviders({ children }: { children: ReactNode }): ReactElement {
  */
 export function renderWithProviders(
   ui: ReactElement,
-  options?: Omit<RenderOptions, 'wrapper'>
+  options?: Omit<rtl.RenderOptions, 'wrapper'>
 ) {
-  return testingLibraryRender(ui, { wrapper: AllProviders, ...options });
+  return render(ui, { wrapper: AllProviders, ...options });
 }
 
 /**
@@ -137,7 +100,7 @@ export function renderWithSpecificProviders(
   }: { 
     withTheme?: boolean;
     withMotion?: boolean;
-  } & Omit<RenderOptions, 'wrapper'>
+  } & Omit<rtl.RenderOptions, 'wrapper'>
 ) {
   // Create a custom wrapper based on requested providers
   function CustomProviders({ children }: { children: ReactNode }) {
@@ -156,7 +119,7 @@ export function renderWithSpecificProviders(
     return content;
   }
   
-  return testingLibraryRender(ui, { wrapper: CustomProviders, ...options });
+  return render(ui, { wrapper: CustomProviders, ...options });
 }
 
 /**
@@ -169,7 +132,7 @@ export function renderHook<Result, Props extends Record<string, any> = Record<st
     wrapper?: React.ComponentType<{children: React.ReactNode}>
   }
 ) {
-  let result: { current: Result } = { current: null as any };
+  const result = { current: null as unknown as Result };
   
   const TestComponent = (props: Props) => {
     result.current = callback(props);
@@ -181,7 +144,7 @@ export function renderHook<Result, Props extends Record<string, any> = Record<st
   // Use specified wrapper or default to AllProviders
   const WrapperComponent = options?.wrapper || AllProviders;
   
-  const { rerender, unmount } = testingLibraryRender(
+  const { rerender, unmount } = render(
     <TestComponent {...initialProps} />,
     { wrapper: WrapperComponent }
   );
@@ -194,26 +157,10 @@ export function renderHook<Result, Props extends Record<string, any> = Record<st
   };
 }
 
-// Extend the screen object with our additional query methods
-const extendedScreen = {
-  ...testingLibraryScreen,
-  getByAttribute: (attribute: string, value: string) => {
-    const selector = `[${attribute}="${value}"]`;
-    const found = document.querySelector(selector);
-    if (!found) throw new Error(`Unable to find element with attribute ${attribute}="${value}"`);
-    return found as HTMLElement;
-  },
-  queryByAttribute: (attribute: string, value: string) => {
-    const selector = `[${attribute}="${value}"]`;
-    return document.querySelector(selector) as HTMLElement || null;
-  }
-};
-
-// Re-export our enhanced versions of the testing library functions
-export {
-  extendedScreen as screen,
-  testingLibraryFireEvent as fireEvent,
-  testingLibraryWaitFor as waitFor,
-  act,
-  testingLibraryRender as render
+// Export all testing-library functions for consumer convenience
+export { 
+  render, 
+  screen, 
+  fireEvent, 
+  waitFor
 };

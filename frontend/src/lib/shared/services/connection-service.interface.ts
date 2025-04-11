@@ -1,6 +1,6 @@
 'use client';
 
-import { ConnectionQualityResult } from '../types/motion-types';
+import type { ConnectionQualityResult } from '../types/sa-market-types';
 
 // Re-export to make it available to UI module
 export type { ConnectionQualityResult };

@@ -1,8 +1,12 @@
 /**
  * BuyBox History Schema
  */
-import { FirestoreEntity } from '../../../types/google-cloud.types';
-import { BuyBoxStatus, CompetitorPrice, PriceAdjustment } from '../interfaces/types';
+import { FirestoreEntity } from "../../../types/google-cloud.types";
+import {
+  BuyBoxStatus,
+  CompetitorPrice,
+  PriceAdjustment,
+} from "../interfaces/types";
 
 /**
  * BuyBox History entity for Firestore

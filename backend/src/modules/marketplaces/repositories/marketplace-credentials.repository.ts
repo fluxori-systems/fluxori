@@ -1,8 +1,9 @@
-import { Injectable, Logger } from '@nestjs/common';
-import { FirestoreBaseRepository } from '../../../common/repositories/firestore-base.repository';
-import { FirestoreConfigService } from '../../../config/firestore.config';
-import { MarketplaceCredential } from '../models/marketplace-credentials.schema';
-import { MarketplaceCredentials } from '../interfaces/types';
+import { Injectable, Logger } from "@nestjs/common";
+
+import { FirestoreBaseRepository } from "../../../common/repositories";
+import { FirestoreConfigService } from "../../../config/firestore.config";
+import { MarketplaceCredentials } from "../interfaces/types";
+import { MarketplaceCredential } from "../models/marketplace-credentials.schema";
 
 /**
  * Repository for managing marketplace credentials in Firestore
@@ -10,15 +11,22 @@ import { MarketplaceCredentials } from '../interfaces/types';
 @Injectable()
 export class MarketplaceCredentialsRepository extends FirestoreBaseRepository<MarketplaceCredential> {
   protected readonly logger = new Logger(MarketplaceCredentialsRepository.name);
-  protected readonly collectionName = 'marketplace_credentials';
+  protected readonly collectionName = "marketplace_credentials";
 
-  constructor(protected readonly firestoreConfigService: FirestoreConfigService) {
-    super(firestoreConfigService, {
+  constructor(
+    protected readonly firestoreConfigService: FirestoreConfigService,
+  ) {
+    super(firestoreConfigService, "marketplace_credentials", {
       useSoftDeletes: true,
       useVersioning: true,
       enableCache: true,
       cacheTTLMs: 10 * 60 * 1000, // 10 minutes
-      requiredFields: ['marketplaceId', 'organizationId', 'credentials', 'isActive'] as Array<keyof MarketplaceCredential>,
+      requiredFields: [
+        "marketplaceId",
+        "organizationId",
+        "credentials",
+        "isActive",
+      ],
     });
   }
 
@@ -28,13 +36,16 @@ export class MarketplaceCredentialsRepository extends FirestoreBaseRepository<Ma
    * @param organizationId The organization ID
    * @returns The credential if found
    */
-  async findOne(marketplaceId: string, organizationId: string): Promise<MarketplaceCredential | null> {
+  async findOne(
+    marketplaceId: string,
+    organizationId: string,
+  ): Promise<MarketplaceCredential | null> {
     try {
       const querySnapshot = await this.collection
-        .where('marketplaceId', '==', marketplaceId)
-        .where('organizationId', '==', organizationId)
-        .where('isActive', '==', true)
-        .where('isDeleted', '==', false)
+        .where("marketplaceId", "==", marketplaceId)
+        .where("organizationId", "==", organizationId)
+        .where("isActive", "==", true)
+        .where("isDeleted", "==", false)
         .limit(1)
         .get();
 
@@ -45,7 +56,10 @@ export class MarketplaceCredentialsRepository extends FirestoreBaseRepository<Ma
       const doc = querySnapshot.docs[0];
       return this.converter.fromFirestore(doc);
     } catch (error) {
-      this.logger.error(`Error finding credential: ${error.message}`, error.stack);
+      this.logger.error(
+        `Error finding credential: ${error.message}`,
+        error.stack,
+      );
       throw error;
     }
   }
@@ -55,17 +69,22 @@ export class MarketplaceCredentialsRepository extends FirestoreBaseRepository<Ma
    * @param organizationId The organization ID
    * @returns Array of credentials
    */
-  async findByOrganization(organizationId: string): Promise<MarketplaceCredential[]> {
+  async findByOrganization(
+    organizationId: string,
+  ): Promise<MarketplaceCredential[]> {
     try {
       const querySnapshot = await this.collection
-        .where('organizationId', '==', organizationId)
-        .where('isActive', '==', true)
-        .where('isDeleted', '==', false)
+        .where("organizationId", "==", organizationId)
+        .where("isActive", "==", true)
+        .where("isDeleted", "==", false)
         .get();
 
-      return querySnapshot.docs.map(doc => this.converter.fromFirestore(doc));
+      return querySnapshot.docs.map((doc) => this.converter.fromFirestore(doc));
     } catch (error) {
-      this.logger.error(`Error finding credentials by organization: ${error.message}`, error.stack);
+      this.logger.error(
+        `Error finding credentials by organization: ${error.message}`,
+        error.stack,
+      );
       throw error;
     }
   }
@@ -85,14 +104,14 @@ export class MarketplaceCredentialsRepository extends FirestoreBaseRepository<Ma
     try {
       // Check if credentials already exist
       const existing = await this.findOne(marketplaceId, organizationId);
-      
+
       // Clean up credentials object
       const cleanCredentials = { ...credentials };
-      if ('organizationId' in cleanCredentials) {
+      if ("organizationId" in cleanCredentials) {
         // @ts-ignore: We know this property exists because we just checked
         delete cleanCredentials.organizationId; // Don't store organizationId twice
       }
-      
+
       // Prepare the update data
       const credentialData: Partial<MarketplaceCredential> = {
         marketplaceId,
@@ -104,12 +123,14 @@ export class MarketplaceCredentialsRepository extends FirestoreBaseRepository<Ma
         accessToken: credentials.accessToken,
         updatedAt: new Date(),
       };
-      
+
       if (existing) {
         // Update existing credentials
         const updated = await this.update(existing.id, credentialData);
         if (!updated) {
-          throw new Error(`Failed to update credential for marketplace ${marketplaceId}`);
+          throw new Error(
+            `Failed to update credential for marketplace ${marketplaceId}`,
+          );
         }
         return updated;
       } else {
@@ -118,7 +139,10 @@ export class MarketplaceCredentialsRepository extends FirestoreBaseRepository<Ma
         return this.create(credentialData as MarketplaceCredential);
       }
     } catch (error) {
-      this.logger.error(`Error upserting credential: ${error.message}`, error.stack);
+      this.logger.error(
+        `Error upserting credential: ${error.message}`,
+        error.stack,
+      );
       throw error;
     }
   }
@@ -145,7 +169,10 @@ export class MarketplaceCredentialsRepository extends FirestoreBaseRepository<Ma
         updatedAt: new Date(),
       });
     } catch (error) {
-      this.logger.error(`Error updating connection status: ${error.message}`, error.stack);
+      this.logger.error(
+        `Error updating connection status: ${error.message}`,
+        error.stack,
+      );
       throw error;
     }
   }
@@ -165,21 +192,21 @@ export class MarketplaceCredentialsRepository extends FirestoreBaseRepository<Ma
     expiresIn?: number,
   ): Promise<MarketplaceCredential | null> {
     try {
-      const updateData: Partial<MarketplaceCredential> = { 
+      const updateData: Partial<MarketplaceCredential> = {
         accessToken,
         updatedAt: new Date(),
       };
-      
+
       if (refreshToken) {
         updateData.refreshToken = refreshToken;
       }
-      
+
       if (expiresIn) {
         const now = new Date();
         const expiresAt = new Date(now.getTime() + expiresIn * 1000);
         updateData.tokenExpiresAt = expiresAt;
       }
-      
+
       return this.update(id, updateData);
     } catch (error) {
       this.logger.error(`Error updating tokens: ${error.message}`, error.stack);
@@ -194,12 +221,15 @@ export class MarketplaceCredentialsRepository extends FirestoreBaseRepository<Ma
    */
   async deactivate(id: string): Promise<MarketplaceCredential | null> {
     try {
-      return this.update(id, { 
+      return this.update(id, {
         isActive: false,
         updatedAt: new Date(),
       });
     } catch (error) {
-      this.logger.error(`Error deactivating credential: ${error.message}`, error.stack);
+      this.logger.error(
+        `Error deactivating credential: ${error.message}`,
+        error.stack,
+      );
       throw error;
     }
   }

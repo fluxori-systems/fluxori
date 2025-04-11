@@ -292,23 +292,25 @@ export class SecurityService implements ISecurityService {
   createSecurityContext(request: Request): SecurityContext {
     const context: SecurityContext = {
       clientIp: this.getClientIp(request),
-      userAgent: request.headers['user-agent'],
+      userAgent: request.headers['user-agent'] as string | undefined,
       path: request.path,
       method: request.method,
     };
     
     // Extract user information if available
-    if (request.user) {
-      context.userId = request.user.id;
-      context.roles = request.user.role ? [request.user.role] : [];
-      context.organizationId = request.user.organizationId;
+    const user = (request as any).user;
+    if (user) {
+      context.userId = user.id;
+      context.roles = user.role ? [user.role] : [];
+      context.organizationId = user.organizationId;
     }
     
     // Extract session information if available
-    if (request.session) {
+    const session = (request as any).session;
+    if (session) {
       context.session = {
-        id: request.sessionID,
-        createdAt: request.session.createdAt || new Date(),
+        id: (request as any).sessionID,
+        createdAt: session.createdAt || new Date(),
         lastActivity: new Date(),
       };
     }
@@ -466,7 +468,7 @@ export class SecurityService implements ISecurityService {
         : 'Content-Security-Policy';
       
       const cspValue = Object.entries(policyConfig.csp.directives)
-        .map(([directive, values]) => `${directive} ${values.join(' ')}`)
+        .map(([directive, values]) => `${directive} ${(values as string[]).join(' ')}`)
         .join('; ');
       
       response.setHeader(cspHeader, cspValue);

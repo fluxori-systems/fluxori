@@ -1,0 +1,76 @@
+{
+  "name": "fluxori",
+  "version": "1.0.0",
+  "description": "Fluxori - Inventory & Marketplace Management Platform",
+  "private": true,
+  "scripts": {
+    "deps:install": "npm run deps:install:backend && npm run deps:install:frontend",
+    "deps:install:backend": "cd backend && npm install --legacy-peer-deps",
+    "deps:install:frontend": "cd frontend && npm install --legacy-peer-deps",
+    "deps:validate": "npm run deps:validate:backend && npm run deps:validate:frontend",
+    "deps:validate:backend": "cd backend && npm run dep:validate",
+    "deps:validate:frontend": "cd frontend && npm run dep:validate",
+    "deps:circular": "npm run deps:circular:backend && npm run deps:circular:frontend",
+    "deps:circular:backend": "cd backend && npm run dep:check-circular",
+    "deps:circular:frontend": "cd frontend && npm run dep:check-circular",
+    "deps:graph": "npm run deps:graph:backend && npm run deps:graph:frontend",
+    "deps:generate": "node scripts/generate-dependency-graph.js",
+    "deps:simple-graph": "node scripts/generate-simple-graph.js",
+    "deps:cross-module": "node scripts/analyze-cross-module-dependencies.js",
+    "deps:graph:backend": "cd backend && npm run dep:graph && npm run dep:modules && npm run dep:archi",
+    "deps:graph:frontend": "cd frontend && npm run dep:graph && npm run dep:components && npm run dep:archi",
+    "docs:api": "npm run docs:api:backend && npm run docs:api:frontend",
+    "docs:api:backend": "cd backend && npm run doc:generate",
+    "docs:api:frontend": "cd frontend && npm run doc:generate",
+    "lint": "npm run lint:backend && npm run lint:frontend",
+    "lint:backend": "cd backend && npm run lint",
+    "lint:frontend": "cd frontend && npm run lint",
+    "typecheck": "npm run typecheck:backend && npm run typecheck:frontend",
+    "typecheck:backend": "cd backend && tsc --noEmit",
+    "typecheck:frontend": "cd frontend && npm run typecheck",
+    "prepare": "husky install",
+    "pre-commit": "lint-staged",
+    "check-deps": "npm run deps:circular && npm run deps:validate",
+    "adr:create": "cd scripts/adr && ./adr.sh create",
+    "adr:update-index": "cd scripts/adr && ./adr.sh update-index",
+    "adr:update-status": "cd scripts/adr && ./adr.sh update-status",
+    "adr:regen-viz": "cd scripts/adr && ./adr.sh regen-viz",
+    "adr:gen-viz": "cd scripts/adr && ./adr.sh generate-viz",
+    "adr:gen-mermaid": "cd scripts/adr && npm run generate-mermaid",
+    "adr:gen-index": "cd scripts/adr && npm run generate-index",
+    "adr:render": "cd scripts/adr && npm run render-adr",
+    "adr:render-all": "cd scripts/adr && npm run render-all-adrs",
+    "adr:html": "npm run adr:regen-viz && npm run adr:gen-index && npm run adr:render-all",
+    "adr:test": "cd scripts/adr && npm run test"
+  },
+  "workspaces": [
+    "backend",
+    "frontend"
+  ],
+  "engines": {
+    "node": ">=16",
+    "npm": ">=8"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fluxori/fluxori.git"
+  },
+  "keywords": [
+    "inventory",
+    "marketplace",
+    "ecommerce",
+    "nestjs",
+    "nextjs",
+    "gcp"
+  ],
+  "author": "Fluxori Team",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/fluxori/fluxori/issues"
+  },
+  "homepage": "https://github.com/fluxori/fluxori",
+  "devDependencies": {
+    "husky": "^8.0.3",
+    "lint-staged": "^15.1.0"
+  }
+}

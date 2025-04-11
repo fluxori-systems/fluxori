@@ -1,7 +1,8 @@
-import { Injectable, Logger, NotFoundException } from '@nestjs/common';
-import { FirestoreBaseRepository } from '../../../common/repositories/firestore-base.repository';
-import { User } from '../schemas/user.schema';
-import { FirestoreConfigService } from '../../../config/firestore.config';
+import { Injectable, Logger, NotFoundException } from "@nestjs/common";
+
+import { FirestoreBaseRepository } from "../../../common/repositories";
+import { FirestoreConfigService } from "../../../config/firestore.config";
+import { User } from "../schemas/user.schema";
 
 /**
  * Repository for managing user entities in Firestore
@@ -9,15 +10,17 @@ import { FirestoreConfigService } from '../../../config/firestore.config';
 @Injectable()
 export class UserRepository extends FirestoreBaseRepository<User> {
   protected readonly logger = new Logger(UserRepository.name);
-  protected readonly collectionName = 'users';
+  protected readonly collectionName = "users";
 
-  constructor(protected readonly firestoreConfigService: FirestoreConfigService) {
-    super(firestoreConfigService, {
+  constructor(
+    protected readonly firestoreConfigService: FirestoreConfigService,
+  ) {
+    super(firestoreConfigService, "users", {
       useSoftDeletes: true,
       useVersioning: true,
       enableCache: true,
       cacheTTLMs: 30 * 60 * 1000, // 30 minutes
-      requiredFields: ['email', 'name', 'role'] as Array<keyof User>,
+      requiredFields: ["email", "name", "role"],
     });
   }
 
@@ -29,7 +32,7 @@ export class UserRepository extends FirestoreBaseRepository<User> {
   async findByEmail(email: string): Promise<User | null> {
     try {
       const querySnapshot = await this.collection
-        .where('email', '==', email)
+        .where("email", "==", email)
         .limit(1)
         .get();
 
@@ -40,7 +43,10 @@ export class UserRepository extends FirestoreBaseRepository<User> {
       const doc = querySnapshot.docs[0];
       return this.converter.fromFirestore(doc);
     } catch (error) {
-      this.logger.error(`Error finding user by email: ${error.message}`, error.stack);
+      this.logger.error(
+        `Error finding user by email: ${error.message}`,
+        error.stack,
+      );
       throw error;
     }
   }
@@ -55,9 +61,9 @@ export class UserRepository extends FirestoreBaseRepository<User> {
       // Check if user with email already exists
       // Make sure email is provided
       if (!userData.email) {
-        throw new Error('Email is required to create a user');
+        throw new Error("Email is required to create a user");
       }
-      
+
       const existingUser = await this.findByEmail(userData.email);
       if (existingUser) {
         throw new Error(`User with email ${userData.email} already exists`);
@@ -71,8 +77,8 @@ export class UserRepository extends FirestoreBaseRepository<User> {
         updatedAt: new Date(),
         isActive: userData.isActive ?? true,
       };
-      
-      return this.create(userWithRequiredFields as Omit<User, 'id'>);
+
+      return this.create(userWithRequiredFields as Omit<User, "id">);
     } catch (error) {
       this.logger.error(`Error creating user: ${error.message}`, error.stack);
       throw error;
@@ -88,7 +94,10 @@ export class UserRepository extends FirestoreBaseRepository<User> {
     try {
       return this.update(userId, { lastLogin: new Date() });
     } catch (error) {
-      this.logger.error(`Error updating last login: ${error.message}`, error.stack);
+      this.logger.error(
+        `Error updating last login: ${error.message}`,
+        error.stack,
+      );
       throw error;
     }
   }
@@ -101,13 +110,16 @@ export class UserRepository extends FirestoreBaseRepository<User> {
   async findByOrganization(organizationId: string): Promise<User[]> {
     try {
       const querySnapshot = await this.collection
-        .where('organizationId', '==', organizationId)
-        .where('isDeleted', '==', false)
+        .where("organizationId", "==", organizationId)
+        .where("isDeleted", "==", false)
         .get();
 
-      return querySnapshot.docs.map(doc => this.converter.fromFirestore(doc));
+      return querySnapshot.docs.map((doc) => this.converter.fromFirestore(doc));
     } catch (error) {
-      this.logger.error(`Error finding users by organization: ${error.message}`, error.stack);
+      this.logger.error(
+        `Error finding users by organization: ${error.message}`,
+        error.stack,
+      );
       throw error;
     }
   }
@@ -118,11 +130,17 @@ export class UserRepository extends FirestoreBaseRepository<User> {
    * @param isActive Active status
    * @returns Updated user
    */
-  async setActiveStatus(userId: string, isActive: boolean): Promise<User | null> {
+  async setActiveStatus(
+    userId: string,
+    isActive: boolean,
+  ): Promise<User | null> {
     try {
       return this.update(userId, { isActive });
     } catch (error) {
-      this.logger.error(`Error setting active status: ${error.message}`, error.stack);
+      this.logger.error(
+        `Error setting active status: ${error.message}`,
+        error.stack,
+      );
       throw error;
     }
   }

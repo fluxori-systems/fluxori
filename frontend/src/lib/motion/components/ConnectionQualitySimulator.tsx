@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { ConnectionQuality } from '../../shared/types/motion-types';
+import type { ConnectionQuality } from '../../shared/types/sa-market-types';
 import { defaultConnectionService } from '../services/connection-service.impl';
 
 // Simulator modes

@@ -23,7 +23,7 @@ export class CredentialManagerService implements ICredentialManagerService {
     private readonly configService: ConfigService,
     private readonly observability: ObservabilityService,
   ) {
-    this.projectId = this.configService.get<string>('GCP_PROJECT_ID');
+    this.projectId = this.configService.get<string>('GCP_PROJECT_ID') || '';
     this.secretPrefix = this.configService.get<string>('SECRET_PREFIX') || 'fluxori';
     
     // Initialize GCP Secret Manager client
@@ -226,6 +226,15 @@ export class CredentialManagerService implements ICredentialManagerService {
       // Map to the expected format
       const credentials = await Promise.all(
         secrets.map(async (secret) => {
+          if (!secret.name) {
+            this.logger.warn('Found a secret with no name, skipping');
+            return {
+              key: 'unknown',
+              createdAt: new Date(),
+              expiresAt: undefined
+            };
+          }
+          
           // Extract the key from the full secret name
           const key = this.extractKeyFromSecretName(secret.name);
           
@@ -239,10 +248,10 @@ export class CredentialManagerService implements ICredentialManagerService {
           
           return {
             key,
-            createdAt: latestVersion?.createTime 
+            createdAt: latestVersion?.createTime && typeof latestVersion.createTime.seconds === 'number'
               ? new Date(latestVersion.createTime.seconds * 1000)
               : new Date(),
-            expiresAt: secret.expireTime
+            expiresAt: secret.expireTime && typeof secret.expireTime.seconds === 'number'
               ? new Date(secret.expireTime.seconds * 1000)
               : undefined,
           };

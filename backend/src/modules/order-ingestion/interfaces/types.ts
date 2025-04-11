@@ -1,5 +1,3 @@
-
-
 /**
  * Order model representing an order in the system
  */
@@ -128,7 +126,7 @@ export interface Order {
   /**
    * Status of the last Xero push attempt
    */
-  xeroPushStatus?: 'success' | 'failed';
+  xeroPushStatus?: "success" | "failed";
 
   /**
    * Error message from the last Xero push attempt
@@ -432,17 +430,17 @@ export interface OrderIngestionOptions {
    * Whether to skip existing orders
    */
   skipExisting?: boolean;
-  
+
   /**
    * Whether to create Xero invoices for eligible orders
    */
   createXeroInvoices?: boolean;
-  
+
   /**
    * Whether to update existing orders if found
    */
   updateExisting?: boolean;
-  
+
   /**
    * Additional marketplace-specific options
    */
@@ -457,27 +455,27 @@ export interface OrderIngestionResponse {
    * Whether the operation was successful overall
    */
   success: boolean;
-  
+
   /**
    * Count of new orders created
    */
   ordersCreated: number;
-  
+
   /**
    * Count of existing orders updated
    */
   ordersUpdated: number;
-  
+
   /**
    * Count of orders skipped
    */
   ordersSkipped: number;
-  
+
   /**
    * Count of Xero invoices created
    */
   xeroInvoicesCreated: number;
-  
+
   /**
    * Any errors that occurred during processing
    */
@@ -496,17 +494,17 @@ export interface XeroInvoiceResult {
    * Whether creation was successful
    */
   success: boolean;
-  
+
   /**
    * Xero invoice ID if successful
    */
   invoiceId?: string;
-  
+
   /**
    * Xero invoice number if successful
    */
   invoiceNumber?: string;
-  
+
   /**
    * Error message if unsuccessful
    */

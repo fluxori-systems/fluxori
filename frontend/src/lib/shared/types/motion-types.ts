@@ -6,14 +6,7 @@
  * to prevent circular dependencies between them.
  */
 
-/**
- * Connection quality levels for bandwidth-aware animations
- * - high: Fast connections (WiFi, strong 4G)
- * - medium: Average connections (3G, weak 4G)
- * - low: Slow connections (2G, weak 3G)
- * - poor: Very slow connections (2G or worse, high latency areas common in rural South Africa)
- */
-export type ConnectionQuality = 'high' | 'medium' | 'low' | 'poor';
+import { ConnectionQuality } from './sa-market-types';
 
 /**
  * Network condition types used in animation strategies
@@ -24,29 +17,6 @@ export type NetworkCondition = 'fast' | 'medium' | 'slow' | 'poor';
  * User-selectable motion preference modes
  */
 export type MotionMode = 'full' | 'reduced' | 'minimal';
-
-/**
- * Result from the connection quality detection
- */
-export interface ConnectionQualityResult {
-  /** Current connection quality assessment */
-  quality: ConnectionQuality;
-  
-  /** Whether data saver mode is enabled */
-  isDataSaver: boolean;
-  
-  /** Whether the connection is metered (pay-per-use) */
-  isMetered: boolean;
-  
-  /** Raw downlink speed in Mbps (if available) */
-  downlinkSpeed?: number;
-  
-  /** Raw round-trip time in ms (if available) */
-  rtt?: number;
-  
-  /** Raw effective connection type (if available) */
-  effectiveType?: string;
-}
 
 /**
  * Types of animations that can be applied to components

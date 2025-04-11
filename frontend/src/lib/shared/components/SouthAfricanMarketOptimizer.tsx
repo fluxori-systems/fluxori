@@ -3,9 +3,9 @@
 import React, { useState, useEffect, ReactNode } from 'react';
 import { 
   useSouthAfricanMarketOptimizations, 
-  SADeviceProfile,
-  SANetworkProfile,
-  useSAPerformanceThresholds
+  useSAPerformanceThresholds, 
+  SADeviceProfile, 
+  SANetworkProfile
 } from '../hooks/useSouthAfricanMarketOptimizations';
 
 interface SouthAfricanMarketOptimizerProps {
@@ -141,7 +141,7 @@ export function SouthAfricanMarketOptimizer({
   };
   
   // Add data attributes for testing and monitoring
-  const dataAttributes = {
+  const dataAttrs = {
     'data-sa-device': saMarket.deviceProfile,
     'data-sa-network': saMarket.networkProfile,
     'data-sa-optimized': 'true',
@@ -153,7 +153,7 @@ export function SouthAfricanMarketOptimizer({
     <div 
       id={`sa-optimizer-${component}`} 
       style={style}
-      {...dataAttributes}
+      {...dataAttrs}
     >
       {children}
     </div>

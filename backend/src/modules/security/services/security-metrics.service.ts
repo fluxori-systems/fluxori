@@ -1,6 +1,6 @@
 import { Injectable, Logger, Inject } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { Monitoring } from '@google-cloud/monitoring';
+import * as monitoring from '@google-cloud/monitoring';
 
 import { ObservabilityService } from '../../../common/observability';
 
@@ -10,7 +10,7 @@ import { ObservabilityService } from '../../../common/observability';
 @Injectable()
 export class SecurityMetricsService {
   private readonly logger = new Logger(SecurityMetricsService.name);
-  private readonly monitoring: Monitoring;
+  private readonly monitoring: monitoring.MetricServiceClient;
   private readonly projectId: string;
   private readonly metricPrefix = 'custom.googleapis.com/fluxori/security';
   
@@ -24,10 +24,10 @@ export class SecurityMetricsService {
     private readonly configService: ConfigService,
     private readonly observability: ObservabilityService,
   ) {
-    this.projectId = this.configService.get<string>('GCP_PROJECT_ID');
+    this.projectId = this.configService.get<string>('GCP_PROJECT_ID') || '';
     
     // Initialize GCP Monitoring client
-    this.monitoring = new Monitoring();
+    this.monitoring = new monitoring.MetricServiceClient();
     
     this.logger.log('Security Metrics service initialized');
   }

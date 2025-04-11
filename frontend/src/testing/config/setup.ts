@@ -3,6 +3,7 @@
  * This file sets up the testing environment before tests run
  */
 
+/// <reference types="@testing-library/jest-dom/vitest" />
 import '@testing-library/jest-dom';
 import { vi, expect } from 'vitest';
 import * as matchers from '@testing-library/jest-dom/matchers';
@@ -367,36 +368,8 @@ process.env.NEXT_PUBLIC_ENV = 'test';
 setupMockBrowserAPIs();
 setupMockPlatformAPIs();
 
-// Extend expect matchers
-expect.extend({
-  ...matchers,
-  toBeInTheDocument() {
-    const { isNot, promise } = this;
-    return { 
-      pass: Boolean(this.utils.getSingleElement(this.actual)),
-      message: () => `expected element ${isNot ? 'not ' : ''}to be in the document`,
-      promise
-    };
-  },
-  toHaveAttribute(element, attr, value) {
-    const { isNot, promise } = this;
-    const hasAttr = element.hasAttribute(attr);
-    const attrValue = element.getAttribute(attr);
-    
-    return {
-      pass: value === undefined 
-        ? hasAttr 
-        : hasAttr && attrValue === value,
-      message: () => {
-        if (value === undefined) {
-          return `expected element ${isNot ? 'not ' : ''}to have attribute "${attr}"`;
-        }
-        return `expected element ${isNot ? 'not ' : ''}to have attribute "${attr}" with value "${value}"`;
-      },
-      promise
-    };
-  },
-});
+// Explicitly set up matchers with expanded typing
+expect.extend(matchers);
 
 // Console log completion
 console.log('Test environment setup completed');

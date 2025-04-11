@@ -1,0 +1,53 @@
+digraph "Frontend Shared Components" {
+  rankdir="TB";
+  node [shape=box, style=filled, fillcolor=lightskyblue];
+  edge [color=gray50, fontcolor=gray50];
+
+  components_SouthAfricanMarketOptimizer_tsx [label="components/SouthAfricanMarketOptimizer.tsx"];
+  hooks_useSouthAfricanMarketOptimizations_ts [label="hooks/useSouthAfricanMarketOptimizations.ts"];
+  hooks_useAnimationPerformance_ts [label="hooks/useAnimationPerformance.ts"];
+  services_index_ts [label="services/index.ts"];
+  types_sa_market_types_ts [label="types/sa-market-types.ts"];
+  services_connection_service_interface_ts [label="services/connection-service.interface.ts"];
+  interfaces_connection_interface_ts [label="interfaces/connection.interface.ts"];
+  providers_app_provider_tsx [label="providers/app-provider.tsx"];
+  providers_service_provider_tsx [label="providers/service-provider.tsx"];
+  services_service_registry_ts [label="services/service-registry.ts"];
+  services_animation_service_interface_ts [label="services/animation-service.interface.ts"];
+  interfaces_motion_hooks_interface_ts [label="interfaces/motion-hooks.interface.ts"];
+  providers_south_african_market_provider_tsx [label="providers/south-african-market-provider.tsx"];
+  types_motion_types_ts [label="types/motion-types.ts"];
+  tests_service_interfaces_spec_ts [label="tests/service-interfaces.spec.ts"];
+  types_motion_tokens_ts [label="types/motion-tokens.ts"];
+  utils_typescript_compliance_ts [label="utils/typescript-compliance.ts"];
+
+  components_SouthAfricanMarketOptimizer_tsx -> hooks_useSouthAfricanMarketOptimizations_ts;
+  hooks_useAnimationPerformance_ts -> services_index_ts;
+  hooks_useSouthAfricanMarketOptimizations_ts -> types_sa_market_types_ts;
+  hooks_useSouthAfricanMarketOptimizations_ts -> services_connection_service_interface_ts;
+  interfaces_connection_interface_ts -> types_sa_market_types_ts;
+  providers_app_provider_tsx -> providers_service_provider_tsx;
+  providers_app_provider_tsx -> services_index_ts;
+  providers_app_provider_tsx -> services_service_registry_ts;
+  providers_service_provider_tsx -> services_animation_service_interface_ts;
+  providers_service_provider_tsx -> services_connection_service_interface_ts;
+  providers_service_provider_tsx -> services_service_registry_ts;
+  providers_service_provider_tsx -> interfaces_motion_hooks_interface_ts;
+  providers_south_african_market_provider_tsx -> hooks_useSouthAfricanMarketOptimizations_ts;
+  services_animation_service_interface_ts -> types_motion_types_ts;
+  services_connection_service_interface_ts -> types_sa_market_types_ts;
+  services_service_registry_ts -> services_animation_service_interface_ts;
+  services_service_registry_ts -> services_connection_service_interface_ts;
+  tests_service_interfaces_spec_ts -> services_connection_service_interface_ts;
+  tests_service_interfaces_spec_ts -> services_connection_service_interface_ts;
+  tests_service_interfaces_spec_ts -> services_animation_service_interface_ts;
+  tests_service_interfaces_spec_ts -> types_motion_types_ts;
+  tests_service_interfaces_spec_ts -> services_animation_service_interface_ts;
+  tests_service_interfaces_spec_ts -> services_service_registry_ts;
+  types_motion_tokens_ts -> types_motion_types_ts;
+  types_motion_tokens_ts -> types_sa_market_types_ts;
+  types_motion_types_ts -> types_sa_market_types_ts;
+  utils_typescript_compliance_ts -> services_animation_service_interface_ts;
+  utils_typescript_compliance_ts -> services_connection_service_interface_ts;
+  utils_typescript_compliance_ts -> types_motion_types_ts;
+}

@@ -1,5 +1,9 @@
-import { FirestoreEntity } from '../../../types/google-cloud.types';
-import { InsightType, InsightSeverity, InsightStatus } from '../interfaces/types';
+import { FirestoreEntity } from "../../../types/google-cloud.types";
+import {
+  InsightType,
+  InsightSeverity,
+  InsightStatus,
+} from "../interfaces/types";
 
 /**
  * Insight entity for Firestore

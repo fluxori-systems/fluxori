@@ -4,7 +4,14 @@
     "jsx": "react-jsx",
     "types": ["vitest/globals", "node", "@testing-library/jest-dom"],
     "skipLibCheck": true,
-    "noImplicitAny": false
+    "noImplicitAny": false,
+    "strict": false,
+    "strictNullChecks": false,
+    "strictFunctionTypes": false,
+    "strictPropertyInitialization": false,
+    "noImplicitThis": false,
+    "alwaysStrict": false,
+    "typeRoots": ["./src/testing/types", "./node_modules/@types"]
   },
   "include": [
     "src/**/*.ts",

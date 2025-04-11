@@ -45,7 +45,7 @@ export class SecurityInterceptor implements NestInterceptor {
     const securityContext = this.securityService.createSecurityContext(request);
     
     // Store the security context in the request for use by handlers
-    request['securityContext'] = securityContext;
+    (request as any).securityContext = securityContext;
     
     // Apply security headers to the response
     this.securityService.applySecurityHeaders(response, this.options.defaultPolicyConfig);
@@ -122,13 +122,9 @@ export class SecurityInterceptor implements NestInterceptor {
     
     try {
       // Log the security event
-      this.securityService.logSecurityEvent(event, {
-        ...context,
-        durationMs,
-        statusCode,
-        errorMessage,
-        timestamp: new Date(),
-      });
+      const contextWithExtra = { ...context } as any;
+      contextWithExtra.timestamp = new Date();
+      this.securityService.logSecurityEvent(event, contextWithExtra);
     } catch (error) {
       this.logger.error(`Failed to log security event: ${error.message}`, error.stack);
     }

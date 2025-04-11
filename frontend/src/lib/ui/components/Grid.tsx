@@ -54,7 +54,7 @@ export interface GridProps {
 }
 
 // Type for responsive column sizing
-interface ColSpan {
+export interface ColSpan {
   span?: number;
   offset?: number;
   order?: number;

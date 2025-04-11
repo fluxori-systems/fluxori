@@ -11,8 +11,8 @@ import {
   PaginatedResponse,
   OperationResult,
   ProductFilterOptions,
-  OrderFilterOptions
-} from './types';
+  OrderFilterOptions,
+} from "./types";
 
 /**
  * Interface defining common functionality for all marketplace adapters.
@@ -23,7 +23,7 @@ export interface IMarketplaceAdapter {
    * The unique identifier for the marketplace (e.g., 'amazon', 'takealot', 'shopify')
    */
   readonly marketplaceId: string;
-  
+
   /**
    * Human-readable name of the marketplace
    */
@@ -70,7 +70,9 @@ export interface IMarketplaceAdapter {
    * @param skus - Array of SKUs to fetch
    * @returns Operation result containing an array of found products
    */
-  getProductsBySkus(skus: string[]): Promise<OperationResult<MarketplaceProduct[]>>;
+  getProductsBySkus(
+    skus: string[],
+  ): Promise<OperationResult<MarketplaceProduct[]>>;
 
   /**
    * Fetch products with pagination and filtering
@@ -82,7 +84,7 @@ export interface IMarketplaceAdapter {
   getProducts(
     page: number,
     pageSize: number,
-    filters?: ProductFilterOptions
+    filters?: ProductFilterOptions,
   ): Promise<PaginatedResponse<MarketplaceProduct>>;
 
   /**
@@ -90,30 +92,36 @@ export interface IMarketplaceAdapter {
    * @param updates - Array of stock update payloads
    * @returns Operation result with success status and details
    */
-  updateStock(updates: StockUpdatePayload[]): Promise<OperationResult<{
-    successful: string[];
-    failed: Array<{ sku: string, reason: string }>;
-  }>>;
+  updateStock(updates: StockUpdatePayload[]): Promise<
+    OperationResult<{
+      successful: string[];
+      failed: Array<{ sku: string; reason: string }>;
+    }>
+  >;
 
   /**
    * Update prices for one or more products
    * @param updates - Array of price update payloads
    * @returns Operation result with success status and details
    */
-  updatePrices(updates: PriceUpdatePayload[]): Promise<OperationResult<{
-    successful: string[];
-    failed: Array<{ sku: string, reason: string }>;
-  }>>;
+  updatePrices(updates: PriceUpdatePayload[]): Promise<
+    OperationResult<{
+      successful: string[];
+      failed: Array<{ sku: string; reason: string }>;
+    }>
+  >;
 
   /**
    * Update status (active/inactive) for one or more products
    * @param updates - Array of status update payloads
    * @returns Operation result with success status and details
    */
-  updateStatus(updates: StatusUpdatePayload[]): Promise<OperationResult<{
-    successful: string[];
-    failed: Array<{ sku: string, reason: string }>;
-  }>>;
+  updateStatus(updates: StatusUpdatePayload[]): Promise<
+    OperationResult<{
+      successful: string[];
+      failed: Array<{ sku: string; reason: string }>;
+    }>
+  >;
 
   /**
    * Fetch orders with filtering and pagination
@@ -125,9 +133,9 @@ export interface IMarketplaceAdapter {
   getOrders(
     page: number,
     pageSize: number,
-    filters?: OrderFilterOptions
+    filters?: OrderFilterOptions,
   ): Promise<PaginatedResponse<MarketplaceOrder>>;
-  
+
   /**
    * Fetch recent orders (legacy method, uses getOrders internally)
    * @param sinceDate - Fetch orders created after this date
@@ -138,7 +146,7 @@ export interface IMarketplaceAdapter {
   getRecentOrders(
     sinceDate: Date,
     page: number,
-    pageSize: number
+    pageSize: number,
   ): Promise<PaginatedResponse<MarketplaceOrder>>;
 
   /**
@@ -153,7 +161,9 @@ export interface IMarketplaceAdapter {
    * @param orderId - The marketplace-specific order ID
    * @returns Operation result with acknowledgment details
    */
-  acknowledgeOrder(orderId: string): Promise<OperationResult<OrderAcknowledgment>>;
+  acknowledgeOrder(
+    orderId: string,
+  ): Promise<OperationResult<OrderAcknowledgment>>;
 
   /**
    * Update order status
@@ -169,7 +179,7 @@ export interface IMarketplaceAdapter {
       carrier: string;
       trackingNumber: string;
       shippedDate?: Date;
-    }
+    },
   ): Promise<OperationResult<{ orderId: string }>>;
 
   /**
@@ -177,20 +187,26 @@ export interface IMarketplaceAdapter {
    * @param parentId - Optional parent category ID for hierarchical retrieval
    * @returns Operation result containing array of categories
    */
-  getCategories(parentId?: string): Promise<OperationResult<MarketplaceCategory[]>>;
+  getCategories(
+    parentId?: string,
+  ): Promise<OperationResult<MarketplaceCategory[]>>;
 
   /**
    * Get marketplace-specific attributes for a category
    * @param categoryId - The category ID
    * @returns Operation result containing category attributes
    */
-  getCategoryAttributes(categoryId: string): Promise<OperationResult<Array<{
-    id: string;
-    name: string;
-    required: boolean;
-    type: string;
-    values?: string[];
-  }>>>;
+  getCategoryAttributes(categoryId: string): Promise<
+    OperationResult<
+      Array<{
+        id: string;
+        name: string;
+        required: boolean;
+        type: string;
+        values?: string[];
+      }>
+    >
+  >;
 
   /**
    * Get marketplace health status

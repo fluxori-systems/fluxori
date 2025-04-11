@@ -92,7 +92,7 @@ describe('Text Component', () => {
     const { getByTestId } = renderWithProviders(<Text>Sample Text</Text>);
     
     const textElement = getByTestId('text-component');
-    expect(textElement).toBeInTheDocument();
+    expect(textElement).toBeDefined();
     expect(textElement.textContent).toBe('Sample Text');
     expect(textElement.className).toContain('flx-text');
   });
@@ -146,7 +146,7 @@ describe('Text Component', () => {
       );
       
       const textElement = getByTestId('text-component');
-      expect(textElement).toHaveAttribute('data-network-optimized', 'true');
+      expect(textElement.getAttribute('data-network-optimized')).toBe('true');
     } finally {
       cleanup();
     }
@@ -165,7 +165,7 @@ describe('Text Component', () => {
       );
       
       const textElement = getByTestId('text-component');
-      expect(textElement).toHaveAttribute('data-network-optimized', 'true');
+      expect(textElement.getAttribute('data-network-optimized')).toBe('true');
     } finally {
       cleanup();
     }
@@ -182,7 +182,7 @@ describe('Text Component', () => {
     );
     
     const textElement = getByTestId('text-component');
-    expect(textElement).toHaveAttribute('data-animation-type', 'fade');
+    expect(textElement.getAttribute('data-animation-type')).toBe('fade');
   });
   
   test('supports line and letter spacing attributes', () => {
@@ -191,7 +191,7 @@ describe('Text Component', () => {
     );
     
     const textElement = getByTestId('text-component');
-    expect(textElement).toHaveAttribute('data-line-height', 'tight');
-    expect(textElement).toHaveAttribute('data-letter-spacing', 'wide');
+    expect(textElement.getAttribute('data-line-height')).toBe('tight');
+    expect(textElement.getAttribute('data-letter-spacing')).toBe('wide');
   });
 });

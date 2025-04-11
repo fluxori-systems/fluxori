@@ -1,7 +1,7 @@
 import { Injectable, Logger, Inject } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { v4 as uuidv4 } from 'uuid';
-import { Firestore } from '@google-cloud/firestore';
+import { Firestore, Query } from '@google-cloud/firestore';
 
 import { 
   SecurityAuditService as ISecurityAuditService,
@@ -25,7 +25,7 @@ export class SecurityAuditService implements ISecurityAuditService {
     private readonly configService: ConfigService,
     private readonly observability: ObservabilityService,
   ) {
-    this.projectId = this.configService.get<string>('GCP_PROJECT_ID');
+    this.projectId = this.configService.get<string>('GCP_PROJECT_ID') || '';
     this.collectionName = 'security-audit-logs';
     
     // Initialize Firestore client
@@ -105,7 +105,7 @@ export class SecurityAuditService implements ISecurityAuditService {
     
     try {
       // Start with the base collection
-      let firestoreQuery = this.firestore.collection(this.collectionName);
+      let firestoreQuery: Query = this.firestore.collection(this.collectionName);
       
       // Apply filters
       if (query.startTime) {
@@ -317,9 +317,10 @@ export class SecurityAuditService implements ISecurityAuditService {
     
     try {
       // Query records older than the specified date
-      const snapshot = await this.firestore.collection(this.collectionName)
-        .where('timestamp', '<', olderThan)
-        .get();
+      const query: Query = this.firestore.collection(this.collectionName)
+        .where('timestamp', '<', olderThan);
+      
+      const snapshot = await query.get();
       
       if (snapshot.empty) {
         span.end();

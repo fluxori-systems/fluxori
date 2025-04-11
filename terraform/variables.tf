@@ -2,6 +2,7 @@
  * Fluxori SaaS - Variables
  * 
  * This file defines the variables used in the Terraform configuration.
+ * Optimized for South African regional deployment with appropriate defaults.
  */
 
 # Project variables
@@ -28,7 +29,7 @@ variable "org_id" {
 
 # Region and zone variables
 variable "region" {
-  description = "The region to deploy resources to"
+  description = "The primary region to deploy resources to"
   type        = string
   default     = "africa-south1" # Johannesburg region
 }
@@ -36,13 +37,20 @@ variable "region" {
 variable "genai_region" {
   description = "The region to use for GenAI services (using European region as it's closer to South Africa than other GenAI-ready regions)"
   type        = string
-  default     = "europe-west4" # Netherlands region
+  default     = "europe-west1" # Belgium region (lowest latency to South Africa for GenAI)
 }
 
 variable "zone" {
   description = "The zone to deploy resources to"
   type        = string
   default     = "africa-south1-a"
+}
+
+# Domain variable
+variable "domain" {
+  description = "The primary domain for the application"
+  type        = string
+  default     = "fluxori.com"
 }
 
 # Network variables
@@ -143,6 +151,43 @@ variable "alert_policies" {
     }))
   }))
   default = []
+}
+
+# South African optimization variables
+variable "sa_bandwidth_optimization" {
+  description = "Enable bandwidth optimization for South African networks"
+  type        = bool
+  default     = true
+}
+
+variable "sa_connection_resilience" {
+  description = "Enable connection resilience for variable network conditions"
+  type        = bool
+  default     = true
+}
+
+variable "sa_cdn_compression" {
+  description = "Enable enhanced compression for CDN content"
+  type        = bool
+  default     = true
+}
+
+variable "sa_mobile_network_optimization" {
+  description = "Enable specific optimizations for South African mobile networks"
+  type        = bool
+  default     = true
+}
+
+variable "sa_offline_capabilities" {
+  description = "Enable offline capabilities for critical functions"
+  type        = bool
+  default     = true
+}
+
+variable "sa_network_simulation" {
+  description = "Enable network condition simulation in development environments"
+  type        = bool
+  default     = true
 }
 
 # Service Mesh variables

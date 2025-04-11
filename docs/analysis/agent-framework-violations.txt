@@ -1,0 +1,25 @@
+
+  error no-module-cross-boundaries: src/modules/feature-flags/controllers/feature-flag.controller.ts → src/modules/auth/guards/firebase-auth.guard.ts
+  error no-module-cross-boundaries: src/modules/feature-flags/controllers/feature-flag.controller.ts → src/modules/auth/decorators/get-user.decorator.ts
+  error no-module-cross-boundaries: src/modules/agent-framework/services/agent.service.ts → src/modules/feature-flags/services/feature-flag.service.ts
+  error no-module-cross-boundaries: src/modules/agent-framework/controllers/agent.controller.ts → src/modules/auth/guards/firebase-auth.guard.ts
+  error no-module-cross-boundaries: src/modules/agent-framework/controllers/agent.controller.ts → src/modules/auth/decorators/get-user.decorator.ts
+  error no-module-cross-boundaries: src/modules/agent-framework/agent-framework.module.ts → src/modules/feature-flags/feature-flags.module.ts
+  error no-common-utils-cross-boundaries: src/modules/feature-flags/repositories/feature-flag.repository.ts → src/common/repositories/unified-firestore.repository.ts
+  error no-common-utils-cross-boundaries: src/modules/feature-flags/repositories/feature-flag-audit-log.repository.ts → src/common/repositories/unified-firestore.repository.ts
+  error no-common-utils-cross-boundaries: src/modules/agent-framework/repositories/model-registry.repository.ts → src/common/repositories/unified-firestore.repository.ts
+  error no-common-utils-cross-boundaries: src/modules/agent-framework/repositories/agent-conversation.repository.ts → src/common/repositories/unified-firestore.repository.ts
+  error no-common-utils-cross-boundaries: src/modules/agent-framework/repositories/agent-config.repository.ts → src/common/repositories/unified-firestore.repository.ts
+  error no-common-utils-cross-boundaries: src/common/repositories/unified-firestore.repository.ts → src/common/repositories/base/index.ts
+  error no-common-utils-cross-boundaries: src/common/repositories/base/repository-types.ts → src/common/repositories/base/repository-stats.ts
+  error no-common-utils-cross-boundaries: src/common/repositories/base/repository-converter.ts → src/common/repositories/base/repository-types.ts
+  error no-common-utils-cross-boundaries: src/common/repositories/base/repository-cache.ts → src/common/repositories/base/repository-types.ts
+  error no-common-utils-cross-boundaries: src/common/repositories/base/index.ts → src/common/repositories/base/repository-validation.ts
+  error no-common-utils-cross-boundaries: src/common/repositories/base/index.ts → src/common/repositories/base/repository-types.ts
+  error no-common-utils-cross-boundaries: src/common/repositories/base/index.ts → src/common/repositories/base/repository-transactions.ts
+  error no-common-utils-cross-boundaries: src/common/repositories/base/index.ts → src/common/repositories/base/repository-stats.ts
+  error no-common-utils-cross-boundaries: src/common/repositories/base/index.ts → src/common/repositories/base/repository-converter.ts
+  error no-common-utils-cross-boundaries: src/common/repositories/base/index.ts → src/common/repositories/base/repository-cache.ts
+
+x 21 dependency violations (21 errors, 0 warnings). 43 modules, 135 dependencies cruised.
+

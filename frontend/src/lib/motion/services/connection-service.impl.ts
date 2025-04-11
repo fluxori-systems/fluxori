@@ -2,11 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { IConnectionService } from '../../shared/services/connection-service.interface';
-import { 
-  ConnectionQuality, 
-  ConnectionQualityResult,
-  MotionMode
-} from '../../shared/types/motion-types';
+import { MotionMode } from '../../shared/types/motion-types';
+import type { ConnectionQuality, ConnectionQualityResult } from '../../shared/types/sa-market-types';
 
 // South African mobile network thresholds - these are intentionally conservative
 // based on real-world testing in various South African regions
@@ -41,6 +38,7 @@ export class ConnectionServiceImpl implements IConnectionService {
       quality: 'medium', // Default to medium as a safe start
       isDataSaver: false,
       isMetered: false,
+      saveData: false,
     };
     
     // Start monitoring if in browser environment
@@ -180,6 +178,7 @@ export class ConnectionServiceImpl implements IConnectionService {
       quality: 'medium', // Default
       isDataSaver: false,
       isMetered: false,
+      saveData: false,
     };
     
     // Get motion mode quality floor

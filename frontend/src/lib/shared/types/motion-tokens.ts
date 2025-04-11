@@ -1,6 +1,7 @@
 'use client';
 
-import { MotionMode, ConnectionQuality } from './motion-types';
+import { MotionMode } from './motion-types';
+import type { ConnectionQuality } from './sa-market-types';
 
 /**
  * Standard durations for animations

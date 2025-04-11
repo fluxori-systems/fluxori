@@ -1,0 +1,13 @@
+digraph "Module Dependencies" {
+  rankdir="TB";
+  node [shape=box, style=filled];
+  edge [fontsize=12, fontcolor=gray50];
+
+  ui [label="UI Module", fillcolor="#2563eb", fontcolor="white"];
+  motion [label="Motion Module", fillcolor="#db2777", fontcolor="white"];
+  shared [label="Shared Module", fillcolor="#16a34a", fontcolor="white"];
+
+  ui -> motion [label="8 imports"];
+  ui -> shared [label="34 imports"];
+  motion -> shared [label="20 imports"];
+}

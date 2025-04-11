@@ -10,7 +10,8 @@ import {
   IPerformanceMonitoringService,
   SamplingStrategy
 } from '../../types/performance';
-import { ConnectionQualityResult, MotionMode } from '../../../shared/types/motion-types';
+import type { ConnectionQualityResult } from '../../../shared/types/sa-market-types';
+import { MotionMode } from '../../../shared/types/motion-types';
 import { defaultConnectionService } from '../connection-service.impl';
 
 /**

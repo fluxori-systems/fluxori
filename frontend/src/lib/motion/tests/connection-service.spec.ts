@@ -1,15 +1,23 @@
-import { describe, test, expect, vi } from 'vitest';
+import { describe, test, expect, vi, beforeEach } from 'vitest';
 import { ConnectionServiceImpl } from '../services/connection-service.impl';
+import type { ConnectionQualityResult } from '../../shared/types/sa-market-types';
 
-// Mock navigator connection
-vi.mock('navigator', () => ({
-  connection: {
-    effectiveType: '4g',
-    downlink: 10,
-    rtt: 50,
-    saveData: false
-  }
-}), { virtual: true });
+// Setup mock for navigator.connection
+beforeEach(() => {
+  Object.defineProperty(navigator, 'connection', {
+    value: {
+      effectiveType: '4g',
+      downlink: 10,
+      rtt: 50,
+      saveData: false,
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+      dispatchEvent: vi.fn(() => true)
+    },
+    configurable: true,
+    writable: true
+  });
+});
 
 describe('ConnectionServiceImpl', () => {
   test('getConnectionQuality returns expected quality', () => {
@@ -24,7 +32,7 @@ describe('ConnectionServiceImpl', () => {
       rtt: 50,
       isDataSaver: false,
       isMetered: false
-    });
+    } as ConnectionQualityResult);
     
     const result = service.getConnectionQuality();
     

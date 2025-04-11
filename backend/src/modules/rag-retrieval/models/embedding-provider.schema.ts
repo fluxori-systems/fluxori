@@ -1,8 +1,8 @@
 /**
  * Embedding Provider entity schema
  */
-import { FirestoreEntity } from '../../../types/google-cloud.types';
-import { EmbeddingProviderType } from '../interfaces/types';
+import { FirestoreEntity } from "../../../types/google-cloud.types";
+import { EmbeddingProviderType } from "../interfaces/types";
 
 /**
  * Embedding Provider entity for Firestore

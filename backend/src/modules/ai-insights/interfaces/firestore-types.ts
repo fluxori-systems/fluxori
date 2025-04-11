@@ -3,7 +3,7 @@
  */
 
 // Re-export common types
-import { InsightType, InsightSeverity, InsightStatus } from './types';
+import { InsightType, InsightSeverity, InsightStatus } from "./types";
 export { InsightType, InsightSeverity, InsightStatus };
 
 /**
@@ -52,4 +52,4 @@ export interface FirestoreAIModelConfig {
 /**
  * Reusing DTO types from the original types.ts
  */
-export { CreateInsightDto, UpdateInsightDto, QueryInsightsDto } from './types';
+export { CreateInsightDto, UpdateInsightDto, QueryInsightsDto } from "./types";
