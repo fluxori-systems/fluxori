@@ -1,9 +1,12 @@
+// @vitest-environment jsdom
+import '@testing-library/jest-dom';
 'use client';
 
 import React from 'react';
 import { describe, test, expect, vi } from 'vitest';
 import { renderWithProviders } from '../../../../testing/utils/render';
 import * as TestingLibrary from '@testing-library/react';
+import { Assertions } from '../../../../testing/utils/assertions';
 
 // Define Button prop interface to ensure type safety
 interface ButtonProps {
@@ -68,16 +71,12 @@ describe('Button Component', () => {
     );
     
     const button = getByTestId('button');
-    // @ts-expect-error - toBeInTheDocument comes from jest-dom
-    expect(button).toBeInTheDocument();
-    // @ts-expect-error - toHaveAttribute comes from jest-dom
-    expect(button).toHaveAttribute('data-variant', 'default');
-    // @ts-expect-error - toHaveAttribute comes from jest-dom
-    expect(button).toHaveAttribute('data-size', 'medium');
-    // @ts-expect-error - toHaveAttribute comes from jest-dom
-    expect(button).toHaveAttribute('data-intent', 'primary');
-    // @ts-expect-error - toBeDisabled comes from jest-dom
-    expect(button).not.toBeDisabled();
+    
+    Assertions.inDocument(button);
+    Assertions.hasAttribute(button, 'data-variant', 'default');
+    Assertions.hasAttribute(button, 'data-size', 'medium');
+    Assertions.hasAttribute(button, 'data-intent', 'primary');
+    Assertions.isNotDisabled(button);
   });
   
   test('renders different button variants', () => {
@@ -86,18 +85,18 @@ describe('Button Component', () => {
     );
     
     let button = getByTestId('button');
-    // @ts-expect-error - toHaveAttribute comes from jest-dom
-    expect(button).toHaveAttribute('data-variant', 'outline');
+    
+    Assertions.hasAttribute(button, 'data-variant', 'outline');
     
     rerender(<Button variant="text">Text Button</Button>);
     button = getByTestId('button');
-    // @ts-expect-error - toHaveAttribute comes from jest-dom
-    expect(button).toHaveAttribute('data-variant', 'text');
+    
+    Assertions.hasAttribute(button, 'data-variant', 'text');
     
     rerender(<Button variant="filled">Filled Button</Button>);
     button = getByTestId('button');
-    // @ts-expect-error - toHaveAttribute comes from jest-dom
-    expect(button).toHaveAttribute('data-variant', 'filled');
+    
+    Assertions.hasAttribute(button, 'data-variant', 'filled');
   });
   
   test('handles different intent colors', () => {
@@ -106,18 +105,18 @@ describe('Button Component', () => {
     );
     
     let button = getByTestId('button');
-    // @ts-expect-error - toHaveAttribute comes from jest-dom
-    expect(button).toHaveAttribute('data-intent', 'success');
+    
+    Assertions.hasAttribute(button, 'data-intent', 'success');
     
     rerender(<Button intent="error">Error Button</Button>);
     button = getByTestId('button');
-    // @ts-expect-error - toHaveAttribute comes from jest-dom
-    expect(button).toHaveAttribute('data-intent', 'error');
+    
+    Assertions.hasAttribute(button, 'data-intent', 'error');
     
     rerender(<Button intent="warning">Warning Button</Button>);
     button = getByTestId('button');
-    // @ts-expect-error - toHaveAttribute comes from jest-dom
-    expect(button).toHaveAttribute('data-intent', 'warning');
+    
+    Assertions.hasAttribute(button, 'data-intent', 'warning');
   });
   
   test('handles click events', () => {
@@ -141,8 +140,8 @@ describe('Button Component', () => {
     );
     
     const button = getByTestId('button');
-    // @ts-expect-error - toBeDisabled comes from jest-dom
-    expect(button).toBeDisabled();
+    
+    Assertions.isDisabled(button);
     
     TestingLibrary.fireEvent.click(button);
     expect(handleClick).not.toHaveBeenCalled();
@@ -154,13 +153,13 @@ describe('Button Component', () => {
     );
     
     let button = getByTestId('button');
-    // @ts-expect-error - toHaveAttribute comes from jest-dom
-    expect(button).toHaveAttribute('data-size', 'small');
+    
+    Assertions.hasAttribute(button, 'data-size', 'small');
     
     rerender(<Button size="large">Large Button</Button>);
     button = getByTestId('button');
-    // @ts-expect-error - toHaveAttribute comes from jest-dom
-    expect(button).toHaveAttribute('data-size', 'large');
+    
+    Assertions.hasAttribute(button, 'data-size', 'large');
   });
   
   test('passes additional attributes to button element', () => {
@@ -171,9 +170,8 @@ describe('Button Component', () => {
     );
     
     const button = getByTestId('button');
-    // @ts-expect-error - toHaveAttribute comes from jest-dom
-    expect(button).toHaveAttribute('aria-label', 'Custom Button');
-    // @ts-expect-error - toHaveAttribute comes from jest-dom
-    expect(button).toHaveAttribute('data-custom', 'test-value');
+    
+    Assertions.hasAttribute(button, 'aria-label', 'Custom Button');
+    Assertions.hasAttribute(button, 'data-custom', 'test-value');
   });
 });

@@ -1,0 +1,20 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "strictNullChecks": false,
+    "noImplicitAny": false,
+    "strictPropertyInitialization": false,
+    "skipLibCheck": true
+  },
+  "include": [
+    "src/modules/connectors/adapters/amazon-sp/**/*",
+    "src/modules/connectors/adapters/shopify/**/*",
+    "src/modules/connectors/adapters/takealot-connector.ts",
+    "src/modules/connectors/adapters/woocommerce-connector.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "**/*.bak/**",
+    "src/modules/connectors/adapters/xero/**/*"
+  ]
+}

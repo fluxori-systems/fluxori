@@ -1,8 +1,11 @@
+/// <reference types="@testing-library/jest-dom" />
+
 /**
  * Vitest setup file
  * This file is run before tests to set up the testing environment
  */
 
+// Import required libraries
 import '@testing-library/jest-dom';
 import { vi, expect } from 'vitest';
 import * as matchers from '@testing-library/jest-dom/matchers';
@@ -10,7 +13,9 @@ import * as matchers from '@testing-library/jest-dom/matchers';
 // Import DOM/global mocks
 import { setupMockBrowserAPIs } from './src/testing/mocks/browser-apis';
 import { setupMockPlatformAPIs } from './src/testing/mocks/platform-apis';
-import { applyTypeAugmentations } from './src/testing/types/vitest-augmentations';
+
+// Extend Vitest's expect with testing-library matchers
+expect.extend(matchers);
 
 // Mock IntersectionObserver
 class MockIntersectionObserver {
@@ -160,11 +165,5 @@ vi.mock('./src/lib/motion/context/MotionContext', () => {
 // Add mock browser APIs
 setupMockBrowserAPIs();
 setupMockPlatformAPIs();
-
-// Apply vitest type augmentations
-applyTypeAugmentations();
-
-// Extend Vitest's expect with Jest-DOM matchers
-expect.extend(matchers);
 
 console.log('Vitest setup completed');

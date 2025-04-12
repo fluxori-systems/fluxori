@@ -20,7 +20,7 @@
       }
     ],
     // Add types for testing libraries
-    "types": ["jest", "node", "@testing-library/jest-dom"],
+    "types": ["jest", "node", "@testing-library/jest-dom", "vitest/globals", "./src/testing/types"],
     // Looser rules for test files
     "noImplicitAny": false,
     "paths": {

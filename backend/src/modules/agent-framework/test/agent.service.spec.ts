@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-// @ts-nocheck - This is a test file with Jest mocks
+// Properly typed Jest mocks for agent service tests
 
 import { Test, TestingModule } from "@nestjs/testing";
 
@@ -18,12 +18,17 @@ import { AgentService } from "../services/agent.service";
 import { ModelAdapterFactory } from "../services/model-adapter.factory";
 import { TokenEstimator } from "../utils/token-estimator";
 
-// Mock implementations
+// Type-safe mocks using proper typing for Jest
 jest.mock("../../../config/firestore.config");
 jest.mock("../repositories/model-registry.repository");
 jest.mock("../repositories/agent-config.repository");
 jest.mock("../repositories/agent-conversation.repository");
 jest.mock("../adapters/vertex-ai.adapter");
+
+// Properly typed mocks for repositories
+type MockType<T> = {
+  [P in keyof T]?: jest.Mock<unknown>;
+};
 
 describe("AgentService", () => {
   let service: AgentService;
@@ -104,7 +109,7 @@ describe("AgentService", () => {
         updatedAt: new Date(),
       };
 
-      // Mock repository methods
+      // Properly typed mocks
       jest
         .spyOn(agentConfigRepository, "findById")
         .mockResolvedValue(agentConfig);
@@ -147,7 +152,7 @@ describe("AgentService", () => {
         updatedAt: new Date(),
       };
 
-      // Mock custom method on repository
+      // Properly typed mock
       jest
         .spyOn(modelRegistryRepository, "findBestModelForTask")
         .mockResolvedValue(model);

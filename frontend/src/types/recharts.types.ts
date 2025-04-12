@@ -1,9 +1,10 @@
 /**
- * Types for Recharts integration with Fluxori Design System
+ * Types for Chart.js integration with Fluxori Design System
  * and South African market optimizations
+ * 
+ * This file replaces the former recharts.types.ts since we've
+ * migrated from Recharts to Chart.js per commit 836af6a
  */
-
-import { CurveType } from 'recharts/types/shape/Curve';
 
 /**
  * Network-aware animation configuration
@@ -38,12 +39,14 @@ export interface NetworkProfileConfig {
   animate: boolean;
   /** Animation duration multiplier (1.0 = normal, 0.5 = half speed) */
   animationDurationMultiplier: number;
-  /** Curve type for line charts */
-  curveType: CurveType | 'linear';
+  /** Whether to use curve for line charts */
+  useCurve: boolean;
   /** Whether to use simplified legends */
   simplifiedLegend: boolean;
   /** Line thickness in pixels */
-  strokeWidth: number;
+  lineThickness: number;
+  /** Point radius for scatter and line charts */
+  pointRadius: number;
   /** Whether to show reference lines */
   showReferenceLines: boolean;
   /** Maximum number of labels to show on axes */
@@ -60,9 +63,10 @@ export const CHART_NETWORK_PROFILES: Record<ChartConnectionQuality, NetworkProfi
     showTooltips: true,
     animate: true,
     animationDurationMultiplier: 1.0,
-    curveType: 'monotone',
+    useCurve: true,
     simplifiedLegend: false,
-    strokeWidth: 2,
+    lineThickness: 2,
+    pointRadius: 3,
     showReferenceLines: true,
     maxAxisLabels: Infinity
   },
@@ -72,9 +76,10 @@ export const CHART_NETWORK_PROFILES: Record<ChartConnectionQuality, NetworkProfi
     showTooltips: true,
     animate: true,
     animationDurationMultiplier: 0.7,
-    curveType: 'monotone',
+    useCurve: true,
     simplifiedLegend: false,
-    strokeWidth: 2,
+    lineThickness: 2,
+    pointRadius: 2,
     showReferenceLines: true,
     maxAxisLabels: 10
   },
@@ -84,9 +89,10 @@ export const CHART_NETWORK_PROFILES: Record<ChartConnectionQuality, NetworkProfi
     showTooltips: true,
     animate: true,
     animationDurationMultiplier: 0.5,
-    curveType: 'linear',
+    useCurve: false,
     simplifiedLegend: true,
-    strokeWidth: 1.5,
+    lineThickness: 1.5,
+    pointRadius: 1,
     showReferenceLines: false,
     maxAxisLabels: 5
   },
@@ -96,9 +102,10 @@ export const CHART_NETWORK_PROFILES: Record<ChartConnectionQuality, NetworkProfi
     showTooltips: false,
     animate: false,
     animationDurationMultiplier: 0,
-    curveType: 'linear',
+    useCurve: false,
     simplifiedLegend: true,
-    strokeWidth: 1,
+    lineThickness: 1,
+    pointRadius: 0,
     showReferenceLines: false,
     maxAxisLabels: 3
   }

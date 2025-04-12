@@ -4,7 +4,6 @@
  * Implements health check indicator for Firestore database connections
  */
 
-// @ts-nocheck
 import { Injectable, Logger } from "@nestjs/common";
 import { HealthIndicatorResult, HealthIndicator } from "@nestjs/terminus";
 

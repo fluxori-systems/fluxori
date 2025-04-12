@@ -4,7 +4,6 @@
  * Provides health check endpoints for monitoring application status
  */
 
-// @ts-nocheck
 import { Controller, Get, Logger, Inject } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import {
@@ -25,6 +24,13 @@ import { STORAGE_SERVICE } from "../common/storage/storage.interface";
  */
 type HealthIndicatorFunction = () => Promise<HealthIndicatorResult>;
 
+// Define storage service interface
+interface StorageService {
+  // Add necessary methods based on implementation
+  getBucketName(): string;
+  // Add other methods as needed
+}
+
 /**
  * Health controller
  *
@@ -41,7 +47,7 @@ export class HealthController {
     private readonly http: HttpHealthIndicator,
     private readonly firestore: FirestoreHealthIndicator,
     private readonly configService: ConfigService,
-    @Inject(STORAGE_SERVICE) private readonly storageService: any,
+    @Inject(STORAGE_SERVICE) private readonly storageService: StorageService,
   ) {}
 
   /**

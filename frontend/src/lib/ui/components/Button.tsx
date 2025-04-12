@@ -266,8 +266,16 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     // Click handler to ensure both animation and onClick prop work
     const handleClick = useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
       if (props.onClick) {
-        // @ts-ignore - We need to allow different onClick signatures
-        props.onClick(e);
+        // Handle various onClick signature types
+        if (typeof props.onClick === 'function') {
+          // Check if the function expects parameters
+          // If it does, pass the event, otherwise call without parameters
+          if (props.onClick.length > 0) {
+            (props.onClick as React.MouseEventHandler<HTMLButtonElement>)(e);
+          } else {
+            (props.onClick as () => void | Promise<void>)();
+          }
+        }
       }
     }, [props.onClick]);
     

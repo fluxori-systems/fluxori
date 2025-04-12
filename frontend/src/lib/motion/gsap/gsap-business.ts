@@ -66,8 +66,10 @@ export function initGSAPBusiness(moduleToken: string = GSAP_BUSINESS_TOKEN): voi
   
   // Apply the module installation token
   if (typeof window !== 'undefined') {
-    // @ts-ignore - GSAP Business license activation
-    window._gsapModuleInstallation = moduleToken;
+    // GSAP Business license activation
+    // Add the token to the window object with proper typing
+    // First cast to unknown then to the target type to avoid TypeScript errors
+    ((window as unknown) as { _gsapModuleInstallation: string })._gsapModuleInstallation = moduleToken;
     console.log('GSAP Business license active:', gsap.version);
   }
 }

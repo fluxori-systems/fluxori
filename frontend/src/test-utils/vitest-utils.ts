@@ -30,8 +30,19 @@ export function renderWithProviders(ui: React.ReactElement) {
 
 // Create a mock for matchMedia
 export function createMatchMediaMock(matches = false) {
-  // @ts-ignore - Complex mock structure is valid for testing
-  return vi.fn().mockImplementation(query => ({
+  // Define proper interface for MediaQueryList
+  interface MockedMediaQueryList {
+    matches: boolean;
+    media: string;
+    onchange: null | ((this: MediaQueryList, ev: MediaQueryListEvent) => any);
+    addListener: (callback: (this: MediaQueryList, ev: MediaQueryListEvent) => any) => void;
+    removeListener: (callback: (this: MediaQueryList, ev: MediaQueryListEvent) => any) => void;
+    addEventListener: (type: string, listener: EventListenerOrEventListenerObject) => void;
+    removeEventListener: (type: string, listener: EventListenerOrEventListenerObject) => void;
+    dispatchEvent: (event: Event) => boolean;
+  }
+  
+  return vi.fn().mockImplementation((query: string): MockedMediaQueryList => ({
     matches,
     media: query,
     onchange: null,

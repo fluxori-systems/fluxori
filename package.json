@@ -70,7 +70,9 @@
   },
   "homepage": "https://github.com/fluxori/fluxori",
   "devDependencies": {
+    "dependency-cruiser": "^16.10.1",
     "husky": "^8.0.3",
-    "lint-staged": "^15.1.0"
+    "lint-staged": "^15.1.0",
+    "viz.js": "^2.1.2"
   }
 }

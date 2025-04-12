@@ -1,9 +1,12 @@
+// @vitest-environment jsdom
+import '@testing-library/jest-dom';
 'use client';
 
 import React from 'react';
 import { describe, test, expect, vi } from 'vitest';
 import { renderWithProviders } from '../../../../testing/utils/render';
 import { setupNetworkConditions } from '../../../../testing/utils/networkTesting';
+import { Assertions } from '../../../../testing/utils/assertions';
 
 // Define Container props interface for type safety
 interface ContainerProps {
@@ -73,12 +76,10 @@ describe('Container Component', () => {
     );
     
     const container = getByTestId('container');
-    // @ts-expect-error - toBeInTheDocument comes from jest-dom
-    expect(container).toBeInTheDocument();
-    // @ts-expect-error - toHaveAttribute comes from jest-dom
-    expect(container).toHaveAttribute('data-size', 'md');
-    // @ts-expect-error - toHaveAttribute comes from jest-dom
-    expect(container).toHaveAttribute('data-padding', 'md');
+    
+    Assertions.inDocument(container);
+    Assertions.hasAttribute(container, 'data-size', 'md');
+    Assertions.hasAttribute(container, 'data-padding', 'md');
     expect(container.className).toContain('flx-container');
   });
   
@@ -88,8 +89,8 @@ describe('Container Component', () => {
     );
     
     const container = getByTestId('container');
-    // @ts-expect-error - toHaveAttribute comes from jest-dom
-    expect(container).toHaveAttribute('data-size', 'sm');
+    
+    Assertions.hasAttribute(container, 'data-size', 'sm');
     expect(container.className).toContain('flx-container-sm');
   });
   
@@ -99,8 +100,8 @@ describe('Container Component', () => {
     );
     
     const container = getByTestId('container');
-    // @ts-expect-error - toHaveAttribute comes from jest-dom
-    expect(container).toHaveAttribute('data-padding', 'lg');
+    
+    Assertions.hasAttribute(container, 'data-padding', 'lg');
   });
   
   test('supports responsive mode', () => {
@@ -109,16 +110,16 @@ describe('Container Component', () => {
     );
     
     const container = getByTestId('container');
-    // @ts-expect-error - toHaveAttribute comes from jest-dom
-    expect(container).toHaveAttribute('data-responsive', 'true');
+    
+    Assertions.hasAttribute(container, 'data-responsive', 'true');
     
     rerender(
       <Container responsive={false}>Non-responsive Container</Container>
     );
     
     const updatedContainer = getByTestId('container');
-    // @ts-expect-error - toHaveAttribute comes from jest-dom
-    expect(updatedContainer).not.toHaveAttribute('data-responsive');
+    
+    Assertions.notHasAttribute(updatedContainer, 'data-responsive');
   });
   
   test('supports network-aware optimizations', () => {
@@ -136,8 +137,8 @@ describe('Container Component', () => {
       );
       
       const container = getByTestId('container');
-      // @ts-expect-error - toHaveAttribute comes from jest-dom
-      expect(container).toHaveAttribute('data-optimized', 'true');
+      
+      Assertions.hasAttribute(container, 'data-optimized', 'true');
     } finally {
       cleanup();
     }
@@ -157,8 +158,8 @@ describe('Container Component', () => {
       );
       
       const container = getByTestId('container');
-      // @ts-expect-error - toHaveAttribute comes from jest-dom
-      expect(container).not.toHaveAttribute('data-optimized');
+      
+      Assertions.notHasAttribute(container, 'data-optimized');
     } finally {
       cleanup();
     }
@@ -170,10 +171,9 @@ describe('Container Component', () => {
     );
     
     const container = getByTestId('container');
-    // @ts-expect-error - toHaveAttribute comes from jest-dom
-    expect(container).toHaveAttribute('data-custom', 'test');
-    // @ts-expect-error - toHaveAttribute comes from jest-dom
-    expect(container).toHaveAttribute('aria-label', 'container');
+    
+    Assertions.hasAttribute(container, 'data-custom', 'test');
+    Assertions.hasAttribute(container, 'aria-label', 'container');
   });
   
   test('combines custom className with default classes', () => {

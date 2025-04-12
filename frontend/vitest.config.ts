@@ -1,4 +1,7 @@
 /// <reference types="vitest" />
+/// <reference types="vitest/globals" />
+/// <reference types="@testing-library/jest-dom" />
+/// <reference path="./src/testing/types/index.d.ts" />
 /// <reference path="./src/testing/types/global.d.ts" />
 /// <reference path="./src/testing/types/testing.d.ts" />
 /// <reference path="./src/testing/types/vitest-mock.d.ts" />

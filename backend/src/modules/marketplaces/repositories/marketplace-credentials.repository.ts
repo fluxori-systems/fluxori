@@ -108,8 +108,9 @@ export class MarketplaceCredentialsRepository extends FirestoreBaseRepository<Ma
       // Clean up credentials object
       const cleanCredentials = { ...credentials };
       if ("organizationId" in cleanCredentials) {
-        // @ts-ignore: We know this property exists because we just checked
-        delete cleanCredentials.organizationId; // Don't store organizationId twice
+        // Use proper type safety approach by creating a type that allows property deletion
+        const credentialsWithOptionalOrg = cleanCredentials as { organizationId?: string };
+        delete credentialsWithOptionalOrg.organizationId; // Don't store organizationId twice
       }
 
       // Prepare the update data

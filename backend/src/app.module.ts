@@ -24,6 +24,7 @@ import { AgentFrameworkModule } from "./modules/agent-framework";
 import { AIInsightsModule } from "./modules/ai-insights/ai-insights.module";
 import { AuthModule } from "./modules/auth/auth.module";
 import { BuyBoxModule } from "./modules/buybox/buybox.module";
+import { ConnectorsModule } from "./modules/connectors";
 import { CreditSystemModule } from "./modules/credit-system";
 import { InventoryModule } from './modules/inventory/inventory.module';
 import { OrganizationsModule } from './modules/organizations/organizations.module';
@@ -90,6 +91,7 @@ import { SecurityModule } from "./modules/security";
     UsersModule,
     OrganizationsModule,
     InventoryModule,
+    ConnectorsModule,    // API connector framework
     MarketplacesModule,
     OrderIngestionModule,
     BuyBoxModule,
