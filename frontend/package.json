@@ -35,6 +35,8 @@
   },
   "dependencies": {
     "@mantine/core": "^7.17.3",
+    "@mantine/dropzone": "^7.17.3",
+    "browser-image-compression": "^2.0.0",
     "@mantine/dates": "^7.17.3",
     "@mantine/form": "^7.17.3",
     "@mantine/hooks": "^7.17.3",

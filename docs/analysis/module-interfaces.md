@@ -2,8 +2,8 @@
 
 ## Summary
 
-Total modules: 19
-Modules with index.ts: 17
+Total modules: 20
+Modules with index.ts: 18
 Modules without index.ts: 2
 
 ## Modules With Proper Public API
@@ -30,7 +30,7 @@ Missing exports: BuyboxMonitoring, RepricingEngine, RepricingScheduler, BuyboxHi
 
 ### connectors
 Current exports: 
-Missing exports: ConnectorFactory, ConnectorCredential, connectorsModule
+Missing exports: ConnectorFactory, WebhookHandler, ConnectorCredential, connectorsModule
 
 ### credit-system
 Current exports: CreditSystemModule, CreditSystemService, TokenTrackingService, CreditCheckRequest, CreditCheckResponse, CreditUsageRequest, CreditUsageType, CreditModelType, TokenUsageCalculation, CreateAllocationDto, AddCreditsDto, CheckCreditsDto, RecordUsageDto, OptimizeModelDto
@@ -66,6 +66,10 @@ Missing exports: order-ingestionModule
 ### organizations
 Current exports: OrganizationsModule
 Missing exports: organizationsModule
+
+### pim
+Current exports: PimModule, Product, Category, AttributeTemplate, ProductVariant, ProductMarketplaceMapping, ProductStatus, ProductType, ProductCategory, ProductAttributeTemplate, ProductAttributeOption, ProductAttributeValue, ProductPricing, ProductDigitalAsset, SouthAfricanCompliance, ProductSyncStatus, ProductValidationResult, ProductSearchOptions, ProductImportExportJob, BulkOperationResult, PimDependencies, ProductService, CategoryService, AttributeTemplateService, MarketplaceSyncService
+Missing exports: LoadShedding, MarketplaceField, MarketplaceSync, MarketplaceValidation, ProductBatch, ShippingProvider, SyncConflictResolution, ShippingProvider, pimModule
 
 ### rag-retrieval
 Current exports: RagRetrievalModule, Document, EmbeddingProvider, DocumentType, DocumentStatus, DocumentChunk, EmbeddingProviderType, VectorSearchResult, DocumentSearchQuery, ChunkingOptions, DocumentProcessingResult, DocumentService, EmbeddingService, DocumentChunkingService, CreateDocumentDto, UpdateDocumentDto, CreateEmbeddingProviderDto, UpdateEmbeddingProviderDto, EmbeddingResponse, DocumentRepository, EmbeddingProviderRepository

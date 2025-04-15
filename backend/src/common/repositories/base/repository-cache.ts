@@ -125,6 +125,13 @@ export class RepositoryCache<T extends FirestoreEntity> {
   }
 
   /**
+   * Invalidate a value from the cache (alias for delete)
+   */
+  invalidate(key: string): boolean {
+    return this.delete(key);
+  }
+
+  /**
    * Clear the entire cache
    */
   clear(): void {

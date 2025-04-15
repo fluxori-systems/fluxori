@@ -23,8 +23,12 @@ export * from './adapters/base-connector';
 export * from './adapters/base-marketplace-connector';
 
 // Marketplace connectors
-// Temporarily removed woocommerce connector
+export * from './adapters/woocommerce-connector';
 export * from './adapters/takealot-connector';
+export * from './adapters/bidorbuy-connector';
+export * from './adapters/makro-connector';
+export * from './adapters/superbalist-connector';
+export * from './adapters/wantitall-connector';
 export * from './adapters/amazon-sp';
 export * from './adapters/shopify';
 

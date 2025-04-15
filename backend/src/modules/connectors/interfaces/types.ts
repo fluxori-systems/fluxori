@@ -576,3 +576,41 @@ export interface OrderAcknowledgment {
   /** Acknowledgment message */
   message?: string;
 }
+
+/**
+ * Marketplace category interface
+ * Common fields across different marketplaces
+ */
+export interface MarketplaceCategory {
+  /** Category ID */
+  id: string;
+  
+  /** Category name */
+  name: string;
+  
+  /** Category path or breadcrumb */
+  path?: string[];
+  
+  /** Parent category ID */
+  parentId?: string;
+  
+  /** Category level in hierarchy (0 = root) */
+  level: number;
+  
+  /** Whether category is active */
+  isActive: boolean;
+  
+  /** Category image URL */
+  imageUrl?: string;
+  
+  /** Category attributes or requirements */
+  attributes?: {
+    name: string;
+    type: string;
+    required: boolean;
+    options?: string[];
+  }[];
+  
+  /** Additional marketplace-specific fields */
+  [key: string]: any;
+}

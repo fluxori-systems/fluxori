@@ -1,4 +1,17 @@
 /**
+ * Represents a file in storage with metadata
+ */
+export interface StorageFile {
+  id: string;
+  name: string;
+  contentType: string;
+  size: number;
+  timeCreated: Date;
+  updated: Date;
+  metadata: Record<string, string | number | boolean | null>;
+}
+
+/**
  * Interface for storage service providers
  */
 export interface StorageService {
@@ -46,9 +59,10 @@ export interface StorageService {
   deleteFile(filePath: string): Promise<void>;
 
   /**
-   * List files in a directory
-   * @param directory The directory to list files from
+   * List files in a directory with detailed metadata
+   * @param directory The directory to list files from (prefix)
    * @param options Options for listing files
+   * @returns Array of StorageFile objects with metadata
    */
   listFiles(
     directory: string,
@@ -56,7 +70,7 @@ export interface StorageService {
       limit?: number;
       prefix?: string;
     },
-  ): Promise<string[]>;
+  ): Promise<StorageFile[]>;
 
   /**
    * Get a file from storage

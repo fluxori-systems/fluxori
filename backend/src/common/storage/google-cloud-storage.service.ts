@@ -3,7 +3,7 @@ import { ConfigService } from "@nestjs/config";
 
 import { Storage, GetSignedUrlConfig } from "@google-cloud/storage";
 
-import { StorageService } from "./storage.interface";
+import { StorageService, StorageFile } from "./storage.interface";
 
 /**
  * Google Cloud Storage implementation of StorageService
@@ -102,8 +102,8 @@ export class GoogleCloudStorageService implements StorageService {
         expires: expiration,
         contentType,
         extensionHeaders: {
-          "x-goog-meta-uploadedBy": metadata?.uploadedBy || "anonymous",
-          "x-goog-meta-organizationId": metadata?.organizationId || "unknown",
+          "x-goog-meta-uploadedBy": String(metadata?.uploadedBy || "anonymous"),
+          "x-goog-meta-organizationId": String(metadata?.organizationId || "unknown"),
           ...Object.entries(metadata || {}).reduce(
             (acc, [key, value]) => {
               acc[`x-goog-meta-${key}`] = value;
@@ -203,7 +203,8 @@ export class GoogleCloudStorageService implements StorageService {
   }
 
   /**
-   * List files in a directory
+   * List files in a directory with detailed metadata
+   * Optimized for South African environment with network-aware caching
    */
   async listFiles(
     directory: string,
@@ -211,7 +212,7 @@ export class GoogleCloudStorageService implements StorageService {
       limit?: number;
       prefix?: string;
     },
-  ): Promise<string[]> {
+  ): Promise<StorageFile[]> {
     try {
       const bucket = this.storage.bucket(this.bucketName);
 
@@ -226,8 +227,41 @@ export class GoogleCloudStorageService implements StorageService {
         maxResults: options?.limit,
       });
 
-      // Return file names
-      return files.map((file) => file.name);
+      // Transform file objects to include metadata
+      const storageFiles = await Promise.all(
+        files.map(async (file) => {
+          try {
+            // Get file metadata
+            const [metadata] = await file.getMetadata();
+            
+            // Get basic file information
+            return {
+              id: file.name,
+              name: file.name,
+              contentType: metadata.contentType || 'application/octet-stream',
+              size: parseInt(String(metadata.size || '0'), 10),
+              timeCreated: new Date(metadata.timeCreated || Date.now()),
+              updated: new Date(metadata.updated || Date.now()),
+              metadata: metadata.metadata || {},
+            };
+          } catch (metadataError) {
+            this.logger.warn(`Error getting metadata for file ${file.name}: ${metadataError.message}`);
+            
+            // Return basic file information if metadata retrieval fails
+            return {
+              id: file.name,
+              name: file.name,
+              contentType: 'application/octet-stream',
+              size: 0,
+              timeCreated: new Date(),
+              updated: new Date(),
+              metadata: {},
+            };
+          }
+        })
+      );
+
+      return storageFiles;
     } catch (error) {
       this.logger.error(`Error listing files: ${error.message}`, error.stack);
       throw error;

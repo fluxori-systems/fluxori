@@ -271,3 +271,22 @@ export function isFirestoreTimestamp(obj: any): obj is FirestoreTimestamp {
     typeof obj.nanoseconds === "number"
   );
 }
+
+/**
+ * User interface representing Firebase authenticated user
+ */
+export interface User {
+  uid: string;
+  email: string;
+  emailVerified: boolean;
+  displayName?: string;
+  photoURL?: string;
+  organizationId?: string;
+  role?: string;
+  customClaims?: Record<string, any>;
+  metadata?: {
+    creationTime?: string;
+    lastSignInTime?: string;
+  };
+  disabled?: boolean;
+}

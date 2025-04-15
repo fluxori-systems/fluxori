@@ -31,9 +31,12 @@
 - **Model Selection**: Cost-optimized AI model selection
 
 ### International Trade
-- **Multi-currency Support**: Manage prices and orders in multiple currencies
-- **South African Optimization**: Special features for South African e-commerce
+- **Multi-currency Support**: Manage prices and orders in multiple currencies across all African nations
+- **Regional Taxation Framework**: Comprehensive tax handling for 10+ African countries
+- **South African Optimization**: Special features for South African e-commerce businesses
+- **Regional Warehouse Management**: Cross-border shipping and optimal warehouse selection
 - **International Shipping**: Integration with global shipping providers
+- **African Market Adaptations**: Network resilience and load shedding protection
 
 ### RAG Retrieval System
 - **Document Management**: Store and index important documents

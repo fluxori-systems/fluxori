@@ -38,6 +38,7 @@ import { StorageModule } from "./modules/storage/storage.module";
 import { FeatureFlagsModule } from "./modules/feature-flags/feature-flags.module";
 import { UsersModule } from "./modules/users/users.module";
 import { SecurityModule } from "./modules/security";
+import { PimModule } from "./modules/pim";
 
 // Import observability module
 
@@ -112,6 +113,12 @@ import { SecurityModule } from "./modules/security";
         enforceDataResidency: true,
         enhancedPiiProtection: true,
       },
+    }),
+    PimModule.register({
+      enableAdvancedB2BSupport: true, // Enable B2B features
+      enableSouthAfricanOptimizations: true, // South African market optimizations
+      enableAiFeatures: true, // Enable AI-powered features 
+      enableExtendedDataProtection: true, // Enable POPIA compliance
     }),
   ],
   providers: [

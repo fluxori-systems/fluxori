@@ -9,13 +9,35 @@ Fluxori currently supports these major South African marketplaces:
 | Marketplace | Integration Type | Auto-Sync Interval | Notes |
 |-------------|-----------------|-------------------|-------|
 | Takealot | Full API | 15 minutes | Includes Takealot Marketplace and Takealot Direct |
-| Bidorbuy | Full API | 30 minutes | |
+| Bidorbuy | Full API | 30 minutes | Includes auction management support |
+| Makro | Full API | 15 minutes | Includes store pickup integration |
 | Loot | Order Import | Manual/Daily | Limited to order import only |
 | OneDayOnly | Order Import | Manual/Daily | Limited to order import only |
-| Makro | Full API | 15 minutes | |
 | Wantitall | Full API | 30 minutes | |
 | Superbalist | Full API | 30 minutes | |
 | Raru | Order Import | Manual/Daily | Limited to order import only |
+
+## Marketplace Integration Overview
+
+### What's New: Enhanced South African Marketplace Support
+
+As part of our April 2025 update, we've significantly enhanced our South African marketplace integrations:
+
+1. **Expanded Takealot Integration**: Our Takealot connector now includes improved category mapping, enhanced reporting, and faster synchronization.
+
+2. **Full Bidorbuy Support**: Our new Bidorbuy connector includes comprehensive auction management features, allowing you to:
+   - Create and manage auctions directly from Fluxori
+   - Set auction parameters including start price, reserve price, and duration
+   - Monitor bidding activity and auction status
+   - Convert successful auctions to orders automatically
+
+3. **Enhanced Makro Integration**: Our updated Makro connector now includes:
+   - Store pickup eligibility checking for each product
+   - Multi-store inventory visibility
+   - Promotion and discount management
+   - Regional stock distribution optimization
+
+All South African marketplace integrations now include improved resilience for load shedding conditions and network-aware behaviors for variable connectivity conditions.
 
 ## Connection Process
 
@@ -88,8 +110,18 @@ The connection process is similar for other marketplaces, though authentication 
 
 1. Orders from Bidorbuy automatically sync to Fluxori every 30 minutes
 2. New orders appear in your Orders dashboard with a "Bidorbuy" source tag
-3. Process orders in Fluxori
-4. Update order status in Fluxori, and it will reflect on Bidorbuy automatically
+3. Auction and fixed-price orders are clearly distinguished with appropriate labels
+4. Process orders in Fluxori
+5. Update order status in Fluxori, and it will reflect on Bidorbuy automatically
+6. For auction orders, you can view bidding history directly from the order details
+
+### Makro Order Processing
+
+1. Orders from Makro automatically sync to Fluxori every 15 minutes
+2. New orders appear in your Orders dashboard with a "Makro" source tag
+3. Store pickup orders are flagged with their designated pickup location
+4. Process orders in Fluxori and update shipping/pickup status
+5. For store pickup orders, prepare inventory at the designated store
 
 ## Inventory Synchronization
 
@@ -115,6 +147,7 @@ South African marketplaces have different fee structures that affect your profit
 
 * **Takealot**: Success fees range from 7-12% depending on category
 * **Bidorbuy**: Commission ranges from 4-10% depending on category
+* **Makro**: Commission ranges from 5-8% depending on category
 * **Other marketplaces**: Variable fee structures
 
 Fluxori's pricing tools can help you set prices that account for these fees to maintain your desired profit margin.

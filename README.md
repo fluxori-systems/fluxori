@@ -146,14 +146,19 @@ The project follows a modular architecture with clear separation of concerns:
 └── docs/               # Documentation
 ```
 
-## South Africa-Specific Optimizations
+## South Africa-Specific and African Optimizations
 
 - Primary deployment in africa-south1 (Johannesburg) for low latency
 - Network optimizations for South African internet conditions
+- Load shedding resilience for critical operations
 - Marketplace integrations with popular South African platforms
 - Support for South African tax and compliance requirements
+- Comprehensive African Tax Framework with support for 10+ countries
+- Regional warehouse management with cross-border shipping capabilities
+- Multi-currency support for all African currencies
 - Regional payment gateway integrations
 - POPIA compliance features
+- Progressive web features for variable internet conditions
 
 ## Monitoring and Reliability
 

@@ -225,13 +225,21 @@ export interface CreateProductDto {
  * Update product DTO
  */
 export interface UpdateProductDto {
+  sku?: string;
+  barcode?: string;
   name?: string;
   description?: string;
+  type?: ProductType;
   status?: ProductStatus;
   brandId?: string;
   categoryIds?: string[];
   pricing?: Partial<ProductPricing>;
+  dimensions?: Partial<ProductDimensions>;
+  hasVariants?: boolean;
   stockLevelThreshold?: Partial<StockLevelThreshold>;
+  stockQuantity?: number;
+  defaultWarehouseId?: string;
   attributes?: Record<string, string | number | boolean>;
   tags?: string[];
+  mainImageUrl?: string;
 }
