@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  marketplace-scraper:
+    build:
+      context: ../marketplace-scraper
+      dockerfile: ../deployment/Dockerfile
+    image: marketplace-scraper:local
+    container_name: marketplace-scraper
+    environment:
+      - PORT=8080
+      - GCP_PROJECT_ID=fluxori-marketplace-data
+      - GCP_REGION=africa-south1
+      - CONFIG_PATH=/app/deployment/config.json
+      - GOOGLE_APPLICATION_CREDENTIALS=/app/keys/service-account-key.json
+      - PYTHONUNBUFFERED=1
+    ports:
+      - "8080:8080"
+    volumes:
+      - ../marketplace-scraper:/app
+      - ./keys:/app/keys
+      - ./config:/app/deployment
+      - ./logs:/app/logs
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    restart: unless-stopped
+
+  # Optional: Add a local firestore emulator for development
+  firestore-emulator:
+    image: gcr.io/google.com/cloudsdktool/google-cloud-cli:emulators
+    container_name: firestore-emulator
+    environment:
+      - FIRESTORE_PROJECT_ID=fluxori-marketplace-data
+      - FIRESTORE_LISTEN_ADDRESS=0.0.0.0:8200
+    ports:
+      - "8200:8200"
+    command: >
+      bash -c "gcloud config set project fluxori-marketplace-data &&
+               gcloud beta emulators firestore start --host-port=0.0.0.0:8200"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8200"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    restart: unless-stopped
+
+networks:
+  default:
+    name: marketplace-scraper-network
