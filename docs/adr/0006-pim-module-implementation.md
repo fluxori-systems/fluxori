@@ -229,12 +229,18 @@ The PIM module will implement the following comprehensive set of features:
 **Cross-Module Integration**
 
 **Module Dependencies**
-- Connectors Module for marketplace integration
-- Agent Framework Module for AI features
-- Credit System Module for AI usage tracking
-- Feature Flags Module for feature toggling
-- Storage Module for media management
-- Inventory Module for stock management
+
+![PIM Module Dependencies](visualizations/pim-dependencies.svg)
+
+The PIM module has the following key dependencies:
+- Connectors Module for marketplace integration (Takealot, Bob Shop, Makro, etc.)
+- Agent Framework Module for AI-powered features (product descriptions, image analysis)
+- Credit System Module for AI usage tracking and allocation
+- Feature Flags Module for market-specific feature toggling
+- Storage Module for media management with network-aware capabilities
+- Inventory Module for stock management and warehouse integration
+- Security Module for data protection compliance and security features
+- International Trade Module for cross-border trade functionality (bidirectional)
 
 **Integration Patterns**
 - Clear boundary enforcement

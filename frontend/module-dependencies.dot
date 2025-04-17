@@ -1,13 +1,49 @@
-digraph "Module Dependencies" {
+digraph FrontendModules {
   rankdir="TB";
   node [shape=box, style=filled];
-  edge [fontsize=12, fontcolor=gray50];
 
-  ui [label="UI Module", fillcolor="#2563eb", fontcolor="white"];
-  motion [label="Motion Module", fillcolor="#db2777", fontcolor="white"];
-  shared [label="Shared Module", fillcolor="#16a34a", fontcolor="white"];
+  // Library modules
+  "ui" [label="UI", fillcolor=lightblue];
+  "motion" [label="Motion", fillcolor=lightblue];
+  "shared" [label="Shared", fillcolor=lightblue];
+  "design-system" [label="Design System", fillcolor=lightblue];
+  "firebase" [label="Firebase", fillcolor=lightblue];
 
-  ui -> motion [label="8 imports"];
-  ui -> shared [label="34 imports"];
-  motion -> shared [label="20 imports"];
+  // Component groups 
+  "auth" [label="Auth", fillcolor=lightgreen];
+  "charts" [label="Charts", fillcolor=lightgreen];
+  "feature-flags" [label="Feature Flags", fillcolor=lightgreen];
+  "layouts" [label="Layouts", fillcolor=lightgreen];
+  "observability" [label="Observability", fillcolor=lightgreen];
+  "pim" [label="PIM", fillcolor=lightgreen];
+  "south-african" [label="South African", fillcolor=lightgreen];
+  "animations" [label="Animations", fillcolor=lightgreen];
+
+  // Library dependencies
+  "ui" -> "shared";
+  "motion" -> "shared";
+  "design-system" -> "ui";
+
+  // Component dependencies
+  "pim" -> "ui";
+  "pim" -> "shared";
+  "pim" -> "charts";
+  "pim" -> "south-african";
+
+  "charts" -> "ui";
+  "charts" -> "shared";
+  
+  "layouts" -> "ui";
+  "auth" -> "ui";
+  "auth" -> "firebase";
+  
+  "observability" -> "charts";
+  "observability" -> "ui";
+  
+  "south-african" -> "ui";
+  "south-african" -> "shared";
+  
+  "animations" -> "motion";
+  
+  "feature-flags" -> "shared";
 }

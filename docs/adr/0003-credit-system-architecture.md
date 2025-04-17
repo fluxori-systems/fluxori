@@ -77,6 +77,17 @@ We will implement a Credit System Foundation module with the following architect
    - Observability: For monitoring and alerting on credit usage
    - Authentication: For user and organization identification
 
+## Module Dependencies
+
+![Credit System Module Dependencies](visualizations/credit-system-dependencies.svg)
+
+The Credit System module has the following dependencies:
+- Depends on Feature Flags module for toggling credit-intensive features
+- Used by Agent Framework for token tracking and model optimization
+- Used by AI Insights for credit consumption tracking
+- Used by RAG Retrieval for token usage monitoring
+- Used by PIM for AI-powered feature credit allocation
+
 ## Alternatives Considered
 
 1. **Per-Module Credit Tracking**:

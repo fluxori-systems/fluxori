@@ -27,8 +27,8 @@ const paths = [
 
 // Function to run dependency-cruiser
 function runDepCruise(srcPath, options = {}) {
-  // Use the correct option to skip TypeScript validation: --skip-ts-deps
-  let command = `npx depcruise ${srcPath} --skip-ts-deps`;
+  // Use the correct option to skip TypeScript validation
+  let command = `npx depcruise ${srcPath} --exclude "node_modules|.next|dist"`;
   
   if (options.include) {
     command += ` --include-only "${options.include}"`;

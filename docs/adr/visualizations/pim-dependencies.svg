@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="800px" height="500px" viewBox="0 0 800 500">
+    <style>
+        .module { fill: #e1f5fe; stroke: #0288d1; stroke-width: 2; }
+        .pim-module { fill: #e8f5e9; stroke: #2e7d32; stroke-width: 2.5; }
+        .label { font-family: Arial; font-size: 14px; text-anchor: middle; dominant-baseline: middle; }
+        .arrow { stroke: #333; stroke-width: 1.5; fill: none; }
+        .arrowhead { fill: #333; }
+        .title { font-family: Arial; font-size: 18px; font-weight: bold; }
+    </style>
+    
+    <text class="title" x="400" y="30" text-anchor="middle">PIM Module Dependencies</text>
+    
+    <g id="modules">
+        <!-- PIM Module -->
+        <rect class="pim-module" x="350" y="250" width="100" height="50" rx="5" />
+        <text class="label" x="400" y="275">PIM</text>
+        
+        <!-- Connected Modules -->
+        <rect class="module" x="150" y="150" width="100" height="50" rx="5" />
+        <text class="label" x="200" y="175">Connectors</text>
+        
+        <rect class="module" x="300" y="150" width="100" height="50" rx="5" />
+        <text class="label" x="350" y="175">Storage</text>
+        
+        <rect class="module" x="450" y="150" width="100" height="50" rx="5" />
+        <text class="label" x="500" y="175">Agent Framework</text>
+        
+        <rect class="module" x="600" y="150" width="100" height="50" rx="5" />
+        <text class="label" x="650" y="175">Feature Flags</text>
+        
+        <rect class="module" x="150" y="350" width="100" height="50" rx="5" />
+        <text class="label" x="200" y="375">Credit System</text>
+        
+        <rect class="module" x="300" y="350" width="100" height="50" rx="5" />
+        <text class="label" x="350" y="375">Inventory</text>
+        
+        <rect class="module" x="450" y="350" width="100" height="50" rx="5" />
+        <text class="label" x="500" y="375">Security</text>
+        
+        <rect class="module" x="600" y="350" width="100" height="50" rx="5" />
+        <text class="label" x="650" y="375">Int'l Trade</text>
+    </g>
+    
+    <g id="arrows">
+        <!-- PIM connections -->
+        <path class="arrow" d="M 400,250 L 400,220 L 200,220 L 200,200" marker-end="url(#arrowhead)" />
+        <path class="arrow" d="M 400,250 L 400,220 L 350,220 L 350,200" marker-end="url(#arrowhead)" />
+        <path class="arrow" d="M 400,250 L 400,220 L 500,220 L 500,200" marker-end="url(#arrowhead)" />
+        <path class="arrow" d="M 400,250 L 400,220 L 650,220 L 650,200" marker-end="url(#arrowhead)" />
+        <path class="arrow" d="M 400,300 L 400,330 L 200,330 L 200,350" marker-end="url(#arrowhead)" />
+        <path class="arrow" d="M 400,300 L 400,330 L 350,330 L 350,350" marker-end="url(#arrowhead)" />
+        <path class="arrow" d="M 400,300 L 400,330 L 500,330 L 500,350" marker-end="url(#arrowhead)" />
+        
+        <!-- International Trade to PIM -->
+        <path class="arrow" d="M 600,350 L 550,350 L 550,275 L 450,275" marker-end="url(#arrowhead)" />
+    </g>
+    
+    <defs>
+        <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto" class="arrowhead">
+            <polygon points="0 0, 10 3.5, 0 7" />
+        </marker>
+    </defs>
+</svg>

@@ -1,0 +1,53 @@
+digraph ModuleDependencies {
+  rankdir="TB";
+  node [shape=box, style=filled, fillcolor=lightblue];
+
+  "agent-framework" [label="Agent Framework"];
+  "ai-insights" [label="AI Insights"];
+  "auth" [label="Auth"];
+  "buybox" [label="Buybox"];
+  "connectors" [label="Connectors"];
+  "credit-system" [label="Credit System"];
+  "feature-flags" [label="Feature Flags"];
+  "international-trade" [label="International Trade"];
+  "inventory" [label="Inventory"];
+  "marketplaces" [label="Marketplaces"];
+  "order-ingestion" [label="Order Ingestion"];
+  "organizations" [label="Organizations"];
+  "pim" [label="PIM"];
+  "rag-retrieval" [label="RAG Retrieval"];
+  "security" [label="Security"];
+  "storage" [label="Storage"];
+  "users" [label="Users"];
+
+  // Dependencies based on ADR-006 and code inspection
+  "pim" -> "connectors";
+  "pim" -> "storage";
+  "pim" -> "agent-framework";
+  "pim" -> "feature-flags";
+  "pim" -> "credit-system";
+  "pim" -> "inventory";
+  "pim" -> "security";
+  
+  "ai-insights" -> "credit-system";
+  "ai-insights" -> "agent-framework";
+  
+  "agent-framework" -> "credit-system";
+  
+  "rag-retrieval" -> "agent-framework";
+  "rag-retrieval" -> "credit-system";
+  
+  "connectors" -> "feature-flags";
+  
+  "marketplaces" -> "connectors";
+  "order-ingestion" -> "connectors";
+  "order-ingestion" -> "inventory";
+  
+  "buybox" -> "marketplaces";
+  "buybox" -> "connectors";
+  
+  "international-trade" -> "inventory";
+  "international-trade" -> "pim";
+  
+  "credit-system" -> "feature-flags";
+}

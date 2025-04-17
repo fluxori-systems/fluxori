@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="800px" height="400px" viewBox="0 0 800 400">
+    <style>
+        .module { fill: #e1f5fe; stroke: #0288d1; stroke-width: 2; }
+        .credit-module { fill: #fff3e0; stroke: #ef6c00; stroke-width: 2.5; }
+        .label { font-family: Arial; font-size: 14px; text-anchor: middle; dominant-baseline: middle; }
+        .arrow { stroke: #333; stroke-width: 1.5; fill: none; }
+        .arrowhead { fill: #333; }
+        .title { font-family: Arial; font-size: 18px; font-weight: bold; }
+    </style>
+    
+    <text class="title" x="400" y="30" text-anchor="middle">Credit System Module Dependencies</text>
+    
+    <g id="modules">
+        <!-- Credit System Module -->
+        <rect class="credit-module" x="350" y="175" width="100" height="50" rx="5" />
+        <text class="label" x="400" y="200">Credit System</text>
+        
+        <!-- Connected Modules -->
+        <rect class="module" x="150" y="100" width="100" height="50" rx="5" />
+        <text class="label" x="200" y="125">Feature Flags</text>
+        
+        <rect class="module" x="150" y="250" width="100" height="50" rx="5" />
+        <text class="label" x="200" y="275">Agent Framework</text>
+        
+        <rect class="module" x="550" y="100" width="100" height="50" rx="5" />
+        <text class="label" x="600" y="125">AI Insights</text>
+        
+        <rect class="module" x="550" y="250" width="100" height="50" rx="5" />
+        <text class="label" x="600" y="275">RAG Retrieval</text>
+        
+        <rect class="module" x="350" y="325" width="100" height="50" rx="5" />
+        <text class="label" x="400" y="350">PIM</text>
+    </g>
+    
+    <g id="arrows">
+        <!-- Credit System connections -->
+        <path class="arrow" d="M 350,175 L 200,175 L 200,150" marker-end="url(#arrowhead)" />
+        <path class="arrow" d="M 200,250 L 200,200 L 350,200" marker-end="url(#arrowhead)" />
+        <path class="arrow" d="M 550,150 L 550,200 L 450,200" marker-end="url(#arrowhead)" />
+        <path class="arrow" d="M 550,250 L 550,200 L 450,200" marker-end="url(#arrowhead)" />
+        <path class="arrow" d="M 400,325 L 400,225" marker-end="url(#arrowhead)" />
+        
+        <!-- AI Insights to Agent Framework -->
+        <path class="arrow" d="M 550,125 L 500,125 L 500,80 L 120,80 L 120,275 L 150,275" marker-end="url(#arrowhead)" />
+        
+        <!-- RAG Retrieval to Agent Framework -->
+        <path class="arrow" d="M 550,275 L 500,275 L 500,320 L 120,320 L 120,275 L 150,275" marker-end="url(#arrowhead)" />
+    </g>
+    
+    <defs>
+        <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto" class="arrowhead">
+            <polygon points="0 0, 10 3.5, 0 7" />
+        </marker>
+    </defs>
+</svg>

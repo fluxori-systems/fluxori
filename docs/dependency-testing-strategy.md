@@ -34,6 +34,11 @@ This document outlines the strategy for testing the dependency management tools 
 3. Verify that all known dependencies are correctly represented
 4. Check that modules are correctly grouped
 5. Confirm that color coding follows the defined conventions
+6. Compare with the latest updated dependency graphs:
+   - `backend/module-dependencies.svg` (updated with all backend modules)
+   - `frontend/module-dependencies.svg` (updated with component relationships)
+   - `docs/adr/visualizations/pim-dependencies.svg` (dedicated PIM dependencies)
+   - `docs/adr/visualizations/credit-system-dependencies.svg` (Credit System dependencies)
 
 #### 1.2 Circular Dependency Detection Test
 
@@ -160,10 +165,12 @@ The dependency management testing strategy will be considered successful if:
 ## Testing Tools
 
 - Dependency-cruiser for visualization and validation
+- Custom module dependency analysis scripts (`scripts/analyze-module-dependencies.js`)
 - ESLint for static analysis
 - TypeDoc for API documentation generation
 - GitHub Actions for CI workflow testing
 - Manual review for documentation quality
+- SVG dependency visualizations for module relationships
 
 ## Reporting
 
