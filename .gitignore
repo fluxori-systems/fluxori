@@ -1,1 +1,5 @@
 node_modules
+
+# Service account keys
+deployment/keys/service-account.json
+
