@@ -5,7 +5,7 @@
 set -e  # Exit on error
 
 # Default settings
-PROJECT_ID="fluxori-marketplace-data"
+PROJECT_ID="fluxori-web-app"  # Updated to match the service account's project
 REGION="africa-south1"
 SERVICE_NAME="marketplace-scraper"
 DEPLOY_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -53,10 +53,17 @@ gcloud config set project ${PROJECT_ID}
 
 # Enable APIs
 echo "Enabling required APIs..."
-gcloud services enable run.googleapis.com cloudscheduler.googleapis.com firestore.googleapis.com \
-  secretmanager.googleapis.com pubsub.googleapis.com monitoring.googleapis.com \
-  cloudtrace.googleapis.com cloudbuild.googleapis.com containerregistry.googleapis.com \
-  artifactregistry.googleapis.com
+APIs="run.googleapis.com cloudscheduler.googleapis.com firestore.googleapis.com secretmanager.googleapis.com pubsub.googleapis.com monitoring.googleapis.com cloudtrace.googleapis.com cloudbuild.googleapis.com containerregistry.googleapis.com artifactregistry.googleapis.com"
+
+echo "Checking which APIs are already enabled..."
+for api in $APIs; do
+  if gcloud services list --enabled --filter="name:${api}" 2>/dev/null | grep -q "${api}"; then
+    echo "  ${api} is already enabled"
+  else
+    echo "  Enabling ${api}..."
+    gcloud services enable ${api} || echo "  Warning: Could not enable ${api}, may require additional permissions"
+  fi
+done
 
 # Create service account for the scraper
 echo "Setting up service account for the scraper..."
@@ -64,40 +71,53 @@ SA_NAME="${SERVICE_NAME}-sa"
 SA_EMAIL="${SA_NAME}@${PROJECT_ID}.iam.gserviceaccount.com"
 
 if ! gcloud iam service-accounts describe ${SA_EMAIL} &>/dev/null; then
+  echo "  Creating service account ${SA_NAME}..."
   gcloud iam service-accounts create ${SA_NAME} \
     --description="Service account for marketplace scraper" \
-    --display-name="Marketplace Scraper Service Account"
+    --display-name="Marketplace Scraper Service Account" || echo "  Warning: Could not create service account, may require additional permissions"
+else
+  echo "  Service account ${SA_NAME} already exists"
 fi
 
 # Assign roles
+echo "Assigning necessary permissions..."
 ROLES="roles/datastore.user roles/secretmanager.secretAccessor roles/monitoring.metricWriter roles/pubsub.publisher roles/cloudtrace.agent roles/run.invoker"
 for role in $ROLES; do
+  echo "  Granting ${role}..."
   gcloud projects add-iam-policy-binding ${PROJECT_ID} \
     --member="serviceAccount:${SA_EMAIL}" \
     --role="${role}" \
-    --quiet
+    --quiet || echo "  Warning: Could not assign role ${role}, may require additional permissions"
 done
 
 # Store SmartProxy token in Secret Manager
 echo "Storing SmartProxy token in Secret Manager..."
 if ! gcloud secrets describe smartproxy-auth-token &>/dev/null; then
+  echo "  Creating SmartProxy token secret..."
   echo -n "${SMARTPROXY_TOKEN}" | gcloud secrets create smartproxy-auth-token \
     --replication-policy="user-managed" \
     --locations="${REGION}" \
-    --data-file=-
+    --data-file=- || echo "  Warning: Could not create secret, may require additional permissions"
   
+  echo "  Granting access to secret..."
   gcloud secrets add-iam-policy-binding smartproxy-auth-token \
     --member="serviceAccount:${SA_EMAIL}" \
-    --role="roles/secretmanager.secretAccessor"
+    --role="roles/secretmanager.secretAccessor" || echo "  Warning: Could not grant access to secret, may require additional permissions"
+else
+  echo "  SmartProxy token secret already exists"
 fi
 
-# Create a simple Firestore database
-echo "Setting up Firestore database..."
-if ! gcloud firestore databases list | grep -q "(default)"; then
-  gcloud firestore databases create --location=${REGION} --type=firestore-native
+# Check if Firestore is available
+echo "Checking Firestore database..."
+if gcloud firestore databases list 2>/dev/null | grep -q "(default)"; then
+  echo "  Firestore database already exists"
+else
+  echo "  Creating Firestore database..."
+  gcloud firestore databases create --location=${REGION} --type=firestore-native || echo "  Warning: Could not create Firestore database, may require additional permissions"
 fi
 
 # Create sample data for testing
+echo "Creating sample Firestore data..."
 mkdir -p /tmp/firestore
 cat > /tmp/firestore/sample_product.json << EOF
 {
@@ -113,12 +133,13 @@ cat > /tmp/firestore/sample_product.json << EOF
 }
 EOF
 
-# Upload sample data
-echo "Creating sample Firestore data..."
+# Try to upload sample data
+echo "  Uploading sample data..."
 gcloud firestore documents create "projects/${PROJECT_ID}/databases/(default)/documents/products/sample_product" \
-  --from-file=/tmp/firestore/sample_product.json
+  --from-file=/tmp/firestore/sample_product.json || echo "  Warning: Could not upload sample data, may require additional permissions"
 
 # Create configuration for deployment
+echo "Creating configuration files..."
 mkdir -p "${DEPLOY_DIR}/config"
 cat > "${DEPLOY_DIR}/config/config.json" << EOF
 {
@@ -148,6 +169,7 @@ cat > "${DEPLOY_DIR}/config/config.json" << EOF
 EOF
 
 # Create documentation
+echo "Creating documentation..."
 mkdir -p "${DEPLOY_DIR}/docs"
 cat > "${DEPLOY_DIR}/docs/MONITORING_INSTRUCTIONS.md" << EOF
 # Marketplace Scraper Monitoring Instructions
@@ -187,10 +209,14 @@ EOF
 # Create Pub/Sub topic for tasks
 echo "Setting up Pub/Sub for task distribution..."
 if ! gcloud pubsub topics describe ${SERVICE_NAME}-tasks &>/dev/null; then
-  gcloud pubsub topics create ${SERVICE_NAME}-tasks
+  echo "  Creating Pub/Sub topic..."
+  gcloud pubsub topics create ${SERVICE_NAME}-tasks || echo "  Warning: Could not create Pub/Sub topic, may require additional permissions"
+  echo "  Creating Pub/Sub subscription..."
   gcloud pubsub subscriptions create ${SERVICE_NAME}-subscription \
     --topic=${SERVICE_NAME}-tasks \
-    --ack-deadline=300
+    --ack-deadline=300 || echo "  Warning: Could not create Pub/Sub subscription, may require additional permissions"
+else
+  echo "  Pub/Sub topic already exists"
 fi
 
 echo -e "${GREEN}Deployment preparation completed successfully.${NC}"
@@ -203,13 +229,30 @@ echo -e "${BLUE} set up successfully. To complete the deployment, upload your   
 echo -e "${BLUE} container image and deploy it to Cloud Run.                     ${NC}"
 echo -e "${BLUE}==================================================================${NC}"
 echo ""
+echo -e "Project: ${GREEN}${PROJECT_ID}${NC}"
 echo -e "Service Account: ${GREEN}${SA_EMAIL}${NC}"
 echo -e "SmartProxy Token: ${GREEN}Stored in Secret Manager${NC}"
 echo -e "Documentation: ${GREEN}${DEPLOY_DIR}/docs/MONITORING_INSTRUCTIONS.md${NC}"
 echo ""
 echo -e "${YELLOW}Next steps:${NC}"
-echo -e "1. Build and push your container image"
-echo -e "2. Deploy to Cloud Run"
-echo -e "3. Set up Cloud Scheduler jobs"
-echo ""
+echo -e "1. Build the Docker container:"
+echo -e "   ${GREEN}cd /home/tarquin_stapa/fluxori/marketplace-scraper${NC}"
+echo -e "   ${GREEN}docker build -t gcr.io/${PROJECT_ID}/${SERVICE_NAME}:latest -f ../deployment/Dockerfile .${NC}"
+echo -e ""
+echo -e "2. Push the container to Google Container Registry:"
+echo -e "   ${GREEN}docker push gcr.io/${PROJECT_ID}/${SERVICE_NAME}:latest${NC}"
+echo -e ""
+echo -e "3. Deploy to Cloud Run:"
+echo -e "   ${GREEN}gcloud run deploy ${SERVICE_NAME} \\${NC}"
+echo -e "     ${GREEN}--image=gcr.io/${PROJECT_ID}/${SERVICE_NAME}:latest \\${NC}"
+echo -e "     ${GREEN}--platform=managed \\${NC}"
+echo -e "     ${GREEN}--region=${REGION} \\${NC}"
+echo -e "     ${GREEN}--memory=2Gi \\${NC}"
+echo -e "     ${GREEN}--cpu=1 \\${NC}"
+echo -e "     ${GREEN}--max-instances=2 \\${NC}"
+echo -e "     ${GREEN}--min-instances=0 \\${NC}"
+echo -e "     ${GREEN}--service-account=${SA_EMAIL} \\${NC}"
+echo -e "     ${GREEN}--allow-unauthenticated \\${NC}"
+echo -e "     ${GREEN}--set-env-vars=\"GCP_PROJECT_ID=${PROJECT_ID},GCP_REGION=${REGION},CONFIG_PATH=/app/deployment/config.json\"${NC}"
+echo -e ""
 echo -e "${BLUE}==================================================================${NC}"

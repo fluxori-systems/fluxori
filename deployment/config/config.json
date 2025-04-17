@@ -1,0 +1,85 @@
+{
+  "project_id": "fluxori-web-app",
+  "region": "africa-south1",
+  "version": "1.0.0",
+  "monthly_quota": 82000,
+  "daily_quota": 2700,
+  "max_concurrent_tasks": 5,
+  "load_shedding_detection": true,
+  "persistence_enabled": true,
+  "task_topic": "marketplace-scraper-tasks",
+  "service_name": "marketplace-scraper",
+  "service_account": "marketplace-scraper-sa@fluxori-web-app.iam.gserviceaccount.com",
+  "notification_email": "alerts@fluxori.com",
+  "enable_takealot": true,
+  "enable_amazon": true,
+  "enable_bob_shop": true,
+  "enable_makro": true,
+  "enable_loot": true,
+  "enable_buck_cheap": true,
+  "emergency_threshold": 0.95,
+  "warning_threshold": 0.80,
+  "storage_cache_enabled": true,
+  "storage_cache_ttl": 3600,
+  "marketplace_settings": {
+    "takealot": {
+      "priority": "high",
+      "request_delay": 1.5,
+      "max_daily_requests": 1000,
+      "retry_attempts": 3,
+      "categories": ["electronics", "home", "garden", "sport"]
+    },
+    "amazon": {
+      "priority": "high",
+      "request_delay": 2.0,
+      "max_daily_requests": 800,
+      "retry_attempts": 3,
+      "categories": ["electronics", "home", "books", "fashion"]
+    },
+    "bob_shop": {
+      "priority": "medium",
+      "request_delay": 2.0,
+      "max_daily_requests": 300,
+      "retry_attempts": 2,
+      "categories": ["electronics", "computing", "cellphones"]
+    },
+    "makro": {
+      "priority": "medium",
+      "request_delay": 1.5,
+      "max_daily_requests": 300,
+      "retry_attempts": 2,
+      "categories": ["electronics", "appliances", "garden"]
+    },
+    "loot": {
+      "priority": "medium",
+      "request_delay": 2.0,
+      "max_daily_requests": 200,
+      "retry_attempts": 2,
+      "categories": ["books", "games", "music", "movies"]
+    },
+    "buck_cheap": {
+      "priority": "low",
+      "request_delay": 3.0,
+      "max_daily_requests": 100,
+      "retry_attempts": 1,
+      "categories": ["daily_deals", "special_offers"]
+    }
+  },
+  "proxy_settings": {
+    "rotation_interval": 300,
+    "country_code": "ZA",
+    "token_secret_name": "smartproxy-auth-token"
+  },
+  "load_shedding": {
+    "check_interval": 1800,
+    "sources": ["eskomsepush", "municipal"],
+    "reduce_requests_during_loadshedding": true,
+    "reduction_factor": 0.5
+  },
+  "reporting": {
+    "daily_summary_enabled": true,
+    "daily_summary_time": "22:00",
+    "weekly_report_enabled": true,
+    "weekly_report_day": "Monday"
+  }
+}
