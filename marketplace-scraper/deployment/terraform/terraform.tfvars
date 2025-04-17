@@ -1,0 +1,10 @@
+project_id = "fluxori-marketplace-data"
+region = "africa-south1"
+service_name = "marketplace-scraper"
+container_image = "gcr.io/fluxori-marketplace-data/marketplace-scraper:latest"
+cpu = "1"
+memory = "2Gi"
+min_instances = 1
+max_instances = 10
+timeout_seconds = 300
+notification_email = "alerts@fluxori.com"

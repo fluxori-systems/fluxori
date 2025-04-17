@@ -1,7 +1,10 @@
 import { CompressionQuality, ResizeOption } from '../models/image.model';
+import { NetworkQualityInfo } from './types';
+import { NetworkStatus } from '../../../common/utils/network-status.service';
 
 /**
  * Interface for image upload options in the PIM module
+ * Optimized for South African market with network quality awareness
  */
 export interface ImageUploadOptions {
   /**
@@ -10,9 +13,29 @@ export interface ImageUploadOptions {
   productId: string;
   
   /**
+   * Filename for the uploaded image
+   */
+  fileName?: string;
+  
+  /**
+   * Content type of the image (e.g., image/jpeg)
+   */
+  contentType?: string;
+  
+  /**
    * Type of product image (main, gallery, variant)
    */
   imageType?: string;
+  
+  /**
+   * Whether this is the main product image
+   */
+  isMain?: boolean;
+  
+  /**
+   * Alt text for the image
+   */
+  altText?: string;
   
   /**
    * Position/order of the image in the product gallery
@@ -57,16 +80,17 @@ export interface ImageUploadOptions {
   
   /**
    * Network quality information for adaptive processing
+   * Used for South African network-aware optimizations
    */
-  networkQuality?: {
-    connectionType?: string;
-    connectionQuality?: string;
-    quality?: string;
-    loadSheddingStage?: number;
-  };
+  networkQuality?: NetworkQualityInfo | NetworkStatus;
   
   /**
    * Additional metadata to store with the image
    */
   metadata?: Record<string, string>;
+  
+  /**
+   * Organization ID
+   */
+  organizationId?: string;
 }

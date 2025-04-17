@@ -7,6 +7,55 @@ import { ConfigService } from '@nestjs/config';
 import { ModelRegistryRepository } from '../../agent-framework/repositories/model-registry.repository';
 import { TokenEstimator } from '../../agent-framework/utils/token-estimator';
 
+// Define interfaces for ProductAI service
+export interface ProductDescriptionOptions {
+  length?: 'short' | 'medium' | 'long';
+  seoOptimized?: boolean;
+  marketplaceOptimized?: boolean;
+  targetMarketplace?: string;
+  language?: string;
+  promptTemplate?: string;
+  maxRetries?: number;
+  networkQuality?: NetworkQualityInfo;
+}
+
+export interface ProductData {
+  name: string;
+  category: string;
+  attributes: Record<string, any>;
+  features?: string[];
+  keywords?: string[];
+  targetAudience?: string;
+  tone?: string;
+  brandGuidelines?: string;
+  competitorProducts?: string[];
+}
+
+export interface NetworkQualityInfo {
+  effectiveType?: string;
+  downlink?: number;
+  rtt?: number;
+  saveData?: boolean;
+}
+
+export interface TokenUsage {
+  input: number;
+  output: number;
+  total: number;
+}
+
+export interface DescriptionGenerationResult {
+  description: string;
+  seoMetadata?: { 
+    title: string; 
+    description: string; 
+    keywords: string[] 
+  };
+  success: boolean;
+  tokenUsage?: TokenUsage;
+  error?: string;
+}
+
 /**
  * Service for AI-powered product operations
  * Optimized for South African market with credit system integration
@@ -33,32 +82,14 @@ export class ProductAiService {
    * @param organizationId Organization ID for credit tracking
    * @param userId User ID for credit tracking
    * @param options Generation options
+   * @returns Description generation result
    */
   async generateProductDescription(
-    productData: {
-      name: string;
-      category: string;
-      attributes: Record<string, any>;
-      features?: string[];
-      keywords?: string[];
-      targetAudience?: string;
-      tone?: string;
-    },
+    productData: ProductData,
     organizationId: string,
     userId: string,
-    options?: {
-      length?: 'short' | 'medium' | 'long';
-      seoOptimized?: boolean;
-      marketplaceOptimized?: boolean;
-      targetMarketplace?: string;
-      language?: string;
-    },
-  ): Promise<{ 
-    description: string; 
-    seoMetadata?: { title: string; description: string; keywords: string[] };
-    success: boolean;
-    tokenUsage?: { input: number; output: number; total: number };
-  }> {
+    options?: ProductDescriptionOptions
+  ): Promise<DescriptionGenerationResult> {
     try {
       // Default options
       const length = options?.length || 'medium';

@@ -3,6 +3,8 @@
  *
  * Implements a generic repository pattern for Firestore with caching,
  * soft-delete support, transactions, and optimistic locking.
+ * 
+ * Fully TypeScript-compliant implementation with proper generic typing
  */
 
 import { Injectable, Logger } from "@nestjs/common";
@@ -79,19 +81,22 @@ import {
   QueryFilterOperator,
   PaginatedResult,
   TransactionContext,
+  FirestoreDataConverter,
 } from "../../types/google-cloud.types";
 
 // Repository utilities
+import { Repository, BaseEntity } from './base/repository-types';
 
 /**
  * Base Firestore repository implementation
  * Generic repository pattern for Firestore documents
+ * TypeScript-compliant with proper interface implementation
  */
 @Injectable()
-export abstract class FirestoreBaseRepository<T extends FirestoreEntity> {
+export abstract class FirestoreBaseRepository<T extends BaseEntity, K extends string = string> implements Repository<T, K> {
   protected readonly logger: Logger;
   protected readonly statsTracker: RepositoryStats;
-  protected readonly converter;
+  protected readonly converter: FirestoreDataConverter<T>;
   protected readonly cache: RepositoryCache<T>;
   protected readonly serverTimestamp: FieldValue;
 
@@ -135,7 +140,7 @@ export abstract class FirestoreBaseRepository<T extends FirestoreEntity> {
     });
 
     // Create entity converter
-    this.converter = createEntityConverter<T>();
+    this.converter = createEntityConverter<T>() as FirestoreDataConverter<T>;
 
     // Get Firestore server timestamp
     this.serverTimestamp = FieldValue.serverTimestamp();
@@ -156,16 +161,16 @@ export abstract class FirestoreBaseRepository<T extends FirestoreEntity> {
    * Get collection reference
    */
   protected get collection(): TypedCollectionReference<T> {
-    return this.firestore.collection(
-      this.collectionName,
+    return this.firestore.collection(this.collectionName).withConverter(
+      this.converter
     ) as TypedCollectionReference<T>;
   }
 
   /**
    * Get document reference by ID
    */
-  protected getDocRef(id: string): TypedDocumentReference<T> {
-    return this.collection.doc(id) as TypedDocumentReference<T>;
+  protected getDocRef(id: K): TypedDocumentReference<T> {
+    return this.collection.doc(id as string) as TypedDocumentReference<T>;
   }
 
   /**
@@ -174,7 +179,7 @@ export abstract class FirestoreBaseRepository<T extends FirestoreEntity> {
    * @param options Find options
    * @returns The entity or null if not found
    */
-  async findById(id: string, options: FindByIdOptions = {}): Promise<T | null> {
+  async findById(id: K, options: FindByIdOptions = {}): Promise<T | null> {
     try {
       // Validate ID
       validateEntityId(id);
@@ -249,13 +254,14 @@ export abstract class FirestoreBaseRepository<T extends FirestoreEntity> {
    */
   async find(options: FindOptions<T> = {}): Promise<T[]> {
     try {
-      let query = this.collection.withConverter(this.converter);
+      // Start with properly typed collection query
+      let query: Query<T> = this.collection;
 
       // Apply filter if provided
       if (options.filter) {
         for (const [field, value] of Object.entries(options.filter)) {
           if (value !== undefined) {
-            query = query.where(field, "==", value) as any;
+            query = query.where(field, "==", value) as Query<T>;
           }
         }
       }
@@ -267,13 +273,13 @@ export abstract class FirestoreBaseRepository<T extends FirestoreEntity> {
             String(filter.field),
             filter.operator,
             filter.value,
-          ) as any;
+          ) as Query<T>;
         }
       }
 
       // Skip soft-deleted documents by default
       if (this.useSoftDeletes && !options.includeDeleted) {
-        query = query.where("isDeleted", "==", false) as any;
+        query = query.where("isDeleted", "==", false) as Query<T>;
       }
 
       // Apply query options
@@ -283,28 +289,28 @@ export abstract class FirestoreBaseRepository<T extends FirestoreEntity> {
           query = query.orderBy(
             String(options.queryOptions.orderBy),
             options.queryOptions.direction || "asc",
-          ) as any;
+          ) as Query<T>;
         }
 
         // Apply limit
         if (options.queryOptions.limit) {
-          query = query.limit(options.queryOptions.limit) as any;
+          query = query.limit(options.queryOptions.limit) as Query<T>;
         }
 
         // Apply offset by implementing a cursor-based approach
         if (options.queryOptions.offset && options.queryOptions.offset > 0) {
           query = query.limit(
             (options.queryOptions.limit || 100) + options.queryOptions.offset,
-          ) as any;
+          ) as Query<T>;
         }
 
         // Apply cursor-based pagination
         if (options.queryOptions.startAfter) {
-          query = query.startAfter(options.queryOptions.startAfter) as any;
+          query = query.startAfter(options.queryOptions.startAfter) as Query<T>;
         }
 
         if (options.queryOptions.endBefore) {
-          query = query.endBefore(options.queryOptions.endBefore) as any;
+          query = query.endBefore(options.queryOptions.endBefore) as Query<T>;
         }
 
         // Apply field selection
@@ -314,7 +320,7 @@ export abstract class FirestoreBaseRepository<T extends FirestoreEntity> {
         ) {
           query = query.select(
             ...options.queryOptions.select.map(String),
-          ) as any;
+          ) as Query<T>;
         }
       }
 
@@ -375,13 +381,14 @@ export abstract class FirestoreBaseRepository<T extends FirestoreEntity> {
    */
   async count(options: FindOptions<T> = {}): Promise<number> {
     try {
-      let query = this.collection;
+      // Start with properly typed collection query
+      let query: CollectionReference<T> | Query<T> = this.collection;
 
       // Apply filter if provided
       if (options.filter) {
         for (const [field, value] of Object.entries(options.filter)) {
           if (value !== undefined) {
-            query = query.where(field, "==", value) as any;
+            query = query.where(field, "==", value) as Query<T>;
           }
         }
       }
@@ -393,13 +400,13 @@ export abstract class FirestoreBaseRepository<T extends FirestoreEntity> {
             String(filter.field),
             filter.operator,
             filter.value,
-          ) as any;
+          ) as Query<T>;
         }
       }
 
       // Skip soft-deleted documents by default
       if (this.useSoftDeletes && !options.includeDeleted) {
-        query = query.where("isDeleted", "==", false) as any;
+        query = query.where("isDeleted", "==", false) as Query<T>;
       }
 
       // Execute count query
@@ -450,10 +457,11 @@ export abstract class FirestoreBaseRepository<T extends FirestoreEntity> {
       }
 
       // Generate ID if not provided
-      const docId = options.useCustomId || this.collection.doc().id;
+      const docId = options.useCustomId || this.collection.doc().id as K;
 
       // Create the document reference
-      const docRef = this.getDocRef(docId);
+      // TypeScript is overly strict with string vs K compatibility - safe to cast since K extends string
+      const docRef = this.getDocRef(docId as unknown as K);
 
       // Prepare entity data
       let entityData: Record<string, any> = { ...data };
@@ -518,7 +526,7 @@ export abstract class FirestoreBaseRepository<T extends FirestoreEntity> {
    * @returns The updated entity
    */
   async update(
-    id: string,
+    id: K,
     data: Partial<Omit<T, "id" | "createdAt" | "updatedAt">>,
     options: UpdateDocumentOptions = {},
   ): Promise<T> {
@@ -632,7 +640,7 @@ export abstract class FirestoreBaseRepository<T extends FirestoreEntity> {
    * @param id Document ID to delete
    * @param options Delete options
    */
-  async delete(id: string, options: DeleteDocumentOptions = {}): Promise<void> {
+  async delete(id: K, options: DeleteDocumentOptions = {}): Promise<void> {
     try {
       // Validate ID
       validateEntityId(id);
@@ -791,15 +799,15 @@ export abstract class FirestoreBaseRepository<T extends FirestoreEntity> {
    * @returns Result of the transaction
    */
   async runTransaction<R>(
-    txFn: (context: TransactionContext) => Promise<R>,
+    txFn: (transaction: Transaction) => Promise<R>,
     options: {} = {},
   ): Promise<R> {
     try {
       return await executeTransaction(
         this.firestore,
-        async (txContext) => {
-          // Execute the function with the transaction context
-          return await txFn(txContext);
+        async (txContext: TransactionContext) => {
+          // Execute the function with the transaction
+          return await txFn(txContext.transaction);
         },
         options,
       );
@@ -820,9 +828,7 @@ export abstract class FirestoreBaseRepository<T extends FirestoreEntity> {
   async withTransaction<R>(
     fn: (transaction: Transaction) => Promise<R>,
   ): Promise<R> {
-    return this.runTransaction(async (context) => {
-      return fn(context.transaction);
-    });
+    return this.runTransaction(fn);
   }
 
   /**
@@ -903,6 +909,438 @@ export abstract class FirestoreBaseRepository<T extends FirestoreEntity> {
    */
   getStats(): RepositoryStats {
     return { ...this.statsTracker };
+  }
+
+  /**
+   * Find multiple entities by their IDs
+   * @param ids Array of document IDs to find
+   * @param options Find options
+   * @returns Array of found entities (may be fewer than requested if some don't exist)
+   */
+  async findByIds(ids: K[], options: FindByIdOptions = {}): Promise<T[]> {
+    try {
+      // Validate IDs
+      if (!Array.isArray(ids) || ids.length === 0) {
+        return [];
+      }
+
+      // Deduplicate IDs
+      const uniqueIds = [...new Set(ids)];
+
+      // If using transactions, get all docs in transaction
+      if (options.transaction) {
+        const promises = uniqueIds.map(id => 
+          this.findById(id, options)
+        );
+        const results = await Promise.all(promises);
+        // Type assertion is needed here because TypeScript doesn't recognize 
+        // the non-null filter properly with Promise.all results
+        return results.filter(Boolean) as T[];
+      }
+
+      // Otherwise use batch get for efficiency when possible
+      if (typeof this.firestore.getAll === 'function') {
+        const docRefs = uniqueIds.map(id => 
+          this.getDocRef(id).withConverter(this.converter)
+        );
+        
+        const snapshots = await this.firestore.getAll(...docRefs);
+        incrementReads(this.statsTracker, snapshots.length);
+        
+        const entities: T[] = [];
+        
+        for (const snapshot of snapshots) {
+          if (snapshot.exists) {
+            const entity = snapshot.data() as T;
+            
+            // Skip soft-deleted documents unless explicitly included
+            if (!options.includeDeleted && isEntityDeleted(entity)) {
+              continue;
+            }
+            
+            entities.push(entity);
+            
+            // Add to cache if enabled
+            if (!options.bypassCache) {
+              this.cache.set(entity.id, entity);
+            }
+          }
+        }
+        
+        return entities;
+      } else {
+        // Fallback to individual gets with Promise.all for parallelism
+        const promises = uniqueIds.map(id => 
+          this.findById(id, options)
+        );
+        const results = await Promise.all(promises);
+        // Type assertion is needed here because TypeScript doesn't recognize 
+        // the non-null filter properly with Promise.all results
+        return results.filter(Boolean) as T[];
+      }
+    } catch (error) {
+      recordError(this.statsTracker, error as Error);
+      this.logger.error(
+        `Error finding documents by IDs: ${(error as Error).message}`,
+        (error as Error).stack,
+      );
+      throw error;
+    }
+  }
+
+  /**
+   * Find entities by field value
+   * @param field Field to query
+   * @param value Value to match
+   * @param options Find options
+   * @returns Array of matching entities
+   */
+  async findBy(field: keyof T | string, value: any, options: FindOptions<T> = {}): Promise<T[]> {
+    try {
+      // Create advanced filter
+      const advancedFilter: FirestoreAdvancedFilter<T> = {
+        field,
+        operator: "==",
+        value,
+      };
+
+      // Use find with the filter
+      return this.find({
+        ...options,
+        advancedFilters: [
+          ...(options.advancedFilters || []),
+          advancedFilter,
+        ],
+      });
+    } catch (error) {
+      recordError(this.statsTracker, error as Error);
+      this.logger.error(
+        `Error finding documents by field ${String(field)}: ${(error as Error).message}`,
+        (error as Error).stack,
+      );
+      throw error;
+    }
+  }
+
+  /**
+   * Find a single entity by field value
+   * @param field Field to query
+   * @param value Value to match
+   * @param options Find options
+   * @returns First matching entity or null
+   */
+  async findOneBy(field: keyof T | string, value: any, options: FindOptions<T> = {}): Promise<T | null> {
+    try {
+      // Use findBy with limit 1
+      const results = await this.findBy(field, value, {
+        ...options,
+        queryOptions: {
+          ...options.queryOptions,
+          limit: 1,
+        },
+      });
+
+      return results.length > 0 ? results[0] : null;
+    } catch (error) {
+      recordError(this.statsTracker, error as Error);
+      this.logger.error(
+        `Error finding one document by field ${String(field)}: ${(error as Error).message}`,
+        (error as Error).stack,
+      );
+      throw error;
+    }
+  }
+
+  /**
+   * Check if a document with the given ID exists
+   * @param id Document ID to check
+   * @returns True if the document exists
+   */
+  async exists(id: K): Promise<boolean> {
+    try {
+      // Validate ID
+      validateEntityId(id as string);
+
+      // Check cache first if enabled
+      if (this.cache.has(id as string)) {
+        incrementCacheHits(this.statsTracker);
+        return true;
+      }
+
+      incrementCacheMisses(this.statsTracker);
+
+      // Get document reference
+      const docRef = this.getDocRef(id as unknown as K);
+      
+      // Get only the document metadata (more efficient than getting full doc)
+      const docSnapshot = await docRef.get();
+      incrementReads(this.statsTracker);
+
+      return docSnapshot.exists;
+    } catch (error) {
+      recordError(this.statsTracker, error as Error);
+      this.logger.error(
+        `Error checking if document with id ${String(id)} exists: ${(error as Error).message}`,
+        (error as Error).stack,
+      );
+      throw error;
+    }
+  }
+
+  /**
+   * Create multiple entities
+   * @param items Array of entities to create
+   * @param options Creation options
+   * @returns Array of created entities
+   */
+  async createMany(
+    items: Array<Omit<T, "id" | "createdAt" | "updatedAt">>,
+    options: CreateDocumentOptions = {},
+  ): Promise<T[]> {
+    // Alias to createBatch for compatibility with Repository interface
+    return this.createBatch(items, options);
+  }
+
+  /**
+   * Update multiple entities
+   * @param items Array of entities with update data
+   * @param options Update options
+   * @returns Array of updated entities
+   */
+  async updateMany(
+    items: Array<{ id: K; data: Partial<Omit<T, "id" | "createdAt" | "updatedAt">> }>,
+    options: UpdateDocumentOptions = {},
+  ): Promise<T[]> {
+    try {
+      // Validate items
+      if (!Array.isArray(items) || items.length === 0) {
+        return [];
+      }
+
+      const batchSize = 500; // Firestore batch size limit
+      const batches: ((batch: WriteBatch) => void)[] = [];
+      const updatedEntities: T[] = [];
+      const now = new Date();
+
+      // If using transaction, perform all updates in the transaction
+      if (options.transaction) {
+        const transaction = options.transaction;
+        
+        // Process each item in the transaction
+        for (const item of items) {
+          const { id, data } = item;
+          validateEntityId(id as string);
+          
+          const docRef = this.getDocRef(id as unknown as K);
+          const docSnapshot = await transaction.get(docRef);
+          
+          if (!docSnapshot.exists) {
+            throw new Error(`Document with id ${String(id)} not found in ${this.collectionName}`);
+          }
+          
+          const existingDoc = docSnapshot.data() as T;
+          
+          // Check if document is soft-deleted
+          if (!options.bypassSoftDeleteCheck && existingDoc.isDeleted) {
+            throw new Error(`Cannot update soft-deleted document with id ${String(id)}`);
+          }
+          
+          // Prepare update data
+          let updateData: Record<string, any> = { ...data };
+          
+          // Update timestamp
+          updateData.updatedAt = this.serverTimestamp;
+          
+          // Update version if needed
+          if (this.useVersioning && options.incrementVersion !== false) {
+            updateData.version = (existingDoc.version || 0) + 1;
+          }
+          
+          // Clean up data before sending to Firestore
+          if (options.sanitizeData !== false) {
+            updateData = sanitizeEntityForStorage(updateData as T);
+          }
+          
+          // Perform update in transaction
+          transaction.update(docRef, updateData as DocumentData);
+          
+          // For transactions, merge existing with updates for return
+          updatedEntities.push({ ...existingDoc, ...updateData, id } as T);
+        }
+        
+        return updatedEntities;
+      }
+
+      // Split into batches if needed
+      for (let i = 0; i < items.length; i += batchSize) {
+        const batchItems = items.slice(i, i + batchSize);
+        
+        batches.push(async (batch: WriteBatch) => {
+          for (const item of batchItems) {
+            const { id, data } = item;
+            validateEntityId(id as string);
+            
+            // Get existing document
+            const existingDoc = await this.findById(id as unknown as K, {
+              bypassCache: true,
+              includeDeleted: options.bypassSoftDeleteCheck,
+            });
+            
+            if (!existingDoc) {
+              throw new Error(`Document with id ${String(id)} not found in ${this.collectionName}`);
+            }
+            
+            // Check if document is soft-deleted
+            if (!options.bypassSoftDeleteCheck && existingDoc.isDeleted) {
+              throw new Error(`Cannot update soft-deleted document with id ${String(id)}`);
+            }
+            
+            const docRef = this.getDocRef(id as unknown as K);
+            
+            // Prepare update data
+            let updateData: Record<string, any> = { ...data };
+            
+            // Update timestamp
+            updateData.updatedAt = new Date();
+            
+            // Update version if needed
+            if (this.useVersioning && options.incrementVersion !== false) {
+              updateData.version = (existingDoc.version || 0) + 1;
+            }
+            
+            // Clean up data before sending to Firestore
+            if (options.sanitizeData !== false) {
+              updateData = sanitizeEntityForStorage(updateData as T);
+            }
+            
+            // Add to batch
+            batch.update(docRef, updateData as DocumentData);
+            
+            // Add to updated entities (for return value)
+            updatedEntities.push({ ...existingDoc, ...updateData } as T);
+          }
+        });
+      }
+
+      // Execute all batches
+      const result = await executeMultiBatch(this.firestore, batches);
+      
+      // Track stats
+      incrementWrites(this.statsTracker, result.writtenCount || 0);
+      
+      // Invalidate cache for all items
+      if (options.invalidateCache !== false) {
+        for (const item of items) {
+          this.cache.delete(item.id as string);
+        }
+      }
+      
+      // If any errors, throw the first one
+      if (result.errors && result.errors.length > 0) {
+        throw result.errors[0].error;
+      }
+      
+      // Get all updated entities
+      if (result.status === "success" && options.invalidateCache !== false) {
+        // Fetch fresh copies from the database
+        return this.findByIds(items.map(item => item.id), { bypassCache: true });
+      }
+      
+      return updatedEntities;
+    } catch (error) {
+      recordError(this.statsTracker, error as Error);
+      this.logger.error(
+        `Error updating multiple documents: ${(error as Error).message}`,
+        (error as Error).stack,
+      );
+      throw error;
+    }
+  }
+
+  /**
+   * Delete multiple entities by their IDs
+   * @param ids Array of document IDs to delete
+   * @param options Delete options
+   */
+  async deleteMany(ids: K[], options: BatchDeleteOptions = {}): Promise<void> {
+    try {
+      // Validate IDs
+      if (!Array.isArray(ids) || ids.length === 0) {
+        return;
+      }
+
+      // Deduplicate IDs
+      const uniqueIds = [...new Set(ids)];
+      
+      const batchSize = options.batchSize || 500; // Firestore batch size limit
+      const batches: ((batch: WriteBatch) => void)[] = [];
+      
+      // Determine if we do soft or hard delete
+      const softDelete = this.useSoftDeletes && options.softDelete !== false;
+      
+      // If using transaction, delete all in transaction
+      if (options.transaction) {
+        for (const id of uniqueIds) {
+          const docRef = this.getDocRef(id as unknown as K);
+          
+          if (softDelete) {
+            // Soft delete - update the document
+            options.transaction.update(docRef, {
+              isDeleted: true,
+              deletedAt: this.serverTimestamp,
+              updatedAt: this.serverTimestamp,
+            });
+          } else {
+            // Hard delete - remove the document
+            options.transaction.delete(docRef);
+          }
+        }
+      } else {
+        // Split into batches if needed
+        for (let i = 0; i < uniqueIds.length; i += batchSize) {
+          const batchIds = uniqueIds.slice(i, i + batchSize);
+          
+          batches.push((batch: WriteBatch) => {
+            for (const id of batchIds) {
+              const docRef = this.getDocRef(id as unknown as K);
+              
+              if (softDelete) {
+                // Soft delete - update the document
+                batch.update(docRef, {
+                  isDeleted: true,
+                  deletedAt: new Date(),
+                  updatedAt: new Date(),
+                });
+              } else {
+                // Hard delete - remove the document
+                batch.delete(docRef);
+              }
+            }
+          });
+        }
+        
+        // Execute all batches
+        const result = await executeMultiBatch(this.firestore, batches);
+        
+        // Track stats
+        incrementWrites(this.statsTracker, result.writtenCount || 0);
+        
+        // If any errors, throw the first one
+        if (result.errors && result.errors.length > 0) {
+          throw result.errors[0].error;
+        }
+      }
+      
+      // Clear from cache
+      uniqueIds.forEach(id => this.cache.delete(id as string));
+    } catch (error) {
+      recordError(this.statsTracker, error as Error);
+      this.logger.error(
+        `Error deleting multiple documents: ${(error as Error).message}`,
+        (error as Error).stack,
+      );
+      throw error;
+    }
   }
 }
 

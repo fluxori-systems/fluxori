@@ -17,6 +17,8 @@ import { LoggingInterceptor } from '../../../common/observability/interceptors/l
 import { TracingInterceptor } from '../../../common/observability/interceptors/tracing.interceptor';
 import { LoadSheddingResilienceService } from '../services/load-shedding-resilience.service';
 import { NetworkAwareStorageService } from '../services/network-aware-storage.service';
+import { Product } from '../models/product.model';
+import { Category } from '../models/category.model';
 
 /**
  * Controller for PIM analytics
@@ -56,10 +58,12 @@ export class AnalyticsController {
                                (loadSheddingStatus.currentStage || loadSheddingStatus.stage) > 2;
       
       // Get products (apply limits based on network conditions)
-      const products = await this.productService.findAll({
+      const productsResult = await this.productService.findProducts({
         organizationId: user.organizationId,
         limit: isLightweightMode ? 100 : 1000,
       });
+      
+      const products = productsResult.items;
       
       // Basic metrics
       const totalProducts = products.length;
@@ -72,10 +76,10 @@ export class AnalyticsController {
       // Calculate metrics
       for (const product of products) {
         if (product.description && product.description.length > 10) productsWithDescription++;
-        if (product.images && product.images.length > 0) productsWithImages++;
-        if (product.categoryId) productsWithCategory++;
-        if (product.attributes && Object.keys(product.attributes).length > 0) productsWithAttributes++;
-        if (product.price && product.price > 0) productsWithPrice++;
+        if (product.images && product.images.main) productsWithImages++;
+        if (product.categories && product.categories.length > 0) productsWithCategory++;
+        if (product.attributes && product.attributes.length > 0) productsWithAttributes++;
+        if (product.pricing && product.pricing.basePrice > 0) productsWithPrice++;
       }
       
       // Calculate scores
@@ -133,24 +137,24 @@ export class AnalyticsController {
       // Include incomplete products if requested and not in lightweight mode
       if (includeProducts && !isLightweightMode) {
         const incompleteProducts = products
-          .filter(p => {
+          .filter((p: Product) => {
             const hasDescription = p.description && p.description.length > 10;
-            const hasImages = p.images && p.images.length > 0;
-            const hasCategory = !!p.categoryId;
-            const hasAttributes = p.attributes && Object.keys(p.attributes).length > 0;
-            const hasPrice = p.price && p.price > 0;
+            const hasImages = p.images && p.images.main;
+            const hasCategory = p.categories && p.categories.length > 0;
+            const hasAttributes = p.attributes && p.attributes.length > 0;
+            const hasPrice = p.pricing && p.pricing.basePrice > 0;
             
             return !(hasDescription && hasImages && hasCategory && hasAttributes && hasPrice);
           })
-          .map(p => ({
+          .map((p: Product) => ({
             id: p.id,
             name: p.name,
             missing: [
               ...(!p.description || p.description.length <= 10 ? ['description'] : []),
-              ...(!p.images || p.images.length === 0 ? ['images'] : []),
-              ...(!p.categoryId ? ['category'] : []),
-              ...(!p.attributes || Object.keys(p.attributes).length === 0 ? ['attributes'] : []),
-              ...(!p.price || p.price <= 0 ? ['price'] : []),
+              ...(!p.images || !p.images.main ? ['images'] : []),
+              ...(!p.categories || p.categories.length === 0 ? ['category'] : []),
+              ...(!p.attributes || p.attributes.length === 0 ? ['attributes'] : []),
+              ...(!p.pricing || p.pricing.basePrice <= 0 ? ['price'] : []),
             ],
           }));
         
@@ -182,24 +186,27 @@ export class AnalyticsController {
                                (loadSheddingStatus.currentStage || loadSheddingStatus.stage) > 2;
       
       // Get all categories
-      const categories = await this.categoryService.findAll({
+      const categoriesResult = await this.categoryService.findCategories({
         organizationId: user.organizationId,
-        includeHierarchy: !isLightweightMode,
+        includeChildren: !isLightweightMode,
       });
+      const categories = categoriesResult.items;
       
       // Get all products (with category info)
-      const products = await this.productService.findAll({
+      const productsResult = await this.productService.findProducts({
         organizationId: user.organizationId,
-        fields: ['id', 'categoryId'],
       });
+      const products = productsResult.items;
       
       // Count products per category
       const categoryCounts = new Map<string, number>();
       
       for (const product of products) {
-        if (product.categoryId) {
-          const count = categoryCounts.get(product.categoryId) || 0;
-          categoryCounts.set(product.categoryId, count + 1);
+        if (product.categories && product.categories.length > 0) {
+          // Count primary category (first in the list)
+          const primaryCategoryId = product.categories[0].categoryId;
+          const count = categoryCounts.get(primaryCategoryId) || 0;
+          categoryCounts.set(primaryCategoryId, count + 1);
         }
       }
       
@@ -261,17 +268,17 @@ export class AnalyticsController {
                                (loadSheddingStatus.currentStage || loadSheddingStatus.stage) > 2;
       
       // Get products (apply limits based on network conditions)
-      const products = await this.productService.findAll({
+      const productsResult = await this.productService.findProducts({
         organizationId: user.organizationId,
         limit: isLightweightMode ? 100 : 1000,
-        fields: ['id', 'attributes', 'categoryId'],
       });
+      const products = productsResult.items;
       
       // Get categories for context
-      const categories = await this.categoryService.findAll({
+      const categoriesResult = await this.categoryService.findCategories({
         organizationId: user.organizationId,
-        fields: ['id', 'name'],
       });
+      const categories = categoriesResult.items;
       
       const categoryMap = new Map(categories.map(c => [c.id, c]));
       
@@ -279,12 +286,13 @@ export class AnalyticsController {
       const attributeCounts = new Map<string, { count: number; categoryIds: Set<string> }>();
       
       for (const product of products) {
-        if (product.attributes) {
-          for (const attrName of Object.keys(product.attributes)) {
+        if (product.attributes && product.attributes.length > 0) {
+          for (const attr of product.attributes) {
+            const attrName = attr.code;
             const current = attributeCounts.get(attrName) || { count: 0, categoryIds: new Set() };
             current.count++;
-            if (product.categoryId) {
-              current.categoryIds.add(product.categoryId);
+            if (product.categories && product.categories.length > 0) {
+              current.categoryIds.add(product.categories[0].id);
             }
             attributeCounts.set(attrName, current);
           }
@@ -389,9 +397,9 @@ export class AnalyticsController {
         const imageCheck = {
           name: 'Product Images',
           description: 'Product should have at least one image',
-          passed: product.images && product.images.length > 0,
-          value: product.images ? product.images.length : 0,
-          recommendation: product.images && product.images.length > 0 
+          passed: product.images && product.images.main,
+          value: product.images ? (product.images.main ? 1 : 0) : 0,
+          recommendation: product.images && product.images.main 
             ? 'Good' 
             : 'Missing product images',
         };
@@ -403,9 +411,9 @@ export class AnalyticsController {
         const priceCheck = {
           name: 'Product Price',
           description: 'Product should have a price greater than zero',
-          passed: product.price && product.price > 0,
-          value: product.price,
-          recommendation: product.price && product.price > 0 
+          passed: product.pricing && product.pricing.basePrice > 0,
+          value: product.pricing ? product.pricing.basePrice : 0,
+          recommendation: product.pricing && product.pricing.basePrice > 0 
             ? 'Good' 
             : 'Missing or invalid product price',
         };
@@ -417,9 +425,9 @@ export class AnalyticsController {
         const categoryCheck = {
           name: 'Product Category',
           description: 'Product should be assigned to a category',
-          passed: !!product.categoryId,
-          value: product.categoryId,
-          recommendation: product.categoryId 
+          passed: product.categories && product.categories.length > 0,
+          value: product.categories && product.categories.length > 0 ? product.categories[0].id : null,
+          recommendation: product.categories && product.categories.length > 0
             ? 'Good' 
             : 'Product is not assigned to a category',
         };
@@ -431,10 +439,10 @@ export class AnalyticsController {
         const attributesCheck = {
           name: 'Product Attributes',
           description: 'Product should have basic attributes',
-          passed: product.attributes && Object.keys(product.attributes).length >= 3,
-          value: product.attributes ? Object.keys(product.attributes).length : 0,
+          passed: product.attributes && product.attributes.length >= 3,
+          value: product.attributes ? product.attributes.length : 0,
           recommendation: product.attributes 
-            ? (Object.keys(product.attributes).length < 3 
+            ? (product.attributes.length < 3 
                 ? 'Too few attributes, should have at least 3 key attributes' 
                 : 'Good')
             : 'Missing product attributes',

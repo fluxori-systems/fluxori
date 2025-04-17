@@ -263,9 +263,9 @@ export class ProductReviewRepository extends FirestoreBaseRepository<ProductRevi
    */
   async updateHelpfulCount(reviewId: string, helpful: boolean): Promise<void> {
     try {
-      await this.runTransaction(async (context: TransactionContext) => {
+      await this.runTransaction(async (transaction) => {
         // Get current review
-        const review = await this.findById(reviewId, { transaction: context.transaction });
+        const review = await this.findById(reviewId, { transaction });
         
         if (!review) {
           throw new Error(`Review with ID ${reviewId} not found`);
@@ -294,9 +294,9 @@ export class ProductReviewRepository extends FirestoreBaseRepository<ProductRevi
    */
   async incrementReportCount(reviewId: string): Promise<void> {
     try {
-      await this.runTransaction(async (context: TransactionContext) => {
+      await this.runTransaction(async (transaction) => {
         // Get current review
-        const review = await this.findById(reviewId, { transaction: context.transaction });
+        const review = await this.findById(reviewId, { transaction });
         
         if (!review) {
           throw new Error(`Review with ID ${reviewId} not found`);

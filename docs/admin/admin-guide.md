@@ -168,7 +168,7 @@ Set up your physical locations:
 2. Click **Add Marketplace**
 3. Select from supported South African marketplaces:
    - Takealot
-   - Bidorbuy
+   - Bob Shop (formerly Bidorbuy)
    - Wantitall
    - OneDayOnly
    - Loot

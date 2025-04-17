@@ -107,20 +107,20 @@ If the same orders appear multiple times in Fluxori, check these issues:
    * Takealot's API can be slow during high-traffic periods
    * If timeouts occur, try shorter date ranges for manual syncs or off-peak syncing
 
-### Bidorbuy
+### Bob Shop
 
-**Common Bidorbuy Issues:**
+**Common Bob Shop Issues:**
 
 1. **Limited Order Data**
-   * Bidorbuy doesn't always provide complete customer information
-   * Check Marketplaces > Bidorbuy > Field Mapping to ensure all available fields are mapped
+   * Bob Shop (formerly Bidorbuy) doesn't always provide complete customer information
+   * Check Marketplaces > Bob Shop > Field Mapping to ensure all available fields are mapped
 
 2. **Status Update Delays**
-   * Status updates to Bidorbuy can experience delays
-   * Allow 15-30 minutes for status changes to reflect on Bidorbuy
+   * Status updates to Bob Shop can experience delays
+   * Allow 15-30 minutes for status changes to reflect on Bob Shop
 
 3. **Authentication Errors**
-   * Bidorbuy API tokens expire frequently
+   * Bob Shop API tokens expire frequently
    * If experiencing auth errors, try refreshing your credentials
 
 ### WooCommerce

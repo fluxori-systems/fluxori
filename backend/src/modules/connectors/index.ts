@@ -25,7 +25,7 @@ export * from './adapters/base-marketplace-connector';
 // Marketplace connectors
 export * from './adapters/woocommerce-connector';
 export * from './adapters/takealot-connector';
-export * from './adapters/bidorbuy-connector';
+export * from './adapters/bob-shop-connector';
 export * from './adapters/makro-connector';
 export * from './adapters/superbalist-connector';
 export * from './adapters/wantitall-connector';

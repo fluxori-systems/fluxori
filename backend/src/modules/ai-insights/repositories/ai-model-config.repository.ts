@@ -82,7 +82,7 @@ export class AIModelConfigRepository extends FirestoreBaseRepository<AIModelConf
    */
   async setAsDefault(id: string, organizationId: string): Promise<boolean> {
     return this.runTransaction(async (context) => {
-      const transaction = context.transaction;
+      const transaction = context;
       // First, find all configs for the organization
       const configs = await this.findByOrganization(organizationId);
 

@@ -129,13 +129,15 @@ export class ProductService {
       this.logger.log(`Finding product for bundle ID ${bundleId}`);
       
       // Query products with the given bundle ID
-      const products = await this.productRepository.query({
-        where: [
+      const products = await this.productRepository.find({
+        advancedFilters: [
           { field: 'bundleId', operator: '==', value: bundleId },
           { field: 'organizationId', operator: '==', value: organizationId },
           { field: 'type', operator: '==', value: ProductType.BUNDLE },
         ],
-        limit: 1,
+        queryOptions: {
+          limit: 1
+        }
       });
       
       if (products.length === 0) {
@@ -163,11 +165,11 @@ export class ProductService {
       // This is a simplified implementation
       // In a real system, you might need a more efficient query or index
       // Here we're querying all bundle products and filtering in memory
-      const bundleProducts = await this.productRepository.query({
-        where: [
+      const bundleProducts = await this.productRepository.find({
+        advancedFilters: [
           { field: 'organizationId', operator: '==', value: organizationId },
           { field: 'type', operator: '==', value: ProductType.BUNDLE },
-        ],
+        ]
       });
       
       // Filter bundles that contain the product

@@ -19,7 +19,7 @@ This section covers frequently asked questions and guides related to connecting 
 ## Marketplace-Specific Guides
 
 - [Takealot Integration Guide](takealot-integration.md)
-- [Bidorbuy Integration Guide](bidorbuy-integration.md)
+- [Bob Shop Integration Guide](bob-shop-integration.md)
 - [Shopify Integration Guide](shopify-integration.md)
 - [WooCommerce Integration Guide](woocommerce-integration.md)
 - [Amazon Integration Guide](amazon-integration.md)

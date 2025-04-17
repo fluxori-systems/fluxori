@@ -270,7 +270,7 @@ export class MarketplaceConnectorController {
     @GetUser() user: any
   ): Promise<MarketplaceSyncResult> {
     // Validate marketplace
-    const supportedMarketplaces = ['takealot', 'bidorbuy', 'makro'];
+    const supportedMarketplaces = ['takealot', 'bob-shop', 'makro'];
     if (!supportedMarketplaces.includes(marketplaceId)) {
       throw new HttpException(
         `Marketplace ${marketplaceId} is not supported yet`, 

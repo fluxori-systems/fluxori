@@ -7,7 +7,7 @@
  */
 
 // Re-export repository types (only the subset needed by internals)
-export {
+export type {
   Repository,
   RepositoryOptions,
   QueryFilter,
@@ -15,6 +15,7 @@ export {
   SortDirection,
   EntityReference,
   EntityWithId,
+  BaseEntity,
 
   // Also export all the Firestore specific types
   FirestoreQueryOptions,

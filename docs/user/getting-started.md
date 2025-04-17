@@ -148,7 +148,7 @@ Fluxori supports major South African marketplaces:
 
 1. Go to **Marketplaces → Connections**
 2. Click **Add Connection**
-3. Select the marketplace (Takealot, Bidorbuy, Wantitall, etc.)
+3. Select the marketplace (Takealot, Bob Shop, Wantitall, etc.)
 4. Follow the authentication steps for the chosen marketplace
 5. Configure synchronization settings
 

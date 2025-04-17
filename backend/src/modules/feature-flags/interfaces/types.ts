@@ -127,6 +127,7 @@ export interface FlagEvaluationContext {
   environment?: Environment;
   currentDate?: Date;
   attributes?: Record<string, any>;
+  defaultValue?: boolean;
 }
 
 /**

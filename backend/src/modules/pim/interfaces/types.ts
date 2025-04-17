@@ -271,22 +271,43 @@ export interface MarketplaceMapping {
 
 /**
  * Network quality information
+ * Used for determining optimal data delivery strategy for South African networks
  */
 export interface NetworkQualityInfo {
   /**
    * Type of connection (e.g., wifi, cellular, ethernet)
    */
-  connectionType: string;
+  connectionType?: string;
   
   /**
    * Connection quality (high, medium, low)
    */
-  connectionQuality: 'high' | 'medium' | 'low';
+  connectionQuality?: 'high' | 'medium' | 'low';
   
   /**
    * Quality alias for connectionQuality (for backward compatibility)
    */
   quality?: 'high' | 'medium' | 'low';
+  
+  /**
+   * Effective connection type (4g, 3g, 2g, slow-2g)
+   */
+  effectiveType?: string;
+  
+  /**
+   * Downlink in Mbps
+   */
+  downlink?: number;
+  
+  /**
+   * Round trip time in ms
+   */
+  rtt?: number;
+  
+  /**
+   * Whether data saver is enabled
+   */
+  saveData?: boolean;
   
   /**
    * Estimated bandwidth in Kbps

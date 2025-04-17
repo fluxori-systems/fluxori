@@ -16,7 +16,7 @@ import { XeroController } from './controllers/xero.controller';
 // import { WooCommerceController } from './controllers/woocommerce.controller';
 import { WooCommerceConnector } from './adapters/woocommerce-connector';
 import { TakealotConnector } from './adapters/takealot-connector';
-import { BidorbuyConnector } from './adapters/bidorbuy-connector';
+import { BobShopConnector } from './adapters/bob-shop-connector';
 import { MakroConnector } from './adapters/makro-connector';
 import { ShopifyConnector } from './adapters/shopify/shopify-connector';
 import { AmazonSpConnector } from './adapters/amazon-sp/amazon-sp-connector';
@@ -40,7 +40,7 @@ import { XeroConnector } from './adapters/xero/xero-connector';
     WebhookHandlerService,
     WooCommerceConnector, // Re-enabled WooCommerce connector
     TakealotConnector,
-    BidorbuyConnector,
+    BobShopConnector,
     MakroConnector,
     ShopifyConnector,
     AmazonSpConnector,
@@ -66,7 +66,7 @@ export class ConnectorsModule {
     // Register marketplace connectors
     this.connectorFactory.registerConnector('woocommerce', WooCommerceConnector);
     this.connectorFactory.registerConnector('takealot', TakealotConnector);
-    this.connectorFactory.registerConnector('bidorbuy', BidorbuyConnector);
+    this.connectorFactory.registerConnector('bob-shop', BobShopConnector);
     this.connectorFactory.registerConnector('makro', MakroConnector);
     this.connectorFactory.registerConnector('shopify', ShopifyConnector);
     this.connectorFactory.registerConnector('amazon-sp', AmazonSpConnector);

@@ -116,7 +116,7 @@ export class WarehouseRepository extends FirestoreBaseRepository<Warehouse> {
    */
   async setAsDefault(id: string, organizationId: string): Promise<boolean> {
     return this.runTransaction(async (context) => {
-      const transaction = context.transaction;
+      const transaction = context;
       // First, find all warehouses for the organization
       const warehouses = await this.findByOrganization(organizationId);
 

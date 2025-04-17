@@ -1,0 +1,114 @@
+{
+  "project_id": "fluxori-marketplace-data",
+  "region": "africa-south1",
+  "version": "1.0.0",
+  "monthly_quota": 82000,
+  "daily_quota": 2700,
+  "max_concurrent_tasks": 5,
+  "load_shedding_detection": true,
+  "persistence_enabled": true,
+  "task_topic": "marketplace-scraper-tasks",
+  "service_name": "marketplace-scraper",
+  "service_account": "marketplace-scraper-sa@fluxori-marketplace-data.iam.gserviceaccount.com",
+  "notification_email": "alerts@fluxori.com",
+  "enable_takealot": true,
+  "enable_amazon": false,
+  "emergency_threshold": 0.95,
+  "warning_threshold": 0.80,
+  "storage_cache_enabled": true,
+  "storage_cache_ttl": 3600,
+  "popular_categories": [
+    "electronics", 
+    "computers", 
+    "home-kitchen",
+    "phones",
+    "beauty",
+    "appliances",
+    "tv-video"
+  ],
+  "popular_keywords": [
+    "iphone", 
+    "samsung", 
+    "laptop", 
+    "headphones", 
+    "smart tv",
+    "playstation",
+    "xbox",
+    "nintendo",
+    "air fryer",
+    "vacuum cleaner"
+  ],
+  "schedule_jobs": [
+    {
+      "name": "daily-product-refresh",
+      "cron": "0 */4 * * *",
+      "marketplace": "takealot",
+      "task_type": "refresh_products",
+      "max_count": 500,
+      "priority": "HIGH"
+    },
+    {
+      "name": "daily-deals",
+      "cron": "0 9,13,17 * * *",
+      "marketplace": "takealot",
+      "task_type": "extract_daily_deals",
+      "priority": "HIGH"
+    },
+    {
+      "name": "category-discovery",
+      "cron": "0 1 * * *",
+      "marketplace": "takealot",
+      "task_type": "discover_products",
+      "categories": ["electronics", "computers", "phones", "home-kitchen", "beauty", "appliances", "tv-video"],
+      "max_per_category": 100,
+      "priority": "MEDIUM"
+    },
+    {
+      "name": "search-monitoring",
+      "cron": "0 10,15 * * 1-5",
+      "marketplace": "takealot",
+      "task_type": "search",
+      "keywords": ["iphone", "samsung", "laptop", "headphones", "smart tv"],
+      "max_per_keyword": 50,
+      "priority": "MEDIUM"
+    },
+    {
+      "name": "suggestion-analysis",
+      "cron": "0 2 * * 3",
+      "marketplace": "takealot",
+      "task_type": "extract_suggestions",
+      "prefixes": ["i", "s", "a", "b", "c", "d", "e", "f", "g", "h", "j", "k", "l", "m", "n", "o", "p", "q", "r", "t", "u", "v", "w", "x", "y", "z"],
+      "priority": "LOW"
+    },
+    {
+      "name": "load-shedding-adaptation",
+      "cron": "*/30 * * * *",
+      "marketplace": "takealot",
+      "task_type": "check_load_shedding",
+      "priority": "CRITICAL"
+    }
+  ],
+  "quota_distribution": {
+    "daily_deals": 0.15,
+    "product_details": 0.40,
+    "category_browsing": 0.20,
+    "search_monitoring": 0.20,
+    "suggestions": 0.05
+  },
+  "retry_policies": {
+    "default": {
+      "max_retries": 3,
+      "initial_delay": 5,
+      "max_delay": 60,
+      "multiplier": 2.0
+    },
+    "critical": {
+      "max_retries": 5,
+      "initial_delay": 10,
+      "max_delay": 300,
+      "multiplier": 2.0
+    }
+  },
+  "circuit_breaker_enabled": true,
+  "circuit_breaker_reset_duration": 10800
+}

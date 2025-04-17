@@ -357,7 +357,14 @@ export class NetworkAwareStorageService implements OnModuleInit {
     }
     
     // Adjust options based on network quality
-    const connectionQuality = networkQuality.connectionQuality || networkQuality.quality;
+    // Handle different network quality info types
+    let connectionQuality: 'high' | 'medium' | 'low' = 'medium';
+    
+    if ('connectionQuality' in networkQuality) {
+      connectionQuality = networkQuality.connectionQuality;
+    } else if ('quality' in networkQuality) {
+      connectionQuality = networkQuality.quality;
+    }
     
     if (connectionQuality === 'low' || this.loadSheddingActive) {
       // For poor connections or during load shedding

@@ -1,0 +1,128 @@
+{
+  "backend": {
+    "modules": [
+      "agent-framework",
+      "ai-insights",
+      "auth",
+      "buybox",
+      "connectors",
+      "credit-system",
+      "feature-flags",
+      "interfaces",
+      "international-trade",
+      "inventory",
+      "marketplaces",
+      "notifications",
+      "order-ingestion",
+      "organizations",
+      "pim",
+      "rag-retrieval",
+      "scheduled-tasks",
+      "security",
+      "storage",
+      "users"
+    ],
+    "dependencies": {
+      "agent-framework": {
+        "dependsOn": [],
+        "importedBy": []
+      },
+      "ai-insights": {
+        "dependsOn": [],
+        "importedBy": []
+      },
+      "auth": {
+        "dependsOn": [],
+        "importedBy": []
+      },
+      "buybox": {
+        "dependsOn": [],
+        "importedBy": []
+      },
+      "connectors": {
+        "dependsOn": [],
+        "importedBy": []
+      },
+      "credit-system": {
+        "dependsOn": [],
+        "importedBy": []
+      },
+      "feature-flags": {
+        "dependsOn": [],
+        "importedBy": []
+      },
+      "interfaces": {
+        "dependsOn": [],
+        "importedBy": []
+      },
+      "international-trade": {
+        "dependsOn": [],
+        "importedBy": []
+      },
+      "inventory": {
+        "dependsOn": [],
+        "importedBy": []
+      },
+      "marketplaces": {
+        "dependsOn": [],
+        "importedBy": []
+      },
+      "notifications": {
+        "dependsOn": [],
+        "importedBy": []
+      },
+      "order-ingestion": {
+        "dependsOn": [],
+        "importedBy": []
+      },
+      "organizations": {
+        "dependsOn": [],
+        "importedBy": []
+      },
+      "pim": {
+        "dependsOn": [],
+        "importedBy": []
+      },
+      "rag-retrieval": {
+        "dependsOn": [],
+        "importedBy": []
+      },
+      "scheduled-tasks": {
+        "dependsOn": [],
+        "importedBy": []
+      },
+      "security": {
+        "dependsOn": [],
+        "importedBy": []
+      },
+      "storage": {
+        "dependsOn": [],
+        "importedBy": []
+      },
+      "users": {
+        "dependsOn": [],
+        "importedBy": []
+      }
+    }
+  },
+  "frontend": {
+    "components": [
+      "animations",
+      "auth",
+      "charts",
+      "feature-flags",
+      "layouts",
+      "observability",
+      "pim",
+      "south-african"
+    ],
+    "libs": [
+      "design-system",
+      "firebase",
+      "motion",
+      "shared",
+      "ui"
+    ],
+    "dependencies": {}
+  }
+}

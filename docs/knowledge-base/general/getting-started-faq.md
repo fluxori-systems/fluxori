@@ -68,7 +68,7 @@ After creating your account, we recommend these steps:
 1. Complete your organization profile in Settings
 2. Set up your inventory by adding products and stock levels
 3. Configure your warehouse locations
-4. Connect your marketplace accounts (Takealot, Bidorbuy, etc.)
+4. Connect your marketplace accounts (Takealot, Bob Shop, etc.)
 5. Import your existing orders (if applicable)
 6. Explore the AI insights to understand your business performance
 

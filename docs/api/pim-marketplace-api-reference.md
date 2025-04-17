@@ -58,7 +58,7 @@ GET /mappings/marketplace/:marketplaceId?page=0&pageSize=20
 Retrieves product mappings for a specific marketplace with pagination.
 
 **Path Parameters:**
-- `marketplaceId` (string, required): The marketplace ID (e.g., `takealot`, `bidorbuy`, `makro`)
+- `marketplaceId` (string, required): The marketplace ID (e.g., `takealot`, `bob-shop`, `makro`)
 
 **Query Parameters:**
 - `page` (number, optional): Page number (0-based, defaults to 0)
@@ -70,7 +70,7 @@ Retrieves product mappings for a specific marketplace with pagination.
   {
     "id": "mapping-id",
     "productId": "product-id",
-    "marketplaceId": "bidorbuy",
+    "marketplaceId": "bob-shop",
     "marketplaceProductId": "BOB-123",
     "status": "active",
     "variantId": null,
@@ -221,7 +221,7 @@ POST /sync/:marketplaceId
 Synchronizes a product to a specific marketplace.
 
 **Path Parameters:**
-- `marketplaceId` (string, required): The marketplace ID (e.g., `takealot`, `bidorbuy`, `makro`)
+- `marketplaceId` (string, required): The marketplace ID (e.g., `takealot`, `bob-shop`, `makro`)
 
 **Request Body:**
 ```json
@@ -237,8 +237,8 @@ Synchronizes a product to a specific marketplace.
 {
   "success": true,
   "productId": "product-id",
-  "marketplaceId": "bidorbuy",
-  "message": "Product successfully synchronized to Bidorbuy",
+  "marketplaceId": "bob-shop",
+  "message": "Product successfully synchronized to Bob Shop",
   "createdMappings": ["mapping-id-1"],
   "updatedMappings": ["mapping-id-2"],
   "errors": []
@@ -254,7 +254,7 @@ POST /validate/:marketplaceId
 Validates a product for a specific marketplace.
 
 **Path Parameters:**
-- `marketplaceId` (string, required): The marketplace ID (e.g., `takealot`, `bidorbuy`, `makro`)
+- `marketplaceId` (string, required): The marketplace ID (e.g., `takealot`, `bob-shop`, `makro`)
 
 **Request Body:**
 ```json
@@ -302,7 +302,7 @@ GET /needs-sync/:marketplaceId?thresholdHours=24&limit=100
 Retrieves a list of product IDs that need to be synchronized to a marketplace.
 
 **Path Parameters:**
-- `marketplaceId` (string, required): The marketplace ID (e.g., `takealot`, `bidorbuy`, `makro`)
+- `marketplaceId` (string, required): The marketplace ID (e.g., `takealot`, `bob-shop`, `makro`)
 
 **Query Parameters:**
 - `thresholdHours` (number, optional): The number of hours threshold (defaults to 24)
@@ -348,7 +348,7 @@ Synchronizes stock levels for a product to all connected marketplaces.
   {
     "success": true,
     "productId": "product-id",
-    "marketplaceId": "bidorbuy",
+    "marketplaceId": "bob-shop",
     "message": "Stock level updated to 50",
     "errors": []
   }
@@ -412,21 +412,21 @@ Retrieves marketplace statistics.
   "inactiveCount": 20,
   "pendingCount": 5,
   "errorCount": 5,
-  "marketplaces": ["takealot", "bidorbuy", "makro"]
+  "marketplaces": ["takealot", "bob-shop", "makro"]
 }
 ```
 
 ## Marketplace-Specific Endpoints
 
-### Bidorbuy-Specific Endpoints
+### Bob Shop-Specific Endpoints
 
 #### Create Auction
 
 ```
-POST /bidorbuy/auction
+POST /bob-shop/auction
 ```
 
-Creates a new auction for a product on Bidorbuy.
+Creates a new auction for a product on Bob Shop (formerly Bidorbuy).
 
 **Request Body:**
 ```json
@@ -457,7 +457,7 @@ Creates a new auction for a product on Bidorbuy.
 #### Get Auction Status
 
 ```
-GET /bidorbuy/auction/:auctionId
+GET /bob-shop/auction/:auctionId
 ```
 
 Retrieves the status of an auction.

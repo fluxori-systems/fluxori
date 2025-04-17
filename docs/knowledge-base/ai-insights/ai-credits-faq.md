@@ -141,7 +141,7 @@ No, we price AI credits in South African Rand (ZAR) for South African customers 
 
 ### Do AI features use local South African data?
 
-Yes, our AI models are trained with significant South African e-commerce data to ensure relevant insights for the local market, especially for platforms like Takealot, Bidorbuy, and other regional marketplaces.
+Yes, our AI models are trained with significant South African e-commerce data to ensure relevant insights for the local market, especially for platforms like Takealot, Bob Shop, and other regional marketplaces.
 
 ### Where are the AI services hosted?
 

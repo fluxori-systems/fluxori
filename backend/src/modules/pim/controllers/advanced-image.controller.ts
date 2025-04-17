@@ -12,11 +12,18 @@ import {
 import { FirebaseAuthGuard } from '../../auth/guards/firebase-auth.guard';
 import { GetUser } from '../../auth/decorators/get-user.decorator';
 import { User } from '../../../types/google-cloud.types';
-import { ImageAnalysisService, ImageAttributeDetectionOptions } from '../services/image-analysis.service';
+import { 
+  ImageAnalysisResult, 
+  ImageAnalysisService, 
+  ImageAttributeDetectionOptions, 
+  ProductContext 
+} from '../services/image-analysis.service';
 import { PimStorageService } from '../services/pim-storage.service';
 import { NetworkAwareStorageService } from '../services/network-aware-storage.service';
 import { CompressionQuality, ProductImage } from '../models/image.model';
 import { ImageUploadOptions } from '../interfaces/image-upload-options.interface';
+import { NetworkQualityInfo } from '../interfaces/types';
+import { NetworkStatus } from '../../../common/utils/network-status.service';
 
 /**
  * Advanced Image Controller
@@ -35,45 +42,51 @@ export class AdvancedImageController {
   /**
    * Upload an image with AI-powered metadata generation
    * 
-   * @param file File to upload
-   * @param options Upload options
+   * @param data Upload data including file and options
    * @param user Authenticated user
+   * @returns Product image with AI-enhanced metadata
    */
   @Post('upload')
   async uploadImageWithAnalysis(
     @Body() data: {
-      file: any;
+      file: Buffer;
       options: ImageUploadOptions & {
         analyzeImage?: boolean;
         generateAltText?: boolean;
         detectAttributes?: boolean;
         checkMarketplaceCompliance?: boolean;
         targetMarketplace?: string;
-        productContext?: {
-          name: string;
-          category?: string;
-          description?: string;
-          attributes?: Record<string, any>;
-        };
+        productContext?: ProductContext;
       };
     },
     @GetUser() user: User,
   ): Promise<ProductImage> {
     try {
       const { file, options } = data;
-      const organizationId = user.organizationId;
+      const organizationId = user.organizationId || '';
       
       // Determine network-aware compression options
-      const networkQuality = this.networkAwareStorageService.getNetworkQuality();
+      const networkQualityInfo = this.networkAwareStorageService.getNetworkQuality();
       const adaptiveCompression = options.compressionQuality === CompressionQuality.ADAPTIVE;
+      
+      // Convert NetworkQualityInfo to NetworkStatus
+      const networkQuality: NetworkStatus = {
+        connectionType: networkQualityInfo.connectionType || 'unknown',
+        downloadSpeed: networkQualityInfo.downlink,
+        uploadSpeed: undefined,
+        latency: networkQualityInfo.rtt,
+        isStable: true, // Default to true
+        isSufficientBandwidth: networkQualityInfo.quality !== 'low',
+        lastUpdated: new Date()
+      };
       
       let effectiveCompressionQuality = options.compressionQuality || CompressionQuality.MEDIUM;
       
       // Override compression based on network conditions if adaptive
       if (adaptiveCompression) {
-        if (networkQuality.quality === 'low') {
+        if (networkQualityInfo.quality === 'low') {
           effectiveCompressionQuality = CompressionQuality.LOW;
-        } else if (networkQuality.quality === 'medium') {
+        } else if (networkQualityInfo.quality === 'medium') {
           effectiveCompressionQuality = CompressionQuality.MEDIUM;
         } else {
           effectiveCompressionQuality = CompressionQuality.HIGH;
@@ -84,8 +97,19 @@ export class AdvancedImageController {
       const uploadedImage = await this.pimStorageService.uploadProductImage(
         file,
         {
-          ...options,
+          productId: options.productId,
+          fileName: options.fileName || `product_${options.productId}_${Date.now()}.jpg`,
+          contentType: options.contentType || 'image/jpeg',
+          imageType: options.imageType,
+          position: options.position,
+          isMain: options.isMain,
+          altText: options.altText,
           compressionQuality: effectiveCompressionQuality,
+          resizeOption: options.resizeOption,
+          generateThumbnails: options.generateThumbnails,
+          optimizeForLowBandwidth: options.optimizeForLowBandwidth,
+          metadata: options.metadata,
+          organizationId: organizationId,
           networkQuality: networkQuality,
         }
       );
@@ -109,7 +133,7 @@ export class AdvancedImageController {
           user.uid
         );
         
-        if (optimizationResult.success) {
+        if (optimizationResult.success && optimizationResult.updatedImage) {
           // Return the enhanced image with AI-generated metadata
           return optimizationResult.updatedImage;
         }
@@ -118,8 +142,9 @@ export class AdvancedImageController {
       // Return the original image if no analysis was performed or analysis failed
       return uploadedImage;
     } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
       throw new HttpException(
-        `Failed to upload and analyze image: ${error.message}`,
+        `Failed to upload and analyze image: ${errorMessage}`,
         HttpStatus.INTERNAL_SERVER_ERROR
       );
     }
@@ -131,6 +156,7 @@ export class AdvancedImageController {
    * @param imageId Image ID to analyze
    * @param options Analysis options
    * @param user Authenticated user
+   * @returns Image analysis result
    */
   @Post('analyze/:imageId')
   async analyzeExistingImage(
@@ -142,17 +168,12 @@ export class AdvancedImageController {
       targetMarketplace?: string;
       includeColorAnalysis?: boolean;
       includeQualityAssessment?: boolean;
-      productContext: {
-        name: string;
-        category?: string;
-        description?: string;
-        attributes?: Record<string, any>;
-      };
+      productContext: ProductContext;
     },
     @GetUser() user: User,
-  ) {
+  ): Promise<ImageAnalysisResult> {
     try {
-      const organizationId = user.organizationId;
+      const organizationId = user.organizationId || '';
       
       // Get image by ID
       const image = await this.pimStorageService.getProductImage(imageId, organizationId);
@@ -172,18 +193,17 @@ export class AdvancedImageController {
       };
       
       // Analyze image
-      const analysisResult = await this.imageAnalysisService.analyzeProductImage(
+      return await this.imageAnalysisService.analyzeImage(
         image.publicUrl,
         options.productContext,
         organizationId,
         user.uid,
         analysisOptions
       );
-      
-      return analysisResult;
     } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
       throw new HttpException(
-        `Failed to analyze image: ${error.message}`,
+        `Failed to analyze image: ${errorMessage}`,
         HttpStatus.INTERNAL_SERVER_ERROR
       );
     }
@@ -193,23 +213,30 @@ export class AdvancedImageController {
    * Generate SEO-friendly alt text for an image
    * 
    * @param imageId Image ID
-   * @param productContext Product context for relevant alt text
+   * @param data Request data containing product context
    * @param user Authenticated user
+   * @returns Generated alt text result
    */
   @Post('generate-alt-text/:imageId')
   async generateAltText(
     @Param('imageId') imageId: string,
     @Body() data: {
-      productContext: {
-        name: string;
-        category?: string;
-        description?: string;
-      };
+      productContext: ProductContext;
     },
     @GetUser() user: User,
-  ) {
+  ): Promise<{ 
+    altText: string; 
+    success: boolean; 
+    error?: string; 
+    image?: ProductImage;
+    tokenUsage?: { 
+      input: number; 
+      output: number; 
+      total: number;
+    };
+  }> {
     try {
-      const organizationId = user.organizationId;
+      const organizationId = user.organizationId || '';
       
       // Get image by ID
       const image = await this.pimStorageService.getProductImage(imageId, organizationId);
@@ -238,13 +265,15 @@ export class AdvancedImageController {
           altText: result.altText,
           success: true,
           image: updatedImage,
+          tokenUsage: result.tokenUsage,
         };
       }
       
       return result;
     } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
       throw new HttpException(
-        `Failed to generate alt text: ${error.message}`,
+        `Failed to generate alt text: ${errorMessage}`,
         HttpStatus.INTERNAL_SERVER_ERROR
       );
     }
@@ -256,15 +285,26 @@ export class AdvancedImageController {
    * @param imageId Image ID
    * @param marketplace Marketplace to check compliance for
    * @param user Authenticated user
+   * @returns Marketplace compliance result
    */
   @Get('marketplace-compliance/:imageId')
   async checkMarketplaceCompliance(
     @Param('imageId') imageId: string,
     @Query('marketplace') marketplace: string,
     @GetUser() user: User,
-  ) {
+  ): Promise<{ 
+    compliant: boolean; 
+    issues?: string[]; 
+    success: boolean; 
+    error?: string; 
+    tokenUsage?: { 
+      input: number; 
+      output: number; 
+      total: number; 
+    };
+  }> {
     try {
-      const organizationId = user.organizationId;
+      const organizationId = user.organizationId || '';
       
       // Get image by ID
       const image = await this.pimStorageService.getProductImage(imageId, organizationId);
@@ -273,16 +313,29 @@ export class AdvancedImageController {
         throw new HttpException('Image not found', HttpStatus.NOT_FOUND);
       }
       
-      // Check marketplace compliance
-      return await this.imageAnalysisService.checkMarketplaceCompliance(
+      // Check marketplace compliance - using analyzeImage with specific options
+      const analysisResult = await this.imageAnalysisService.analyzeImage(
         image.publicUrl,
-        marketplace || 'takealot', // Default to Takealot for South African market
+        { name: 'Product' }, // Minimal context
         organizationId,
-        user.uid
+        user.uid,
+        {
+          checkMarketplaceCompliance: true,
+          targetMarketplace: marketplace || 'takealot', // Default to Takealot for South African market
+        }
       );
+      
+      return {
+        compliant: analysisResult.marketplaceCompliance?.compliant || false,
+        issues: analysisResult.marketplaceCompliance?.issues,
+        success: analysisResult.success,
+        error: analysisResult.error,
+        tokenUsage: analysisResult.tokenUsage
+      };
     } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
       throw new HttpException(
-        `Failed to check marketplace compliance: ${error.message}`,
+        `Failed to check marketplace compliance: ${errorMessage}`,
         HttpStatus.INTERNAL_SERVER_ERROR
       );
     }
@@ -293,14 +346,24 @@ export class AdvancedImageController {
    * 
    * @param imageId Image ID
    * @param user Authenticated user
+   * @returns Image quality assessment result
    */
   @Get('quality-assessment/:imageId')
   async assessImageQuality(
     @Param('imageId') imageId: string,
     @GetUser() user: User,
-  ) {
+  ): Promise<{ 
+    quality: any; 
+    success: boolean; 
+    error?: string; 
+    tokenUsage?: { 
+      input: number; 
+      output: number; 
+      total: number; 
+    };
+  }> {
     try {
-      const organizationId = user.organizationId;
+      const organizationId = user.organizationId || '';
       
       // Get image by ID
       const image = await this.pimStorageService.getProductImage(imageId, organizationId);
@@ -316,8 +379,9 @@ export class AdvancedImageController {
         user.uid
       );
     } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
       throw new HttpException(
-        `Failed to assess image quality: ${error.message}`,
+        `Failed to assess image quality: ${errorMessage}`,
         HttpStatus.INTERNAL_SERVER_ERROR
       );
     }
@@ -327,22 +391,25 @@ export class AdvancedImageController {
    * Select main product image from a set of product images
    * 
    * @param productId Product ID
-   * @param productContext Product context for relevant selection
+   * @param data Request data containing product context
    * @param user Authenticated user
+   * @returns Main image selection result
    */
   @Post('select-main-image/:productId')
   async selectMainProductImage(
     @Param('productId') productId: string,
     @Body() data: {
-      productContext: {
-        name: string;
-        category?: string;
-      };
+      productContext: ProductContext;
     },
     @GetUser() user: User,
-  ) {
+  ): Promise<{
+    success: boolean;
+    mainImageIndex?: number;
+    mainImage?: ProductImage;
+    error?: string;
+  }> {
     try {
-      const organizationId = user.organizationId;
+      const organizationId = user.organizationId || '';
       
       // Get all product images
       const images = await this.pimStorageService.getProductImages(productId, organizationId);
@@ -359,7 +426,7 @@ export class AdvancedImageController {
         user.uid
       );
       
-      if (result.success && result.mainImageIndex >= 0) {
+      if (result.success && result.mainImageIndex !== undefined && result.mainImageIndex >= 0) {
         // Get the selected image
         const mainImage = images[result.mainImageIndex];
         
@@ -382,8 +449,9 @@ export class AdvancedImageController {
       
       return result;
     } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
       throw new HttpException(
-        `Failed to select main product image: ${error.message}`,
+        `Failed to select main product image: ${errorMessage}`,
         HttpStatus.INTERNAL_SERVER_ERROR
       );
     }
@@ -391,26 +459,33 @@ export class AdvancedImageController {
   
   /**
    * Get adaptive compression settings based on network conditions
+   * 
+   * @returns Recommended compression settings based on current network quality
    */
   @Get('adaptive-compression-settings')
-  async getAdaptiveCompressionSettings() {
-    const networkQuality = this.networkAwareStorageService.getNetworkQuality();
+  async getAdaptiveCompressionSettings(): Promise<{
+    compressionQuality: CompressionQuality;
+    generateThumbnails: boolean;
+    optimizeForLowBandwidth: boolean;
+    networkQuality: NetworkQualityInfo;
+  }> {
+    const networkQualityInfo = this.networkAwareStorageService.getNetworkQuality();
     
     let recommendedSettings = {
       compressionQuality: CompressionQuality.MEDIUM,
       generateThumbnails: true,
       optimizeForLowBandwidth: false,
-      networkQuality,
+      networkQuality: networkQualityInfo,
     };
     
     // Adjust settings based on network conditions
-    if (networkQuality.quality === 'low') {
+    if (networkQualityInfo.quality === 'low') {
       recommendedSettings = {
         ...recommendedSettings,
         compressionQuality: CompressionQuality.LOW,
         optimizeForLowBandwidth: true,
       };
-    } else if (networkQuality.quality === 'medium') {
+    } else if (networkQualityInfo.quality === 'medium') {
       recommendedSettings = {
         ...recommendedSettings,
         compressionQuality: CompressionQuality.MEDIUM,

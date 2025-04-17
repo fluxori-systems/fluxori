@@ -79,7 +79,7 @@ export class EmbeddingProviderRepository extends FirestoreBaseRepository<Embeddi
    */
   async setAsDefault(id: string, organizationId: string): Promise<boolean> {
     return this.runTransaction(async (context) => {
-      const transaction = context.transaction;
+      const transaction = context;
 
       // First, find all providers for the organization
       const providers = await this.findByOrganization(organizationId);

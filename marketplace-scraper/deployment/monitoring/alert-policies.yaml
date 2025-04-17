@@ -1,0 +1,115 @@
+# Alert policies for Marketplace Scraper
+
+# High quota usage alert
+quota_alert:
+  display_name: "Marketplace Scraper - High Quota Usage"
+  documentation:
+    content: "SmartProxy API quota usage exceeded 80% of monthly allocation."
+    mime_type: "text/markdown"
+  conditions:
+    - display_name: "Quota Usage > 80%"
+      condition_threshold:
+        filter: 'metric.type="custom.googleapis.com/marketplace_scraper/quota_usage" AND resource.type="global"'
+        comparison: COMPARISON_GT
+        threshold_value: 80.0
+        duration: {seconds: 0}
+        trigger:
+          count: 1
+  alert_strategy:
+    notification_rate_limit:
+      period: {seconds: 3600}  # One notification per hour max
+
+# High error rate alert
+error_rate_alert:
+  display_name: "Marketplace Scraper - High Error Rate"
+  documentation:
+    content: "Marketplace scraper error rate exceeded 20% over 10-minute window."
+    mime_type: "text/markdown"
+  conditions:
+    - display_name: "Error Rate > 20%"
+      condition_threshold:
+        filter: 'metric.type="custom.googleapis.com/marketplace_scraper/error_rate" AND resource.type="global"'
+        comparison: COMPARISON_GT
+        threshold_value: 20.0
+        duration: {seconds: 600}  # 10 minutes
+        trigger:
+          count: 1
+  alert_strategy:
+    notification_rate_limit:
+      period: {seconds: 1800}  # Notification every 30 minutes max
+
+# Load shedding detected alert
+loadshedding_alert:
+  display_name: "Marketplace Scraper - Load Shedding Detected"
+  documentation:
+    content: "Load shedding detected, scraper operating in reduced functionality mode."
+    mime_type: "text/markdown"
+  conditions:
+    - display_name: "Load Shedding Detected"
+      condition_threshold:
+        filter: 'metric.type="custom.googleapis.com/marketplace_scraper/loadshedding_detected" AND resource.type="global"'
+        comparison: COMPARISON_GT
+        threshold_value: 0.0
+        duration: {seconds: 0}
+        trigger:
+          count: 1
+  alert_strategy:
+    notification_rate_limit:
+      period: {seconds: 7200}  # Notification every 2 hours max
+
+# Service inactivity alert
+inactivity_alert:
+  display_name: "Marketplace Scraper - Service Inactivity"
+  documentation:
+    content: "Marketplace scraper has not performed any tasks for an extended period."
+    mime_type: "text/markdown"
+  conditions:
+    - display_name: "No Tasks for 6 Hours"
+      condition_threshold:
+        filter: 'metric.type="custom.googleapis.com/marketplace_scraper/tasks_completed" AND resource.type="global"'
+        comparison: COMPARISON_LT
+        threshold_value: 1.0
+        duration: {seconds: 21600}  # 6 hours
+        trigger:
+          count: 1
+  alert_strategy:
+    notification_rate_limit:
+      period: {seconds: 21600}  # Notification every 6 hours max
+
+# Response time alert
+response_time_alert:
+  display_name: "Marketplace Scraper - Slow Response Time"
+  documentation:
+    content: "Marketplace scraper experiencing slow response times from API endpoints."
+    mime_type: "text/markdown"
+  conditions:
+    - display_name: "Response Time > 10s"
+      condition_threshold:
+        filter: 'metric.type="custom.googleapis.com/marketplace_scraper/response_time" AND resource.type="global"'
+        comparison: COMPARISON_GT
+        threshold_value: 10.0
+        duration: {seconds: 300}  # 5 minutes
+        trigger:
+          count: 5
+  alert_strategy:
+    notification_rate_limit:
+      period: {seconds: 3600}  # Notification every hour max
+
+# Data quality alert
+data_quality_alert:
+  display_name: "Marketplace Scraper - Data Quality Issues"
+  documentation:
+    content: "Marketplace scraper detected data quality issues (missing fields, invalid data)."
+    mime_type: "text/markdown"
+  conditions:
+    - display_name: "Data Quality Score < 0.8"
+      condition_threshold:
+        filter: 'metric.type="custom.googleapis.com/marketplace_scraper/data_quality_score" AND resource.type="global"'
+        comparison: COMPARISON_LT
+        threshold_value: 0.8
+        duration: {seconds: 600}  # 10 minutes
+        trigger:
+          count: 3
+  alert_strategy:
+    notification_rate_limit:
+      period: {seconds: 7200}  # Notification every 2 hours max

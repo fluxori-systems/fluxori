@@ -1,6 +1,6 @@
 /**
  * Repository type definitions for Firestore repositories
- * These types define the interfaces for repository operations
+ * Complete TypeScript-compliant implementation with proper generic typing
  */
 
 import {
@@ -9,6 +9,7 @@ import {
   FieldValue,
   Transaction,
   QueryDocumentSnapshot,
+  WriteBatch
 } from "@google-cloud/firestore";
 
 import { RepositoryStats } from "./repository-stats";
@@ -16,23 +17,48 @@ import {
   FirestoreEntity,
   Timestamp,
   QueryFilterOperator,
-  QueryOptions as GlobalQueryOptions,
-  TransactionContext,
+  TransactionContext
 } from "../../../types/google-cloud.types";
 
-// Repository statistics interface is now defined in repository-stats.ts
-// to avoid circular dependencies
+/**
+ * Base entity interface all models should implement, aligned with FirestoreEntity
+ */
+export interface BaseEntity {
+  id: string;
+  createdAt: Date | Timestamp;
+  updatedAt: Date | Timestamp;
+  isDeleted?: boolean;
+  deletedAt?: Date | Timestamp | null;
+  version?: number;
+  [key: string]: any; // Allow additional properties to match FirestoreEntity
+}
 
 /**
  * Base repository interface that defines common operations
  */
-export interface Repository<T> {
-  findById(id: string, options?: any): Promise<T | null>;
-  find(options?: any): Promise<T[]>;
-  create(data: Partial<T>, options?: any): Promise<T>;
-  update(id: string, data: Partial<T>, options?: any): Promise<T>;
-  delete(id: string, options?: any): Promise<void>;
-  count(options?: any): Promise<number>;
+export interface Repository<T extends BaseEntity, K = string> {
+  // Core CRUD operations
+  findById(id: K, options?: FindByIdOptions): Promise<T | null>;
+  findAll(options?: FindOptions<T>): Promise<T[]>;
+  find(options?: FindOptions<T>): Promise<T[]>;
+  create(data: Omit<T, 'id' | 'createdAt' | 'updatedAt'>, options?: CreateDocumentOptions): Promise<T>;
+  update(id: K, data: Partial<Omit<T, 'id' | 'createdAt' | 'updatedAt'>>, options?: UpdateDocumentOptions): Promise<T>;
+  delete(id: K, options?: DeleteDocumentOptions): Promise<void>;
+  
+  // Additional common operations
+  findByIds(ids: K[], options?: FindByIdOptions): Promise<T[]>;
+  findBy(field: keyof T | string, value: any, options?: FindOptions<T>): Promise<T[]>;
+  findOneBy(field: keyof T | string, value: any, options?: FindOptions<T>): Promise<T | null>;
+  count(options?: CountDocumentsOptions<T>): Promise<number>;
+  exists(id: K): Promise<boolean>;
+  
+  // Bulk operations
+  createMany(items: Array<Omit<T, 'id' | 'createdAt' | 'updatedAt'>>, options?: CreateDocumentOptions): Promise<T[]>;
+  updateMany(items: Array<{ id: K; data: Partial<Omit<T, 'id' | 'createdAt' | 'updatedAt'>> }>, options?: UpdateDocumentOptions): Promise<T[]>;
+  deleteMany(ids: K[], options?: BatchDeleteOptions): Promise<void>;
+  
+  // Transaction operations
+  runTransaction<R>(callback: (transaction: Transaction) => Promise<R>): Promise<R>;
 }
 
 /**
@@ -65,13 +91,6 @@ export type SortDirection = "asc" | "desc";
 export interface EntityReference {
   id: string;
   collection: string;
-}
-
-/**
- * Base entity with ID field
- */
-export interface EntityWithId {
-  id: string;
 }
 
 /**
@@ -109,6 +128,8 @@ export interface CreateDocumentOptions {
   ttl?: number;
   customMetadata?: Record<string, any>;
   transaction?: Transaction;
+  batchWrite?: boolean;
+  batch?: WriteBatch;
 }
 
 /**
@@ -120,6 +141,7 @@ export interface FindByIdOptions {
   throwIfNotFound?: boolean;
   includeMetadata?: boolean;
   transaction?: Transaction;
+  consistentRead?: boolean;
 }
 
 /**
@@ -132,6 +154,9 @@ export interface FindOptions<T> {
   includeDeleted?: boolean;
   useCache?: boolean;
   transaction?: Transaction;
+  limit?: number;
+  offset?: number;
+  orderBy?: { field: keyof T | string; direction: 'asc' | 'desc' }[];
 }
 
 /**
@@ -145,6 +170,10 @@ export interface UpdateDocumentOptions {
   incrementVersion?: boolean;
   sanitizeData?: boolean;
   transaction?: Transaction;
+  batchWrite?: boolean;
+  batch?: WriteBatch;
+  expectedVersion?: number;
+  updateTimestamp?: boolean;
 }
 
 /**
@@ -157,6 +186,8 @@ export interface DeleteDocumentOptions {
   snapshotBeforeDelete?: boolean;
   deleteSubcollections?: boolean;
   transaction?: Transaction;
+  batchWrite?: boolean;
+  batch?: WriteBatch;
 }
 
 /**
@@ -187,6 +218,8 @@ export interface TTLCleanupOptions {
 export interface BatchDeleteOptions {
   softDelete?: boolean;
   batchSize?: number;
+  transaction?: Transaction;
+  deleteSubcollections?: boolean;
 }
 
 /**
@@ -259,7 +292,14 @@ export interface RepositoryOptions {
 /**
  * Interface for data converters
  */
-export interface EntityConverter<T extends FirestoreEntity> {
+export interface EntityConverter<T extends BaseEntity> {
   toFirestore(entity: T): DocumentData;
   fromFirestore(snapshot: QueryDocumentSnapshot<DocumentData>): T;
+}
+
+/**
+ * Interface for entity with ID
+ */
+export interface EntityWithId {
+  id: string;
 }

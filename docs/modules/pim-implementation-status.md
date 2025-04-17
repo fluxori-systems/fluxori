@@ -51,7 +51,7 @@ This document tracks the implementation status of the Product Information Manage
 | Multi-Currency Pricing | 🟢 Complete | Full multi-currency support for all African currencies with exchange rates, VAT handling, and psychological pricing |
 | Regional Taxation Framework | 🟢 Complete | Comprehensive tax framework for African countries with country-specific rules, regional taxes, and future rate support |
 | Cross-Border Trade Features | 🟢 Complete | Comprehensive cross-border trade support with trade agreements (SADC, EAC, ECOWAS, COMESA, UMA), duty calculations, shipping estimates, customs documentation, and product eligibility checking |
-| South African Marketplace Expansion | 🟢 Complete | Added comprehensive support for Bidorbuy (with auction capabilities) and Makro (with store pickup functionality) marketplaces |
+| South African Marketplace Expansion | 🟢 Complete | Added comprehensive support for Bob Shop (formerly Bidorbuy, with auction capabilities) and Makro (with store pickup functionality) marketplaces |
 | Mobile-First Features | 🟢 Complete | Comprehensive mobile optimization with device detection, network quality assessment, adaptive responses, load shedding awareness, and specialized South African optimizations |
 
 ## Platform Enhancements (Phase 3)
@@ -172,7 +172,7 @@ This document tracks the implementation status of the Product Information Manage
 2. ✅ Implement multi-currency and regional warehousing
 3. ✅ Implement regional taxation framework for African countries
 4. ✅ Implement cross-border trade features
-5. ✅ Expand South African marketplace support (Bidorbuy and Makro integrations)
+5. ✅ Expand South African marketplace support (Bob Shop and Makro integrations)
 6. ✅ Build more advanced PIM features (bundling, dynamic pricing, price monitoring)
 7. ✅ Implement mobile-first features with South African optimizations
 

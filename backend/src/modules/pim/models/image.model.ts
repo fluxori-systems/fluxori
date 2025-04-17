@@ -128,4 +128,9 @@ export interface ProductImage {
    * Last update date
    */
   updatedAt: Date;
+  
+  /**
+   * Optional tags for the image
+   */
+  tags?: string[];
 }

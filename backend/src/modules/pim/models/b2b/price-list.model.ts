@@ -146,13 +146,11 @@ export interface ProductVolumePrice {
 
 /**
  * B2B Price List model
+ * Extends the BaseEntity interface to ensure TypeScript compatibility
  */
-export interface B2BPriceList {
-  /**
-   * Unique identifier for the price list
-   */
-  id?: string;
-  
+import { BaseEntity } from '../../../../common/repositories/base/repository-types';
+
+export interface B2BPriceList extends BaseEntity {
   /**
    * Organization that owns this price list
    */
@@ -247,14 +245,4 @@ export interface B2BPriceList {
    * Additional custom fields specific to this price list
    */
   customFields?: Record<string, any>;
-  
-  /**
-   * Creation timestamp
-   */
-  createdAt: Date;
-  
-  /**
-   * Last update timestamp
-   */
-  updatedAt: Date;
 }

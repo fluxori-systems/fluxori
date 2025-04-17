@@ -1,0 +1,374 @@
+{
+  "displayName": "Marketplace Scraper Dashboard",
+  "mosaicLayout": {
+    "columns": 12,
+    "tiles": [
+      {
+        "width": 6,
+        "height": 4,
+        "widget": {
+          "title": "API Quota Usage",
+          "xyChart": {
+            "dataSets": [
+              {
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "filter": "metric.type=\"custom.googleapis.com/marketplace_scraper/quota_usage\" resource.type=\"global\"",
+                    "aggregation": {
+                      "alignmentPeriod": "60s",
+                      "perSeriesAligner": "ALIGN_MEAN"
+                    }
+                  },
+                  "unitOverride": "percent"
+                },
+                "plotType": "LINE",
+                "minAlignmentPeriod": "60s",
+                "targetAxis": "Y1"
+              }
+            ],
+            "timeshiftDuration": "0s",
+            "yAxis": {
+              "scale": "LINEAR",
+              "label": "Percentage",
+              "min": 0,
+              "max": 100
+            },
+            "thresholds": [
+              {
+                "value": 80,
+                "targetAxis": "Y1",
+                "color": "YELLOW"
+              },
+              {
+                "value": 95,
+                "targetAxis": "Y1",
+                "color": "RED"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "width": 6,
+        "height": 4,
+        "widget": {
+          "title": "Request Success Rate",
+          "xyChart": {
+            "dataSets": [
+              {
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "filter": "metric.type=\"custom.googleapis.com/marketplace_scraper/success_rate\" resource.type=\"global\"",
+                    "aggregation": {
+                      "alignmentPeriod": "60s",
+                      "perSeriesAligner": "ALIGN_MEAN"
+                    }
+                  },
+                  "unitOverride": "percent"
+                },
+                "plotType": "LINE",
+                "minAlignmentPeriod": "60s",
+                "targetAxis": "Y1"
+              }
+            ],
+            "timeshiftDuration": "0s",
+            "yAxis": {
+              "scale": "LINEAR",
+              "label": "Percentage",
+              "min": 0,
+              "max": 100
+            },
+            "thresholds": [
+              {
+                "value": 80,
+                "targetAxis": "Y1",
+                "color": "YELLOW",
+                "direction": "BELOW"
+              },
+              {
+                "value": 50,
+                "targetAxis": "Y1",
+                "color": "RED",
+                "direction": "BELOW"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "width": 4,
+        "height": 3,
+        "widget": {
+          "title": "Load Shedding Status",
+          "xyChart": {
+            "dataSets": [
+              {
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "filter": "metric.type=\"custom.googleapis.com/marketplace_scraper/loadshedding_detected\" resource.type=\"global\"",
+                    "aggregation": {
+                      "alignmentPeriod": "60s",
+                      "perSeriesAligner": "ALIGN_MAX"
+                    }
+                  }
+                },
+                "plotType": "STACKED_BAR",
+                "minAlignmentPeriod": "60s",
+                "targetAxis": "Y1"
+              }
+            ],
+            "timeshiftDuration": "0s",
+            "yAxis": {
+              "scale": "LINEAR",
+              "label": "Status (1=Active)",
+              "min": 0,
+              "max": 1
+            }
+          }
+        }
+      },
+      {
+        "width": 4,
+        "height": 3,
+        "widget": {
+          "title": "Tasks Completed (24h)",
+          "xyChart": {
+            "dataSets": [
+              {
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "filter": "metric.type=\"custom.googleapis.com/marketplace_scraper/tasks_completed\" resource.type=\"global\"",
+                    "aggregation": {
+                      "alignmentPeriod": "60s",
+                      "perSeriesAligner": "ALIGN_SUM",
+                      "crossSeriesReducer": "REDUCE_SUM",
+                      "groupByFields": [
+                        "metric.label.task_type"
+                      ]
+                    }
+                  }
+                },
+                "plotType": "STACKED_BAR",
+                "minAlignmentPeriod": "60s",
+                "targetAxis": "Y1"
+              }
+            ],
+            "timeshiftDuration": "0s",
+            "yAxis": {
+              "scale": "LINEAR",
+              "label": "Tasks"
+            }
+          }
+        }
+      },
+      {
+        "width": 4,
+        "height": 3,
+        "widget": {
+          "title": "Tasks Failed (24h)",
+          "xyChart": {
+            "dataSets": [
+              {
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "filter": "metric.type=\"custom.googleapis.com/marketplace_scraper/tasks_failed\" resource.type=\"global\"",
+                    "aggregation": {
+                      "alignmentPeriod": "60s",
+                      "perSeriesAligner": "ALIGN_SUM",
+                      "crossSeriesReducer": "REDUCE_SUM",
+                      "groupByFields": [
+                        "metric.label.task_type"
+                      ]
+                    }
+                  }
+                },
+                "plotType": "STACKED_BAR",
+                "minAlignmentPeriod": "60s",
+                "targetAxis": "Y1"
+              }
+            ],
+            "timeshiftDuration": "0s",
+            "yAxis": {
+              "scale": "LINEAR",
+              "label": "Tasks"
+            }
+          }
+        }
+      },
+      {
+        "width": 6,
+        "height": 4,
+        "widget": {
+          "title": "Response Time Distribution",
+          "xyChart": {
+            "dataSets": [
+              {
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "filter": "metric.type=\"custom.googleapis.com/marketplace_scraper/response_time\" resource.type=\"global\"",
+                    "aggregation": {
+                      "alignmentPeriod": "60s",
+                      "perSeriesAligner": "ALIGN_PERCENTILE_99"
+                    }
+                  },
+                  "unitOverride": "s"
+                },
+                "plotType": "LINE",
+                "minAlignmentPeriod": "60s",
+                "targetAxis": "Y1",
+                "legendTemplate": "p99"
+              },
+              {
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "filter": "metric.type=\"custom.googleapis.com/marketplace_scraper/response_time\" resource.type=\"global\"",
+                    "aggregation": {
+                      "alignmentPeriod": "60s",
+                      "perSeriesAligner": "ALIGN_PERCENTILE_95"
+                    }
+                  },
+                  "unitOverride": "s"
+                },
+                "plotType": "LINE",
+                "minAlignmentPeriod": "60s",
+                "targetAxis": "Y1",
+                "legendTemplate": "p95"
+              },
+              {
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "filter": "metric.type=\"custom.googleapis.com/marketplace_scraper/response_time\" resource.type=\"global\"",
+                    "aggregation": {
+                      "alignmentPeriod": "60s",
+                      "perSeriesAligner": "ALIGN_PERCENTILE_50"
+                    }
+                  },
+                  "unitOverride": "s"
+                },
+                "plotType": "LINE",
+                "minAlignmentPeriod": "60s",
+                "targetAxis": "Y1",
+                "legendTemplate": "p50"
+              }
+            ],
+            "timeshiftDuration": "0s",
+            "yAxis": {
+              "scale": "LINEAR",
+              "label": "Seconds"
+            },
+            "thresholds": [
+              {
+                "value": 10,
+                "targetAxis": "Y1",
+                "color": "YELLOW"
+              },
+              {
+                "value": 20,
+                "targetAxis": "Y1",
+                "color": "RED"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "width": 6,
+        "height": 4,
+        "widget": {
+          "title": "Data Collection by Marketplace",
+          "pieChart": {
+            "chartType": "PIE",
+            "dataSets": [
+              {
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "filter": "metric.type=\"custom.googleapis.com/marketplace_scraper/products_scraped\" resource.type=\"global\"",
+                    "aggregation": {
+                      "alignmentPeriod": "86400s",
+                      "perSeriesAligner": "ALIGN_SUM",
+                      "crossSeriesReducer": "REDUCE_SUM",
+                      "groupByFields": [
+                        "metric.label.marketplace"
+                      ]
+                    }
+                  },
+                  "unitOverride": "1"
+                }
+              }
+            ]
+          }
+        }
+      },
+      {
+        "width": 12,
+        "height": 3,
+        "widget": {
+          "title": "Priority Usage Breakdown",
+          "barchart": {
+            "dataSets": [
+              {
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "filter": "metric.type=\"custom.googleapis.com/marketplace_scraper/priority_usage\" resource.type=\"global\"",
+                    "aggregation": {
+                      "alignmentPeriod": "3600s",
+                      "perSeriesAligner": "ALIGN_MEAN",
+                      "crossSeriesReducer": "REDUCE_MEAN",
+                      "groupByFields": [
+                        "metric.label.priority"
+                      ]
+                    }
+                  }
+                },
+                "targetAxis": "Y1",
+                "plotType": "STACKED_BAR"
+              }
+            ],
+            "yAxis": {
+              "scale": "LINEAR",
+              "label": "Usage Percentage"
+            }
+          }
+        }
+      },
+      {
+        "width": 12,
+        "height": 2,
+        "widget": {
+          "title": "System Status",
+          "scorecard": {
+            "timeSeriesQuery": {
+              "timeSeriesFilter": {
+                "filter": "metric.type=\"custom.googleapis.com/marketplace_scraper/system_health\" resource.type=\"global\"",
+                "aggregation": {
+                  "alignmentPeriod": "60s",
+                  "perSeriesAligner": "ALIGN_MEAN"
+                }
+              }
+            },
+            "gaugeView": {
+              "min": 0,
+              "max": 100,
+              "lowerBound": 50,
+              "upperBound": 80
+            },
+            "thresholds": [
+              {
+                "value": 50,
+                "color": "RED"
+              },
+              {
+                "value": 80,
+                "color": "YELLOW"
+              },
+              {
+                "value": 90,
+                "color": "GREEN"
+              }
+            ]
+          }
+        }
+      }
+    ]
+  }
+}
