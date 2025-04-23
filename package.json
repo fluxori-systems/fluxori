@@ -29,6 +29,7 @@
     "typecheck:backend": "cd backend && tsc --noEmit",
     "typecheck:frontend": "cd frontend && npm run typecheck",
     "prepare": "husky install",
+    "smoke-test-dev": "bash scripts/smoke-test-dev.sh",
     "pre-commit": "lint-staged",
     "check-deps": "npm run deps:circular && npm run deps:validate",
     "adr:create": "cd scripts/adr && ./adr.sh create",
@@ -48,7 +49,7 @@
     "frontend"
   ],
   "engines": {
-    "node": ">=16",
+    "node": ">=22",
     "npm": ">=8"
   },
   "repository": {

@@ -1,5 +1,5 @@
 # Stage 1: Install dependencies and build
-FROM node:20-alpine AS builder
+FROM node:22-alpine AS builder
 
 # Set working directory
 WORKDIR /app
@@ -19,7 +19,7 @@ ENV NODE_ENV=production
 RUN npm run build
 
 # Stage 2: Runtime with only production artifacts
-FROM node:20-alpine AS production
+FROM node:22-alpine AS production
 
 # Set Cloud Run specific environment variables
 ENV NODE_ENV=production

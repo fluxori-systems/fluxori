@@ -1,5 +1,5 @@
 # Stage 1: Install dependencies and build
-FROM node:20-alpine AS builder
+FROM node:22-alpine AS builder
 
 # Set working directory
 WORKDIR /app
@@ -17,7 +17,7 @@ COPY . .
 RUN npm run build
 
 # Stage 2: Runtime with optimized dependencies
-FROM node:20-alpine AS production
+FROM node:22-alpine AS production
 
 # Set Google Cloud specific environment variables
 ENV NODE_ENV=production
