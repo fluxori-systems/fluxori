@@ -29,18 +29,18 @@
     - Manual smoke tests (API health, UI load).
  6. **Commit & Push:** Open a pull request for review.
 
- ## 5. Phase 2: Staging Deployment
- 1. **Deploy to staging:** Build Docker images on Node.js 22, deploy to staging cluster.
- 2. **End-to-End Tests:** Run full integration tests (E2E, Cypress).
- 3. **Performance Benchmark:** Measure response times, memory usage, and resource consumption; compare to Node.js 20 baseline.
- 4. **Security Scans:** Re-run dependency and vulnerability scans.
- 5. **Approval Gate:** Product and Engineering sign-off for production rollout.
+    ## 5. Phase 2: CI Pipeline Validation
+    1. **CI Builds:** Ensure CI uses Node.js 22 for build and test steps.
+    2. **Automated Tests:** Run unit, integration, and E2E tests under Node.js 22 in CI.
+    3. **Lint & Type Checks:** Verify linting and typechecking pass in CI.
+    4. **Container Build:** Build backend/frontend Docker images with `node:22-alpine` in CI.
+    5. **Dependency Audit:** Re-run vulnerability scans and dependency checks.
 
- ## 6. Phase 3: Production Rollout
- 1. **Blue/Green or Canary Deploy:** Deploy Node.js 22 containers alongside Node.js 20; route a small percentage of traffic.
- 2. **Monitor Metrics:** Health endpoints, error rates, latency, memory usage.
- 3. **Full Traffic Cutover:** After 1–2 hours of stable metrics, switch all traffic to Node.js 22.
- 4. **Post-Deployment Verification:** Run smoke tests and check logs for anomalies.
+    ## 6. Phase 3: Merge & Monitor (Dev Environment)
+    1. **Merge Changes:** After CI validation, merge `chore/upgrade-node-22` into `main`.
+    2. **Dev Deploy:** Pull latest `main`, build and run locally or in a development environment.
+    3. **Smoke Tests:** Execute manual smoke tests and validate core functionality.
+    4. **Issue Monitoring:** Observe CI notifications and local logs for regressions.
 
  ## 7. Testing & Validation Checklist
  - [ ] Unit tests pass on Node.js 22
@@ -58,9 +58,9 @@
  ## 9. Timeline & Communication
  | Phase                  | Duration  | Owner         | Communication              |
  |------------------------|-----------|---------------|----------------------------|
- | Dev Validation         | 2 days    | Backend/Frontend Engineers | Slack #dev, PR comments  |
- | Staging Testing        | 1 day     | QA Team       | Email + Slack #release     |
- | Production Rollout     | 1 day     | DevOps Team   | Incident channel + Standup |
+    | Dev Validation         | 1 day     | Engineers     | Slack #dev, PR comments    |
+    | CI Pipeline Validation | 1 day     | Engineers/CI  | CI status, logs            |
+    | Merge & Monitor        | 0.5 day   | Engineers     | Slack #dev, CI alerts      |
 
  ## 10. Risks & Mitigations
  - **Dependency failures:** Pin known‑good versions; update failing deps.
