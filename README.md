@@ -93,10 +93,10 @@ Fluxori is built on a modern cloud-native architecture using Google Cloud Platfo
 
 ## Getting Started
 
-### Prerequisites
-
-- Node.js v18+
-- NPM v10+
+-### Prerequisites
+-
+- Node.js v22+
+- NPM v8+
 - Google Cloud SDK
 - Terraform CLI
 - Docker
