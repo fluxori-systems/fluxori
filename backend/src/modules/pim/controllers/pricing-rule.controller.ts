@@ -1,25 +1,32 @@
-import { 
-  Body, 
-  Controller, 
-  Delete, 
-  Get, 
-  HttpStatus, 
-  Param, 
-  Post, 
-  Put, 
-  Query, 
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpStatus,
+  Param,
+  Post,
+  Put,
+  Query,
   Req,
-  UseGuards
+  UseGuards,
 } from '@nestjs/common';
-import { ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiOperation,
+  ApiParam,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
+
 import { FirebaseAuthGuard } from '../../../common/auth/firebase-auth.guard';
-import { DynamicPricingService } from '../services/dynamic-pricing.service';
-import { 
-  PricingRule, 
-  PricingRuleOperation, 
+import {
+  PricingRule,
+  PricingRuleOperation,
   PricingRuleScheduleType,
-  PricingRuleExecutionStatus
+  PricingRuleExecutionStatus,
 } from '../models/pricing-rule.model';
+import { DynamicPricingService } from '../services/dynamic-pricing.service';
 
 /**
  * Controller for dynamic pricing rule operations
@@ -38,15 +45,26 @@ export class PricingRuleController {
    */
   @Post()
   @ApiOperation({ summary: 'Create a new pricing rule' })
-  @ApiResponse({ status: HttpStatus.CREATED, description: 'The pricing rule has been created' })
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: 'The pricing rule has been created',
+  })
   async createPricingRule(
-    @Body() body: Omit<PricingRule, 'id' | 'createdAt' | 'updatedAt' | 'recentExecutions' | 'executionStats'>,
+    @Body()
+    body: Omit<
+      PricingRule,
+      'id' | 'createdAt' | 'updatedAt' | 'recentExecutions' | 'executionStats'
+    >,
     @Req() req: any,
   ): Promise<PricingRule> {
     const userId = req.user.uid;
     const organizationId = req.user.organizationId;
 
-    return this.dynamicPricingService.createPricingRule(body, organizationId, userId);
+    return this.dynamicPricingService.createPricingRule(
+      body,
+      organizationId,
+      userId,
+    );
   }
 
   /**
@@ -58,16 +76,30 @@ export class PricingRuleController {
   @Put(':id')
   @ApiOperation({ summary: 'Update a pricing rule' })
   @ApiParam({ name: 'id', description: 'Pricing rule ID' })
-  @ApiResponse({ status: HttpStatus.OK, description: 'The pricing rule has been updated' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'The pricing rule has been updated',
+  })
   async updatePricingRule(
     @Param('id') id: string,
-    @Body() body: Partial<Omit<PricingRule, 'id' | 'createdAt' | 'updatedAt' | 'recentExecutions' | 'executionStats'>>,
+    @Body()
+    body: Partial<
+      Omit<
+        PricingRule,
+        'id' | 'createdAt' | 'updatedAt' | 'recentExecutions' | 'executionStats'
+      >
+    >,
     @Req() req: any,
   ): Promise<PricingRule> {
     const userId = req.user.uid;
     const organizationId = req.user.organizationId;
 
-    return this.dynamicPricingService.updatePricingRule(id, body, organizationId, userId);
+    return this.dynamicPricingService.updatePricingRule(
+      id,
+      body,
+      organizationId,
+      userId,
+    );
   }
 
   /**
@@ -78,7 +110,10 @@ export class PricingRuleController {
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a pricing rule' })
   @ApiParam({ name: 'id', description: 'Pricing rule ID' })
-  @ApiResponse({ status: HttpStatus.NO_CONTENT, description: 'The pricing rule has been deleted' })
+  @ApiResponse({
+    status: HttpStatus.NO_CONTENT,
+    description: 'The pricing rule has been deleted',
+  })
   async deletePricingRule(
     @Param('id') id: string,
     @Req() req: any,
@@ -96,14 +131,23 @@ export class PricingRuleController {
   @Get(':id')
   @ApiOperation({ summary: 'Get a pricing rule by ID' })
   @ApiParam({ name: 'id', description: 'Pricing rule ID' })
-  @ApiResponse({ status: HttpStatus.OK, description: 'The pricing rule has been found' })
-  @ApiResponse({ status: HttpStatus.NOT_FOUND, description: 'The pricing rule was not found' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'The pricing rule has been found',
+  })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: 'The pricing rule was not found',
+  })
   async getPricingRule(
     @Param('id') id: string,
     @Req() req: any,
   ): Promise<PricingRule> {
     const organizationId = req.user.organizationId;
-    const rule = await this.dynamicPricingService.getPricingRule(id, organizationId);
+    const rule = await this.dynamicPricingService.getPricingRule(
+      id,
+      organizationId,
+    );
 
     if (!rule) {
       throw new Error(`Pricing rule with ID ${id} not found`);
@@ -121,9 +165,21 @@ export class PricingRuleController {
    */
   @Get()
   @ApiOperation({ summary: 'Get all pricing rules' })
-  @ApiQuery({ name: 'isActive', required: false, description: 'Filter rules by active status' })
-  @ApiQuery({ name: 'limit', required: false, description: 'Maximum number of rules to return' })
-  @ApiQuery({ name: 'offset', required: false, description: 'Number of rules to skip' })
+  @ApiQuery({
+    name: 'isActive',
+    required: false,
+    description: 'Filter rules by active status',
+  })
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    description: 'Maximum number of rules to return',
+  })
+  @ApiQuery({
+    name: 'offset',
+    required: false,
+    description: 'Number of rules to skip',
+  })
   @ApiResponse({ status: HttpStatus.OK, description: 'List of pricing rules' })
   async getAllPricingRules(
     @Query('isActive') isActive?: string,
@@ -134,18 +190,14 @@ export class PricingRuleController {
     const organizationId = req.user.organizationId;
 
     // Parse isActive string to boolean if provided
-    const isActiveFilter = isActive !== undefined 
-      ? isActive.toLowerCase() === 'true'
-      : undefined;
+    const isActiveFilter =
+      isActive !== undefined ? isActive.toLowerCase() === 'true' : undefined;
 
-    return this.dynamicPricingService.getAllPricingRules(
-      organizationId,
-      {
-        isActive: isActiveFilter,
-        limit: limit ? Number(limit) : undefined,
-        offset: offset ? Number(offset) : undefined,
-      },
-    );
+    return this.dynamicPricingService.getAllPricingRules(organizationId, {
+      isActive: isActiveFilter,
+      limit: limit ? Number(limit) : undefined,
+      offset: offset ? Number(offset) : undefined,
+    });
   }
 
   /**
@@ -160,9 +212,20 @@ export class PricingRuleController {
   @ApiOperation({ summary: 'Calculate price for a product' })
   @ApiParam({ name: 'productId', description: 'Product ID' })
   @ApiQuery({ name: 'marketCode', required: false, description: 'Market code' })
-  @ApiQuery({ name: 'channelCode', required: false, description: 'Channel code' })
-  @ApiQuery({ name: 'currencyCode', required: false, description: 'Currency code' })
-  @ApiResponse({ status: HttpStatus.OK, description: 'Price calculation result' })
+  @ApiQuery({
+    name: 'channelCode',
+    required: false,
+    description: 'Channel code',
+  })
+  @ApiQuery({
+    name: 'currencyCode',
+    required: false,
+    description: 'Currency code',
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Price calculation result',
+  })
   async calculatePrice(
     @Param('productId') productId: string,
     @Query('marketCode') marketCode?: string,
@@ -190,9 +253,13 @@ export class PricingRuleController {
    */
   @Post('/calculate-batch')
   @ApiOperation({ summary: 'Calculate prices for multiple products' })
-  @ApiResponse({ status: HttpStatus.OK, description: 'Batch price calculation results' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Batch price calculation results',
+  })
   async calculateBatchPrices(
-    @Body() body: {
+    @Body()
+    body: {
       productIds: string[];
       updatePrices?: boolean;
       marketCode?: string;
@@ -227,8 +294,16 @@ export class PricingRuleController {
   @Post('/execute/:id')
   @ApiOperation({ summary: 'Execute a pricing rule' })
   @ApiParam({ name: 'id', description: 'Pricing rule ID' })
-  @ApiQuery({ name: 'dryRun', required: false, description: 'Whether to simulate execution without updating prices' })
-  @ApiQuery({ name: 'limit', required: false, description: 'Maximum number of products to process' })
+  @ApiQuery({
+    name: 'dryRun',
+    required: false,
+    description: 'Whether to simulate execution without updating prices',
+  })
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    description: 'Maximum number of products to process',
+  })
   @ApiResponse({ status: HttpStatus.OK, description: 'Rule execution results' })
   async executePricingRule(
     @Param('id') id: string,
@@ -240,17 +315,14 @@ export class PricingRuleController {
     const organizationId = req.user.organizationId;
 
     // Parse dryRun string to boolean
-    const isDryRun = dryRun !== undefined ? dryRun.toLowerCase() === 'true' : false;
+    const isDryRun =
+      dryRun !== undefined ? dryRun.toLowerCase() === 'true' : false;
 
-    return this.dynamicPricingService.executePricingRule(
-      id,
-      organizationId,
-      {
-        dryRun: isDryRun,
-        userId,
-        limit: limit ? Number(limit) : undefined,
-      },
-    );
+    return this.dynamicPricingService.executePricingRule(id, organizationId, {
+      dryRun: isDryRun,
+      userId,
+      limit: limit ? Number(limit) : undefined,
+    });
   }
 
   /**
@@ -258,7 +330,10 @@ export class PricingRuleController {
    */
   @Get('/operations')
   @ApiOperation({ summary: 'Get available pricing rule operations' })
-  @ApiResponse({ status: HttpStatus.OK, description: 'List of available operations' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'List of available operations',
+  })
   getPricingRuleOperations(): { operations: string[] } {
     return {
       operations: Object.values(PricingRuleOperation),
@@ -270,7 +345,10 @@ export class PricingRuleController {
    */
   @Get('/schedule-types')
   @ApiOperation({ summary: 'Get available pricing rule schedule types' })
-  @ApiResponse({ status: HttpStatus.OK, description: 'List of available schedule types' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'List of available schedule types',
+  })
   getPricingRuleScheduleTypes(): { scheduleTypes: string[] } {
     return {
       scheduleTypes: Object.values(PricingRuleScheduleType),
@@ -283,14 +361,12 @@ export class PricingRuleController {
   @Post('/schedule')
   @ApiOperation({ summary: 'Schedule pricing rules for execution' })
   @ApiResponse({ status: HttpStatus.OK, description: 'Schedule results' })
-  async schedulePricingRules(
-    @Req() req: any,
-  ): Promise<any> {
+  async schedulePricingRules(@Req() req: any): Promise<any> {
     const organizationId = req.user.organizationId;
-    
+
     // For security, this operation might require additional permissions
     // which would be checked in a real implementation
-    
+
     return this.dynamicPricingService.schedulePricingRules({
       organizationId,
     });
@@ -301,7 +377,10 @@ export class PricingRuleController {
    */
   @Get('/execution-statuses')
   @ApiOperation({ summary: 'Get rule execution statuses' })
-  @ApiResponse({ status: HttpStatus.OK, description: 'List of execution statuses' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'List of execution statuses',
+  })
   getRuleExecutionStatuses(): { statuses: string[] } {
     return {
       statuses: Object.values(PricingRuleExecutionStatus),

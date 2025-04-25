@@ -1,12 +1,12 @@
-import { Injectable, Logger } from "@nestjs/common";
+import { Injectable, Logger } from '@nestjs/common';
 
 import {
   FirestoreBaseRepository,
   FirestoreAdvancedFilter,
-} from "../../../common/repositories";
-import { FirestoreConfigService } from "../../../config/firestore.config";
-import { WarehouseType } from "../interfaces/types";
-import { Warehouse } from "../models/warehouse.schema";
+} from '../../../common/repositories';
+import { FirestoreConfigService } from '../../../config/firestore.config';
+import { WarehouseType } from '../interfaces/types';
+import { Warehouse } from '../models/warehouse.schema';
 
 /**
  * Repository for Warehouse entities
@@ -16,12 +16,12 @@ export class WarehouseRepository extends FirestoreBaseRepository<Warehouse> {
   protected readonly logger = new Logger(WarehouseRepository.name);
 
   constructor(firestoreConfigService: FirestoreConfigService) {
-    super(firestoreConfigService, "warehouses", {
+    super(firestoreConfigService, 'warehouses', {
       useSoftDeletes: true,
       useVersioning: true,
       enableCache: true,
       cacheTTLMs: 15 * 60 * 1000, // 15 minutes
-      requiredFields: ["organizationId", "name", "code", "type"],
+      requiredFields: ['organizationId', 'name', 'code', 'type'],
     });
   }
 
@@ -33,7 +33,7 @@ export class WarehouseRepository extends FirestoreBaseRepository<Warehouse> {
   async findByOrganization(organizationId: string): Promise<Warehouse[]> {
     return this.find({
       advancedFilters: [
-        { field: "organizationId", operator: "==", value: organizationId },
+        { field: 'organizationId', operator: '==', value: organizationId },
       ],
     });
   }
@@ -50,8 +50,8 @@ export class WarehouseRepository extends FirestoreBaseRepository<Warehouse> {
   ): Promise<Warehouse | null> {
     const results = await this.find({
       advancedFilters: [
-        { field: "organizationId", operator: "==", value: organizationId },
-        { field: "code", operator: "==", value: code },
+        { field: 'organizationId', operator: '==', value: organizationId },
+        { field: 'code', operator: '==', value: code },
       ],
     });
 
@@ -68,8 +68,8 @@ export class WarehouseRepository extends FirestoreBaseRepository<Warehouse> {
   ): Promise<Warehouse | null> {
     const results = await this.find({
       advancedFilters: [
-        { field: "organizationId", operator: "==", value: organizationId },
-        { field: "isDefault", operator: "==", value: true },
+        { field: 'organizationId', operator: '==', value: organizationId },
+        { field: 'isDefault', operator: '==', value: true },
       ],
     });
 
@@ -84,8 +84,8 @@ export class WarehouseRepository extends FirestoreBaseRepository<Warehouse> {
   async findActiveWarehouses(organizationId: string): Promise<Warehouse[]> {
     return this.find({
       advancedFilters: [
-        { field: "organizationId", operator: "==", value: organizationId },
-        { field: "isActive", operator: "==", value: true },
+        { field: 'organizationId', operator: '==', value: organizationId },
+        { field: 'isActive', operator: '==', value: true },
       ],
     });
   }
@@ -102,8 +102,8 @@ export class WarehouseRepository extends FirestoreBaseRepository<Warehouse> {
   ): Promise<Warehouse[]> {
     return this.find({
       advancedFilters: [
-        { field: "organizationId", operator: "==", value: organizationId },
-        { field: "type", operator: "==", value: type },
+        { field: 'organizationId', operator: '==', value: organizationId },
+        { field: 'type', operator: '==', value: type },
       ],
     });
   }
@@ -179,29 +179,29 @@ export class WarehouseRepository extends FirestoreBaseRepository<Warehouse> {
   }): Promise<Warehouse[]> {
     // Build advanced filters
     const advancedFilters: FirestoreAdvancedFilter<Warehouse>[] = [
-      { field: "organizationId", operator: "==", value: params.organizationId },
+      { field: 'organizationId', operator: '==', value: params.organizationId },
     ];
 
     if (params.type) {
       advancedFilters.push({
-        field: "type",
-        operator: "==",
+        field: 'type',
+        operator: '==',
         value: params.type,
       });
     }
 
     if (params.isActive !== undefined) {
       advancedFilters.push({
-        field: "isActive",
-        operator: "==",
+        field: 'isActive',
+        operator: '==',
         value: params.isActive,
       });
     }
 
     if (params.isDefault !== undefined) {
       advancedFilters.push({
-        field: "isDefault",
-        operator: "==",
+        field: 'isDefault',
+        operator: '==',
         value: params.isDefault,
       });
     }

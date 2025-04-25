@@ -1,4 +1,4 @@
-import { Logger } from "@nestjs/common";
+import { Logger } from '@nestjs/common';
 
 import {
   IMarketplaceAdapter,
@@ -15,7 +15,7 @@ import {
   OperationResult,
   ProductFilterOptions,
   OrderFilterOptions,
-} from "../interfaces";
+} from '../interfaces';
 
 /**
  * Abstract base class for marketplace adapters implementing common functionality
@@ -387,7 +387,7 @@ export abstract class BaseMarketplaceAdapter implements IMarketplaceAdapter {
    */
   protected handleError<T>(operation: string, error: any): OperationResult<T> {
     const errorMessage = error.message || String(error);
-    const errorCode = error.code || "UNKNOWN_ERROR";
+    const errorCode = error.code || 'UNKNOWN_ERROR';
 
     this.logger.error(
       `${operation} failed for ${this.marketplaceName}: ${errorMessage}`,

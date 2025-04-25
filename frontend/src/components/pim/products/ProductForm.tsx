@@ -1,9 +1,11 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+
 import { useRouter } from 'next/navigation';
-import { useNetworkStatus, useImageUpload } from '../../../hooks';
+
 import { api } from '../../../api/apiClient';
+import { useNetworkStatus, useImageUpload } from '../../../hooks';
 import { 
   Product, 
   ProductStatus, 

@@ -13,12 +13,12 @@ export {
   Public,
   AuthService,
   FirebaseAuthService,
-} from "src/modules/auth";
+} from 'src/modules/auth';
 
 // Re-export DTOs and interfaces
-export { LoginDto, RegisterDto } from "src/modules/auth";
+export { LoginDto, RegisterDto } from 'src/modules/auth';
 
-export { JwtPayload } from "src/modules/auth";
+export { JwtPayload } from 'src/modules/auth';
 
 /**
  * Firebase decoded token interface for improved type safety
@@ -43,7 +43,7 @@ export const AuthUtils = {
    * @returns True if user has admin role
    */
   isAdmin: (user: DecodedFirebaseToken): boolean => {
-    return user?.role === "admin";
+    return user?.role === 'admin';
   },
 
   /**

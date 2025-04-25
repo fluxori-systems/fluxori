@@ -3,17 +3,17 @@
 import React, { forwardRef, ReactNode, useRef, useState, useEffect, useCallback } from 'react';
 import type { ForwardRefExoticComponent, RefAttributes } from 'react';
 
-import { Tabs as MantineTabs } from '@mantine/core';
+import { Tabs as MantineTabs , useMantineTheme } from '@mantine/core';
+
+import { getColorFromMantine } from '../../design-system/utils/mantine-theme-adapter';
+import { useTokenTracking } from '../../design-system/utils/token-analysis';
 import { useCombinedRefs } from '../../shared/utils/ref-utils';
-import { BaseComponentProps, AnimatableComponentProps, Intent } from '../types';
 import { 
   useComponentAnimation, 
   useHoverAnimation 
 } from '../hooks/useComponentAnimation';
-import { useTokenTracking } from '../../design-system/utils/token-analysis';
-import { useMantineTheme } from '@mantine/core';
 import { useNetworkAware } from '../hooks/useConnection';
-import { getColorFromMantine } from '../../design-system/utils/mantine-theme-adapter';
+import { BaseComponentProps, AnimatableComponentProps, Intent } from '../types';
 
 export interface TabsProps extends BaseComponentProps, AnimatableComponentProps {
   /** Active tab value */

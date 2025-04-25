@@ -1,10 +1,10 @@
-import { Injectable, Logger, OnModuleInit } from "@nestjs/common";
+import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 
-import { FirestoreConfigService } from "src/config/firestore.config";
+import { FirestoreConfigService } from 'src/config/firestore.config';
 
-import { FirestoreBaseRepository } from "src/common/repositories";
+import { FirestoreBaseRepository } from 'src/common/repositories';
 
-import { AgentConversation, ConversationMessage } from "../interfaces/types";
+import { AgentConversation, ConversationMessage } from '../interfaces/types';
 
 /**
  * Repository for managing agent conversations
@@ -17,14 +17,14 @@ export class AgentConversationRepository
   protected readonly logger = new Logger(AgentConversationRepository.name);
 
   constructor(firestoreConfigService: FirestoreConfigService) {
-    super(firestoreConfigService, "agent_conversations");
+    super(firestoreConfigService, 'agent_conversations');
   }
 
   /**
    * Initialize the repository when module loads
    */
   onModuleInit(): void {
-    this.logger.log("AgentConversationRepository initialized");
+    this.logger.log('AgentConversationRepository initialized');
   }
 
   /**
@@ -39,12 +39,12 @@ export class AgentConversationRepository
   ): Promise<AgentConversation[]> {
     return this.find({
       advancedFilters: [
-        { field: "organizationId", operator: "==", value: organizationId },
-        { field: "isActive", operator: "==", value: true },
+        { field: 'organizationId', operator: '==', value: organizationId },
+        { field: 'isActive', operator: '==', value: true },
       ],
       queryOptions: {
-        orderBy: "lastActivityAt",
-        direction: "desc",
+        orderBy: 'lastActivityAt',
+        direction: 'desc',
         limit,
       },
     });
@@ -64,13 +64,13 @@ export class AgentConversationRepository
   ): Promise<AgentConversation[]> {
     return this.find({
       advancedFilters: [
-        { field: "organizationId", operator: "==", value: organizationId },
-        { field: "userId", operator: "==", value: userId },
-        { field: "isActive", operator: "==", value: true },
+        { field: 'organizationId', operator: '==', value: organizationId },
+        { field: 'userId', operator: '==', value: userId },
+        { field: 'isActive', operator: '==', value: true },
       ],
       queryOptions: {
-        orderBy: "lastActivityAt",
-        direction: "desc",
+        orderBy: 'lastActivityAt',
+        direction: 'desc',
         limit,
       },
     });
@@ -90,13 +90,13 @@ export class AgentConversationRepository
   ): Promise<AgentConversation[]> {
     return this.find({
       advancedFilters: [
-        { field: "organizationId", operator: "==", value: organizationId },
-        { field: "agentConfigId", operator: "==", value: agentConfigId },
-        { field: "isActive", operator: "==", value: true },
+        { field: 'organizationId', operator: '==', value: organizationId },
+        { field: 'agentConfigId', operator: '==', value: agentConfigId },
+        { field: 'isActive', operator: '==', value: true },
       ],
       queryOptions: {
-        orderBy: "lastActivityAt",
-        direction: "desc",
+        orderBy: 'lastActivityAt',
+        direction: 'desc',
         limit,
       },
     });

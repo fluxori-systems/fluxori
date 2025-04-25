@@ -1,7 +1,7 @@
 'use client';
 
-import { MotionMode, NetworkCondition, AnimationStrategyConfig, AnimationParams } from '../../shared/types/motion-types';
 import { ComplexityPreset, complexityPresets } from './motion-tokens';
+import { MotionMode, NetworkCondition, AnimationStrategyConfig, AnimationParams } from '../../shared/types/motion-types';
 
 /**
  * Animation strategy patterns for different animation requirements

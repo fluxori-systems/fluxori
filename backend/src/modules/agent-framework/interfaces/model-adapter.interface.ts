@@ -1,7 +1,7 @@
 /**
  * Interface definitions for the model adapter system
  */
-import { ModelRegistryEntry, AgentError } from "./types";
+import { ModelRegistryEntry, AgentError } from './types';
 
 /**
  * Common options for model generation
@@ -18,7 +18,7 @@ export interface ModelRequestOptions {
     description: string;
     parameters: Record<string, any>;
   }>;
-  functionCall?: "auto" | "none" | string;
+  functionCall?: 'auto' | 'none' | string;
 }
 
 /**
@@ -77,11 +77,11 @@ export interface ModelResponse {
   content: string;
   usage: ModelUsage;
   finishReason:
-    | "stop"
-    | "length"
-    | "function_call"
-    | "content_filter"
-    | "error";
+    | 'stop'
+    | 'length'
+    | 'function_call'
+    | 'content_filter'
+    | 'error';
   functionCall?: {
     name: string;
     arguments: Record<string, any>;

@@ -1,11 +1,11 @@
-import { Injectable, Logger, Inject } from "@nestjs/common";
+import { Injectable, Logger, Inject } from '@nestjs/common';
 
-import { MarketplaceAdapterFactory } from "./marketplace-adapter.factory";
-import { IMarketplaceAdapter } from "../interfaces/marketplace-adapter.interface";
-import { MarketplaceProduct } from "../interfaces/types";
-import { MarketplaceCredentialsRepository } from "../repositories/marketplace-credentials.repository";
-import { IProductService } from "../../../shared/interfaces/product.interface";
-import { PRODUCT_SERVICE_TOKEN } from "../../../shared/tokens";
+import { MarketplaceAdapterFactory } from './marketplace-adapter.factory';
+import { IProductService } from '../../../shared/interfaces/product.interface';
+import { PRODUCT_SERVICE_TOKEN } from '../../../shared/tokens';
+import { IMarketplaceAdapter } from '../interfaces/marketplace-adapter.interface';
+import { MarketplaceProduct } from '../interfaces/types';
+import { MarketplaceCredentialsRepository } from '../repositories/marketplace-credentials.repository';
 
 /**
  * Service for synchronizing data between inventory and marketplaces
@@ -17,7 +17,8 @@ export class MarketplaceSyncService {
   constructor(
     private readonly adapterFactory: MarketplaceAdapterFactory,
     private readonly credentialsRepository: MarketplaceCredentialsRepository,
-    @Inject(PRODUCT_SERVICE_TOKEN) private readonly productService: IProductService,
+    @Inject(PRODUCT_SERVICE_TOKEN)
+    private readonly productService: IProductService,
   ) {}
 
   /**
@@ -51,7 +52,7 @@ export class MarketplaceSyncService {
         );
         return {
           success: true,
-          message: "No marketplace credentials found",
+          message: 'No marketplace credentials found',
           results: {},
         };
       }
@@ -78,7 +79,7 @@ export class MarketplaceSyncService {
             success: stockUpdateResult.success,
             message: stockUpdateResult.success
               ? `Successfully updated stock for ${product.sku}`
-              : stockUpdateResult.error?.message || "Failed to update stock",
+              : stockUpdateResult.error?.message || 'Failed to update stock',
             details: stockUpdateResult.data,
           };
         } catch (error) {
@@ -96,7 +97,7 @@ export class MarketplaceSyncService {
 
       return {
         success: true,
-        message: "Inventory sync completed",
+        message: 'Inventory sync completed',
         results,
       };
     } catch (error) {
@@ -143,7 +144,7 @@ export class MarketplaceSyncService {
         );
         return {
           success: true,
-          message: "No marketplace credentials found",
+          message: 'No marketplace credentials found',
           results: {},
         };
       }
@@ -164,7 +165,7 @@ export class MarketplaceSyncService {
               sku: product.sku,
               price: product.pricing?.basePrice || 0,
               compareAtPrice: product.pricing?.salePrice,
-              currency: product.pricing?.currency || "ZAR", // Default to South African Rand
+              currency: product.pricing?.currency || 'ZAR', // Default to South African Rand
             },
           ]);
 
@@ -172,7 +173,7 @@ export class MarketplaceSyncService {
             success: priceUpdateResult.success,
             message: priceUpdateResult.success
               ? `Successfully updated price for ${product.sku}`
-              : priceUpdateResult.error?.message || "Failed to update price",
+              : priceUpdateResult.error?.message || 'Failed to update price',
             details: priceUpdateResult.data,
           };
         } catch (error) {
@@ -190,7 +191,7 @@ export class MarketplaceSyncService {
 
       return {
         success: true,
-        message: "Price sync completed",
+        message: 'Price sync completed',
         results,
       };
     } catch (error) {
@@ -233,7 +234,7 @@ export class MarketplaceSyncService {
 
       if (!result.success || !result.data) {
         throw new Error(
-          result.error?.message || "Failed to get product from marketplace",
+          result.error?.message || 'Failed to get product from marketplace',
         );
       }
 
@@ -276,13 +277,13 @@ export class MarketplaceSyncService {
   private convertMarketplaceProductToProduct(
     marketplaceProduct: MarketplaceProduct,
     organizationId: string,
-  ): Partial<import("../../../shared/interfaces/product.interface").IProduct> {
+  ): Partial<import('../../../shared/interfaces/product.interface').IProduct> {
     // This is a simplified conversion - in a real system, you'd have more complex mapping
     return {
       organizationId,
       sku: marketplaceProduct.sku,
       name: marketplaceProduct.name,
-      description: marketplaceProduct.description || "",
+      description: marketplaceProduct.description || '',
       pricing: {
         basePrice: marketplaceProduct.price,
         salePrice: marketplaceProduct.compareAtPrice,
@@ -291,7 +292,7 @@ export class MarketplaceSyncService {
       stockQuantity: marketplaceProduct.stockLevel,
       // These fields are only needed for the internal Product type
       // But we're converting to IProduct which doesn't require them
-      status: marketplaceProduct.status === "active" ? "ACTIVE" : "INACTIVE",
+      status: marketplaceProduct.status === 'active' ? 'ACTIVE' : 'INACTIVE',
       // Store the categories in metadata instead since they're not in IProduct
       metadata: {
         categories: marketplaceProduct.categories || [],
@@ -299,7 +300,7 @@ export class MarketplaceSyncService {
         marketplace: {
           id: marketplaceProduct.id,
           url: marketplaceProduct.marketplaceUrl,
-          platform: marketplaceProduct.marketplace || "unknown",
+          platform: marketplaceProduct.marketplace || 'unknown',
         },
       },
       externalIds: {

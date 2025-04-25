@@ -11,7 +11,7 @@ import {
   UseGuards,
   UnauthorizedException,
   ForbiddenException,
-} from "@nestjs/common";
+} from '@nestjs/common';
 
 import {
   CreateInsightDto,
@@ -19,14 +19,14 @@ import {
   QueryInsightsDto,
   InsightResponse,
   InsightStatus,
-} from "../interfaces/types";
-import { Insight } from "../models/insight.schema";
-import { InsightService } from "../services/insight.service";
+} from '../interfaces/types';
+import { Insight } from '../models/insight.schema';
+import { InsightService } from '../services/insight.service';
 
 /**
  * Controller for Insight endpoints
  */
-@Controller("api/insights")
+@Controller('api/insights')
 export class InsightController {
   private readonly logger = new Logger(InsightController.name);
 
@@ -50,8 +50,8 @@ export class InsightController {
    * @param id Insight ID
    * @returns Insight data
    */
-  @Get(":id")
-  async findById(@Param("id") id: string): Promise<InsightResponse> {
+  @Get(':id')
+  async findById(@Param('id') id: string): Promise<InsightResponse> {
     const insight = await this.insightService.findById(id);
     return this.mapToResponse(insight);
   }
@@ -66,7 +66,7 @@ export class InsightController {
     @Query() queryDto: QueryInsightsDto,
   ): Promise<InsightResponse[]> {
     if (!queryDto.organizationId) {
-      throw new ForbiddenException("Organization ID is required");
+      throw new ForbiddenException('Organization ID is required');
     }
 
     const insights = await this.insightService.findWithFilters(queryDto);
@@ -79,9 +79,9 @@ export class InsightController {
    * @param updateDto Update data
    * @returns Updated insight
    */
-  @Put(":id")
+  @Put(':id')
   async update(
-    @Param("id") id: string,
+    @Param('id') id: string,
     @Body() updateDto: UpdateInsightDto,
   ): Promise<InsightResponse> {
     const insight = await this.insightService.updateStatus(id, updateDto);
@@ -94,13 +94,13 @@ export class InsightController {
    * @param userId User ID in request body
    * @returns Updated insight
    */
-  @Put(":id/acknowledge")
+  @Put(':id/acknowledge')
   async acknowledge(
-    @Param("id") id: string,
-    @Body("userId") userId: string,
+    @Param('id') id: string,
+    @Body('userId') userId: string,
   ): Promise<InsightResponse> {
     if (!userId) {
-      throw new UnauthorizedException("User ID is required");
+      throw new UnauthorizedException('User ID is required');
     }
 
     const insight = await this.insightService.acknowledgeInsight(id, userId);
@@ -113,13 +113,13 @@ export class InsightController {
    * @param userId User ID in request body
    * @returns Updated insight
    */
-  @Put(":id/resolve")
+  @Put(':id/resolve')
   async resolve(
-    @Param("id") id: string,
-    @Body("userId") userId: string,
+    @Param('id') id: string,
+    @Body('userId') userId: string,
   ): Promise<InsightResponse> {
     if (!userId) {
-      throw new UnauthorizedException("User ID is required");
+      throw new UnauthorizedException('User ID is required');
     }
 
     const insight = await this.insightService.resolveInsight(id, userId);
@@ -132,13 +132,13 @@ export class InsightController {
    * @param userId User ID in request body
    * @returns Updated insight
    */
-  @Put(":id/dismiss")
+  @Put(':id/dismiss')
   async dismiss(
-    @Param("id") id: string,
-    @Body("userId") userId: string,
+    @Param('id') id: string,
+    @Body('userId') userId: string,
   ): Promise<InsightResponse> {
     if (!userId) {
-      throw new UnauthorizedException("User ID is required");
+      throw new UnauthorizedException('User ID is required');
     }
 
     const insight = await this.insightService.dismissInsight(id, userId);
@@ -150,8 +150,8 @@ export class InsightController {
    * @param id Insight ID
    * @returns Success indicator
    */
-  @Delete(":id")
-  async delete(@Param("id") id: string): Promise<{ success: boolean }> {
+  @Delete(':id')
+  async delete(@Param('id') id: string): Promise<{ success: boolean }> {
     await this.insightService.deleteInsight(id);
     return { success: true };
   }
@@ -161,9 +161,9 @@ export class InsightController {
    * @param organizationId Organization ID
    * @returns Counts by type
    */
-  @Get("organization/:organizationId/counts")
+  @Get('organization/:organizationId/counts')
   async getCounts(
-    @Param("organizationId") organizationId: string,
+    @Param('organizationId') organizationId: string,
   ): Promise<Record<string, number>> {
     return this.insightService.getInsightCounts(organizationId);
   }
@@ -173,9 +173,9 @@ export class InsightController {
    * @param organizationId Organization ID
    * @returns Count of deleted insights
    */
-  @Delete("organization/:organizationId/expired")
+  @Delete('organization/:organizationId/expired')
   async deleteExpired(
-    @Param("organizationId") organizationId: string,
+    @Param('organizationId') organizationId: string,
   ): Promise<{ count: number }> {
     const count =
       await this.insightService.cleanupExpiredInsights(organizationId);

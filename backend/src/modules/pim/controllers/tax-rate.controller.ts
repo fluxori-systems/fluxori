@@ -1,37 +1,38 @@
 /**
  * Tax Rate Controller
- * 
+ *
  * Controller for the Centralized Tax Rate Service
  */
 
-import { 
-  Controller, 
-  Get, 
-  Post, 
-  Put, 
-  Delete, 
-  Body, 
-  Param, 
+import {
+  Controller,
+  Get,
+  Post,
+  Put,
+  Delete,
+  Body,
+  Param,
   Query,
   UseGuards,
   HttpStatus,
   HttpException,
-  Logger
+  Logger,
 } from '@nestjs/common';
-import { TaxRateService } from '../services/tax-rate.service';
-import { 
-  TaxRateRequest, 
-  TaxRateSchedule, 
+
+import { GetUser } from '../../auth/decorators/get-user.decorator';
+import { FirebaseAuthGuard } from '../../auth/guards/firebase-auth.guard';
+import {
+  TaxRateRequest,
+  TaxRateSchedule,
   TaxJurisdiction,
   TaxType,
-  TaxRateResult
+  TaxRateResult,
 } from '../interfaces/tax-rate.interface';
-import { FirebaseAuthGuard } from '../../auth/guards/firebase-auth.guard';
-import { GetUser } from '../../auth/decorators/get-user.decorator';
+import { TaxRateService } from '../services/tax-rate.service';
 
 /**
  * Tax Rate Controller
- * 
+ *
  * API endpoints for the Centralized Tax Rate Service
  */
 @Controller('tax-rates')
@@ -41,33 +42,38 @@ export class TaxRateController {
 
   /**
    * Constructor
-   * 
+   *
    * @param taxRateService Tax rate service
    */
   constructor(private readonly taxRateService: TaxRateService) {}
 
   /**
    * Get current tax rate
-   * 
+   *
    * @param request Tax rate request parameters
    * @returns Tax rate result
    */
   @Post('current')
-  async getCurrentRate(@Body() request: TaxRateRequest): Promise<TaxRateResult> {
+  async getCurrentRate(
+    @Body() request: TaxRateRequest,
+  ): Promise<TaxRateResult> {
     try {
       return await this.taxRateService.getCurrentRate(request);
     } catch (error) {
-      this.logger.error(`Error getting current tax rate: ${error.message}`, error.stack);
+      this.logger.error(
+        `Error getting current tax rate: ${error.message}`,
+        error.stack,
+      );
       throw new HttpException(
         `Failed to get current tax rate: ${error.message}`,
-        HttpStatus.INTERNAL_SERVER_ERROR
+        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
 
   /**
    * Get tax rate at a specific date
-   * 
+   *
    * @param request Tax rate request parameters
    * @returns Tax rate result
    */
@@ -76,29 +82,32 @@ export class TaxRateController {
     if (!request.transactionDate) {
       throw new HttpException(
         'Transaction date is required',
-        HttpStatus.BAD_REQUEST
+        HttpStatus.BAD_REQUEST,
       );
     }
-    
+
     // Convert string date to Date if needed
     if (typeof request.transactionDate === 'string') {
       request.transactionDate = new Date(request.transactionDate);
     }
-    
+
     try {
       return await this.taxRateService.getRateAtDate(request);
     } catch (error) {
-      this.logger.error(`Error getting tax rate at date: ${error.message}`, error.stack);
+      this.logger.error(
+        `Error getting tax rate at date: ${error.message}`,
+        error.stack,
+      );
       throw new HttpException(
         `Failed to get tax rate at date: ${error.message}`,
-        HttpStatus.INTERNAL_SERVER_ERROR
+        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
 
   /**
    * Get all tax rates for a jurisdiction
-   * 
+   *
    * @param country Country code
    * @param region Optional region
    * @param city Optional city
@@ -110,32 +119,35 @@ export class TaxRateController {
     @Param('country') country: string,
     @Query('region') region?: string,
     @Query('city') city?: string,
-    @Query('includeHistory') includeHistory?: boolean
+    @Query('includeHistory') includeHistory?: boolean,
   ): Promise<TaxRateSchedule[]> {
     const jurisdiction: TaxJurisdiction = {
       country,
       region,
       city,
-      level: city ? 'city' : (region ? 'province' : 'country')
+      level: city ? 'city' : region ? 'province' : 'country',
     };
-    
+
     try {
       return await this.taxRateService.getAllRatesForJurisdiction(
         jurisdiction,
-        includeHistory
+        includeHistory,
       );
     } catch (error) {
-      this.logger.error(`Error getting rates for jurisdiction: ${error.message}`, error.stack);
+      this.logger.error(
+        `Error getting rates for jurisdiction: ${error.message}`,
+        error.stack,
+      );
       throw new HttpException(
         `Failed to get rates for jurisdiction: ${error.message}`,
-        HttpStatus.INTERNAL_SERVER_ERROR
+        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
 
   /**
    * Get tax rate changes for a jurisdiction and tax type
-   * 
+   *
    * @param country Country code
    * @param taxType Tax type
    * @param region Optional region
@@ -147,52 +159,57 @@ export class TaxRateController {
     @Param('country') country: string,
     @Param('taxType') taxType: string,
     @Query('region') region?: string,
-    @Query('city') city?: string
+    @Query('city') city?: string,
   ): Promise<TaxRateSchedule[]> {
     const jurisdiction: TaxJurisdiction = {
       country,
       region,
       city,
-      level: city ? 'city' : (region ? 'province' : 'country')
+      level: city ? 'city' : region ? 'province' : 'country',
     };
-    
+
     try {
-      return await this.taxRateService.getRateChanges(
-        jurisdiction,
-        taxType
-      );
+      return await this.taxRateService.getRateChanges(jurisdiction, taxType);
     } catch (error) {
-      this.logger.error(`Error getting rate changes: ${error.message}`, error.stack);
+      this.logger.error(
+        `Error getting rate changes: ${error.message}`,
+        error.stack,
+      );
       throw new HttpException(
         `Failed to get rate changes: ${error.message}`,
-        HttpStatus.INTERNAL_SERVER_ERROR
+        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
 
   /**
    * Check if a product is tax exempt
-   * 
+   *
    * @param request Tax rate request parameters with product info
    * @returns Boolean indicating if the product is tax exempt
    */
   @Post('is-exempt')
-  async isExempt(@Body() request: TaxRateRequest): Promise<{ exempt: boolean }> {
+  async isExempt(
+    @Body() request: TaxRateRequest,
+  ): Promise<{ exempt: boolean }> {
     try {
       const exempt = await this.taxRateService.isExempt(request);
       return { exempt };
     } catch (error) {
-      this.logger.error(`Error checking tax exemption: ${error.message}`, error.stack);
+      this.logger.error(
+        `Error checking tax exemption: ${error.message}`,
+        error.stack,
+      );
       throw new HttpException(
         `Failed to check tax exemption: ${error.message}`,
-        HttpStatus.INTERNAL_SERVER_ERROR
+        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
 
   /**
    * Get special rate product types for a jurisdiction
-   * 
+   *
    * @param country Country code
    * @param region Optional region
    * @param city Optional city
@@ -202,29 +219,32 @@ export class TaxRateController {
   async getSpecialRateProductTypes(
     @Param('country') country: string,
     @Query('region') region?: string,
-    @Query('city') city?: string
+    @Query('city') city?: string,
   ): Promise<Array<{ productType: string; rate: number; name: string }>> {
     const jurisdiction: TaxJurisdiction = {
       country,
       region,
       city,
-      level: city ? 'city' : (region ? 'province' : 'country')
+      level: city ? 'city' : region ? 'province' : 'country',
     };
-    
+
     try {
       return await this.taxRateService.getSpecialRateProductTypes(jurisdiction);
     } catch (error) {
-      this.logger.error(`Error getting special rate product types: ${error.message}`, error.stack);
+      this.logger.error(
+        `Error getting special rate product types: ${error.message}`,
+        error.stack,
+      );
       throw new HttpException(
         `Failed to get special rate product types: ${error.message}`,
-        HttpStatus.INTERNAL_SERVER_ERROR
+        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
 
   /**
    * Create a new tax rate schedule
-   * 
+   *
    * @param schedule Tax rate schedule to create
    * @param user Authenticated user
    * @returns Created tax rate schedule
@@ -232,28 +252,31 @@ export class TaxRateController {
   @Post()
   async createTaxRateSchedule(
     @Body() schedule: Omit<TaxRateSchedule, 'id' | 'createdAt' | 'updatedAt'>,
-    @GetUser() user: any
+    @GetUser() user: any,
   ): Promise<TaxRateSchedule> {
     // Add audit information
     const scheduleWithAudit = {
       ...schedule,
-      createdBy: user.uid
+      createdBy: user.uid,
     };
-    
+
     try {
       return await this.taxRateService.createTaxRateSchedule(scheduleWithAudit);
     } catch (error) {
-      this.logger.error(`Error creating tax rate schedule: ${error.message}`, error.stack);
+      this.logger.error(
+        `Error creating tax rate schedule: ${error.message}`,
+        error.stack,
+      );
       throw new HttpException(
         `Failed to create tax rate schedule: ${error.message}`,
-        HttpStatus.INTERNAL_SERVER_ERROR
+        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
 
   /**
    * Update a tax rate schedule
-   * 
+   *
    * @param id Schedule ID to update
    * @param updates Updates to apply
    * @param user Authenticated user
@@ -262,44 +285,54 @@ export class TaxRateController {
   @Put(':id')
   async updateTaxRateSchedule(
     @Param('id') id: string,
-    @Body() updates: Partial<Omit<TaxRateSchedule, 'id' | 'createdAt' | 'updatedAt'>>,
-    @GetUser() user: any
+    @Body()
+    updates: Partial<Omit<TaxRateSchedule, 'id' | 'createdAt' | 'updatedAt'>>,
+    @GetUser() user: any,
   ): Promise<TaxRateSchedule> {
     // Add audit information
     const updatesWithAudit = {
       ...updates,
-      updatedBy: user.uid
+      updatedBy: user.uid,
     };
-    
+
     try {
-      return await this.taxRateService.updateTaxRateSchedule(id, updatesWithAudit);
+      return await this.taxRateService.updateTaxRateSchedule(
+        id,
+        updatesWithAudit,
+      );
     } catch (error) {
-      this.logger.error(`Error updating tax rate schedule: ${error.message}`, error.stack);
+      this.logger.error(
+        `Error updating tax rate schedule: ${error.message}`,
+        error.stack,
+      );
       throw new HttpException(
         `Failed to update tax rate schedule: ${error.message}`,
-        HttpStatus.INTERNAL_SERVER_ERROR
+        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
 
   /**
    * Delete a tax rate schedule
-   * 
+   *
    * @param id Schedule ID to delete
    * @returns Success indicator
    */
   @Delete(':id')
   async deleteTaxRateSchedule(
-    @Param('id') id: string
+    @Param('id') id: string,
   ): Promise<{ success: boolean }> {
     try {
       const result = await this.taxRateService.deleteTaxRateSchedule(id);
       return { success: result };
     } catch (error) {
-      this.logger.error(`Error deleting tax rate schedule: ${error.message}`, error.stack);
+      this.logger.error(
+        `Error deleting tax rate schedule: ${error.message}`,
+        error.stack,
+      );
       throw new HttpException(
         `Failed to delete tax rate schedule: ${error.message}`,
-        HttpStatus.INTERNAL_SERVER_ERROR
+        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }

@@ -1,12 +1,14 @@
 'use client';
 
 import { useRef, useEffect, useState } from 'react';
+
 import { gsap } from 'gsap';
-import { useMotion } from '../context/MotionContext';
+
+import { useConnectionQuality } from './useConnectionQuality';
 import { useReducedMotion } from './useReducedMotion';
+import { useMotion } from '../context/MotionContext';
 import { applyComplexityToTween, initGSAP } from '../gsap/gsap-core';
 import { complexityPresets } from '../utils/motion-tokens';
-import { useConnectionQuality } from './useConnectionQuality';
 
 /**
  * Animation targets - either a React ref or a direct DOM element

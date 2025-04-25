@@ -1,14 +1,14 @@
-import { Injectable, Logger } from "@nestjs/common";
+import { Injectable, Logger } from '@nestjs/common';
 
-import { BuyBoxMonitoringService } from "./buybox-monitoring.service";
+import { BuyBoxMonitoringService } from './buybox-monitoring.service';
 import {
   PriceAdjustment,
   PricingRuleOperation,
   PricingRuleExecutionStatus,
   CompetitorPrice,
-} from "../interfaces/types";
-import { RepricingRule } from "../models/repricing-rule.schema";
-import { RepricingRuleRepository } from "../repositories/repricing-rule.repository";
+} from '../interfaces/types';
+import { RepricingRule } from '../models/repricing-rule.schema';
+import { RepricingRuleRepository } from '../repositories/repricing-rule.repository';
 
 /**
  * Service for managing and applying repricing rules
@@ -31,13 +31,13 @@ export class RepricingEngineService {
     this.logger.log(`Creating new repricing rule`);
     // Ensure organizationId is provided as it's required
     if (!ruleData.organizationId) {
-      throw new Error("organizationId is required");
+      throw new Error('organizationId is required');
     }
 
     // Cast to required type with organizationId explicitly present
     const data = ruleData as Omit<
       RepricingRule,
-      "id" | "createdAt" | "updatedAt"
+      'id' | 'createdAt' | 'updatedAt'
     >;
     return this.repricingRuleRepository.create(data);
   }
@@ -248,7 +248,7 @@ export class RepricingEngineService {
           adjustments.push({
             oldPrice: currentPrice,
             newPrice,
-            appliedRule: rule.id || "",
+            appliedRule: rule.id || '',
             appliedAt: new Date(),
             reason: `Applied rule: ${rule.name}`,
             marketplace: marketplaceId,
@@ -264,7 +264,7 @@ export class RepricingEngineService {
         adjustments.push({
           oldPrice: buyBoxStatus.currentPrice || 0,
           newPrice: buyBoxStatus.currentPrice || 0,
-          appliedRule: rule.id || "",
+          appliedRule: rule.id || '',
           appliedAt: new Date(),
           reason: `Error: ${error.message}`,
           marketplace: marketplaceId,

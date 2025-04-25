@@ -7,7 +7,7 @@
  */
 
 // Re-export module
-export { NotificationsModule } from "./notifications.module";
+export { NotificationsModule } from './notifications.module';
 
 // Re-export types and interfaces
 export {
@@ -21,11 +21,11 @@ export {
   QueryNotificationsDto,
   NotificationResponse,
   NotificationSettings,
-} from "./interfaces/types";
+} from './interfaces/types';
 
 export {
   INotificationDocument,
   INotificationSettingsDocument,
-} from "./interfaces/dependencies";
+} from './interfaces/dependencies';
 
 // Note: As the module is developed with services or repositories, they should be exported here.

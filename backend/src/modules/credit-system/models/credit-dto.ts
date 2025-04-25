@@ -1,4 +1,4 @@
-import { CreditModelType, CreditUsageType } from "../interfaces/types";
+import { CreditModelType, CreditUsageType } from '../interfaces/types';
 
 /**
  * DTOs for credit system API
@@ -117,72 +117,72 @@ export class RecordUsageDto {
    * Organization ID
    */
   organizationId: string;
-  
+
   /**
    * Optional user ID
    */
   userId?: string;
-  
+
   /**
    * Usage type
    */
   usageType: CreditUsageType;
-  
+
   /**
    * Model ID
    */
   modelId: string;
-  
+
   /**
    * Model provider
    */
   modelProvider: string;
-  
+
   /**
    * Input tokens
    */
   inputTokens: number;
-  
+
   /**
    * Output tokens
    */
   outputTokens: number;
-  
+
   /**
    * Optional processing time in milliseconds
    */
   processingTime?: number;
-  
+
   /**
    * Optional operation ID
    */
   operationId?: string;
-  
+
   /**
    * Optional reservation ID
    */
   reservationId?: string;
-  
+
   /**
    * Optional resource ID
    */
   resourceId?: string;
-  
+
   /**
    * Optional resource type
    */
   resourceType?: string;
-  
+
   /**
    * Whether the operation was successful
    */
   success: boolean;
-  
+
   /**
    * Optional error message
    */
   errorMessage?: string;
-  
+
   /**
    * Optional metadata
    */
@@ -197,17 +197,17 @@ export class OptimizeModelDto {
    * Organization ID
    */
   organizationId: string;
-  
+
   /**
    * User prompt for token estimation
    */
   userPrompt: string;
-  
+
   /**
    * Task complexity level
    */
-  taskComplexity: "simple" | "standard" | "complex";
-  
+  taskComplexity: 'simple' | 'standard' | 'complex';
+
   /**
    * Optional preferred model
    */

@@ -1,4 +1,4 @@
-import { MarketplaceOrder, Order } from "./types";
+import { MarketplaceOrder, Order } from './types';
 
 /**
  * Interface for mapping marketplace orders to our internal format

@@ -7,7 +7,7 @@
  */
 
 // Re-export module
-export { ScheduledTasksModule } from "./scheduled-tasks.module";
+export { ScheduledTasksModule } from './scheduled-tasks.module';
 
 // Note: This module is currently a stub.
 // As the module is developed with services or task definitions, they should be exported here.

@@ -1,7 +1,7 @@
-import * as crypto from "crypto";
+import * as crypto from 'crypto';
 
-import { Injectable, Logger } from "@nestjs/common";
-import { ConfigService } from "@nestjs/config";
+import { Injectable, Logger } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 
 /**
  * Service Authentication Utilities
@@ -14,19 +14,19 @@ export class ServiceAuthUtils {
   private readonly logger = new Logger(ServiceAuthUtils.name);
   private readonly isEnabled: boolean;
   private readonly secret: string;
-  private readonly algorithm = "sha256";
+  private readonly algorithm = 'sha256';
   private readonly tokenTTLMinutes = 30; // Default token validity period
 
   constructor(private readonly configService: ConfigService) {
     this.isEnabled = this.configService.get<boolean>(
-      "SERVICE_AUTH_ENABLED",
+      'SERVICE_AUTH_ENABLED',
       false,
     );
-    this.secret = this.configService.get<string>("SERVICE_AUTH_SECRET", "");
+    this.secret = this.configService.get<string>('SERVICE_AUTH_SECRET', '');
 
     if (this.isEnabled && !this.secret) {
       this.logger.warn(
-        "Service authentication is enabled but no secret is provided!",
+        'Service authentication is enabled but no secret is provided!',
       );
     }
   }
@@ -44,12 +44,12 @@ export class ServiceAuthUtils {
     expiresInMinutes: number = this.tokenTTLMinutes,
   ): string {
     if (!this.isEnabled) {
-      return "";
+      return '';
     }
 
     if (!this.secret) {
-      this.logger.warn("Cannot generate service token: no secret provided");
-      return "";
+      this.logger.warn('Cannot generate service token: no secret provided');
+      return '';
     }
 
     try {
@@ -69,13 +69,13 @@ export class ServiceAuthUtils {
       const payloadStr = JSON.stringify(payload);
 
       // Base64 encode the payload
-      const payloadBase64 = Buffer.from(payloadStr).toString("base64");
+      const payloadBase64 = Buffer.from(payloadStr).toString('base64');
 
       // Create signature
       const signature = crypto
         .createHmac(this.algorithm, this.secret)
         .update(payloadBase64)
-        .digest("base64");
+        .digest('base64');
 
       // Combine payload and signature
       return `${payloadBase64}.${signature}`;
@@ -84,7 +84,7 @@ export class ServiceAuthUtils {
         `Error generating service token: ${error.message}`,
         error.stack,
       );
-      return "";
+      return '';
     }
   }
 
@@ -99,49 +99,49 @@ export class ServiceAuthUtils {
     targetPath: string,
   ): { valid: boolean; service?: string; error?: string } {
     if (!this.isEnabled) {
-      return { valid: true, service: "auth-disabled" };
+      return { valid: true, service: 'auth-disabled' };
     }
 
     if (!token) {
-      return { valid: false, error: "No authentication token provided" };
+      return { valid: false, error: 'No authentication token provided' };
     }
 
     if (!this.secret) {
-      this.logger.warn("Cannot validate service token: no secret provided");
-      return { valid: false, error: "Authentication configuration error" };
+      this.logger.warn('Cannot validate service token: no secret provided');
+      return { valid: false, error: 'Authentication configuration error' };
     }
 
     try {
       // Split token into payload and signature
-      const [payloadBase64, receivedSignature] = token.split(".");
+      const [payloadBase64, receivedSignature] = token.split('.');
 
       if (!payloadBase64 || !receivedSignature) {
-        return { valid: false, error: "Invalid token format" };
+        return { valid: false, error: 'Invalid token format' };
       }
 
       // Verify signature
       const expectedSignature = crypto
         .createHmac(this.algorithm, this.secret)
         .update(payloadBase64)
-        .digest("base64");
+        .digest('base64');
 
       if (receivedSignature !== expectedSignature) {
-        return { valid: false, error: "Invalid token signature" };
+        return { valid: false, error: 'Invalid token signature' };
       }
 
       // Decode and parse payload
-      const payloadStr = Buffer.from(payloadBase64, "base64").toString("utf8");
+      const payloadStr = Buffer.from(payloadBase64, 'base64').toString('utf8');
       const payload = JSON.parse(payloadStr);
 
       // Verify expiration
       const now = Math.floor(Date.now() / 1000);
       if (payload.exp < now) {
-        return { valid: false, error: "Token expired" };
+        return { valid: false, error: 'Token expired' };
       }
 
       // Verify target path if provided
       if (targetPath && payload.target !== targetPath) {
-        return { valid: false, error: "Token not valid for this resource" };
+        return { valid: false, error: 'Token not valid for this resource' };
       }
 
       return { valid: true, service: payload.service };
@@ -150,7 +150,7 @@ export class ServiceAuthUtils {
         `Error validating service token: ${error.message}`,
         error.stack,
       );
-      return { valid: false, error: "Token validation error" };
+      return { valid: false, error: 'Token validation error' };
     }
   }
 

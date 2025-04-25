@@ -1,10 +1,11 @@
 'use client';
 
 import React, { ReactNode } from 'react';
+
 import { MotionProvider } from '../lib/motion/context/MotionContext';
-import { ServiceProvider } from '../lib/shared/providers/service-provider';
 import { defaultAnimationService } from '../lib/motion/services/animation-service.impl';
 import { defaultConnectionService } from '../lib/motion/services/connection-service.impl';
+import { ServiceProvider } from '../lib/shared/providers/service-provider';
 import { registerAnimationService, registerConnectionService } from '../lib/shared/services/service-registry';
 
 // Register service implementations

@@ -1,21 +1,21 @@
-import { Module } from "@nestjs/common";
-import { ConfigModule } from "@nestjs/config";
+import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 
 // Configuration
 
 // Controllers
-import { DocumentController } from "./controllers/document.controller";
-import { EmbeddingProviderController } from "./controllers/embedding-provider.controller";
+import { DocumentController } from './controllers/document.controller';
+import { EmbeddingProviderController } from './controllers/embedding-provider.controller';
 
 // Services
-import { DocumentRepository } from "./repositories/document.repository";
-import { EmbeddingProviderRepository } from "./repositories/embedding-provider.repository";
-import { DocumentChunkingService } from "./services/document-chunking.service";
-import { DocumentService } from "./services/document.service";
-import { EmbeddingService } from "./services/embedding.service";
+import { DocumentRepository } from './repositories/document.repository';
+import { EmbeddingProviderRepository } from './repositories/embedding-provider.repository';
+import { DocumentChunkingService } from './services/document-chunking.service';
+import { DocumentService } from './services/document.service';
+import { EmbeddingService } from './services/embedding.service';
 
 // Repositories
-import { FirestoreConfigService } from "../../config/firestore.config";
+import { FirestoreConfigService } from '../../config/firestore.config';
 
 /**
  * RAG Retrieval Module

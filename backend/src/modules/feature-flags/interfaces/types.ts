@@ -1,28 +1,28 @@
 /**
  * Types for the Feature Flags module
  */
-import { FirestoreEntity } from "../../../types/google-cloud.types";
+import { FirestoreEntity } from '../../../types/google-cloud.types';
 
 /**
  * Feature flag types
  */
 export enum FeatureFlagType {
-  BOOLEAN = "boolean",
-  PERCENTAGE = "percentage",
-  USER_TARGETED = "user_targeted",
-  ORGANIZATION_TARGETED = "organization_targeted",
-  ENVIRONMENT_TARGETED = "environment_targeted",
-  SCHEDULED = "scheduled",
+  BOOLEAN = 'boolean',
+  PERCENTAGE = 'percentage',
+  USER_TARGETED = 'user_targeted',
+  ORGANIZATION_TARGETED = 'organization_targeted',
+  ENVIRONMENT_TARGETED = 'environment_targeted',
+  SCHEDULED = 'scheduled',
 }
 
 /**
  * Environment types for environment-specific flags
  */
 export enum Environment {
-  DEVELOPMENT = "development",
-  STAGING = "staging",
-  PRODUCTION = "production",
-  ALL = "all",
+  DEVELOPMENT = 'development',
+  STAGING = 'staging',
+  PRODUCTION = 'production',
+  ALL = 'all',
 }
 
 /**
@@ -50,7 +50,7 @@ export interface ScheduleConfig {
   endDate?: Date;
   timeZone?: string;
   recurrence?: {
-    type: "once" | "daily" | "weekly" | "monthly";
+    type: 'once' | 'daily' | 'weekly' | 'monthly';
     daysOfWeek?: number[]; // 0-6 for Sunday-Saturday
     timeRanges?: Array<{
       startTime: string; // HH:MM format
@@ -104,7 +104,7 @@ export interface FeatureFlag extends FirestoreEntity {
 export interface FeatureFlagAuditLog extends FirestoreEntity {
   flagId: string;
   flagKey: string;
-  action: "created" | "updated" | "deleted" | "toggled";
+  action: 'created' | 'updated' | 'deleted' | 'toggled';
   performedBy: string;
   timestamp: Date;
   changes: {
@@ -136,7 +136,7 @@ export interface FlagEvaluationContext {
 export interface FlagEvaluationResult {
   flagKey: string;
   enabled: boolean;
-  source: "evaluation" | "default" | "override" | "error";
+  source: 'evaluation' | 'default' | 'override' | 'error';
   timestamp: Date;
   reason?: string;
   metadata?: Record<string, any>;
@@ -172,12 +172,12 @@ export interface FeatureFlagToggleDTO {
  * Error types for feature flag operations
  */
 export enum FeatureFlagErrorType {
-  VALIDATION_ERROR = "validation_error",
-  NOT_FOUND = "not_found",
-  DUPLICATE_KEY = "duplicate_key",
-  EVALUATION_ERROR = "evaluation_error",
-  PERMISSION_DENIED = "permission_denied",
-  INTERNAL_ERROR = "internal_error",
+  VALIDATION_ERROR = 'validation_error',
+  NOT_FOUND = 'not_found',
+  DUPLICATE_KEY = 'duplicate_key',
+  EVALUATION_ERROR = 'evaluation_error',
+  PERMISSION_DENIED = 'permission_denied',
+  INTERNAL_ERROR = 'internal_error',
 }
 
 /**

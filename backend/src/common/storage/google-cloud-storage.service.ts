@@ -1,9 +1,9 @@
-import { Injectable, Logger } from "@nestjs/common";
-import { ConfigService } from "@nestjs/config";
+import { Injectable, Logger } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 
-import { Storage, GetSignedUrlConfig } from "@google-cloud/storage";
+import { Storage, GetSignedUrlConfig } from '@google-cloud/storage';
 
-import { StorageService, StorageFile } from "./storage.interface";
+import { StorageService, StorageFile } from './storage.interface';
 
 /**
  * Google Cloud Storage implementation of StorageService
@@ -19,12 +19,12 @@ export class GoogleCloudStorageService implements StorageService {
     // Initialize GCS with application default credentials
     // or explicit credentials if provided
     this.storage = new Storage({
-      projectId: this.configService.get<string>("GCP_PROJECT_ID"),
-      keyFilename: this.configService.get<string>("GCP_KEY_FILE"),
+      projectId: this.configService.get<string>('GCP_PROJECT_ID'),
+      keyFilename: this.configService.get<string>('GCP_KEY_FILE'),
     });
 
     this.bucketName =
-      this.configService.get<string>("GCS_BUCKET_NAME") || "fluxori-uploads";
+      this.configService.get<string>('GCS_BUCKET_NAME') || 'fluxori-uploads';
   }
 
   /**
@@ -81,7 +81,7 @@ export class GoogleCloudStorageService implements StorageService {
       const { fileName, contentType, expiresInMinutes, metadata } = options;
 
       if (!fileName) {
-        throw new Error("File name is undefined or empty");
+        throw new Error('File name is undefined or empty');
       }
 
       // Create a policy for the signed URL
@@ -97,13 +97,15 @@ export class GoogleCloudStorageService implements StorageService {
 
       // Create signed URL with V4 signature
       const [url] = await file.getSignedUrl({
-        version: "v4",
-        action: "write",
+        version: 'v4',
+        action: 'write',
         expires: expiration,
         contentType,
         extensionHeaders: {
-          "x-goog-meta-uploadedBy": String(metadata?.uploadedBy || "anonymous"),
-          "x-goog-meta-organizationId": String(metadata?.organizationId || "unknown"),
+          'x-goog-meta-uploadedBy': String(metadata?.uploadedBy || 'anonymous'),
+          'x-goog-meta-organizationId': String(
+            metadata?.organizationId || 'unknown',
+          ),
           ...Object.entries(metadata || {}).reduce(
             (acc, [key, value]) => {
               acc[`x-goog-meta-${key}`] = value;
@@ -118,7 +120,7 @@ export class GoogleCloudStorageService implements StorageService {
       return {
         url,
         fields: {
-          "Content-Type": contentType,
+          'Content-Type': contentType,
           ...(metadata || {}),
         },
       };
@@ -140,7 +142,7 @@ export class GoogleCloudStorageService implements StorageService {
   ): Promise<string> {
     try {
       if (!filePath) {
-        throw new Error("File path is undefined or empty");
+        throw new Error('File path is undefined or empty');
       }
 
       const bucket = this.storage.bucket(this.bucketName);
@@ -158,8 +160,8 @@ export class GoogleCloudStorageService implements StorageService {
 
       // Generate signed URL
       const [url] = await file.getSignedUrl({
-        version: "v4",
-        action: "read",
+        version: 'v4',
+        action: 'read',
         expires: expiration,
       });
 
@@ -179,7 +181,7 @@ export class GoogleCloudStorageService implements StorageService {
   async deleteFile(filePath: string): Promise<void> {
     try {
       if (!filePath) {
-        this.logger.warn("File path is undefined or empty, skipping deletion");
+        this.logger.warn('File path is undefined or empty, skipping deletion');
         return;
       }
 
@@ -233,7 +235,7 @@ export class GoogleCloudStorageService implements StorageService {
           try {
             // Get file metadata
             const [metadata] = await file.getMetadata();
-            
+
             // Get basic file information
             return {
               id: file.name,
@@ -245,8 +247,10 @@ export class GoogleCloudStorageService implements StorageService {
               metadata: metadata.metadata || {},
             };
           } catch (metadataError) {
-            this.logger.warn(`Error getting metadata for file ${file.name}: ${metadataError.message}`);
-            
+            this.logger.warn(
+              `Error getting metadata for file ${file.name}: ${metadataError.message}`,
+            );
+
             // Return basic file information if metadata retrieval fails
             return {
               id: file.name,
@@ -258,7 +262,7 @@ export class GoogleCloudStorageService implements StorageService {
               metadata: {},
             };
           }
-        })
+        }),
       );
 
       return storageFiles;
@@ -274,7 +278,7 @@ export class GoogleCloudStorageService implements StorageService {
   async getFile(filePath: string): Promise<Buffer> {
     try {
       if (!filePath) {
-        throw new Error("File path is undefined or empty");
+        throw new Error('File path is undefined or empty');
       }
 
       const bucket = this.storage.bucket(this.bucketName);

@@ -1,6 +1,7 @@
 'use client';
 
 import { useTheme } from '../theme/ThemeContext';
+import { FontSizeScale, SpacingScale, RadiusScale, ShadowScale } from '../types/tokens';
 import { 
   getColor, 
   getFontSize, 
@@ -9,7 +10,6 @@ import {
   getShadow,
   fluidFontSize
 } from '../utils/tokens';
-import { FontSizeScale, SpacingScale, RadiusScale, ShadowScale } from '../types/tokens';
 
 /**
  * Hook that provides easy access to design tokens 

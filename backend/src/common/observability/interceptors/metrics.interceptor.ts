@@ -5,23 +5,23 @@ import {
   CallHandler,
   Inject,
   Optional,
-} from "@nestjs/common";
+} from '@nestjs/common';
 
-import { Request, Response } from "express";
-import { Observable } from "rxjs";
-import { tap } from "rxjs/operators";
+import { Request, Response } from 'express';
+import { Observable } from 'rxjs';
+import { tap } from 'rxjs/operators';
 
 // Import services
 import {
   METRIC_NAMES,
   SA_PERFORMANCE_THRESHOLDS,
-} from "../constants/observability.constants";
+} from '../constants/observability.constants';
 import {
   ObservabilityModuleOptions,
   DEFAULT_OBSERVABILITY_OPTIONS,
-} from "../interfaces/observability-options.interface";
-import { MetricsService } from "../services/metrics.service";
-import { ObservabilityService } from "../services/observability.service";
+} from '../interfaces/observability-options.interface';
+import { MetricsService } from '../services/metrics.service';
+import { ObservabilityService } from '../services/observability.service';
 
 // Import interfaces
 
@@ -39,14 +39,14 @@ export class MetricsInterceptor implements NestInterceptor {
     private readonly metrics: MetricsService,
     private readonly observability: ObservabilityService,
     @Optional()
-    @Inject("OBSERVABILITY_OPTIONS")
+    @Inject('OBSERVABILITY_OPTIONS')
     private readonly options?: ObservabilityModuleOptions,
   ) {
     // Apply options with defaults
     const mergedOptions = { ...DEFAULT_OBSERVABILITY_OPTIONS, ...options };
     const metricsOptions = mergedOptions.metrics || {};
 
-    this.metricPrefix = metricsOptions.metricPrefix || "fluxori.";
+    this.metricPrefix = metricsOptions.metricPrefix || 'fluxori.';
   }
 
   /**
@@ -54,7 +54,7 @@ export class MetricsInterceptor implements NestInterceptor {
    */
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     // Only apply to HTTP requests
-    if (context.getType() !== "http") {
+    if (context.getType() !== 'http') {
       return next.handle();
     }
 
@@ -96,7 +96,7 @@ export class MetricsInterceptor implements NestInterceptor {
           );
 
           // Track response size when available
-          const contentLength = response.get("content-length");
+          const contentLength = response.get('content-length');
           if (contentLength) {
             const size = parseInt(contentLength, 10);
             this.metrics.recordDistribution(
@@ -147,11 +147,11 @@ export class MetricsInterceptor implements NestInterceptor {
     // Replace UUIDs
     path = path.replace(
       /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/gi,
-      ":id",
+      ':id',
     );
 
     // Replace numeric IDs
-    path = path.replace(/\/(\d+)(?:\/|$)/g, "/:id$1");
+    path = path.replace(/\/(\d+)(?:\/|$)/g, '/:id$1');
 
     return path;
   }
@@ -161,7 +161,7 @@ export class MetricsInterceptor implements NestInterceptor {
    */
   private getPathGroup(path: string): string {
     const match = path.match(this.pathGroupPattern);
-    return match ? match[1] : "other";
+    return match ? match[1] : 'other';
   }
 
   /**
@@ -188,13 +188,13 @@ export class MetricsInterceptor implements NestInterceptor {
         this.metrics.recordGauge(
           METRIC_NAMES.MEMORY_USAGE,
           Math.round(memoryUsage.rss / (1024 * 1024)), // Convert to MB
-          { type: "rss" },
+          { type: 'rss' },
         );
 
         this.metrics.recordGauge(
           METRIC_NAMES.MEMORY_USAGE,
           Math.round(memoryUsage.heapUsed / (1024 * 1024)), // Convert to MB
-          { type: "heapUsed" },
+          { type: 'heapUsed' },
         );
       } catch (error) {
         // Ignore memory metric errors

@@ -1,12 +1,13 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+
+import { useService } from '../../shared/providers/service-provider';
 import {
   IConnectionService,
   ConnectionQualityResult
 } from '../../shared/services/connection-service.interface';
 import { SERVICE_KEYS } from '../../shared/services/service-registry';
-import { useService } from '../../shared/providers/service-provider';
 
 /**
  * Safely get the connection service, either from context or a fallback

@@ -1,6 +1,6 @@
 /**
  * B2B Models
- * 
+ *
  * This module exports all B2B-related models for the Advanced B2B Support feature.
  */
 

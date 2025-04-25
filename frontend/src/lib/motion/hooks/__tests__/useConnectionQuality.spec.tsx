@@ -3,10 +3,12 @@ import '@testing-library/jest-dom';
 'use client';
 
 import React from 'react';
+
 import { describe, test, expect, vi, beforeEach } from 'vitest';
+
+import { setupNetworkConditions } from '../../../../testing/utils/networkTesting';
 import { renderHook } from '../../../../testing/utils/render';
 import { useConnectionQuality } from '../useConnectionQuality';
-import { setupNetworkConditions } from '../../../../testing/utils/networkTesting';
 
 // Force mock the hook to avoid using actual implementation
 vi.mock('../useConnectionQuality', () => ({

@@ -4,14 +4,14 @@ import {
   Body,
   Logger,
   ForbiddenException,
-} from "@nestjs/common";
+} from '@nestjs/common';
 
-import { AIAnalysisResult } from "../interfaces/types";
-import { CreditSystemService } from "../services/credit-system.service";
+import { AIAnalysisResult } from '../interfaces/types';
+import { CreditSystemService } from '../services/credit-system.service';
 import {
   InsightGenerationService,
   GenerateInsightsRequest,
-} from "../services/insight-generation.service";
+} from '../services/insight-generation.service';
 
 /**
  * DTO for checking credit balance
@@ -23,7 +23,7 @@ interface CheckBalanceDto {
 /**
  * Controller for insight generation endpoints
  */
-@Controller("api/insight-generation")
+@Controller('api/insight-generation')
 export class InsightGenerationController {
   private readonly logger = new Logger(InsightGenerationController.name);
 
@@ -37,12 +37,12 @@ export class InsightGenerationController {
    * @param request Generation request
    * @returns Analysis result
    */
-  @Post("generate")
+  @Post('generate')
   async generateInsights(
     @Body() request: GenerateInsightsRequest,
   ): Promise<AIAnalysisResult> {
     if (!request.organizationId || !request.userId) {
-      throw new ForbiddenException("Organization ID and User ID are required");
+      throw new ForbiddenException('Organization ID and User ID are required');
     }
 
     return this.insightGenerationService.generateInsights(request);
@@ -53,12 +53,12 @@ export class InsightGenerationController {
    * @param checkBalanceDto Organization ID
    * @returns Current balance
    */
-  @Post("check-credits")
+  @Post('check-credits')
   async checkBalance(
     @Body() checkBalanceDto: CheckBalanceDto,
   ): Promise<{ balance: number }> {
     if (!checkBalanceDto.organizationId) {
-      throw new ForbiddenException("Organization ID is required");
+      throw new ForbiddenException('Organization ID is required');
     }
 
     const balance = await this.creditService.getBalance(
@@ -73,7 +73,7 @@ export class InsightGenerationController {
    * @param checkBalanceDto Organization ID
    * @returns Credit details
    */
-  @Post("credit-details")
+  @Post('credit-details')
   async getCreditDetails(@Body() checkBalanceDto: CheckBalanceDto): Promise<{
     balance: number;
     lifetimeCredits: number;
@@ -81,7 +81,7 @@ export class InsightGenerationController {
     lastUpdated: Date;
   }> {
     if (!checkBalanceDto.organizationId) {
-      throw new ForbiddenException("Organization ID is required");
+      throw new ForbiddenException('Organization ID is required');
     }
 
     const details = await this.creditService.getBalanceDetails(
@@ -113,12 +113,12 @@ export class InsightGenerationController {
    * @param checkBalanceDto Organization ID
    * @returns Recent transactions
    */
-  @Post("recent-transactions")
+  @Post('recent-transactions')
   async getRecentTransactions(
     @Body() checkBalanceDto: CheckBalanceDto,
   ): Promise<{ transactions: any[] }> {
     if (!checkBalanceDto.organizationId) {
-      throw new ForbiddenException("Organization ID is required");
+      throw new ForbiddenException('Organization ID is required');
     }
 
     const transactions = await this.creditService.getRecentTransactions(

@@ -1,10 +1,6 @@
 'use client';
 
-import { 
-  PerformanceMetric, 
-  IPerformanceMonitoringService,
-  DeviceCapabilities 
-} from '../../types/performance';
+import { defaultPerformanceMonitoringService } from './performance-monitoring.service';
 import { 
   DeviceProfile, 
   NetworkProfile, 
@@ -13,7 +9,11 @@ import {
   southAfricanDeviceProfiles,
   southAfricanNetworkProfiles 
 } from '../../data/device-profiles';
-import { defaultPerformanceMonitoringService } from './performance-monitoring.service';
+import { 
+  PerformanceMetric, 
+  IPerformanceMonitoringService,
+  DeviceCapabilities 
+} from '../../types/performance';
 
 /**
  * Configuration options for performance analytics

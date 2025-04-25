@@ -11,7 +11,7 @@ import { Observable } from 'rxjs';
 export interface SecurityPolicyConfig {
   /** Maximum allowed concurrent requests per IP */
   maxConcurrentRequests?: number;
-  
+
   /** Rate limiting configuration */
   rateLimit?: {
     /** Number of requests per time window */
@@ -21,7 +21,7 @@ export interface SecurityPolicyConfig {
     /** Skip rate limiting for these IPs */
     skipIps?: string[];
   };
-  
+
   /** Content security policy configuration */
   csp?: {
     /** Whether to report only (vs enforce) */
@@ -29,7 +29,7 @@ export interface SecurityPolicyConfig {
     /** CSP directives */
     directives: Record<string, string[]>;
   };
-  
+
   /** CORS configuration */
   cors?: {
     /** Allowed origins */
@@ -43,7 +43,7 @@ export interface SecurityPolicyConfig {
     /** Max age of preflight requests in seconds */
     maxAge?: number;
   };
-  
+
   /** Data Loss Prevention configuration */
   dlp?: {
     /** Enable scanning for PII */
@@ -55,7 +55,7 @@ export interface SecurityPolicyConfig {
     /** Enable redaction of sensitive information */
     enableRedaction?: boolean;
   };
-  
+
   /** File security configuration */
   fileUpload?: {
     /** Maximum file size in bytes */
@@ -134,16 +134,16 @@ export interface SecurityService {
   evaluateAccess(
     context: SecurityContext,
     operation: string,
-    resource: string
+    resource: string,
   ): Promise<SecurityEvaluationResult>;
-  
+
   /**
    * Creates a security context from an Express request
    * @param request The Express request
    * @returns A security context
    */
   createSecurityContext(request: Request): SecurityContext;
-  
+
   /**
    * Validates whether a file meets security requirements
    * @param file The file to validate
@@ -152,18 +152,16 @@ export interface SecurityService {
    */
   validateFile(
     file: Buffer,
-    config: SecurityPolicyConfig
+    config: SecurityPolicyConfig,
   ): Promise<{ valid: boolean; messages: string[] }>;
-  
+
   /**
    * Scans a file for malware and other security threats
    * @param file The file to scan
    * @returns Scan results including threats detected
    */
-  scanFile(
-    file: Buffer
-  ): Promise<{ clean: boolean; threats: string[] }>;
-  
+  scanFile(file: Buffer): Promise<{ clean: boolean; threats: string[] }>;
+
   /**
    * Scans text for sensitive information (PII, credentials, etc.)
    * @param text The text to scan
@@ -172,34 +170,28 @@ export interface SecurityService {
    */
   scanText(
     text: string,
-    config?: Record<string, any>
+    config?: Record<string, any>,
   ): Promise<{ hasSensitiveInfo: boolean; infoTypes: string[] }>;
-  
+
   /**
    * Apply security headers to an HTTP response
    * @param response The HTTP response
    * @param config Security policy configuration
    */
-  applySecurityHeaders(
-    response: any,
-    config: SecurityPolicyConfig
-  ): void;
-  
+  applySecurityHeaders(response: any, config: SecurityPolicyConfig): void;
+
   /**
    * Get security metrics
    * @returns Observable of security metrics
    */
   getSecurityMetrics(): Observable<Record<string, number>>;
-  
+
   /**
    * Log a security event
    * @param event The security event to log
    * @param context The security context
    */
-  logSecurityEvent(
-    event: string,
-    context: SecurityContext
-  ): Promise<void>;
+  logSecurityEvent(event: string, context: SecurityContext): Promise<void>;
 }
 
 /**
@@ -237,7 +229,7 @@ export interface CredentialManagerService {
    * @returns The credential value
    */
   getCredential(key: string): Promise<string>;
-  
+
   /**
    * Store a credential
    * @param key The credential key
@@ -247,21 +239,23 @@ export interface CredentialManagerService {
   storeCredential(
     key: string,
     value: string,
-    options?: { expireInDays?: number }
+    options?: { expireInDays?: number },
   ): Promise<void>;
-  
+
   /**
    * Rotate a credential
    * @param key The credential key
    * @returns The new credential value
    */
   rotateCredential(key: string): Promise<string>;
-  
+
   /**
    * List available credentials (only returns metadata, not values)
    * @returns List of credential metadata
    */
-  listCredentials(): Promise<{ key: string; createdAt: Date; expiresAt?: Date }[]>;
+  listCredentials(): Promise<
+    { key: string; createdAt: Date; expiresAt?: Date }[]
+  >;
 }
 
 /**
@@ -306,8 +300,10 @@ export interface SecurityAuditService {
    * Record a security audit event
    * @param record The audit record to store
    */
-  recordAudit(record: Omit<SecurityAuditRecord, 'id' | 'timestamp'>): Promise<void>;
-  
+  recordAudit(
+    record: Omit<SecurityAuditRecord, 'id' | 'timestamp'>,
+  ): Promise<void>;
+
   /**
    * Query audit logs
    * @param query Query parameters
@@ -324,7 +320,7 @@ export interface SecurityAuditService {
     limit?: number;
     offset?: number;
   }): Promise<SecurityAuditRecord[]>;
-  
+
   /**
    * Get audit stats by dimension
    * @param dimension The dimension to group by
@@ -333,7 +329,7 @@ export interface SecurityAuditService {
    */
   getAuditStats(
     dimension: 'action' | 'actorId' | 'resourceType' | 'outcome',
-    timeWindow: { start: Date; end: Date }
+    timeWindow: { start: Date; end: Date },
   ): Promise<Record<string, number>>;
 }
 
@@ -360,17 +356,23 @@ export interface VpcScConfiguration {
       /** Source (project/VPC) */
       source: string;
       /** Identity type for ingress */
-      identityType?: 'ANY_IDENTITY' | 'ANY_SERVICE_ACCOUNT' | 'ANY_USER_ACCOUNT';
+      identityType?:
+        | 'ANY_IDENTITY'
+        | 'ANY_SERVICE_ACCOUNT'
+        | 'ANY_USER_ACCOUNT';
     }>;
     /** Explicit egress rules */
     egressRules?: Array<{
       /** Destination (project/VPC) */
       destination: string;
       /** Identity type for egress */
-      identityType?: 'ANY_IDENTITY' | 'ANY_SERVICE_ACCOUNT' | 'ANY_USER_ACCOUNT';
+      identityType?:
+        | 'ANY_IDENTITY'
+        | 'ANY_SERVICE_ACCOUNT'
+        | 'ANY_USER_ACCOUNT';
     }>;
   }[];
-  
+
   /** Access level configurations */
   accessLevels: {
     /** Name of the access level */
@@ -399,7 +401,7 @@ export interface VpcServiceControlsService {
    * @param config The VPC SC configuration
    */
   configureServiceControls(config: VpcScConfiguration): Promise<void>;
-  
+
   /**
    * Add an emergency access binding
    * @param email User email to grant emergency access
@@ -409,9 +411,9 @@ export interface VpcServiceControlsService {
   grantEmergencyAccess(
     email: string,
     durationHours: number,
-    reason: string
+    reason: string,
   ): Promise<void>;
-  
+
   /**
    * Test VPC Service Controls configuration
    * @returns Validation results
@@ -420,7 +422,7 @@ export interface VpcServiceControlsService {
     valid: boolean;
     issues: string[];
   }>;
-  
+
   /**
    * Get current VPC Service Controls status
    * @returns Current status
@@ -446,7 +448,7 @@ export interface WafConfiguration {
     /** Ban duration after exceeding threshold (seconds) */
     banDurationSeconds: number;
   };
-  
+
   /** Geographic restrictions */
   geoRestrictions: {
     /** Whether to enable geo-blocking */
@@ -456,7 +458,7 @@ export interface WafConfiguration {
     /** Default is to block countries not in the allowed list */
     blockUnlisted: boolean;
   };
-  
+
   /** OWASP protection settings */
   owaspProtection: {
     /** Whether to enable XSS protection */
@@ -468,7 +470,7 @@ export interface WafConfiguration {
     /** Whether to enable local file inclusion protection */
     localFileInclusionProtection: boolean;
   };
-  
+
   /** Custom rules */
   customRules: Array<{
     /** Rule name */
@@ -488,19 +490,19 @@ export interface WafConfiguration {
 export interface SecurityModuleOptions {
   /** Whether to enable extended audit logging */
   enableExtendedAuditLogging?: boolean;
-  
+
   /** Whether to enable cross-module security context */
   enableCrossModuleSecurityContext?: boolean;
-  
+
   /** Default security policy configuration */
   defaultPolicyConfig?: SecurityPolicyConfig;
-  
+
   /** VPC Service Controls configuration */
   vpcServiceControls?: VpcScConfiguration;
-  
+
   /** Web Application Firewall configuration */
   wafConfig?: WafConfiguration;
-  
+
   /** Rate limiting configuration */
   rateLimiting?: {
     /** Global rate limits */
@@ -509,18 +511,21 @@ export interface SecurityModuleOptions {
       requestsPerMinutePerIp: number;
     };
     /** Endpoint-specific rate limits */
-    endpoints?: Record<string, {
-      /** Requests per minute */
-      requestsPerMinute: number;
-      /** Whether to scope by IP address */
-      scopeByIp: boolean;
-      /** Whether to scope by user ID */
-      scopeByUser: boolean;
-      /** Whether to scope by organization ID */
-      scopeByOrganization: boolean;
-    }>;
+    endpoints?: Record<
+      string,
+      {
+        /** Requests per minute */
+        requestsPerMinute: number;
+        /** Whether to scope by IP address */
+        scopeByIp: boolean;
+        /** Whether to scope by user ID */
+        scopeByUser: boolean;
+        /** Whether to scope by organization ID */
+        scopeByOrganization: boolean;
+      }
+    >;
   };
-  
+
   /** South African compliance options */
   southAfricanCompliance?: {
     /** Whether to enable POPIA-specific controls */

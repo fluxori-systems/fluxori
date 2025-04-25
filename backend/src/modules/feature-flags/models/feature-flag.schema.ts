@@ -5,7 +5,7 @@ import {
   UserTargeting,
   OrganizationTargeting,
   ScheduleConfig,
-} from "../interfaces/types";
+} from '../interfaces/types';
 
 /**
  * Feature Flag Schema structure

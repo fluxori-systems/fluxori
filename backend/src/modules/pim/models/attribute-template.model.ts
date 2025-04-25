@@ -1,6 +1,6 @@
 /**
  * Attribute Template Model
- * 
+ *
  * Core model for attribute templates in the PIM module
  */
 
@@ -27,7 +27,7 @@ export enum AttributeType {
   PHONE = 'phone',
   PRICE = 'price',
   DIMENSION = 'dimension',
-  WEIGHT = 'weight'
+  WEIGHT = 'weight',
 }
 
 /**
@@ -36,7 +36,7 @@ export enum AttributeType {
 export enum AttributeScope {
   GLOBAL = 'global',
   REGIONAL = 'regional',
-  MARKETPLACE = 'marketplace'
+  MARKETPLACE = 'marketplace',
 }
 
 /**
@@ -47,52 +47,52 @@ export interface AttributeTemplate extends TenantEntity {
    * Template name
    */
   name: string;
-  
+
   /**
    * Template description
    */
   description?: string;
-  
+
   /**
    * Array of attributes in this template
    */
   attributes: ProductAttribute[];
-  
+
   /**
    * Categories this template is applied to
    */
   categoryIds?: string[];
-  
+
   /**
    * Whether this template is applied to all products
    */
   applyToAllProducts: boolean;
-  
+
   /**
    * Attribute template scope
    */
   scope: AttributeScope;
-  
+
   /**
    * Region this template applies to (if scope is REGIONAL)
    */
   region?: string;
-  
+
   /**
    * Marketplace this template applies to (if scope is MARKETPLACE)
    */
   marketplaceId?: string;
-  
+
   /**
    * Position for sorting
    */
   position?: number;
-  
+
   /**
    * Whether template is active
    */
   isActive: boolean;
-  
+
   /**
    * Region-specific attribute configurations
    */
@@ -106,7 +106,7 @@ export interface AttributeTemplate extends TenantEntity {
        */
       requiredAttributes?: string[];
     };
-    
+
     /**
      * Europe specific attribute configuration
      */
@@ -117,7 +117,7 @@ export interface AttributeTemplate extends TenantEntity {
       requiredAttributes?: string[];
     };
   };
-  
+
   /**
    * Marketplace-specific attribute mappings
    */
@@ -126,7 +126,7 @@ export interface AttributeTemplate extends TenantEntity {
      * Marketplace ID
      */
     marketplaceId: string;
-    
+
     /**
      * Attribute mappings (local attribute code to marketplace attribute code)
      */
@@ -137,7 +137,10 @@ export interface AttributeTemplate extends TenantEntity {
 /**
  * Attribute template creation DTO
  */
-export type CreateAttributeTemplateDto = Omit<AttributeTemplate, 'id' | 'createdAt' | 'updatedAt' | 'isDeleted' | 'deletedAt' | 'version'>;
+export type CreateAttributeTemplateDto = Omit<
+  AttributeTemplate,
+  'id' | 'createdAt' | 'updatedAt' | 'isDeleted' | 'deletedAt' | 'version'
+>;
 
 /**
  * Attribute template update DTO

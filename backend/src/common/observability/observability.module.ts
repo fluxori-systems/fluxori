@@ -1,35 +1,35 @@
-import { Module, DynamicModule, Global, Provider } from "@nestjs/common";
-import { ConfigModule, ConfigService } from "@nestjs/config";
+import { Module, DynamicModule, Global, Provider } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 // Import constants
-import { OBSERVABILITY_PROVIDERS } from "./constants/observability.constants";
-import { OBSERVABILITY_TOKENS } from "./constants/observability.tokens";
+import { OBSERVABILITY_PROVIDERS } from './constants/observability.constants';
+import { OBSERVABILITY_TOKENS } from './constants/observability.tokens';
 
 // Import interfaces
-import { 
-  IEnhancedLoggerService, 
-  IMetricsService, 
-  ITracingService, 
-  IHealthService, 
-  IObservabilityService 
-} from "./interfaces/observability.interfaces";
-import { ObservabilityModuleOptions } from "./interfaces/observability-options.interface";
+import { HealthController } from './controllers/health.controller';
+import { MetricsController } from './controllers/metrics.controller';
+import { LoggingInterceptor } from './interceptors/logging.interceptor';
+import { MetricsInterceptor } from './interceptors/metrics.interceptor';
+import { TracingInterceptor } from './interceptors/tracing.interceptor';
+import { ObservabilityModuleOptions } from './interfaces/observability-options.interface';
+import {
+  IEnhancedLoggerService,
+  IMetricsService,
+  ITracingService,
+  IHealthService,
+  IObservabilityService,
+} from './interfaces/observability.interfaces';
 
 // Import services
-import { EnhancedLoggerService } from "./services/enhanced-logger.service";
-import { HealthService } from "./services/health.service";
-import { MetricsService } from "./services/metrics.service";
+import { EnhancedLoggerService } from './services/enhanced-logger.service';
+import { HealthService } from './services/health.service';
+import { MetricsService } from './services/metrics.service';
 import { ObservabilityService } from './services/observability.service';
-import { TracingService } from "./services/tracing.service";
+import { TracingService } from './services/tracing.service';
 
 // Import controllers
-import { HealthController } from "./controllers/health.controller";
-import { MetricsController } from "./controllers/metrics.controller";
 
 // Import interceptors
-import { LoggingInterceptor } from "./interceptors/logging.interceptor";
-import { MetricsInterceptor } from "./interceptors/metrics.interceptor";
-import { TracingInterceptor } from "./interceptors/tracing.interceptor";
 
 /**
  * ObservabilityModule provides a complete observability solution including
@@ -59,19 +59,19 @@ export class ObservabilityModule {
         MetricsService,
         EnhancedLoggerService,
         HealthService,
-        
+
         // Interface tokens
         OBSERVABILITY_TOKENS.OBSERVABILITY_SERVICE,
         OBSERVABILITY_TOKENS.LOGGER_SERVICE,
         OBSERVABILITY_TOKENS.TRACING_SERVICE,
         OBSERVABILITY_TOKENS.METRICS_SERVICE,
         OBSERVABILITY_TOKENS.HEALTH_SERVICE,
-        
+
         // Interceptors
         TracingInterceptor,
         MetricsInterceptor,
         LoggingInterceptor,
-        
+
         // Old providers for backward compatibility
         ...Object.values(OBSERVABILITY_PROVIDERS),
       ],
@@ -101,19 +101,19 @@ export class ObservabilityModule {
         MetricsService,
         EnhancedLoggerService,
         HealthService,
-        
+
         // Interface tokens
         OBSERVABILITY_TOKENS.OBSERVABILITY_SERVICE,
         OBSERVABILITY_TOKENS.LOGGER_SERVICE,
         OBSERVABILITY_TOKENS.TRACING_SERVICE,
         OBSERVABILITY_TOKENS.METRICS_SERVICE,
         OBSERVABILITY_TOKENS.HEALTH_SERVICE,
-        
+
         // Interceptors
         TracingInterceptor,
         MetricsInterceptor,
         LoggingInterceptor,
-        
+
         // Old providers for backward compatibility
         ...Object.values(OBSERVABILITY_PROVIDERS),
       ],
@@ -132,15 +132,12 @@ export class ObservabilityModule {
         provide: OBSERVABILITY_TOKENS.OBSERVABILITY_OPTIONS,
         useValue: options || {},
       },
-      
+
       // Enhanced Logger Provider with token
       {
         provide: EnhancedLoggerService,
         useFactory: (configService: ConfigService) => {
-          return new EnhancedLoggerService(
-            configService, 
-            options
-          );
+          return new EnhancedLoggerService(configService, options);
         },
         inject: [ConfigService],
       },
@@ -149,7 +146,7 @@ export class ObservabilityModule {
         provide: OBSERVABILITY_TOKENS.LOGGER_SERVICE,
         useExisting: EnhancedLoggerService,
       },
-      
+
       // Tracing Provider with token
       {
         provide: TracingService,
@@ -157,11 +154,7 @@ export class ObservabilityModule {
           configService: ConfigService,
           logger: IEnhancedLoggerService,
         ) => {
-          return new TracingService(
-            configService, 
-            logger, 
-            options
-          );
+          return new TracingService(configService, logger, options);
         },
         inject: [ConfigService, OBSERVABILITY_TOKENS.LOGGER_SERVICE],
       },
@@ -170,7 +163,7 @@ export class ObservabilityModule {
         provide: OBSERVABILITY_TOKENS.TRACING_SERVICE,
         useExisting: TracingService,
       },
-      
+
       // Metrics Provider with token
       {
         provide: MetricsService,
@@ -178,11 +171,7 @@ export class ObservabilityModule {
           configService: ConfigService,
           logger: IEnhancedLoggerService,
         ) => {
-          return new MetricsService(
-            configService, 
-            logger, 
-            options
-          );
+          return new MetricsService(configService, logger, options);
         },
         inject: [ConfigService, OBSERVABILITY_TOKENS.LOGGER_SERVICE],
       },
@@ -191,7 +180,7 @@ export class ObservabilityModule {
         provide: OBSERVABILITY_TOKENS.METRICS_SERVICE,
         useExisting: MetricsService,
       },
-      
+
       // Health Checker Provider with token
       {
         provide: HealthService,
@@ -199,11 +188,7 @@ export class ObservabilityModule {
           configService: ConfigService,
           logger: IEnhancedLoggerService,
         ) => {
-          return new HealthService(
-            configService, 
-            logger, 
-            options
-          );
+          return new HealthService(configService, logger, options);
         },
         inject: [ConfigService, OBSERVABILITY_TOKENS.LOGGER_SERVICE],
       },
@@ -212,7 +197,7 @@ export class ObservabilityModule {
         provide: OBSERVABILITY_TOKENS.HEALTH_SERVICE,
         useExisting: HealthService,
       },
-      
+
       // Main Observability Service
       {
         provide: ObservabilityService,
@@ -229,7 +214,7 @@ export class ObservabilityModule {
             tracer,
             metrics,
             healthService,
-            options
+            options,
           );
         },
         inject: [
@@ -245,7 +230,7 @@ export class ObservabilityModule {
         provide: OBSERVABILITY_TOKENS.OBSERVABILITY_SERVICE,
         useExisting: ObservabilityService,
       },
-      
+
       // Also provide the old constants for backward compatibility
       {
         provide: OBSERVABILITY_PROVIDERS.LOGGER,

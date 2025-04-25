@@ -5,6 +5,7 @@ import React, { createContext as reactCreateContext, useContext, useState, useCa
 // Create context with a different name to avoid conflict
 const createContext = reactCreateContext;
 import { v4 as uuidv4 } from 'uuid';
+
 import { AgentMessage as AgentMessageComponent } from '../AgentMessage';
 import { Stack } from '../Stack';
 import { Text } from '../Text';

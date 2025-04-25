@@ -8,13 +8,13 @@ import {
   FieldValue,
   Timestamp,
   QueryDocumentSnapshot,
-} from "@google-cloud/firestore";
+} from '@google-cloud/firestore';
 
 import {
   FirestoreEntity,
   FirestoreDataConverter,
   isFirestoreTimestamp,
-} from "../../../types/google-cloud.types";
+} from '../../../types/google-cloud.types';
 
 // Define EntityConverter type directly here to avoid circular imports
 export type EntityConverter<T> = {
@@ -91,7 +91,7 @@ export function sanitizeEntityForStorage<T extends FirestoreEntity>(
   const sanitized = { ...entity };
 
   // List of fields to exclude from storage
-  const excludedFields = ["_id", "_ref", "_path", "_metadata"];
+  const excludedFields = ['_id', '_ref', '_path', '_metadata'];
 
   // Remove excluded fields
   for (const field of excludedFields) {

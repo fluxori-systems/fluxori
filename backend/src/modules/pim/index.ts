@@ -1,10 +1,10 @@
 /**
  * Product Information Management (PIM) Module
- * 
+ *
  * This module provides product information management capabilities for the Fluxori platform.
  * It includes features for product data management, categorization, attribute management,
  * and integration with marketplaces, with specific optimizations for South African e-commerce businesses.
- * 
+ *
  * The PIM module is the centralized hub for all product information and serves as the
  * source of truth for product data across all sales channels.
  */
@@ -51,17 +51,21 @@ export { TakealotConnectorService } from './services/takealot-connector.service'
 export { ReportExporterService } from './services/report-exporter.service';
 
 // Phase 2: African Expansion Services
-export { RegionalWarehouseService, RegionalWarehouse, AllocationStrategy } from './services/regional-warehouse.service';
-export { 
-  MultiCurrencyService, 
-  ExchangeRate, 
-  CurrencyInfo, 
+export {
+  RegionalWarehouseService,
+  RegionalWarehouse,
+  AllocationStrategy,
+} from './services/regional-warehouse.service';
+export {
+  MultiCurrencyService,
+  ExchangeRate,
+  CurrencyInfo,
   PriceConversionResult,
-  MultiCurrencyConfig 
+  MultiCurrencyConfig,
 } from './services/multi-currency.service';
 export {
   AfricanTaxFrameworkService,
-  AfricanTaxRule
+  AfricanTaxRule,
 } from './services/african-tax-framework.service';
 export {
   CrossBorderTradeService,
@@ -72,37 +76,37 @@ export {
   ShipmentStatus,
   DocumentRequirement,
   DocumentType,
-  TradeRestriction
+  TradeRestriction,
 } from './services/cross-border-trade.service';
 
 // Bulk Operations Services
-export { 
+export {
   BulkOperationsService,
   BulkOperationOptions,
-  BulkOperationStats
+  BulkOperationStats,
 } from './services/bulk-operations/bulk-operations.service';
-export { 
-  ProductBulkOperationsService, 
+export {
+  ProductBulkOperationsService,
   ProductBulkOperationType,
   ProductBulkUpdateOperation,
   ProductBulkStatusOperation,
   ProductBulkPriceOperation,
   ProductBulkCategoryOperation,
   ProductBulkInventoryOperation,
-  ProductBulkDuplicateOperation
+  ProductBulkDuplicateOperation,
 } from './services/bulk-operations/product-bulk-operations.service';
 export {
   CategoryBulkOperationsService,
   CategoryBulkOperationType,
   CategoryBulkUpdateOperation,
   CategoryBulkMoveOperation,
-  CategoryBulkMarketplaceMappingOperation
+  CategoryBulkMarketplaceMappingOperation,
 } from './services/bulk-operations/category-bulk-operations.service';
 export {
   AttributeTemplateBulkOperationsService,
   AttributeTemplateBulkUpdateOperation,
   AttributeTemplateBulkAttributeOperation,
-  AttributeTemplateBulkMarketplaceMappingOperation
+  AttributeTemplateBulkMarketplaceMappingOperation,
 } from './services/bulk-operations/attribute-template-bulk-operations.service';
 
 // Report exporter
@@ -113,7 +117,7 @@ export {
   ExportOperation,
   ExportOptions,
   ReportBundleOptions,
-  ScheduledExport
+  ScheduledExport,
 } from './services/report-exporter.service';
 export { ImportExportService } from './services/import-export.service';
 export { ValidationService } from './services/validation.service';
@@ -132,15 +136,19 @@ export { Product, ProductStatus } from './models/product.model';
 export { Category } from './models/category.model';
 export { AttributeTemplate } from './models/attribute-template.model';
 export { ProductVariant } from './models/product-variant.model';
-export { Bundle, BundleComponent, PricingStrategy } from './models/bundle.model';
-export { 
-  PricingRule, 
-  PricingRuleOperation, 
+export {
+  Bundle,
+  BundleComponent,
+  PricingStrategy,
+} from './models/bundle.model';
+export {
+  PricingRule,
+  PricingRuleOperation,
   PricingRuleScheduleType,
   PricingRuleExecutionStatus,
   PricingRuleScope,
   PricingRuleConstraints,
-  PricingRuleSchedule
+  PricingRuleSchedule,
 } from './models/pricing-rule.model';
 
 export {
@@ -150,7 +158,7 @@ export {
   MarketplaceSource,
   ReviewMedia,
   ReviewSentiment,
-  ModerationResult
+  ModerationResult,
 } from './models/product-review.model';
 
 export {
@@ -163,41 +171,50 @@ export {
   PriceMonitoringConfig,
   PriceAlert,
   CompetitorPriceReport,
-  DateRange
+  DateRange,
 } from './models/competitor-price.model';
 
 export {
   ProductImage,
   CompressionQuality,
-  ResizeOption
+  ResizeOption,
 } from './models/image.model';
 
-export {
-  ImageUploadOptions
-} from './interfaces/image-upload-options.interface';
+export { ImageUploadOptions } from './interfaces/image-upload-options.interface';
 
 export {
   ImageAnalysisResult,
-  ImageAttributeDetectionOptions
+  ImageAttributeDetectionOptions,
 } from './services/image-analysis.service';
 
 // Utils
-export { SouthAfricanVat, VatCalculation, VatRateSchedule } from './utils/south-african-vat';
+export {
+  SouthAfricanVat,
+  VatCalculation,
+  VatRateSchedule,
+} from './utils/south-african-vat';
 
 // Interfaces
 export { ProductFilter } from './interfaces/product-filter.interface';
 export { CategoryFilter } from './interfaces/category-filter.interface';
 export { ImageUploadOptions } from './interfaces/image-upload-options.interface';
-export { 
-  TaxRate, 
-  TaxType, 
-  TaxJurisdiction, 
+export {
+  TaxRate,
+  TaxType,
+  TaxJurisdiction,
   TaxJurisdictionLevel,
   TaxRateSchedule,
   TaxRateRequest,
   TaxRateResult,
-  TaxRateService
+  TaxRateService,
 } from './interfaces/tax-rate.interface';
 export { NetworkQualityInfo, LoadSheddingInfo } from './interfaces/types';
-export { MarketContext, ProductType, MarketplaceConnector } from './interfaces/types';
-export { IMarketContextProvider, MarketFeature } from './interfaces/market-context.interface';
+export {
+  MarketContext,
+  ProductType,
+  MarketplaceConnector,
+} from './interfaces/types';
+export {
+  IMarketContextProvider,
+  MarketFeature,
+} from './interfaces/market-context.interface';

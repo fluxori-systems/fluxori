@@ -1,7 +1,9 @@
 'use client';
 
 import { useState } from 'react';
+
 import { useRouter } from 'next/navigation';
+
 import { 
   Container, 
   Paper, 
@@ -11,6 +13,7 @@ import {
   Center,
   Loader 
 } from '@mantine/core';
+
 import { useAuth } from '../../hooks/useAuth';
 import { IndustrySector, OrganizationStatus, SubscriptionPlan } from '../../types/organization/organization.types';
 import { UserRole } from '../../types/user/user.types';

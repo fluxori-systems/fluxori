@@ -1,4 +1,5 @@
 import { ChartType, ChartTypeRegistry, DefaultDataPoint } from 'chart.js';
+
 import { ChartConnectionQuality } from '../hooks/useNetworkAwareChart';
 
 // Chart data point interface for all chart data

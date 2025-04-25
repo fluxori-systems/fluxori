@@ -4,13 +4,18 @@ import {
   Optional,
   OnModuleInit,
   OnModuleDestroy,
-} from "@nestjs/common";
-import { ConfigService } from "@nestjs/config";
+} from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 
 // Import the monitoring client
-import { MetricServiceClient } from "@google-cloud/monitoring";
+import { MetricServiceClient } from '@google-cloud/monitoring';
 
 // Import interfaces
+
+// Import constants
+import { METRIC_NAMES } from '../constants/observability.constants';
+import { OBSERVABILITY_TOKENS } from '../constants/observability.tokens';
+import { DEFAULT_OBSERVABILITY_OPTIONS } from '../interfaces/observability-options.interface';
 import {
   MetricOptions,
   MetricReporter,
@@ -18,22 +23,17 @@ import {
   MetricValueType,
   IMetricsService,
   IEnhancedLoggerService,
-} from "../interfaces/observability.interfaces";
-
-// Import constants
-import { METRIC_NAMES } from "../constants/observability.constants";
-import { OBSERVABILITY_TOKENS } from "../constants/observability.tokens";
-import { DEFAULT_OBSERVABILITY_OPTIONS } from "../interfaces/observability-options.interface";
+} from '../interfaces/observability.interfaces';
 
 /**
  * Google Cloud Monitoring metric type mapping
  */
 const GCP_METRIC_TYPE_MAPPING = {
-  [MetricValueType.INT64]: "INT64",
-  [MetricValueType.DOUBLE]: "DOUBLE",
-  [MetricValueType.DISTRIBUTION]: "DISTRIBUTION",
-  [MetricValueType.BOOLEAN]: "BOOL",
-  [MetricValueType.STRING]: "STRING",
+  [MetricValueType.INT64]: 'INT64',
+  [MetricValueType.DOUBLE]: 'DOUBLE',
+  [MetricValueType.DISTRIBUTION]: 'DISTRIBUTION',
+  [MetricValueType.BOOLEAN]: 'BOOL',
+  [MetricValueType.STRING]: 'STRING',
 };
 
 /**
@@ -44,7 +44,7 @@ interface MetricDefinition {
   displayName: string;
   description: string;
   valueType: MetricValueType;
-  metricKind: "GAUGE" | "CUMULATIVE" | "DELTA";
+  metricKind: 'GAUGE' | 'CUMULATIVE' | 'DELTA';
   unit?: string;
   labels: string[];
   gcpMetricType?: string;
@@ -78,8 +78,11 @@ export class MetricsService
 
   constructor(
     private readonly configService: ConfigService,
-    @Inject(OBSERVABILITY_TOKENS.LOGGER_SERVICE) private readonly logger: IEnhancedLoggerService,
-    @Optional() @Inject(OBSERVABILITY_TOKENS.OBSERVABILITY_OPTIONS) private readonly options?: any,
+    @Inject(OBSERVABILITY_TOKENS.LOGGER_SERVICE)
+    private readonly logger: IEnhancedLoggerService,
+    @Optional()
+    @Inject(OBSERVABILITY_TOKENS.OBSERVABILITY_OPTIONS)
+    private readonly options?: any,
   ) {
     // Apply options with defaults
     const mergedOptions = { ...DEFAULT_OBSERVABILITY_OPTIONS, ...options };
@@ -87,43 +90,43 @@ export class MetricsService
 
     this.enabled =
       metricsOptions.enabled !== undefined ? metricsOptions.enabled : true;
-    this.projectId = this.configService.get<string>("GCP_PROJECT_ID", "");
-    this.metricPrefix = metricsOptions.metricPrefix || "fluxori.";
+    this.projectId = this.configService.get<string>('GCP_PROJECT_ID', '');
+    this.metricPrefix = metricsOptions.metricPrefix || 'fluxori.';
     this.defaultLabels = {
-      service: mergedOptions.appName || "fluxori-api",
+      service: mergedOptions.appName || 'fluxori-api',
       environment:
-        mergedOptions.environment || process.env.NODE_ENV || "development",
-      region: mergedOptions.region || process.env.GCP_REGION || "africa-south1",
+        mergedOptions.environment || process.env.NODE_ENV || 'development',
+      region: mergedOptions.region || process.env.GCP_REGION || 'africa-south1',
       ...(metricsOptions.defaultLabels || {}),
     };
     this.environment =
-      mergedOptions.environment || process.env.NODE_ENV || "development";
+      mergedOptions.environment || process.env.NODE_ENV || 'development';
     this.region =
-      mergedOptions.region || process.env.GCP_REGION || "africa-south1";
-    this.serviceName = mergedOptions.appName || "fluxori-api";
+      mergedOptions.region || process.env.GCP_REGION || 'africa-south1';
+    this.serviceName = mergedOptions.appName || 'fluxori-api';
     this.collectionIntervalMs = metricsOptions.collectionInterval || 60000; // 1 minute
 
     // Initialize Google Cloud Monitoring client in production
-    if (this.enabled && this.projectId && this.environment === "production") {
+    if (this.enabled && this.projectId && this.environment === 'production') {
       try {
         this.client = new MetricServiceClient({
           projectId: this.projectId,
         });
         this.logger.log(
-          "Metrics service initialized with GCP Monitoring",
-          "MetricsService",
+          'Metrics service initialized with GCP Monitoring',
+          'MetricsService',
         );
       } catch (error) {
         this.logger.error(
-          "Failed to initialize GCP Monitoring client",
+          'Failed to initialize GCP Monitoring client',
           error,
-          "MetricsService",
+          'MetricsService',
         );
       }
     } else if (this.enabled) {
       this.logger.log(
-        "Metrics service initialized with local storage",
-        "MetricsService",
+        'Metrics service initialized with local storage',
+        'MetricsService',
       );
     }
 
@@ -139,7 +142,7 @@ export class MetricsService
   async onModuleInit() {
     if (this.enabled) {
       // Start periodic collection for development environments
-      if (this.environment !== "production") {
+      if (this.environment !== 'production') {
         this.collectionInterval = setInterval(() => {
           this.logLocalMetrics();
         }, this.collectionIntervalMs);
@@ -172,17 +175,17 @@ export class MetricsService
     // Create metric definition
     const metricDefinition: MetricDefinition = {
       name,
-      displayName: options.name.replace(/\\./g, " ").trim(),
+      displayName: options.name.replace(/\\./g, ' ').trim(),
       description: options.description,
       valueType: options.valueType,
-      metricKind: options.isCumulative ? "CUMULATIVE" : "GAUGE",
+      metricKind: options.isCumulative ? 'CUMULATIVE' : 'GAUGE',
       unit: options.unit,
       labels: [...(options.labels || []), ...Object.keys(this.defaultLabels)],
     };
 
     // Calculate GCP metric type
     if (this.projectId) {
-      metricDefinition.gcpMetricType = `custom.googleapis.com/${this.metricPrefix}${options.name.replace(/\\./g, "/")}`;
+      metricDefinition.gcpMetricType = `custom.googleapis.com/${this.metricPrefix}${options.name.replace(/\\./g, '/')}`;
     }
 
     // Store metric definition
@@ -197,7 +200,7 @@ export class MetricsService
 
     if (this.logger?.debug) {
       this.logger.debug(`Registered metric: ${name}`, {
-        service: "MetricsService",
+        service: 'MetricsService',
         metric: metricDefinition,
       });
     }
@@ -250,7 +253,7 @@ export class MetricsService
 
     // If we're in production, write to Cloud Monitoring
     if (
-      this.environment === "production" &&
+      this.environment === 'production' &&
       this.client &&
       metricDef.gcpMetricType
     ) {
@@ -263,7 +266,7 @@ export class MetricsService
           this.logger.error(
             `Failed to write metric ${name} to Cloud Monitoring`,
             err,
-            "MetricsService",
+            'MetricsService',
           );
         }
       });
@@ -316,7 +319,7 @@ export class MetricsService
 
     // If we're in production, write to Cloud Monitoring
     if (
-      this.environment === "production" &&
+      this.environment === 'production' &&
       this.client &&
       metricDef.gcpMetricType
     ) {
@@ -325,7 +328,7 @@ export class MetricsService
           this.logger.error(
             `Failed to write metric ${name} to Cloud Monitoring`,
             err,
-            "MetricsService",
+            'MetricsService',
           );
         }
       });
@@ -378,7 +381,7 @@ export class MetricsService
 
     // If we're in production, write to Cloud Monitoring
     if (
-      this.environment === "production" &&
+      this.environment === 'production' &&
       this.client &&
       metricDef.gcpMetricType
     ) {
@@ -393,7 +396,7 @@ export class MetricsService
           this.logger.error(
             `Failed to write distribution ${name} to Cloud Monitoring`,
             err,
-            "MetricsService",
+            'MetricsService',
           );
         }
       });
@@ -518,7 +521,7 @@ export class MetricsService
           labels,
         },
         resource: {
-          type: "global",
+          type: 'global',
         },
         points: [dataPoint],
       };
@@ -533,7 +536,7 @@ export class MetricsService
         this.logger.error(
           `Failed to write metric ${metricDef.name} to Cloud Monitoring`,
           error,
-          "MetricsService",
+          'MetricsService',
         );
       }
     }
@@ -587,7 +590,7 @@ export class MetricsService
           labels,
         },
         resource: {
-          type: "global",
+          type: 'global',
         },
         points: [dataPoint],
       };
@@ -602,7 +605,7 @@ export class MetricsService
         this.logger.error(
           `Failed to write distribution ${metricDef.name} to Cloud Monitoring`,
           error,
-          "MetricsService",
+          'MetricsService',
         );
       }
     }
@@ -637,17 +640,17 @@ export class MetricsService
   private getGcpValueType(valueType: MetricValueType): string {
     switch (valueType) {
       case MetricValueType.INT64:
-        return "int64Value";
+        return 'int64Value';
       case MetricValueType.DOUBLE:
-        return "doubleValue";
+        return 'doubleValue';
       case MetricValueType.BOOLEAN:
-        return "boolValue";
+        return 'boolValue';
       case MetricValueType.STRING:
-        return "stringValue";
+        return 'stringValue';
       case MetricValueType.DISTRIBUTION:
-        return "distributionValue";
+        return 'distributionValue';
       default:
-        return "doubleValue";
+        return 'doubleValue';
     }
   }
 
@@ -666,14 +669,14 @@ export class MetricsService
     return Object.entries(labels)
       .sort(([a], [b]) => a.localeCompare(b))
       .map(([k, v]) => `${k}:${v}`)
-      .join(",");
+      .join(',');
   }
 
   /**
    * Log local metrics to the console/logger
    */
   private logLocalMetrics(): void {
-    if (this.environment === "production") {
+    if (this.environment === 'production') {
       return; // Don't log in production as they're sent to Cloud Monitoring
     }
 
@@ -688,7 +691,7 @@ export class MetricsService
 
       if (this.logger?.debug) {
         this.logger.debug(`Metric: ${metricName}`, {
-          service: "MetricsService",
+          service: 'MetricsService',
           metric: {
             name: metricName,
             type: metricDef.valueType,
@@ -707,10 +710,10 @@ export class MetricsService
 
       if (this.logger?.debug) {
         this.logger.debug(`Distribution: ${metricName}`, {
-          service: "MetricsService",
+          service: 'MetricsService',
           metric: {
             name: metricName,
-            type: "distribution",
+            type: 'distribution',
             stats,
           },
         });
@@ -725,128 +728,128 @@ export class MetricsService
     // HTTP metrics
     this.registerMetric({
       name: METRIC_NAMES.HTTP_REQUEST_DURATION,
-      description: "HTTP request duration in milliseconds",
+      description: 'HTTP request duration in milliseconds',
       category: MetricCategory.PERFORMANCE,
       valueType: MetricValueType.DISTRIBUTION,
-      unit: "ms",
-      labels: ["method", "path", "status"],
+      unit: 'ms',
+      labels: ['method', 'path', 'status'],
     });
 
     this.registerMetric({
       name: METRIC_NAMES.HTTP_REQUEST_COUNT,
-      description: "HTTP request count",
+      description: 'HTTP request count',
       category: MetricCategory.TECHNICAL,
       valueType: MetricValueType.INT64,
       isCumulative: true,
-      labels: ["method", "path", "status"],
+      labels: ['method', 'path', 'status'],
     });
 
     this.registerMetric({
       name: METRIC_NAMES.HTTP_ERROR_COUNT,
-      description: "HTTP error count",
+      description: 'HTTP error count',
       category: MetricCategory.TECHNICAL,
       valueType: MetricValueType.INT64,
       isCumulative: true,
-      labels: ["method", "path", "status"],
+      labels: ['method', 'path', 'status'],
     });
 
     // Database metrics
     this.registerMetric({
       name: METRIC_NAMES.DB_OPERATION_DURATION,
-      description: "Database operation duration in milliseconds",
+      description: 'Database operation duration in milliseconds',
       category: MetricCategory.PERFORMANCE,
       valueType: MetricValueType.DISTRIBUTION,
-      unit: "ms",
-      labels: ["operation", "collection"],
+      unit: 'ms',
+      labels: ['operation', 'collection'],
     });
 
     this.registerMetric({
       name: METRIC_NAMES.DB_OPERATION_COUNT,
-      description: "Database operation count",
+      description: 'Database operation count',
       category: MetricCategory.TECHNICAL,
       valueType: MetricValueType.INT64,
       isCumulative: true,
-      labels: ["operation", "collection"],
+      labels: ['operation', 'collection'],
     });
 
     // Cache metrics
     this.registerMetric({
       name: METRIC_NAMES.CACHE_HIT_COUNT,
-      description: "Cache hit count",
+      description: 'Cache hit count',
       category: MetricCategory.TECHNICAL,
       valueType: MetricValueType.INT64,
       isCumulative: true,
-      labels: ["cache"],
+      labels: ['cache'],
     });
 
     this.registerMetric({
       name: METRIC_NAMES.CACHE_MISS_COUNT,
-      description: "Cache miss count",
+      description: 'Cache miss count',
       category: MetricCategory.TECHNICAL,
       valueType: MetricValueType.INT64,
       isCumulative: true,
-      labels: ["cache"],
+      labels: ['cache'],
     });
 
     // System metrics
     this.registerMetric({
       name: METRIC_NAMES.MEMORY_USAGE,
-      description: "Memory usage in MB",
+      description: 'Memory usage in MB',
       category: MetricCategory.TECHNICAL,
       valueType: MetricValueType.DOUBLE,
-      unit: "MB",
+      unit: 'MB',
       labels: [],
     });
 
     this.registerMetric({
       name: METRIC_NAMES.CPU_USAGE,
-      description: "CPU usage percentage",
+      description: 'CPU usage percentage',
       category: MetricCategory.TECHNICAL,
       valueType: MetricValueType.DOUBLE,
-      unit: "%",
+      unit: '%',
       labels: [],
     });
 
     // AI metrics
     this.registerMetric({
       name: METRIC_NAMES.AI_TOKEN_USAGE,
-      description: "AI token usage count",
+      description: 'AI token usage count',
       category: MetricCategory.BUSINESS,
       valueType: MetricValueType.INT64,
       isCumulative: true,
-      labels: ["model", "operation", "type"],
+      labels: ['model', 'operation', 'type'],
     });
 
     this.registerMetric({
       name: METRIC_NAMES.AI_REQUEST_DURATION,
-      description: "AI request duration in milliseconds",
+      description: 'AI request duration in milliseconds',
       category: MetricCategory.PERFORMANCE,
       valueType: MetricValueType.DISTRIBUTION,
-      unit: "ms",
-      labels: ["model", "operation"],
+      unit: 'ms',
+      labels: ['model', 'operation'],
     });
 
     this.registerMetric({
       name: METRIC_NAMES.AI_CREDIT_USAGE,
-      description: "AI credit usage count",
+      description: 'AI credit usage count',
       category: MetricCategory.BUSINESS,
       valueType: MetricValueType.DOUBLE,
       isCumulative: true,
-      labels: ["model", "operation", "organizationId"],
+      labels: ['model', 'operation', 'organizationId'],
     });
 
     // Feature flag metrics
     this.registerMetric({
       name: METRIC_NAMES.FEATURE_FLAG_EVALUATION,
-      description: "Feature flag evaluation count",
+      description: 'Feature flag evaluation count',
       category: MetricCategory.TECHNICAL,
       valueType: MetricValueType.INT64,
       isCumulative: true,
-      labels: ["flag", "result"],
+      labels: ['flag', 'result'],
     });
 
     if (this.logger?.log) {
-      this.logger.log("Default metrics registered", "MetricsService");
+      this.logger.log('Default metrics registered', 'MetricsService');
     }
   }
 }

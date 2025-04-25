@@ -1,18 +1,18 @@
-import { Injectable, Logger } from "@nestjs/common";
-import { ConfigService } from "@nestjs/config";
+import { Injectable, Logger } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 
 import {
   Firestore,
   DocumentReference,
   Settings,
   Timestamp,
-} from "@google-cloud/firestore";
+} from '@google-cloud/firestore';
 
 import {
   FirestoreEntity,
   TypedCollectionReference,
   FirestoreDataConverter,
-} from "../types/google-cloud.types";
+} from '../types/google-cloud.types';
 
 /**
  * Implements a type-safe converter for Firestore
@@ -70,15 +70,15 @@ export class FirestoreConfigService {
   private readonly region: string;
 
   constructor(private configService: ConfigService) {
-    this.projectId = this.configService.get<string>("GCP_PROJECT_ID") || "";
-    this.region = this.configService.get<string>("GCP_REGION") || "us-central1";
+    this.projectId = this.configService.get<string>('GCP_PROJECT_ID') || '';
+    this.region = this.configService.get<string>('GCP_REGION') || 'us-central1';
     const databaseId = this.configService.get<string>(
-      "FIRESTORE_DATABASE_ID",
-      "fluxori-db",
+      'FIRESTORE_DATABASE_ID',
+      'fluxori-db',
     );
     this.collectionPrefix = this.configService.get<string>(
-      "FIRESTORE_COLLECTION_PREFIX",
-      "",
+      'FIRESTORE_COLLECTION_PREFIX',
+      '',
     );
 
     // Configure Firestore settings

@@ -1,15 +1,15 @@
 /**
  * Types for the Agent Framework module
  */
-import { FirestoreEntity } from "../../../types/google-cloud.types";
+import { FirestoreEntity } from '../../../types/google-cloud.types';
 
 /**
  * Model complexity levels
  */
 export enum ModelComplexity {
-  SIMPLE = "simple",
-  STANDARD = "standard",
-  COMPLEX = "complex",
+  SIMPLE = 'simple',
+  STANDARD = 'standard',
+  COMPLEX = 'complex',
 }
 
 /**
@@ -17,7 +17,7 @@ export enum ModelComplexity {
  */
 export interface ConversationMessage {
   id: string;
-  role: "user" | "assistant" | "system" | "function";
+  role: 'user' | 'assistant' | 'system' | 'function';
   content: string;
   timestamp: Date;
   metadata?: Record<string, any>;
@@ -32,11 +32,11 @@ export interface ConversationMessage {
  * Response types that agents can produce
  */
 export enum AgentResponseType {
-  TEXT = "text",
-  DATA = "data",
-  VISUALIZATION = "visualization",
-  ACTION = "action",
-  ERROR = "error",
+  TEXT = 'text',
+  DATA = 'data',
+  VISUALIZATION = 'visualization',
+  ACTION = 'action',
+  ERROR = 'error',
 }
 
 /**
@@ -199,15 +199,15 @@ export interface ModelSelectionParams {
  * Error types for agent operations
  */
 export enum AgentErrorType {
-  CONFIGURATION_ERROR = "configuration_error",
-  EXECUTION_ERROR = "execution_error",
-  AUTHORIZATION_ERROR = "authorization_error",
-  MODEL_UNAVAILABLE = "model_unavailable",
-  TOKEN_LIMIT_EXCEEDED = "token_limit_exceeded",
-  CREDIT_LIMIT_EXCEEDED = "credit_limit_exceeded",
-  INTERNAL_ERROR = "internal_error",
-  RATE_LIMIT_EXCEEDED = "rate_limit_exceeded",
-  INVALID_INPUT = "invalid_input",
+  CONFIGURATION_ERROR = 'configuration_error',
+  EXECUTION_ERROR = 'execution_error',
+  AUTHORIZATION_ERROR = 'authorization_error',
+  MODEL_UNAVAILABLE = 'model_unavailable',
+  TOKEN_LIMIT_EXCEEDED = 'token_limit_exceeded',
+  CREDIT_LIMIT_EXCEEDED = 'credit_limit_exceeded',
+  INTERNAL_ERROR = 'internal_error',
+  RATE_LIMIT_EXCEEDED = 'rate_limit_exceeded',
+  INVALID_INPUT = 'invalid_input',
 }
 
 /**

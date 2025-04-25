@@ -1,13 +1,13 @@
 /**
  * BuyBox Status Schema
  */
-import { FirestoreEntity } from "../../../types/google-cloud.types";
+import { FirestoreEntity } from '../../../types/google-cloud.types';
 import {
   BuyBoxStatus as BuyBoxStatusEnum,
   CompetitorPrice,
   MarketPosition,
   PriceSourceType,
-} from "../interfaces/types";
+} from '../interfaces/types';
 
 /**
  * BuyBox Status entity for Firestore

@@ -5,26 +5,26 @@ import {
   CallHandler,
   Inject,
   Optional,
-} from "@nestjs/common";
+} from '@nestjs/common';
 
-import { Request, Response } from "express";
-import { Observable } from "rxjs";
-import { tap } from "rxjs/operators";
-import { v4 as uuidv4 } from "uuid";
+import { Request, Response } from 'express';
+import { Observable } from 'rxjs';
+import { tap } from 'rxjs/operators';
+import { v4 as uuidv4 } from 'uuid';
 
 // Import services
 import {
   TRACE_ATTRIBUTES,
   TRACE_HEADERS,
   SAMPLING_RATES,
-} from "../constants/observability.constants";
+} from '../constants/observability.constants';
 import {
   ObservabilityModuleOptions,
   DEFAULT_OBSERVABILITY_OPTIONS,
-} from "../interfaces/observability-options.interface";
-import { Span } from "../interfaces/observability.interfaces";
-import { ObservabilityService } from "../services/observability.service";
-import { TracingService } from "../services/tracing.service";
+} from '../interfaces/observability-options.interface';
+import { Span } from '../interfaces/observability.interfaces';
+import { ObservabilityService } from '../services/observability.service';
+import { TracingService } from '../services/tracing.service';
 
 // Import constants
 
@@ -44,7 +44,7 @@ export class TracingInterceptor implements NestInterceptor {
     private readonly tracer: TracingService,
     private readonly observability: ObservabilityService,
     @Optional()
-    @Inject("OBSERVABILITY_OPTIONS")
+    @Inject('OBSERVABILITY_OPTIONS')
     private readonly options?: ObservabilityModuleOptions,
   ) {
     // Apply options with defaults
@@ -63,7 +63,7 @@ export class TracingInterceptor implements NestInterceptor {
    */
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     // Only apply to HTTP requests
-    if (context.getType() !== "http") {
+    if (context.getType() !== 'http') {
       return next.handle();
     }
 
@@ -93,12 +93,12 @@ export class TracingInterceptor implements NestInterceptor {
           [TRACE_ATTRIBUTES.HTTP_METHOD]: request.method,
           [TRACE_ATTRIBUTES.HTTP_URL]: request.url,
           ...(request.user && { [TRACE_ATTRIBUTES.USER_ID]: request.user.id }),
-          ...(request.headers["user-agent"] && {
-            "http.user_agent": request.headers["user-agent"],
+          ...(request.headers['user-agent'] && {
+            'http.user_agent': request.headers['user-agent'],
           }),
           ...(this.includeRequestBodies &&
             request.body && {
-              "http.request.body": this.sanitizeBody(request.body),
+              'http.request.body': this.sanitizeBody(request.body),
             }),
         },
       },
@@ -126,7 +126,7 @@ export class TracingInterceptor implements NestInterceptor {
           );
 
           if (this.includeResponseBodies && data) {
-            span.setAttribute("http.response.body", this.sanitizeBody(data));
+            span.setAttribute('http.response.body', this.sanitizeBody(data));
           }
 
           // Add user context if available
@@ -201,7 +201,7 @@ export class TracingInterceptor implements NestInterceptor {
   private getOrCreateTraceId(request: Request): string {
     const traceHeader = request.headers[TRACE_HEADERS.TRACE_ID];
 
-    if (traceHeader && typeof traceHeader === "string") {
+    if (traceHeader && typeof traceHeader === 'string') {
       return traceHeader;
     }
 
@@ -214,7 +214,7 @@ export class TracingInterceptor implements NestInterceptor {
   private getParentSpanId(request: Request): string | undefined {
     const parentSpanHeader = request.headers[TRACE_HEADERS.PARENT_SPAN_ID];
 
-    if (parentSpanHeader && typeof parentSpanHeader === "string") {
+    if (parentSpanHeader && typeof parentSpanHeader === 'string') {
       return parentSpanHeader;
     }
 
@@ -248,7 +248,7 @@ export class TracingInterceptor implements NestInterceptor {
 
       // Recursively sanitize sensitive fields
       const sanitizeRecursive = (obj: any): any => {
-        if (!obj || typeof obj !== "object") {
+        if (!obj || typeof obj !== 'object') {
           return obj;
         }
 
@@ -263,17 +263,17 @@ export class TracingInterceptor implements NestInterceptor {
         for (const [key, value] of Object.entries(obj)) {
           // Mask sensitive fields
           const sensitiveFields = [
-            "password",
-            "token",
-            "secret",
-            "apiKey",
-            "key",
-            "accessToken",
-            "refreshToken",
-            "authorization",
-            "credential",
-            "privateKey",
-            "secret",
+            'password',
+            'token',
+            'secret',
+            'apiKey',
+            'key',
+            'accessToken',
+            'refreshToken',
+            'authorization',
+            'credential',
+            'privateKey',
+            'secret',
           ];
 
           if (
@@ -281,8 +281,8 @@ export class TracingInterceptor implements NestInterceptor {
               key.toLowerCase().includes(field.toLowerCase()),
             )
           ) {
-            result[key] = "[REDACTED]";
-          } else if (typeof value === "object" && value !== null) {
+            result[key] = '[REDACTED]';
+          } else if (typeof value === 'object' && value !== null) {
             result[key] = sanitizeRecursive(value);
           } else {
             result[key] = value;
@@ -295,7 +295,7 @@ export class TracingInterceptor implements NestInterceptor {
       return sanitizeRecursive(sanitized);
     } catch (error) {
       // If sanitization fails, return a simplified representation
-      return { _sanitized: "[Complex Body]" };
+      return { _sanitized: '[Complex Body]' };
     }
   }
 }

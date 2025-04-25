@@ -7,13 +7,16 @@
  */
 
 import React, { ReactNode } from 'react';
+
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import { FirebaseProvider } from '../contexts/firebase-context';
-import { MotionProvider } from '@/lib/motion';
+
 import { ThemeProvider } from '@/lib/design-system/theme/ThemeContext';
+import { MotionProvider } from '@/lib/motion';
 import { AppProvider as SharedAppProvider } from '@/lib/shared/providers/app-provider';
 import { SouthAfricanMarketProvider } from '@/lib/shared/providers/south-african-market-provider';
+
+import { FirebaseProvider } from '../contexts/firebase-context';
 
 // Create a client
 const queryClient = new QueryClient({

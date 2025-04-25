@@ -1,5 +1,7 @@
 import { describe, test, expect, vi, beforeEach } from 'vitest';
+
 import { ConnectionServiceImpl } from '../services/connection-service.impl';
+
 import type { ConnectionQualityResult } from '../../shared/types/sa-market-types';
 
 // Setup mock for navigator.connection

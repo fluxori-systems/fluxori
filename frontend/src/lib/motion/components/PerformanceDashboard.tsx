@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+
 import { defaultPerformanceMonitoringService } from '../services/performance/performance-monitoring.service';
 import { PerformanceMetric, DeviceCapabilities, MetricPriority } from '../types/performance';
 

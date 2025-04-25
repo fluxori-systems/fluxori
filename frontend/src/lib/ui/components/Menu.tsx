@@ -3,17 +3,17 @@
 import React, { forwardRef, ReactNode, useRef, useState, useCallback } from 'react';
 import type { ForwardRefExoticComponent, RefAttributes } from 'react';
 
-import { Menu as MantineMenu } from '@mantine/core';
-import { BaseComponentProps, AnimatableComponentProps, Intent } from '../types';
-import { getToken } from '../../design-system/utils/tokens';
+import { Menu as MantineMenu , useMantineTheme } from '@mantine/core';
+
 import { getColorFromMantine } from '../../design-system/utils/mantine-theme-adapter';
 import { useTokenTracking } from '../../design-system/utils/token-analysis';
-import { useMantineTheme } from '@mantine/core';
+import { getToken } from '../../design-system/utils/tokens';
 
 // Import from shared module to avoid circular dependencies
 import { useCombinedRefs } from '../../shared/utils/ref-utils';
 import { useComponentAnimation, useHoverAnimation } from '../hooks/useComponentAnimation';
 import { useNetworkAware } from '../hooks/useConnection';
+import { BaseComponentProps, AnimatableComponentProps, Intent } from '../types';
 
 // Menu main component props
 export interface MenuProps extends BaseComponentProps, AnimatableComponentProps {

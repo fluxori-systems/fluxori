@@ -1,7 +1,9 @@
 'use client';
 
 import { forwardRef, ReactNode, ForwardRefExoticComponent, RefAttributes, useRef, useEffect } from 'react';
+
 import { Grid as MantineGrid } from '@mantine/core';
+
 import { useTokenTracking } from '../../design-system/utils/token-analysis';
 
 // Import from shared modules to avoid circular dependencies

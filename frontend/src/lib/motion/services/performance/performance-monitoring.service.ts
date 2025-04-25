@@ -1,5 +1,6 @@
 'use client';
 
+import { MotionMode } from '../../../shared/types/motion-types';
 import {
   PerformanceMetric,
   PerformanceMetricType,
@@ -10,9 +11,9 @@ import {
   IPerformanceMonitoringService,
   SamplingStrategy
 } from '../../types/performance';
-import type { ConnectionQualityResult } from '../../../shared/types/sa-market-types';
-import { MotionMode } from '../../../shared/types/motion-types';
 import { defaultConnectionService } from '../connection-service.impl';
+
+import type { ConnectionQualityResult } from '../../../shared/types/sa-market-types';
 
 /**
  * Implementation of the Performance Monitoring Service

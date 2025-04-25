@@ -3,7 +3,7 @@
  * This helps TypeScript correctly resolve decorator types.
  */
 
-declare module "@nestjs/terminus" {
+declare module '@nestjs/terminus' {
   // Health check decorator options
   export interface HealthCheckOptions {
     noCache?: boolean;

@@ -1,8 +1,8 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable } from '@nestjs/common';
 
-import { FeatureFlagService } from "src/modules/feature-flags";
+import { FeatureFlagService } from 'src/modules/feature-flags';
 
-import { FeatureFlagDependencies } from "../interfaces/dependencies";
+import { FeatureFlagDependencies } from '../interfaces/dependencies';
 
 /**
  * Adapter for integrating with Feature Flag system
@@ -30,7 +30,7 @@ export class FeatureFlagAdapter implements FeatureFlagDependencies {
       organizationId: context.organizationId,
       userId: context.userId,
       // Handle environment differently since it might be a string and not an enum
-      ...(context.environment ? {} : {})
+      ...(context.environment ? {} : {}),
     });
   }
 
@@ -50,7 +50,7 @@ export class FeatureFlagAdapter implements FeatureFlagDependencies {
       callback,
       evaluationContext: {},
     };
-    
+
     // Subscribe to flag changes
     return this.featureFlagService.subscribe(subscription);
   }

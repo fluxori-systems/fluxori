@@ -1,14 +1,14 @@
-import { Module } from "@nestjs/common";
+import { Module } from '@nestjs/common';
 
-import { InventoryController } from "./controllers/inventory.controller";
-import { ProductRepository } from "./repositories/product.repository";
-import { StockLevelRepository } from "./repositories/stock-level.repository";
-import { StockMovementRepository } from "./repositories/stock-movement.repository";
-import { WarehouseRepository } from "./repositories/warehouse.repository";
-import { InventoryService } from "./services/inventory.service";
-import { WarehouseService } from "./services/warehouse.service";
-import { FirestoreConfigService } from "../../config/firestore.config";
-import { PRODUCT_SERVICE_TOKEN } from "../../shared/tokens";
+import { InventoryController } from './controllers/inventory.controller';
+import { ProductRepository } from './repositories/product.repository';
+import { StockLevelRepository } from './repositories/stock-level.repository';
+import { StockMovementRepository } from './repositories/stock-movement.repository';
+import { WarehouseRepository } from './repositories/warehouse.repository';
+import { InventoryService } from './services/inventory.service';
+import { WarehouseService } from './services/warehouse.service';
+import { FirestoreConfigService } from '../../config/firestore.config';
+import { PRODUCT_SERVICE_TOKEN } from '../../shared/tokens';
 
 /**
  * Inventory Module
@@ -29,8 +29,8 @@ import { PRODUCT_SERVICE_TOKEN } from "../../shared/tokens";
     // Provide InventoryService as IProductService via token
     {
       provide: PRODUCT_SERVICE_TOKEN,
-      useExisting: InventoryService
-    }
+      useExisting: InventoryService,
+    },
   ],
   exports: [
     InventoryService,
@@ -39,7 +39,7 @@ import { PRODUCT_SERVICE_TOKEN } from "../../shared/tokens";
     StockLevelRepository,
     WarehouseRepository,
     // Export the token provider
-    PRODUCT_SERVICE_TOKEN
+    PRODUCT_SERVICE_TOKEN,
   ],
 })
 export class InventoryModule {}

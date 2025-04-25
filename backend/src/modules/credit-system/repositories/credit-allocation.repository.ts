@@ -1,22 +1,28 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable } from '@nestjs/common';
 
-import { FirestoreBaseRepository } from "../../../common/repositories/firestore-base.repository";
-import { FirestoreConfigService } from "../../../config/firestore.config";
-import { CreditAllocation, CreditModelType } from "../interfaces/types";
+import { FirestoreBaseRepository } from '../../../common/repositories/firestore-base.repository';
+import { FirestoreConfigService } from '../../../config/firestore.config';
+import { CreditAllocation, CreditModelType } from '../interfaces/types';
 
 /**
  * Repository for credit allocations
  */
 @Injectable()
 export class CreditAllocationRepository extends FirestoreBaseRepository<CreditAllocation> {
-  protected readonly collectionName = "credit_allocations";
+  protected readonly collectionName = 'credit_allocations';
 
   constructor(firestoreConfigService: FirestoreConfigService) {
-    super(firestoreConfigService, "credit_allocations", {
+    super(firestoreConfigService, 'credit_allocations', {
       useVersioning: true,
       enableCache: true,
       cacheTTLMs: 5 * 60 * 1000, // 5 minutes
-      requiredFields: ["organizationId", "modelType", "totalCredits", "remainingCredits", "isActive"],
+      requiredFields: [
+        'organizationId',
+        'modelType',
+        'totalCredits',
+        'remainingCredits',
+        'isActive',
+      ],
     });
   }
 
@@ -29,13 +35,13 @@ export class CreditAllocationRepository extends FirestoreBaseRepository<CreditAl
     organizationId: string,
   ): Promise<CreditAllocation | null> {
     const allocations = await this.find({
-      filter: { 
+      filter: {
         organizationId,
         isActive: true,
       } as Partial<CreditAllocation>,
       queryOptions: {
-        orderBy: "createdAt",
-        direction: "desc",
+        orderBy: 'createdAt',
+        direction: 'desc',
         limit: 1,
       },
     });
@@ -54,8 +60,8 @@ export class CreditAllocationRepository extends FirestoreBaseRepository<CreditAl
     return this.find({
       filter: { organizationId } as Partial<CreditAllocation>,
       queryOptions: {
-        orderBy: "createdAt",
-        direction: "desc",
+        orderBy: 'createdAt',
+        direction: 'desc',
       },
     });
   }
@@ -71,14 +77,14 @@ export class CreditAllocationRepository extends FirestoreBaseRepository<CreditAl
     userId: string,
   ): Promise<CreditAllocation | null> {
     const allocations = await this.find({
-      filter: { 
+      filter: {
         organizationId,
         userId,
         isActive: true,
       } as Partial<CreditAllocation>,
       queryOptions: {
-        orderBy: "createdAt",
-        direction: "desc",
+        orderBy: 'createdAt',
+        direction: 'desc',
         limit: 1,
       },
     });
@@ -97,17 +103,17 @@ export class CreditAllocationRepository extends FirestoreBaseRepository<CreditAl
     modelType: CreditModelType,
   ): Promise<CreditAllocation[]> {
     return this.find({
-      filter: { 
+      filter: {
         organizationId,
         modelType,
       } as Partial<CreditAllocation>,
       queryOptions: {
-        orderBy: "createdAt",
-        direction: "desc",
+        orderBy: 'createdAt',
+        direction: 'desc',
       },
     });
   }
-  
+
   /**
    * Update specific fields of an entity
    * @param id Entity ID
@@ -132,20 +138,20 @@ export class CreditAllocationRepository extends FirestoreBaseRepository<CreditAl
     amount: number,
   ): Promise<CreditAllocation> {
     const allocation = await this.findById(allocationId);
-    
+
     if (!allocation) {
       throw new Error(`Credit allocation not found: ${allocationId}`);
     }
-    
+
     if (allocation.remainingCredits < amount) {
       throw new Error(`Insufficient credits in allocation: ${allocationId}`);
     }
-    
+
     return this.updateFields(allocationId, {
       remainingCredits: allocation.remainingCredits - amount,
     });
   }
-  
+
   /**
    * Add credits to an allocation
    * @param allocationId Allocation ID
@@ -157,16 +163,16 @@ export class CreditAllocationRepository extends FirestoreBaseRepository<CreditAl
     amount: number,
   ): Promise<CreditAllocation> {
     const allocation = await this.findById(allocationId);
-    
+
     if (!allocation) {
       throw new Error(`Credit allocation not found: ${allocationId}`);
     }
-    
+
     return this.updateFields(allocationId, {
       remainingCredits: allocation.remainingCredits + amount,
     });
   }
-  
+
   /**
    * Deactivate an allocation
    * @param allocationId Allocation ID

@@ -1,5 +1,7 @@
 import { describe, test, expect, vi } from 'vitest';
+
 import { AnimationServiceImpl } from '../services/animation-service.impl';
+
 import type { 
   ComponentAnimationConfig, 
   PerformanceMonitoringSettings,

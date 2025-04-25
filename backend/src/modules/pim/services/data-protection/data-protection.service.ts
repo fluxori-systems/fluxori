@@ -1,15 +1,16 @@
 /**
  * Data Protection Service
- * 
+ *
  * This service provides enhanced data protection features for the PIM module,
  * including sensitive data detection, POPIA (South African data protection law)
  * compliance, and data redaction capabilities.
  */
 
 import { Injectable, Logger, Inject } from '@nestjs/common';
+
 import { DlpService } from '../../../security/services/dlp.service';
-import { MarketContextService } from '../market-context.service';
 import { RegionalConfigurationService } from '../enhanced-regional/regional-configuration.service';
+import { MarketContextService } from '../market-context.service';
 
 /**
  * Data sensitivity level
@@ -17,16 +18,16 @@ import { RegionalConfigurationService } from '../enhanced-regional/regional-conf
 export enum DataSensitivityLevel {
   /** Not sensitive - public information */
   PUBLIC = 'public',
-  
+
   /** Low sensitivity - internal use */
   INTERNAL = 'internal',
-  
+
   /** Medium sensitivity - confidential business information */
   CONFIDENTIAL = 'confidential',
-  
+
   /** High sensitivity - regulated personal information */
   SENSITIVE = 'sensitive',
-  
+
   /** Highest sensitivity - special category personal information */
   SPECIAL_CATEGORY = 'special_category',
 }
@@ -37,37 +38,37 @@ export enum DataSensitivityLevel {
 export interface DataProtectionPolicy {
   /** Field pattern to match (can use wildcards) */
   field: string;
-  
+
   /** Sensitivity level of this data */
   sensitivity: DataSensitivityLevel;
-  
+
   /** Whether this field contains personal information */
   isPersonalInfo: boolean;
-  
+
   /** Whether this field is required for operating purposes */
   isOperationallyNecessary: boolean;
-  
+
   /** Information type category */
   infoType: string;
-  
+
   /** Whether this field should be redacted in logs */
   redactInLogs: boolean;
-  
+
   /** Whether this field should be masked in UI */
   maskInUi: boolean;
-  
+
   /** Whether this field can be exported */
   allowExport: boolean;
-  
+
   /** Maximum retention period in days (0 = no limit) */
   retentionPeriodDays: number;
-  
+
   /** Whether to encrypt this field (beyond database encryption) */
   requiresEncryption: boolean;
-  
+
   /** Special handling instructions */
   specialHandling?: string;
-  
+
   /** Applicable region codes (empty = all regions) */
   applicableRegions: string[];
 }
@@ -78,22 +79,22 @@ export interface DataProtectionPolicy {
 export interface FieldScanResult {
   /** Field name */
   field: string;
-  
+
   /** Whether sensitive info was found */
   hasSensitiveInfo: boolean;
-  
+
   /** Detected information types */
   infoTypes: string[];
-  
+
   /** Data policy that matches this field */
   matchedPolicy?: DataProtectionPolicy;
-  
+
   /** Risk level for this field */
   riskLevel?: 'low' | 'medium' | 'high' | 'critical';
-  
+
   /** Whether this field violates policy */
   violatesPolicy: boolean;
-  
+
   /** Policy violation reason */
   violationReason?: string;
 }
@@ -104,22 +105,22 @@ export interface FieldScanResult {
 export interface ProductScanResult {
   /** Product ID */
   productId: string;
-  
+
   /** Whether sensitive info was found */
   hasSensitiveInfo: boolean;
-  
+
   /** Field-level results */
   fields: FieldScanResult[];
-  
+
   /** Overall product risk level */
   overallRiskLevel: 'low' | 'medium' | 'high' | 'critical';
-  
+
   /** Whether this product violates policy */
   violatesPolicy: boolean;
-  
+
   /** Redacted version of the product */
   redactedProduct?: Record<string, any>;
-  
+
   /** Actions recommended to fix policy violations */
   recommendedActions?: string[];
 }
@@ -130,28 +131,28 @@ export interface ProductScanResult {
 export interface ConsentRecord {
   /** Unique ID for this consent record */
   id: string;
-  
+
   /** User ID that provided consent */
   userId: string;
-  
+
   /** Organization ID */
   organizationId: string;
-  
+
   /** When consent was given */
   consentDate: Date;
-  
+
   /** Scope of the consent */
   scope: string[];
-  
+
   /** Expiration date of consent */
   expirationDate?: Date;
-  
+
   /** Whether consent is active */
   isActive: boolean;
-  
+
   /** Consent withdrawal date */
   withdrawalDate?: Date;
-  
+
   /** Additional metadata */
   metadata?: Record<string, any>;
 }
@@ -162,45 +163,51 @@ export interface ConsentRecord {
 export interface DataSubjectRequest {
   /** Request ID */
   id: string;
-  
+
   /** Request type */
-  type: 'access' | 'rectification' | 'erasure' | 'restriction' | 'portability' | 'objection';
-  
+  type:
+    | 'access'
+    | 'rectification'
+    | 'erasure'
+    | 'restriction'
+    | 'portability'
+    | 'objection';
+
   /** Request status */
   status: 'pending' | 'in_progress' | 'completed' | 'denied';
-  
+
   /** Data subject ID */
   dataSubjectId: string;
-  
+
   /** Data subject email */
   dataSubjectEmail: string;
-  
+
   /** Request details */
   details: string;
-  
+
   /** Date of request */
   requestDate: Date;
-  
+
   /** Due date for responding */
   dueDate: Date;
-  
+
   /** Date of completion */
   completionDate?: Date;
-  
+
   /** Request handler user ID */
   assignedToUserId?: string;
-  
+
   /** Request history for audit */
   history: Array<{
     /** Action taken */
     action: string;
-    
+
     /** Date of action */
     date: Date;
-    
+
     /** User ID that performed the action */
     userId: string;
-    
+
     /** Notes about the action */
     notes?: string;
   }>;
@@ -212,7 +219,7 @@ export interface DataSubjectRequest {
 @Injectable()
 export class DataProtectionService {
   private readonly logger = new Logger(DataProtectionService.name);
-  
+
   // Default data protection policies
   private dataPolicies: DataProtectionPolicy[] = [
     // Identity information
@@ -282,7 +289,7 @@ export class DataProtectionService {
       specialHandling: 'Requires special handling under POPIA',
       applicableRegions: ['south-africa', 'za'],
     },
-    
+
     // Address information
     {
       field: 'customer.address.street',
@@ -323,7 +330,7 @@ export class DataProtectionService {
       requiresEncryption: false,
       applicableRegions: [],
     },
-    
+
     // Financial information
     {
       field: 'payment.cardNumber',
@@ -366,7 +373,7 @@ export class DataProtectionService {
       requiresEncryption: true,
       applicableRegions: [],
     },
-    
+
     // Special category data
     {
       field: 'customer.dateOfBirth',
@@ -395,7 +402,7 @@ export class DataProtectionService {
       specialHandling: 'Special category data under POPIA/GDPR',
       applicableRegions: [],
     },
-    
+
     // Product metadata (not personal)
     {
       field: 'product.name',
@@ -424,7 +431,7 @@ export class DataProtectionService {
       applicableRegions: [],
     },
   ];
-  
+
   constructor(
     private readonly dlpService: DlpService,
     private readonly marketContextService: MarketContextService,
@@ -433,10 +440,10 @@ export class DataProtectionService {
   ) {
     this.logger.log('Data Protection Service initialized');
   }
-  
+
   /**
    * Scan a product for sensitive information
-   * 
+   *
    * @param product The product to scan
    * @param tenantId Tenant ID
    * @param options Scan options
@@ -454,9 +461,10 @@ export class DataProtectionService {
   ): Promise<ProductScanResult> {
     try {
       // Get market context to determine applicable policies
-      const marketContext = await this.marketContextService.getMarketContext(tenantId);
+      const marketContext =
+        await this.marketContextService.getMarketContext(tenantId);
       const region = options?.region || marketContext.region;
-      
+
       // Initialize scan result
       const scanResult: ProductScanResult = {
         productId: product.id,
@@ -466,34 +474,38 @@ export class DataProtectionService {
         violatesPolicy: false,
         recommendedActions: [],
       };
-      
+
       // Use DLP to scan product for sensitive data
       const productText = JSON.stringify(product);
       const dlpResult = await this.dlpService.scanText(productText);
-      
+
       scanResult.hasSensitiveInfo = dlpResult.hasSensitiveInfo;
-      
+
       // If sensitive information is found, do a detailed field scan
       if (dlpResult.hasSensitiveInfo) {
         // Get fields to scan
         const fieldsToScan: Record<string, any> = {};
-        
+
         // Helper function to extract field paths from a nested object
         const extractFields = (obj: any, path = '') => {
           if (!obj || typeof obj !== 'object') return;
-          
+
           for (const [key, value] of Object.entries(obj)) {
             const fieldPath = path ? `${path}.${key}` : key;
-            
+
             // Skip fields if specified
             if (options?.skipFields?.includes(fieldPath)) continue;
-            
+
             // Only include specific fields if specified
-            if (options?.onlyFields && !options.onlyFields.includes(fieldPath)) continue;
-            
+            if (options?.onlyFields && !options.onlyFields.includes(fieldPath))
+              continue;
+
             if (typeof value === 'string') {
               fieldsToScan[fieldPath] = value;
-            } else if (typeof value === 'number' || typeof value === 'boolean') {
+            } else if (
+              typeof value === 'number' ||
+              typeof value === 'boolean'
+            ) {
               fieldsToScan[fieldPath] = String(value);
             } else if (value instanceof Date) {
               fieldsToScan[fieldPath] = value.toISOString();
@@ -503,28 +515,32 @@ export class DataProtectionService {
             }
           }
         };
-        
+
         extractFields(product);
-        
+
         // Scan each field
         const fieldResults: FieldScanResult[] = [];
-        
+
         for (const [field, value] of Object.entries(fieldsToScan)) {
           // Skip empty values
           if (!value) continue;
-          
+
           // Scan the field value
           const fieldScan = await this.dlpService.scanText(value);
-          
+
           // Find matching data policy
           const matchedPolicy = this.findMatchingPolicy(field, region);
-          
+
           // Determine risk level
           const riskLevel = this.determineRiskLevel(fieldScan, matchedPolicy);
-          
+
           // Check for policy violations
-          const violatesPolicy = this.checkPolicyViolation(field, fieldScan, matchedPolicy);
-          
+          const violatesPolicy = this.checkPolicyViolation(
+            field,
+            fieldScan,
+            matchedPolicy,
+          );
+
           const fieldResult: FieldScanResult = {
             field,
             hasSensitiveInfo: fieldScan.hasSensitiveInfo,
@@ -532,54 +548,57 @@ export class DataProtectionService {
             matchedPolicy,
             riskLevel,
             violatesPolicy,
-            violationReason: violatesPolicy ? 
-              `Field contains sensitive data (${fieldScan.infoTypes.join(', ')})` : 
-              undefined,
+            violationReason: violatesPolicy
+              ? `Field contains sensitive data (${fieldScan.infoTypes.join(', ')})`
+              : undefined,
           };
-          
+
           fieldResults.push(fieldResult);
-          
+
           // Update overall policy violation status
           if (violatesPolicy) {
             scanResult.violatesPolicy = true;
-            
+
             // Add recommended action
             scanResult.recommendedActions.push(
-              `Remove sensitive information from '${field}': ${fieldScan.infoTypes.join(', ')}`
+              `Remove sensitive information from '${field}': ${fieldScan.infoTypes.join(', ')}`,
             );
           }
         }
-        
+
         scanResult.fields = fieldResults;
-        
+
         // Determine overall risk level based on the highest risk field
-        if (fieldResults.some(f => f.riskLevel === 'critical')) {
+        if (fieldResults.some((f) => f.riskLevel === 'critical')) {
           scanResult.overallRiskLevel = 'critical';
-        } else if (fieldResults.some(f => f.riskLevel === 'high')) {
+        } else if (fieldResults.some((f) => f.riskLevel === 'high')) {
           scanResult.overallRiskLevel = 'high';
-        } else if (fieldResults.some(f => f.riskLevel === 'medium')) {
+        } else if (fieldResults.some((f) => f.riskLevel === 'medium')) {
           scanResult.overallRiskLevel = 'medium';
         }
-        
+
         // Create redacted version if needed
         if (!options?.skipRedaction) {
           scanResult.redactedProduct = await this.createRedactedProduct(
-            product, 
-            fieldResults
+            product,
+            fieldResults,
           );
         }
       }
-      
+
       return scanResult;
     } catch (error) {
-      this.logger.error(`Error scanning product: ${error.message}`, error.stack);
+      this.logger.error(
+        `Error scanning product: ${error.message}`,
+        error.stack,
+      );
       throw new Error(`Failed to scan product: ${error.message}`);
     }
   }
-  
+
   /**
    * Redact sensitive information from text
-   * 
+   *
    * @param text Text to redact
    * @param options Redaction options
    * @returns Redacted text
@@ -589,7 +608,7 @@ export class DataProtectionService {
     options?: {
       infoTypes?: string[];
       replaceWith?: string;
-    }
+    },
   ): Promise<string> {
     try {
       // Define default info types to redact
@@ -602,10 +621,12 @@ export class DataProtectionService {
         { name: 'IBAN_CODE' },
         { name: 'STREET_ADDRESS' },
       ];
-      
+
       // Use the DLP service to redact the text
       return this.dlpService.redactText(text, {
-        infoTypes: options?.infoTypes?.map(type => ({ name: type })) || defaultInfoTypes,
+        infoTypes:
+          options?.infoTypes?.map((type) => ({ name: type })) ||
+          defaultInfoTypes,
         replaceWith: options?.replaceWith || '[REDACTED]',
       });
     } catch (error) {
@@ -614,10 +635,10 @@ export class DataProtectionService {
       return text;
     }
   }
-  
+
   /**
    * Mask a specific field pattern
-   * 
+   *
    * @param text Text to mask
    * @param pattern Pattern to mask
    * @param maskChar Character to use for masking
@@ -625,21 +646,28 @@ export class DataProtectionService {
    */
   async maskSensitiveData(
     text: string,
-    pattern: 'CREDIT_CARD_NUMBER' | 'PHONE_NUMBER' | 'EMAIL_ADDRESS' | 'SOUTH_AFRICA_ID_NUMBER',
-    maskChar = '*'
+    pattern:
+      | 'CREDIT_CARD_NUMBER'
+      | 'PHONE_NUMBER'
+      | 'EMAIL_ADDRESS'
+      | 'SOUTH_AFRICA_ID_NUMBER',
+    maskChar = '*',
   ): Promise<string> {
     try {
       return this.dlpService.maskText(text, pattern, maskChar);
     } catch (error) {
-      this.logger.error(`Error masking sensitive data: ${error.message}`, error.stack);
+      this.logger.error(
+        `Error masking sensitive data: ${error.message}`,
+        error.stack,
+      );
       // Return the original text in case of error
       return text;
     }
   }
-  
+
   /**
    * Create a consent record
-   * 
+   *
    * @param userId User ID
    * @param organizationId Organization ID
    * @param scope Scope of consent
@@ -668,15 +696,17 @@ export class DataProtectionService {
         createdBy: 'system',
       },
     };
-    
-    this.logger.log(`Created consent record for user ${userId} with scope: ${scope.join(', ')}`);
-    
+
+    this.logger.log(
+      `Created consent record for user ${userId} with scope: ${scope.join(', ')}`,
+    );
+
     return consentRecord;
   }
-  
+
   /**
    * Withdraw consent
-   * 
+   *
    * @param consentId Consent record ID
    * @param userId User ID
    * @param tenantId Tenant ID
@@ -701,15 +731,17 @@ export class DataProtectionService {
         withdrawalReason: 'User requested',
       },
     };
-    
-    this.logger.log(`Withdrew consent for record ${consentId} for user ${userId}`);
-    
+
+    this.logger.log(
+      `Withdrew consent for record ${consentId} for user ${userId}`,
+    );
+
     return consentRecord;
   }
-  
+
   /**
    * Create a data subject request
-   * 
+   *
    * @param type Request type
    * @param dataSubjectId Data subject ID
    * @param dataSubjectEmail Data subject email
@@ -718,7 +750,13 @@ export class DataProtectionService {
    * @returns Created data subject request
    */
   async createDataSubjectRequest(
-    type: 'access' | 'rectification' | 'erasure' | 'restriction' | 'portability' | 'objection',
+    type:
+      | 'access'
+      | 'rectification'
+      | 'erasure'
+      | 'restriction'
+      | 'portability'
+      | 'objection',
     dataSubjectId: string,
     dataSubjectEmail: string,
     details: string,
@@ -726,12 +764,12 @@ export class DataProtectionService {
   ): Promise<DataSubjectRequest> {
     // In a real implementation, this would save to a database
     // For demonstration purposes, return a mock record
-    
+
     // Due date is 30 days from now (POPIA/GDPR requirement)
     const now = new Date();
     const dueDate = new Date(now);
     dueDate.setDate(dueDate.getDate() + 30);
-    
+
     const request: DataSubjectRequest = {
       id: `dsar_${Date.now()}`,
       type,
@@ -750,15 +788,17 @@ export class DataProtectionService {
         },
       ],
     };
-    
-    this.logger.log(`Created ${type} data subject request for subject ${dataSubjectId}`);
-    
+
+    this.logger.log(
+      `Created ${type} data subject request for subject ${dataSubjectId}`,
+    );
+
     return request;
   }
-  
+
   /**
    * Update a data subject request status
-   * 
+   *
    * @param requestId Request ID
    * @param newStatus New status
    * @param userId User ID making the update
@@ -801,15 +841,17 @@ export class DataProtectionService {
         },
       ],
     };
-    
-    this.logger.log(`Updated data subject request ${requestId} to status: ${newStatus}`);
-    
+
+    this.logger.log(
+      `Updated data subject request ${requestId} to status: ${newStatus}`,
+    );
+
     return request;
   }
-  
+
   /**
    * Check if product data is exportable according to policy
-   * 
+   *
    * @param product Product to check
    * @param region Region code
    * @param tenantId Tenant ID
@@ -819,40 +861,47 @@ export class DataProtectionService {
     product: Record<string, any>,
     region: string,
     tenantId: string,
-  ): Promise<{ exportable: boolean; restrictedFields: string[]; reasons: string[] }> {
+  ): Promise<{
+    exportable: boolean;
+    restrictedFields: string[];
+    reasons: string[];
+  }> {
     try {
       // Scan the product
       const scanResult = await this.scanProduct(product, tenantId, { region });
-      
+
       // Check if any fields are restricted from export
       const restrictedFields = scanResult.fields
-        .filter(field => {
+        .filter((field) => {
           return field.matchedPolicy && !field.matchedPolicy.allowExport;
         })
-        .map(field => field.field);
-      
+        .map((field) => field.field);
+
       const exportable = restrictedFields.length === 0;
-      
+
       // Generate reasons for restrictions
-      const reasons = restrictedFields.map(field => {
-        const fieldResult = scanResult.fields.find(f => f.field === field);
+      const reasons = restrictedFields.map((field) => {
+        const fieldResult = scanResult.fields.find((f) => f.field === field);
         return `Field '${field}' contains ${fieldResult.infoTypes.join(', ')} and cannot be exported`;
       });
-      
+
       return {
         exportable,
         restrictedFields,
         reasons,
       };
     } catch (error) {
-      this.logger.error(`Error checking export rules: ${error.message}`, error.stack);
+      this.logger.error(
+        `Error checking export rules: ${error.message}`,
+        error.stack,
+      );
       throw new Error(`Failed to check export rules: ${error.message}`);
     }
   }
-  
+
   /**
    * Create an export-safe version of a product
-   * 
+   *
    * @param product Product to prepare for export
    * @param region Region code
    * @param tenantId Tenant ID
@@ -865,27 +914,30 @@ export class DataProtectionService {
   ): Promise<Record<string, any>> {
     try {
       // Scan the product
-      const scanResult = await this.scanProduct(product, tenantId, { 
+      const scanResult = await this.scanProduct(product, tenantId, {
         region,
         skipRedaction: true, // We'll do our own redaction
       });
-      
+
       // Create a deep copy of the product
       const exportProduct = JSON.parse(JSON.stringify(product));
-      
+
       // Remove or redact fields that can't be exported
       for (const fieldResult of scanResult.fields) {
-        if (fieldResult.matchedPolicy && !fieldResult.matchedPolicy.allowExport) {
+        if (
+          fieldResult.matchedPolicy &&
+          !fieldResult.matchedPolicy.allowExport
+        ) {
           // Split the field path into segments
           const segments = fieldResult.field.split('.');
           let current = exportProduct;
-          
+
           // Traverse to the parent object
           for (let i = 0; i < segments.length - 1; i++) {
             if (current[segments[i]] === undefined) break;
             current = current[segments[i]];
           }
-          
+
           // Remove the field from the parent object
           const lastSegment = segments[segments.length - 1];
           if (current && current[lastSegment] !== undefined) {
@@ -893,17 +945,20 @@ export class DataProtectionService {
           }
         }
       }
-      
+
       return exportProduct;
     } catch (error) {
-      this.logger.error(`Error preparing product for export: ${error.message}`, error.stack);
+      this.logger.error(
+        `Error preparing product for export: ${error.message}`,
+        error.stack,
+      );
       throw new Error(`Failed to prepare product for export: ${error.message}`);
     }
   }
-  
+
   /**
    * Check if personal data protection compliance is enabled for a region
-   * 
+   *
    * @param region Region code
    * @param tenantId Tenant ID
    * @returns Whether compliance is enabled
@@ -914,30 +969,38 @@ export class DataProtectionService {
   ): Promise<boolean> {
     try {
       // Get region configuration
-      const regionConfig = await this.regionalConfigService.getRegionById(region, tenantId);
-      
+      const regionConfig = await this.regionalConfigService.getRegionById(
+        region,
+        tenantId,
+      );
+
       // Check if data protection is enabled for this region
       if (region === 'south-africa' || region === 'za') {
         // South Africa uses POPIA
         return this.isPOPIAComplianceEnabled();
-      } else if (['eu', 'europe', 'gb', 'de', 'fr', 'it', 'es', 'nl'].includes(region)) {
+      } else if (
+        ['eu', 'europe', 'gb', 'de', 'fr', 'it', 'es', 'nl'].includes(region)
+      ) {
         // European regions use GDPR
         return true;
       }
-      
+
       // Default to enabled
       return true;
     } catch (error) {
-      this.logger.error(`Error checking region compliance: ${error.message}`, error.stack);
-      
+      this.logger.error(
+        `Error checking region compliance: ${error.message}`,
+        error.stack,
+      );
+
       // Default to enabled for safety
       return true;
     }
   }
-  
+
   /**
    * Add a custom data policy
-   * 
+   *
    * @param policy Data protection policy
    * @returns Updated policies
    */
@@ -945,26 +1008,27 @@ export class DataProtectionService {
     this.dataPolicies.push(policy);
     return this.dataPolicies;
   }
-  
+
   /**
    * Get all data policies
-   * 
+   *
    * @param region Optional region filter
    * @returns Data protection policies
    */
   getDataPolicies(region?: string): DataProtectionPolicy[] {
     if (region) {
-      return this.dataPolicies.filter(policy => 
-        policy.applicableRegions.length === 0 || 
-        policy.applicableRegions.includes(region)
+      return this.dataPolicies.filter(
+        (policy) =>
+          policy.applicableRegions.length === 0 ||
+          policy.applicableRegions.includes(region),
       );
     }
-    
+
     return this.dataPolicies;
   }
-  
+
   // Private helper methods
-  
+
   /**
    * Check if POPIA compliance is enabled
    */
@@ -972,7 +1036,7 @@ export class DataProtectionService {
     // Check the PIM module options
     return this.pimOptions?.enablePopiaCompliance !== false;
   }
-  
+
   /**
    * Find a matching data policy for a field
    */
@@ -981,32 +1045,37 @@ export class DataProtectionService {
     region: string,
   ): DataProtectionPolicy | undefined {
     // First try to find an exact match
-    let policy = this.dataPolicies.find(p => 
-      p.field === field && 
-      (p.applicableRegions.length === 0 || p.applicableRegions.includes(region))
+    let policy = this.dataPolicies.find(
+      (p) =>
+        p.field === field &&
+        (p.applicableRegions.length === 0 ||
+          p.applicableRegions.includes(region)),
     );
-    
+
     // If no exact match, try pattern matching
     if (!policy) {
       const normalizedField = field.toLowerCase();
-      
-      policy = this.dataPolicies.find(p => {
+
+      policy = this.dataPolicies.find((p) => {
         // Convert policy field to regex pattern
         const pattern = p.field
           .toLowerCase()
           .replace(/\./g, '\\.')
           .replace(/\*/g, '.*');
-        
+
         const regex = new RegExp(`^${pattern}$`);
-        
-        return regex.test(normalizedField) && 
-               (p.applicableRegions.length === 0 || p.applicableRegions.includes(region));
+
+        return (
+          regex.test(normalizedField) &&
+          (p.applicableRegions.length === 0 ||
+            p.applicableRegions.includes(region))
+        );
       });
     }
-    
+
     return policy;
   }
-  
+
   /**
    * Determine risk level based on scan result and policy
    */
@@ -1017,34 +1086,34 @@ export class DataProtectionService {
     if (!scan.hasSensitiveInfo) {
       return 'low';
     }
-    
+
     if (!policy) {
       // No policy but sensitive info found - medium risk
       return 'medium';
     }
-    
+
     // Determine risk based on sensitivity level and info types
     switch (policy.sensitivity) {
       case DataSensitivityLevel.PUBLIC:
         return 'low';
-      
+
       case DataSensitivityLevel.INTERNAL:
         return 'low';
-      
+
       case DataSensitivityLevel.CONFIDENTIAL:
         return 'medium';
-      
+
       case DataSensitivityLevel.SENSITIVE:
         return 'high';
-      
+
       case DataSensitivityLevel.SPECIAL_CATEGORY:
         return 'critical';
-      
+
       default:
         return 'medium';
     }
   }
-  
+
   /**
    * Check if a field violates policy
    */
@@ -1057,12 +1126,12 @@ export class DataProtectionService {
     if (!scan.hasSensitiveInfo) {
       return false;
     }
-    
+
     // No policy found, consider it a violation if sensitive info is found
     if (!policy) {
       return true;
     }
-    
+
     // Check if field has a higher sensitivity than policy allows
     if (
       scan.infoTypes.includes('CREDIT_CARD_NUMBER') ||
@@ -1071,18 +1140,23 @@ export class DataProtectionService {
       scan.infoTypes.includes('PASSPORT_NUMBER')
     ) {
       // These are always high risk and should only be in fields marked as sensitive
-      return policy.sensitivity !== DataSensitivityLevel.SENSITIVE &&
-             policy.sensitivity !== DataSensitivityLevel.SPECIAL_CATEGORY;
+      return (
+        policy.sensitivity !== DataSensitivityLevel.SENSITIVE &&
+        policy.sensitivity !== DataSensitivityLevel.SPECIAL_CATEGORY
+      );
     }
-    
+
     // For other info types, check against policy
-    if (policy.sensitivity === DataSensitivityLevel.PUBLIC && scan.hasSensitiveInfo) {
+    if (
+      policy.sensitivity === DataSensitivityLevel.PUBLIC &&
+      scan.hasSensitiveInfo
+    ) {
       return true;
     }
-    
+
     return false;
   }
-  
+
   /**
    * Create a redacted version of a product
    */
@@ -1093,14 +1167,17 @@ export class DataProtectionService {
     try {
       // Create a deep copy of the product
       const redactedProduct = JSON.parse(JSON.stringify(product));
-      
+
       // Redact fields that need redaction
       for (const fieldResult of fieldResults) {
-        if (fieldResult.hasSensitiveInfo && fieldResult.matchedPolicy?.redactInLogs) {
+        if (
+          fieldResult.hasSensitiveInfo &&
+          fieldResult.matchedPolicy?.redactInLogs
+        ) {
           // Split the field path into segments
           const segments = fieldResult.field.split('.');
           let current = redactedProduct;
-          
+
           // Traverse to the parent object
           let found = true;
           for (let i = 0; i < segments.length - 1; i++) {
@@ -1110,7 +1187,7 @@ export class DataProtectionService {
             }
             current = current[segments[i]];
           }
-          
+
           // If we found the field, redact it
           if (found) {
             const lastSegment = segments[segments.length - 1];
@@ -1127,7 +1204,10 @@ export class DataProtectionService {
               } else if (current[lastSegment] instanceof Date) {
                 // Redact dates
                 current[lastSegment] = '[REDACTED DATE]';
-              } else if (typeof current[lastSegment] === 'object' && current[lastSegment] !== null) {
+              } else if (
+                typeof current[lastSegment] === 'object' &&
+                current[lastSegment] !== null
+              ) {
                 // For objects, replace with a placeholder
                 current[lastSegment] = { redacted: true };
               }
@@ -1135,10 +1215,13 @@ export class DataProtectionService {
           }
         }
       }
-      
+
       return redactedProduct;
     } catch (error) {
-      this.logger.error(`Error creating redacted product: ${error.message}`, error.stack);
+      this.logger.error(
+        `Error creating redacted product: ${error.message}`,
+        error.stack,
+      );
       // Return a simpler redacted product in case of error
       return {
         id: product.id,

@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { observabilityApi } from '../../api/observability.api';
-import { Metric } from '../../types/observability.types';
+
 import { Chart, registerables } from 'chart.js';
 import { format } from 'date-fns';
+
+import { observabilityApi } from '../../api/observability.api';
+import { Metric } from '../../types/observability.types';
 
 // Register Chart.js components
 Chart.register(...registerables);

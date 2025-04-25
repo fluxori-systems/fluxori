@@ -1,7 +1,7 @@
 /**
  * Stock Level Schema
  */
-import { FirestoreEntity } from "../../../types/google-cloud.types";
+import { FirestoreEntity } from '../../../types/google-cloud.types';
 
 /**
  * Stock Level entity for Firestore
@@ -28,7 +28,7 @@ export interface StockLevel extends FirestoreEntity {
   costValue: number;
   retailValue: number;
   currency: string;
-  status: "in_stock" | "low_stock" | "out_of_stock" | "overstock";
+  status: 'in_stock' | 'low_stock' | 'out_of_stock' | 'overstock';
   batchNumber?: string;
   expiryDate?: Date;
   serialNumbers?: string[];

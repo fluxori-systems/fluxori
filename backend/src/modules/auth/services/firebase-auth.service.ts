@@ -1,7 +1,7 @@
-import { Injectable, UnauthorizedException, Logger } from "@nestjs/common";
-import { ConfigService } from "@nestjs/config";
+import { Injectable, UnauthorizedException, Logger } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 
-import * as admin from "firebase-admin";
+import * as admin from 'firebase-admin';
 
 /**
  * Firebase Authentication service
@@ -14,7 +14,7 @@ export class FirebaseAuthService {
 
   constructor(private configService: ConfigService) {
     // Initialize Firebase Admin SDK
-    const projectId = this.configService.get<string>("GCP_PROJECT_ID");
+    const projectId = this.configService.get<string>('GCP_PROJECT_ID');
 
     if (!admin.apps.length) {
       this.firebaseApp = admin.initializeApp({
@@ -36,7 +36,7 @@ export class FirebaseAuthService {
       return await this.firebaseApp.auth().verifyIdToken(idToken);
     } catch (error) {
       this.logger.error(`Invalid Firebase ID token: ${error.message}`);
-      throw new UnauthorizedException("Invalid authentication token");
+      throw new UnauthorizedException('Invalid authentication token');
     }
   }
 

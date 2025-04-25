@@ -1,7 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
+
+import { v4 as uuidv4 } from 'uuid';
+
 import { FirestoreBaseRepository } from '../../../common/repositories/firestore-base.repository';
 import { PriceMonitoringConfig } from '../models/competitor-price.model';
-import { v4 as uuidv4 } from 'uuid';
 
 /**
  * Repository for price monitoring configurations
@@ -10,7 +12,7 @@ import { v4 as uuidv4 } from 'uuid';
 @Injectable()
 export class PriceMonitoringConfigRepository extends FirestoreBaseRepository<PriceMonitoringConfig> {
   private readonly logger = new Logger(PriceMonitoringConfigRepository.name);
-  
+
   constructor() {
     super('price-monitoring-configs', {
       enableDataValidation: true,
@@ -19,48 +21,59 @@ export class PriceMonitoringConfigRepository extends FirestoreBaseRepository<Pri
       enableTransactionality: true,
     });
   }
-  
+
   /**
    * Create a new price monitoring configuration
    * @param data Configuration data
    */
-  async create(data: Omit<PriceMonitoringConfig, 'id' | 'createdAt' | 'updatedAt'>): Promise<PriceMonitoringConfig> {
+  async create(
+    data: Omit<PriceMonitoringConfig, 'id' | 'createdAt' | 'updatedAt'>,
+  ): Promise<PriceMonitoringConfig> {
     try {
       const now = new Date();
-      
+
       const newConfig: PriceMonitoringConfig = {
         ...data,
         id: uuidv4(),
         createdAt: now,
         updatedAt: now,
       };
-      
+
       return super.create(newConfig);
     } catch (error) {
-      this.logger.error(`Error creating price monitoring config: ${error.message}`, error.stack);
+      this.logger.error(
+        `Error creating price monitoring config: ${error.message}`,
+        error.stack,
+      );
       throw error;
     }
   }
-  
+
   /**
    * Update a price monitoring configuration
    * @param id Configuration ID
    * @param data Updated data
    */
-  async update(id: string, data: Partial<PriceMonitoringConfig>): Promise<PriceMonitoringConfig> {
+  async update(
+    id: string,
+    data: Partial<PriceMonitoringConfig>,
+  ): Promise<PriceMonitoringConfig> {
     try {
       const updateData = {
         ...data,
         updatedAt: new Date(),
       };
-      
+
       return super.update(id, updateData);
     } catch (error) {
-      this.logger.error(`Error updating price monitoring config: ${error.message}`, error.stack);
+      this.logger.error(
+        `Error updating price monitoring config: ${error.message}`,
+        error.stack,
+      );
       throw error;
     }
   }
-  
+
   /**
    * Find price monitoring config for a product
    * @param productId Product ID
@@ -78,16 +91,19 @@ export class PriceMonitoringConfigRepository extends FirestoreBaseRepository<Pri
         ],
         limit: 1,
       };
-      
+
       const results = await this.query(query);
-      
+
       return results.length > 0 ? results[0] : null;
     } catch (error) {
-      this.logger.error(`Error finding monitoring config: ${error.message}`, error.stack);
+      this.logger.error(
+        `Error finding monitoring config: ${error.message}`,
+        error.stack,
+      );
       throw error;
     }
   }
-  
+
   /**
    * Find all enabled price monitoring configurations
    * @param organizationId Organization ID
@@ -105,14 +121,17 @@ export class PriceMonitoringConfigRepository extends FirestoreBaseRepository<Pri
         ],
         limit,
       };
-      
+
       return this.query(query);
     } catch (error) {
-      this.logger.error(`Error finding enabled monitoring configs: ${error.message}`, error.stack);
+      this.logger.error(
+        `Error finding enabled monitoring configs: ${error.message}`,
+        error.stack,
+      );
       throw error;
     }
   }
-  
+
   /**
    * Find configurations for multiple products
    * @param productIds Array of product IDs
@@ -130,23 +149,26 @@ export class PriceMonitoringConfigRepository extends FirestoreBaseRepository<Pri
         ],
         limit: productIds.length,
       };
-      
+
       const configs = await this.query(query);
-      
+
       // Convert to record keyed by product ID
       const result: Record<string, PriceMonitoringConfig> = {};
-      
-      configs.forEach(config => {
+
+      configs.forEach((config) => {
         result[config.productId] = config;
       });
-      
+
       return result;
     } catch (error) {
-      this.logger.error(`Error finding configs by product IDs: ${error.message}`, error.stack);
+      this.logger.error(
+        `Error finding configs by product IDs: ${error.message}`,
+        error.stack,
+      );
       throw error;
     }
   }
-  
+
   /**
    * Find configurations due for monitoring
    * @param organizationId Organization ID
@@ -162,7 +184,7 @@ export class PriceMonitoringConfigRepository extends FirestoreBaseRepository<Pri
       // Note: In a real implementation, you would track lastMonitoredTime
       // Since we don't have that field yet, this is a simplified implementation
       // that returns enabled configs
-      
+
       const query = {
         where: [
           { field: 'organizationId', operator: '==', value: organizationId },
@@ -170,10 +192,13 @@ export class PriceMonitoringConfigRepository extends FirestoreBaseRepository<Pri
         ],
         limit,
       };
-      
+
       return this.query(query);
     } catch (error) {
-      this.logger.error(`Error finding configs for monitoring: ${error.message}`, error.stack);
+      this.logger.error(
+        `Error finding configs for monitoring: ${error.message}`,
+        error.stack,
+      );
       throw error;
     }
   }

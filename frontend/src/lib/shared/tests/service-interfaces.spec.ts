@@ -8,22 +8,8 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 // Import interface types directly to ensure we're testing against the actual interfaces
-import type { 
-  IConnectionService,
-  ConnectionQualityResult
-} from '../services/connection-service.interface';
-import { CONNECTION_SERVICE_KEY } from '../services/connection-service.interface';
-
-import type {
-  IAnimationService, 
-  ComponentAnimationConfig,
-  PerformanceMonitoringSettings,
-  AnimationFrameRecord,
-  PerformanceAnalysisResult
-} from '../services/animation-service.interface';
-import type { AnimationStrategyConfig } from '../types/motion-types';
 import { ANIMATION_SERVICE_KEY } from '../services/animation-service.interface';
-
+import { CONNECTION_SERVICE_KEY } from '../services/connection-service.interface';
 import {
   SERVICE_KEYS,
   ServiceRegistry,
@@ -32,6 +18,20 @@ import {
   getAnimationService,
   getConnectionService
 } from '../services/service-registry';
+
+import type {
+  IAnimationService, 
+  ComponentAnimationConfig,
+  PerformanceMonitoringSettings,
+  AnimationFrameRecord,
+  PerformanceAnalysisResult
+} from '../services/animation-service.interface';
+import type { 
+  IConnectionService,
+  ConnectionQualityResult
+} from '../services/connection-service.interface';
+import type { AnimationStrategyConfig } from '../types/motion-types';
+
 
 // Type for animation parameters
 interface AnimationParams {

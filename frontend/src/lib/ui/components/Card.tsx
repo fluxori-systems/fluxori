@@ -1,14 +1,15 @@
 'use client';
 
 import React, { forwardRef, useRef, useState, useCallback } from 'react';
-import { Card as MantineCard, CardProps as MantineCardProps, CardSection } from '@mantine/core';
-import { useMantineTheme } from '@mantine/core';
-import { useCombinedRefs } from '../utils/use-combined-refs';
+
+import { Card as MantineCard, CardProps as MantineCardProps, CardSection , useMantineTheme } from '@mantine/core';
+
 import { getColorFromMantine, getRadiusFromMantine, getShadowFromMantine } from '../../design-system/utils/mantine-theme-adapter';
-import { useConnectionQuality, useNetworkAware } from '../hooks/useConnection';
 import { useTokenTracking } from '../../design-system/utils/token-analysis';
-import { BaseComponentProps, AnimatableComponentProps, Intent, Radius } from '../types';
 import { useSouthAfricanMarketOptimizations } from '../../shared/hooks/useSouthAfricanMarketOptimizations';
+import { useConnectionQuality, useNetworkAware } from '../hooks/useConnection';
+import { BaseComponentProps, AnimatableComponentProps, Intent, Radius } from '../types';
+import { useCombinedRefs } from '../utils/use-combined-refs';
 /**
  * Card variant types for different use cases
  */

@@ -1,6 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+
+import { useService, useServiceContext } from '../../shared/providers/service-provider';
 import { 
   IAnimationService,
   useAnimationService as useSharedAnimationService
@@ -10,9 +12,8 @@ import {
   useConnectionService as useSharedConnectionService,
   ConnectionQualityResult
 } from '../../shared/services/connection-service.interface';
-import { MotionMode } from '../../shared/types/motion-types';
-import { useService, useServiceContext } from '../../shared/providers/service-provider';
 import { SERVICE_KEYS } from '../../shared/services/service-registry';
+import { MotionMode } from '../../shared/types/motion-types';
 import { defaultAnimationService } from '../services/animation-service.impl';
 import { defaultConnectionService } from '../services/connection-service.impl';
 

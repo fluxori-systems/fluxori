@@ -3,9 +3,12 @@ import {
   Logger,
   NotFoundException,
   ConflictException,
-} from "@nestjs/common";
-import { IProduct, IProductService } from "../../../shared/interfaces/product.interface";
+} from '@nestjs/common';
 
+import {
+  IProduct,
+  IProductService,
+} from '../../../shared/interfaces/product.interface';
 import {
   ProductStatus,
   StockMovementType,
@@ -13,15 +16,15 @@ import {
   ProductVariant,
   ProductPricing,
   ProductSupplier,
-} from "../interfaces/types";
-import { Product } from "../models/product.schema";
-import { StockLevel } from "../models/stock-level.schema";
-import { StockMovement } from "../models/stock-movement.schema";
-import { Warehouse } from "../models/warehouse.schema";
-import { ProductRepository } from "../repositories/product.repository";
-import { StockLevelRepository } from "../repositories/stock-level.repository";
-import { StockMovementRepository } from "../repositories/stock-movement.repository";
-import { WarehouseRepository } from "../repositories/warehouse.repository";
+} from '../interfaces/types';
+import { Product } from '../models/product.schema';
+import { StockLevel } from '../models/stock-level.schema';
+import { StockMovement } from '../models/stock-movement.schema';
+import { Warehouse } from '../models/warehouse.schema';
+import { ProductRepository } from '../repositories/product.repository';
+import { StockLevelRepository } from '../repositories/stock-level.repository';
+import { StockMovementRepository } from '../repositories/stock-movement.repository';
+import { WarehouseRepository } from '../repositories/warehouse.repository';
 
 /**
  * DTO for creating a new product
@@ -141,7 +144,9 @@ export class InventoryService implements IProductService {
    * @param createProductDto Product creation data
    * @returns Created product
    */
-  async createProductInternal(createProductDto: CreateProductDto): Promise<Product> {
+  async createProductInternal(
+    createProductDto: CreateProductDto,
+  ): Promise<Product> {
     this.logger.log(
       `Creating new product: ${createProductDto.name} (${createProductDto.sku})`,
     );
@@ -197,24 +202,24 @@ export class InventoryService implements IProductService {
    * Get product by ID
    * @param id Product ID
    * @returns Product or null if not found
-   * 
+   *
    * Implementation of IProductService.getProductById
    */
   async getProductById(id: string): Promise<IProduct | null> {
     try {
       const product = await this.productRepository.findById(id);
-      
+
       if (!product) {
         return null;
       }
-      
+
       return this.mapProductToInterface(product);
     } catch (error) {
       this.logger.error(`Error fetching product by ID ${id}: ${error.message}`);
       return null;
     }
   }
-  
+
   /**
    * Get product by ID (internal version that throws exceptions)
    * @param id Product ID
@@ -236,24 +241,32 @@ export class InventoryService implements IProductService {
    * @param organizationId Organization ID
    * @param sku Product SKU
    * @returns Product or null if not found
-   * 
+   *
    * Implementation of IProductService.getProductBySku
    */
-  async getProductBySku(organizationId: string, sku: string): Promise<IProduct | null> {
+  async getProductBySku(
+    organizationId: string,
+    sku: string,
+  ): Promise<IProduct | null> {
     try {
-      const product = await this.productRepository.findBySku(organizationId, sku);
-      
+      const product = await this.productRepository.findBySku(
+        organizationId,
+        sku,
+      );
+
       if (!product) {
         return null;
       }
-      
+
       return this.mapProductToInterface(product);
     } catch (error) {
-      this.logger.error(`Error fetching product by SKU ${sku}: ${error.message}`);
+      this.logger.error(
+        `Error fetching product by SKU ${sku}: ${error.message}`,
+      );
       return null;
     }
   }
-  
+
   /**
    * Get product by SKU (internal version that throws exceptions)
    * @param organizationId Organization ID
@@ -261,7 +274,10 @@ export class InventoryService implements IProductService {
    * @returns Full Product model
    * @internal
    */
-  private async getProductBySkuInternal(organizationId: string, sku: string): Promise<Product> {
+  private async getProductBySkuInternal(
+    organizationId: string,
+    sku: string,
+  ): Promise<Product> {
     const product = await this.productRepository.findBySku(organizationId, sku);
 
     if (!product) {
@@ -270,7 +286,7 @@ export class InventoryService implements IProductService {
 
     return product;
   }
-  
+
   /**
    * Maps a Product model to the IProduct interface
    * @param product The internal Product model
@@ -281,23 +297,29 @@ export class InventoryService implements IProductService {
     // Convert Timestamp objects to Date objects if needed
     let createdAt: Date | undefined = undefined;
     let updatedAt: Date | undefined = undefined;
-    
+
     if (product.createdAt) {
-      if (typeof product.createdAt === 'object' && 'toDate' in product.createdAt) {
+      if (
+        typeof product.createdAt === 'object' &&
+        'toDate' in product.createdAt
+      ) {
         createdAt = product.createdAt.toDate();
       } else if (product.createdAt instanceof Date) {
         createdAt = product.createdAt;
       }
     }
-    
+
     if (product.updatedAt) {
-      if (typeof product.updatedAt === 'object' && 'toDate' in product.updatedAt) {
+      if (
+        typeof product.updatedAt === 'object' &&
+        'toDate' in product.updatedAt
+      ) {
         updatedAt = product.updatedAt.toDate();
       } else if (product.updatedAt instanceof Date) {
         updatedAt = product.updatedAt;
       }
     }
-    
+
     return {
       id: product.id,
       organizationId: product.organizationId,
@@ -316,7 +338,7 @@ export class InventoryService implements IProductService {
       mainImageUrl: product.mainImageUrl,
       additionalImageUrls: product.additionalImageUrls,
       externalIds: product.externalIds,
-      metadata: product.metadata
+      metadata: product.metadata,
     };
   }
 
@@ -464,7 +486,7 @@ export class InventoryService implements IProductService {
     // Calculate available quantity
     const availableQuantity = Math.max(0, quantity - reservedQuantity);
 
-    const stockLevelData: Omit<StockLevel, "id" | "createdAt" | "updatedAt"> = {
+    const stockLevelData: Omit<StockLevel, 'id' | 'createdAt' | 'updatedAt'> = {
       organizationId,
       productId,
       productSku,
@@ -481,8 +503,8 @@ export class InventoryService implements IProductService {
       lastStockUpdateDate: new Date(),
       costValue: 0,
       retailValue: 0,
-      currency: "USD",
-      status: quantity > 0 ? "in_stock" : "out_of_stock",
+      currency: 'USD',
+      status: quantity > 0 ? 'in_stock' : 'out_of_stock',
     };
 
     return this.stockLevelRepository.create(stockLevelData);
@@ -525,28 +547,35 @@ export class InventoryService implements IProductService {
   /**
    * Create a new product from a simplified product data object
    * Implementation of IProductService.createProduct
-   * 
+   *
    * @param productData Partial product data
-   * @returns Created product 
+   * @returns Created product
    */
-  async createProduct(productData: Partial<IProduct> | CreateProductDto): Promise<IProduct> {
+  async createProduct(
+    productData: Partial<IProduct> | CreateProductDto,
+  ): Promise<IProduct> {
     try {
       // Check if this is a CreateProductDto or IProduct
       if ('hasVariants' in productData || 'mainImageUrl' in productData) {
         // This is a CreateProductDto, use internal implementation
-        const product = await this.createProductInternal(productData as CreateProductDto);
+        const product = await this.createProductInternal(
+          productData as CreateProductDto,
+        );
         return this.mapProductToInterface(product);
       }
-      
+
       // This is an IProduct
-      if (!('pricing' in productData) || typeof productData.pricing !== 'object') {
+      if (
+        !('pricing' in productData) ||
+        typeof productData.pricing !== 'object'
+      ) {
         // Add default pricing
         productData.pricing = {
           basePrice: 0,
-          currency: 'USD'
+          currency: 'USD',
         };
       }
-      
+
       // Convert interface product to DTO
       const createDto: CreateProductDto = {
         organizationId: productData.organizationId!,
@@ -565,37 +594,51 @@ export class InventoryService implements IProductService {
       const product = await this.createProductInternal(createDto);
       return this.mapProductToInterface(product);
     } catch (error) {
-      this.logger.error(`Error creating product from interface: ${error.message}`);
+      this.logger.error(
+        `Error creating product from interface: ${error.message}`,
+      );
       throw error;
     }
   }
-  
+
   // We've renamed the original method to createProductInternal,
   // so this duplicate implementation was removed to avoid redundancy
-  
+
   /**
    * Update an existing product
    * Implementation of IProductService.updateProduct
-   * 
+   *
    * @param id Product ID
    * @param productData Partial product data for update
    * @returns Updated product
    */
-  async updateProduct(id: string, productData: Partial<IProduct> | UpdateProductDto): Promise<IProduct> {
+  async updateProduct(
+    id: string,
+    productData: Partial<IProduct> | UpdateProductDto,
+  ): Promise<IProduct> {
     try {
       // Check if this is a UpdateProductDto or IProduct
-      if ('hasVariants' in productData || 'mainImageUrl' in productData || 'pricing' in productData) {
+      if (
+        'hasVariants' in productData ||
+        'mainImageUrl' in productData ||
+        'pricing' in productData
+      ) {
         // This is a UpdateProductDto, use internal implementation
-        const product = await this.updateProductInternal(id, productData as UpdateProductDto);
+        const product = await this.updateProductInternal(
+          id,
+          productData as UpdateProductDto,
+        );
         return this.mapProductToInterface(product);
       }
-      
+
       // This is an IProduct, convert to DTO
       const updateDto: UpdateProductDto = {};
-      
+
       if (productData.name) updateDto.name = productData.name;
-      if (productData.description) updateDto.description = productData.description;
-      if (productData.status) updateDto.status = productData.status as ProductStatus;
+      if (productData.description)
+        updateDto.description = productData.description;
+      if (productData.status)
+        updateDto.status = productData.status as ProductStatus;
       if (productData.pricing) {
         updateDto.pricing = {
           basePrice: productData.pricing.basePrice || 0,
@@ -603,26 +646,28 @@ export class InventoryService implements IProductService {
           currency: productData.pricing.currency || 'USD',
         };
       }
-      
+
       // Call the internal method
       const product = await this.updateProductInternal(id, updateDto);
       return this.mapProductToInterface(product);
     } catch (error) {
-      this.logger.error(`Error updating product from interface: ${error.message}`);
+      this.logger.error(
+        `Error updating product from interface: ${error.message}`,
+      );
       throw error;
     }
   }
-  
+
   /**
    * Update stock quantity for a product
    * Implementation of IProductService.updateStock
-   * 
+   *
    * @param productId Product ID
    * @param quantity New quantity
    * @returns Updated product
    */
   async updateStock(productId: string, quantity: number): Promise<IProduct>;
-  
+
   /**
    * Update product stock with detailed stock movement data
    * @param productId Product ID
@@ -638,28 +683,33 @@ export class InventoryService implements IProductService {
       try {
         // Get the product first
         const product = await this.getProductByIdInternal(productId);
-        
+
         // Find default warehouse or first available warehouse
-        const stockLevels = await this.stockLevelRepository.findByProduct(productId);
+        const stockLevels =
+          await this.stockLevelRepository.findByProduct(productId);
         let defaultWarehouseId: string;
         let defaultWarehouseName: string;
-        
+
         if (stockLevels.length > 0) {
           // Use the first warehouse that has stock
           defaultWarehouseId = stockLevels[0].warehouseId;
           defaultWarehouseName = stockLevels[0].warehouseName;
         } else {
           // No warehouses with stock found, get all warehouses and use the first one
-          const warehouses = await this.warehouseRepository.findByOrganization(product.organizationId);
-          
+          const warehouses = await this.warehouseRepository.findByOrganization(
+            product.organizationId,
+          );
+
           if (warehouses.length === 0) {
-            throw new NotFoundException('No warehouses available for stock update');
+            throw new NotFoundException(
+              'No warehouses available for stock update',
+            );
           }
-          
+
           defaultWarehouseId = warehouses[0].id;
           defaultWarehouseName = warehouses[0].name;
         }
-        
+
         // Create stock update DTO
         const stockUpdateDto: UpdateStockDto = {
           warehouseId: defaultWarehouseId,
@@ -668,22 +718,27 @@ export class InventoryService implements IProductService {
           reason: StockMovementReason.SYSTEM_UPDATE,
           userId: 'system',
           userName: 'System',
-          notes: 'Updated via product service interface'
+          notes: 'Updated via product service interface',
         };
-        
+
         // Call the internal implementation
-        const updatedProduct = await this.updateStockInternal(productId, stockUpdateDto);
+        const updatedProduct = await this.updateStockInternal(
+          productId,
+          stockUpdateDto,
+        );
         return this.mapProductToInterface(updatedProduct);
       } catch (error) {
-        this.logger.error(`Error updating stock from interface: ${error.message}`);
+        this.logger.error(
+          `Error updating stock from interface: ${error.message}`,
+        );
         throw error;
       }
     }
-    
+
     // Default path for complex stock update (original implementation)
     return this.updateStockInternal(productId, updateStockDto);
   }
-  
+
   /**
    * Internal method to update stock with full DTO
    */
@@ -775,7 +830,7 @@ export class InventoryService implements IProductService {
     );
 
     // Record the stock movement
-    const movementData: Omit<StockMovement, "id" | "createdAt" | "updatedAt"> =
+    const movementData: Omit<StockMovement, 'id' | 'createdAt' | 'updatedAt'> =
       {
         organizationId: product.organizationId,
         productId,
@@ -791,7 +846,7 @@ export class InventoryService implements IProductService {
         locationId: updateStockDto.locationId,
         locationName: updateStockDto.locationName,
         referenceNumber: updateStockDto.referenceNumber,
-        referenceType: updateStockDto.referenceId ? "order" : undefined,
+        referenceType: updateStockDto.referenceId ? 'order' : undefined,
         referenceId: updateStockDto.referenceId,
         userId: updateStockDto.userId,
         userName: updateStockDto.userName,
@@ -856,10 +911,13 @@ export class InventoryService implements IProductService {
   }): Promise<StockLevel[]> {
     // Convert any Timestamp objects to Date objects
     const convertedParams = { ...params };
-    
+
     // Type-safe conversion of Firestore Timestamp objects to standard JS Date objects
     if (params.lastUpdatedAfter) {
-      if (typeof params.lastUpdatedAfter === 'object' && 'toDate' in params.lastUpdatedAfter) {
+      if (
+        typeof params.lastUpdatedAfter === 'object' &&
+        'toDate' in params.lastUpdatedAfter
+      ) {
         convertedParams.lastUpdatedAfter = params.lastUpdatedAfter.toDate();
       } else if (params.lastUpdatedAfter instanceof Date) {
         convertedParams.lastUpdatedAfter = params.lastUpdatedAfter;
@@ -867,9 +925,12 @@ export class InventoryService implements IProductService {
         convertedParams.lastUpdatedAfter = undefined;
       }
     }
-    
+
     if (params.lastUpdatedBefore) {
-      if (typeof params.lastUpdatedBefore === 'object' && 'toDate' in params.lastUpdatedBefore) {
+      if (
+        typeof params.lastUpdatedBefore === 'object' &&
+        'toDate' in params.lastUpdatedBefore
+      ) {
         convertedParams.lastUpdatedBefore = params.lastUpdatedBefore.toDate();
       } else if (params.lastUpdatedBefore instanceof Date) {
         convertedParams.lastUpdatedBefore = params.lastUpdatedBefore;
@@ -877,7 +938,7 @@ export class InventoryService implements IProductService {
         convertedParams.lastUpdatedBefore = undefined;
       }
     }
-    
+
     return this.stockLevelRepository.findWithFilters(convertedParams);
   }
 
@@ -902,7 +963,7 @@ export class InventoryService implements IProductService {
   }): Promise<StockMovement[]> {
     // Convert any Timestamp objects to Date objects
     const convertedParams = { ...params };
-    
+
     // Type-safe conversion of Firestore Timestamp objects to standard JS Date objects
     if (params.fromDate) {
       if (typeof params.fromDate === 'object' && 'toDate' in params.fromDate) {
@@ -913,7 +974,7 @@ export class InventoryService implements IProductService {
         convertedParams.fromDate = undefined;
       }
     }
-    
+
     if (params.toDate) {
       if (typeof params.toDate === 'object' && 'toDate' in params.toDate) {
         convertedParams.toDate = params.toDate.toDate();
@@ -923,7 +984,7 @@ export class InventoryService implements IProductService {
         convertedParams.toDate = undefined;
       }
     }
-    
+
     return this.stockMovementRepository.findWithFilters(convertedParams);
   }
 }

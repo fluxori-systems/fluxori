@@ -3,10 +3,12 @@ import '@testing-library/jest-dom';
 'use client';
 
 import React from 'react';
-import { describe, test, expect, vi } from 'vitest';
-import { renderWithProviders } from '../../../../testing/utils/render';
+
 import * as TestingLibrary from '@testing-library/react';
+import { describe, test, expect, vi } from 'vitest';
+
 import { Assertions } from '../../../../testing/utils/assertions';
+import { renderWithProviders } from '../../../../testing/utils/render';
 
 // Define Button prop interface to ensure type safety
 interface ButtonProps {

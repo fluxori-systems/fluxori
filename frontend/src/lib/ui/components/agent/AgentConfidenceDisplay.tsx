@@ -1,9 +1,10 @@
 'use client';
 
 import React, { useState } from 'react';
+
+import { Card } from '../Card';
 import { Group } from '../Group';
 import { Text } from '../Text';
-import { Card } from '../Card';
 import { AgentConfidenceDisplayProps } from './types';
 import { useConnectionQuality } from '../../../motion/hooks';
 

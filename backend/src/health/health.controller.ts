@@ -4,8 +4,8 @@
  * Provides health check endpoints for monitoring application status
  */
 
-import { Controller, Get, Logger, Inject } from "@nestjs/common";
-import { ConfigService } from "@nestjs/config";
+import { Controller, Get, Logger, Inject } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import {
   HealthCheck,
   HealthCheckResult,
@@ -14,10 +14,10 @@ import {
   DiskHealthIndicator,
   MemoryHealthIndicator,
   HttpHealthIndicator,
-} from "@nestjs/terminus";
+} from '@nestjs/terminus';
 
-import { FirestoreHealthIndicator } from "./firestore-health.indicator";
-import { STORAGE_SERVICE } from "../common/storage/storage.interface";
+import { FirestoreHealthIndicator } from './firestore-health.indicator';
+import { STORAGE_SERVICE } from '../common/storage/storage.interface';
 
 /**
  * Type for health check indicator function
@@ -36,7 +36,7 @@ interface StorageService {
  *
  * Provides health check endpoints for the application
  */
-@Controller("health")
+@Controller('health')
 export class HealthController {
   private readonly logger = new Logger(HealthController.name);
 
@@ -63,7 +63,7 @@ export class HealthController {
    * Complete health check endpoint
    * Checks all dependencies including Firestore, HTTP, disk, and memory
    */
-  @Get("/check")
+  @Get('/check')
   @HealthCheck()
   check(): Promise<HealthCheckResult> {
     return this.executeFullHealthCheck();
@@ -73,7 +73,7 @@ export class HealthController {
    * Readiness check
    * Determines if the application is ready to receive traffic
    */
-  @Get("/readiness")
+  @Get('/readiness')
   @HealthCheck()
   readiness(): Promise<HealthCheckResult> {
     return this.executeReadinessCheck();
@@ -83,7 +83,7 @@ export class HealthController {
    * Liveness check
    * Determines if the application is running and not crashed
    */
-  @Get("/liveness")
+  @Get('/liveness')
   @HealthCheck()
   liveness(): Promise<HealthCheckResult> {
     return this.executeLivenessCheck();
@@ -95,16 +95,16 @@ export class HealthController {
   private getBasicHealthCheck(): HealthCheckResult {
     // Return basic health check result in Terminus format
     return {
-      status: "ok",
+      status: 'ok',
       info: {
         service: {
-          status: "up",
+          status: 'up',
           timestamp: new Date().toISOString(),
         },
       },
       details: {
         service: {
-          status: "up",
+          status: 'up',
           timestamp: new Date().toISOString(),
         },
       },
@@ -118,14 +118,14 @@ export class HealthController {
   private executeFullHealthCheck(): Promise<HealthCheckResult> {
     const indicators: HealthIndicatorFunction[] = [
       // Check Firestore database health
-      () => this.firestore.isHealthy("database"),
+      () => this.firestore.isHealthy('database'),
 
       // Check disk space
-      () => this.disk.checkStorage("disk", { path: "/", thresholdPercent: 90 }),
+      () => this.disk.checkStorage('disk', { path: '/', thresholdPercent: 90 }),
 
       // Check memory usage
-      () => this.memory.checkHeap("memory_heap", 300 * 1024 * 1024), // 300MB
-      () => this.memory.checkRSS("memory_rss", 500 * 1024 * 1024), // 500MB
+      () => this.memory.checkHeap('memory_heap', 300 * 1024 * 1024), // 300MB
+      () => this.memory.checkRSS('memory_rss', 500 * 1024 * 1024), // 500MB
     ];
 
     // Add external dependency checks
@@ -140,7 +140,7 @@ export class HealthController {
    */
   private executeReadinessCheck(): Promise<HealthCheckResult> {
     // Just check Firestore since it's the main dependency
-    return this.health.check([() => this.firestore.isHealthy("database")]);
+    return this.health.check([() => this.firestore.isHealthy('database')]);
   }
 
   /**
@@ -149,7 +149,7 @@ export class HealthController {
   private executeLivenessCheck(): Promise<HealthCheckResult> {
     // Simply check memory to ensure app is running
     return this.health.check([
-      () => this.memory.checkHeap("memory_heap", 500 * 1024 * 1024),
+      () => this.memory.checkHeap('memory_heap', 500 * 1024 * 1024),
     ]);
   }
 
@@ -160,10 +160,10 @@ export class HealthController {
     const checks: HealthIndicatorFunction[] = [];
 
     // Check OpenAI API if configured
-    const openAiKey = this.configService.get<string>("OPENAI_API_KEY");
+    const openAiKey = this.configService.get<string>('OPENAI_API_KEY');
     if (openAiKey) {
       checks.push(() =>
-        this.http.pingCheck("openai_api", "https://api.openai.com/v1/engines"),
+        this.http.pingCheck('openai_api', 'https://api.openai.com/v1/engines'),
       );
     }
 

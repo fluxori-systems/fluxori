@@ -1,9 +1,9 @@
-import { Injectable, Logger, NotFoundException } from "@nestjs/common";
-import { ConfigService } from "@nestjs/config";
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 
-import { EmbeddingProviderType } from "../interfaces/types";
-import { EmbeddingProvider } from "../models/embedding-provider.schema";
-import { EmbeddingProviderRepository } from "../repositories/embedding-provider.repository";
+import { EmbeddingProviderType } from '../interfaces/types';
+import { EmbeddingProvider } from '../models/embedding-provider.schema';
+import { EmbeddingProviderRepository } from '../repositories/embedding-provider.repository';
 
 /**
  * DTO for creating a new embedding provider
@@ -195,7 +195,7 @@ export class EmbeddingService {
    */
   async setEnabled(id: string, enabled: boolean): Promise<EmbeddingProvider> {
     this.logger.log(
-      `${enabled ? "Enabling" : "Disabling"} embedding provider ${id}`,
+      `${enabled ? 'Enabling' : 'Disabling'} embedding provider ${id}`,
     );
 
     const updated = await this.embeddingProviderRepository.setEnabled(
@@ -223,7 +223,7 @@ export class EmbeddingService {
       await this.embeddingProviderRepository.delete(id);
       return true;
     } catch (error) {
-      if (error.message?.includes("not found")) {
+      if (error.message?.includes('not found')) {
         throw new NotFoundException(
           `Embedding provider with ID ${id} not found`,
         );
@@ -251,7 +251,7 @@ export class EmbeddingService {
       provider = await this.findById(providerId);
       if (provider.organizationId !== organizationId) {
         throw new Error(
-          "Provider does not belong to the specified organization",
+          'Provider does not belong to the specified organization',
         );
       }
     } else {

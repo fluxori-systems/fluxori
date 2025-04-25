@@ -1,10 +1,12 @@
 'use client';
 
 import React, { useRef, useEffect, useState } from 'react';
+
 import { gsap } from 'gsap';
+
 import { useMotion } from '../context/MotionContext';
-import { durations, easings, complexityPresets } from '../utils/motion-tokens';
 import { useReducedMotion } from '../hooks/useReducedMotion';
+import { durations, easings, complexityPresets } from '../utils/motion-tokens';
 
 export interface AnimatedTabIndicatorProps {
   /** Currently active tab index */

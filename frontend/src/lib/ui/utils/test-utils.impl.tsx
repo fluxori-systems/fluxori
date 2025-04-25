@@ -4,12 +4,15 @@
  */
 
 import React, { ReactElement } from 'react';
+
 import { render } from '@testing-library/react';
+
 import { ThemeProvider } from '@/lib/design-system/theme/ThemeContext';
-import { ServiceProvider } from '@/lib/shared/providers/service-provider';
+import { MotionProvider } from '@/lib/motion';
 import { defaultAnimationService } from '@/lib/motion/services/animation-service.impl';
 import { defaultConnectionService } from '@/lib/motion/services/connection-service.impl';
-import { MotionProvider } from '@/lib/motion';
+import { ServiceProvider } from '@/lib/shared/providers/service-provider';
+
 import { 
   ComponentTestConfig, 
   CustomRenderOptions, 

@@ -7,22 +7,22 @@
  */
 
 // Re-export module
-export { AuthModule } from "./auth.module";
+export { AuthModule } from './auth.module';
 
 // Re-export primary services
-export { AuthService } from "./services/auth.service";
-export { FirebaseAuthService } from "./services/firebase-auth.service";
+export { AuthService } from './services/auth.service';
+export { FirebaseAuthService } from './services/firebase-auth.service';
 
 // Re-export guards
-export { FirebaseAuthGuard } from "./guards/firebase-auth.guard";
+export { FirebaseAuthGuard } from './guards/firebase-auth.guard';
 
 // Re-export decorators
-export { GetUser } from "./decorators/get-user.decorator";
-export { Public } from "./decorators/public.decorator";
+export { GetUser } from './decorators/get-user.decorator';
+export { Public } from './decorators/public.decorator';
 
 // Re-export DTOs
-export { LoginDto } from "./dtos/login.dto";
-export { RegisterDto } from "./dtos/register.dto";
+export { LoginDto } from './dtos/login.dto';
+export { RegisterDto } from './dtos/register.dto';
 
 // Re-export interfaces
-export * from "./interfaces/jwt-payload.interface";
+export * from './interfaces/jwt-payload.interface';

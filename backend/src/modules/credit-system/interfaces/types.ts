@@ -1,28 +1,28 @@
 /**
  * Types for the Credit System module
  */
-import { FirestoreEntity } from "../../../types/google-cloud.types";
+import { FirestoreEntity } from '../../../types/google-cloud.types';
 
 /**
  * Credit allocation model types
  */
 export enum CreditModelType {
-  SUBSCRIPTION = "subscription",
-  PAY_AS_YOU_GO = "pay_as_you_go",
-  QUOTA = "quota", 
-  PREPAID = "prepaid"
+  SUBSCRIPTION = 'subscription',
+  PAY_AS_YOU_GO = 'pay_as_you_go',
+  QUOTA = 'quota',
+  PREPAID = 'prepaid',
 }
 
 /**
  * Credit usage types
  */
 export enum CreditUsageType {
-  TOKEN_USAGE = "token_usage",
-  MODEL_CALL = "model_call",
-  DOCUMENT_PROCESSING = "document_processing", 
-  RAG_QUERY = "rag_query",
-  EMBEDDING = "embedding",
-  INSIGHT_GENERATION = "insight_generation"
+  TOKEN_USAGE = 'token_usage',
+  MODEL_CALL = 'model_call',
+  DOCUMENT_PROCESSING = 'document_processing',
+  RAG_QUERY = 'rag_query',
+  EMBEDDING = 'embedding',
+  INSIGHT_GENERATION = 'insight_generation',
 }
 
 /**
@@ -47,7 +47,7 @@ export interface CreditTransaction extends FirestoreEntity {
   organizationId: string;
   userId?: string;
   amount: number;
-  transactionType: "credit" | "debit";
+  transactionType: 'credit' | 'debit';
   usageType: CreditUsageType;
   modelId?: string;
   modelProvider?: string;
@@ -88,7 +88,7 @@ export interface CreditPricingTier extends FirestoreEntity {
   modelId: string;
   modelProvider: string;
   displayName: string;
-  inputTokenCost: number;  // Cost per 1000 input tokens in credits
+  inputTokenCost: number; // Cost per 1000 input tokens in credits
   outputTokenCost: number; // Cost per 1000 output tokens in credits
   effectiveDate: Date;
   expirationDate?: Date;
@@ -97,7 +97,7 @@ export interface CreditPricingTier extends FirestoreEntity {
     [region: string]: {
       inputTokenCost: number;
       outputTokenCost: number;
-    }
+    };
   };
 }
 
@@ -106,7 +106,7 @@ export interface CreditPricingTier extends FirestoreEntity {
  */
 export interface CreditUsageStats extends FirestoreEntity {
   organizationId: string;
-  period: "daily" | "weekly" | "monthly";
+  period: 'daily' | 'weekly' | 'monthly';
   periodStart: Date;
   periodEnd: Date;
   totalCreditsUsed: number;
@@ -132,7 +132,7 @@ export interface CreditReservation extends FirestoreEntity {
   operationId: string;
   reservationAmount: number;
   usageType: CreditUsageType;
-  status: "pending" | "confirmed" | "released" | "expired";
+  status: 'pending' | 'confirmed' | 'released' | 'expired';
   expirationDate: Date;
   metadata?: Record<string, any>;
 }
@@ -142,7 +142,11 @@ export interface CreditReservation extends FirestoreEntity {
  */
 export interface CreditAlert extends FirestoreEntity {
   organizationId: string;
-  alertType: "low_balance" | "high_usage" | "quota_exceeded" | "approaching_limit";
+  alertType:
+    | 'low_balance'
+    | 'high_usage'
+    | 'quota_exceeded'
+    | 'approaching_limit';
   thresholdPercentage: number;
   triggered: boolean;
   lastTriggeredAt?: Date;

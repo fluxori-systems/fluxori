@@ -3,9 +3,9 @@
  * Provides entity validation for the Firestore repositories
  */
 
-import { BadRequestException } from "@nestjs/common";
+import { BadRequestException } from '@nestjs/common';
 
-import { FirestoreEntity } from "../../../types/google-cloud.types";
+import { FirestoreEntity } from '../../../types/google-cloud.types';
 
 /**
  * Custom error class for repository validation errors
@@ -13,7 +13,7 @@ import { FirestoreEntity } from "../../../types/google-cloud.types";
 export class RepositoryValidationError extends BadRequestException {
   constructor(message: string) {
     super(message);
-    this.name = "RepositoryValidationError";
+    this.name = 'RepositoryValidationError';
   }
 }
 
@@ -53,7 +53,7 @@ export function validateRequiredFields<T extends FirestoreEntity>(
   // Throw error if any required fields are missing
   if (missingFields.length > 0) {
     throw new BadRequestException(
-      `Missing required fields: ${missingFields.join(", ")}`,
+      `Missing required fields: ${missingFields.join(', ')}`,
     );
   }
 }
@@ -64,21 +64,21 @@ export function validateRequiredFields<T extends FirestoreEntity>(
  */
 export function validateEntityId(id: string | undefined): void {
   if (!id) {
-    throw new BadRequestException("Entity ID is required");
+    throw new BadRequestException('Entity ID is required');
   }
 
-  if (typeof id !== "string") {
-    throw new BadRequestException("Entity ID must be a string");
+  if (typeof id !== 'string') {
+    throw new BadRequestException('Entity ID must be a string');
   }
 
-  if (id.trim() === "") {
-    throw new BadRequestException("Entity ID cannot be empty");
+  if (id.trim() === '') {
+    throw new BadRequestException('Entity ID cannot be empty');
   }
 
   // Check for invalid characters in ID
   const invalidChars = /[.\/\[\]#$]/;
   if (invalidChars.test(id)) {
-    throw new BadRequestException("Entity ID contains invalid characters");
+    throw new BadRequestException('Entity ID contains invalid characters');
   }
 }
 
@@ -95,7 +95,7 @@ export function isEntityDeleted<T extends FirestoreEntity>(entity: T): boolean {
  */
 export function validateEntityNotDeleted<T extends FirestoreEntity>(
   entity: T,
-  errorMessage: string = "Entity is deleted",
+  errorMessage: string = 'Entity is deleted',
 ): void {
   if (isEntityDeleted(entity)) {
     throw new BadRequestException(errorMessage);
@@ -111,7 +111,7 @@ export function validateBatchItems<T>(
   maxItems: number = 500,
 ): void {
   if (!Array.isArray(items)) {
-    throw new BadRequestException("Items must be an array");
+    throw new BadRequestException('Items must be an array');
   }
 
   if (items.length < minItems) {

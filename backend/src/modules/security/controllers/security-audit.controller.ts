@@ -8,12 +8,17 @@ import {
   Logger,
   UnauthorizedException,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
 
-import { SecurityAuditService } from '../services/security-audit.service';
 import { ObservabilityService } from '../../../common/observability';
 import { FirebaseAuthGuard } from '../../auth/guards/firebase-auth.guard';
 import { SecurityAuditRecord } from '../interfaces/security.interfaces';
+import { SecurityAuditService } from '../services/security-audit.service';
 
 /**
  * Controller for security audit logs
@@ -24,12 +29,12 @@ import { SecurityAuditRecord } from '../interfaces/security.interfaces';
 @ApiBearerAuth()
 export class SecurityAuditController {
   private readonly logger = new Logger(SecurityAuditController.name);
-  
+
   constructor(
     private readonly securityAudit: SecurityAuditService,
     private readonly observability: ObservabilityService,
   ) {}
-  
+
   /**
    * Query security audit logs
    */
@@ -50,13 +55,15 @@ export class SecurityAuditController {
     // Check if the user has admin role
     const request = this.getRequest();
     if (!request.user || request.user.role !== 'admin') {
-      throw new UnauthorizedException('Only administrators can query audit logs');
+      throw new UnauthorizedException(
+        'Only administrators can query audit logs',
+      );
     }
-    
+
     // Parse date strings if provided
     const startDate = startTime ? new Date(startTime) : undefined;
     const endDate = endTime ? new Date(endTime) : undefined;
-    
+
     // Query audit logs
     return this.securityAudit.queryAuditLogs({
       startTime: startDate,
@@ -70,7 +77,7 @@ export class SecurityAuditController {
       offset,
     });
   }
-  
+
   /**
    * Get audit statistics by dimension
    */
@@ -78,27 +85,30 @@ export class SecurityAuditController {
   @ApiOperation({ summary: 'Get audit statistics by dimension' })
   @ApiResponse({ status: 200, description: 'Audit statistics' })
   async getAuditStats(
-    @Query('dimension') dimension: 'action' | 'actorId' | 'resourceType' | 'outcome',
+    @Query('dimension')
+    dimension: 'action' | 'actorId' | 'resourceType' | 'outcome',
     @Query('startTime') startTime: string,
     @Query('endTime') endTime: string,
   ): Promise<Record<string, number>> {
     // Check if the user has admin role
     const request = this.getRequest();
     if (!request.user || request.user.role !== 'admin') {
-      throw new UnauthorizedException('Only administrators can access audit statistics');
+      throw new UnauthorizedException(
+        'Only administrators can access audit statistics',
+      );
     }
-    
+
     // Parse date strings
     const startDate = new Date(startTime);
     const endDate = new Date(endTime);
-    
+
     // Get audit statistics
-    return this.securityAudit.getAuditStats(
-      dimension,
-      { start: startDate, end: endDate }
-    );
+    return this.securityAudit.getAuditStats(dimension, {
+      start: startDate,
+      end: endDate,
+    });
   }
-  
+
   /**
    * Export audit logs to a file
    */
@@ -106,7 +116,8 @@ export class SecurityAuditController {
   @ApiOperation({ summary: 'Export audit logs to a file' })
   @ApiResponse({ status: 200, description: 'URL to download exported file' })
   async exportAuditLogs(
-    @Body() body: {
+    @Body()
+    body: {
       startTime?: string;
       endTime?: string;
       actorId?: string;
@@ -115,18 +126,20 @@ export class SecurityAuditController {
       resourceId?: string;
       outcome?: 'allowed' | 'denied';
       format?: 'json' | 'csv';
-    }
+    },
   ): Promise<{ url: string }> {
     // Check if the user has admin role
     const request = this.getRequest();
     if (!request.user || request.user.role !== 'admin') {
-      throw new UnauthorizedException('Only administrators can export audit logs');
+      throw new UnauthorizedException(
+        'Only administrators can export audit logs',
+      );
     }
-    
+
     // Parse date strings if provided
     const startDate = body.startTime ? new Date(body.startTime) : undefined;
     const endDate = body.endTime ? new Date(body.endTime) : undefined;
-    
+
     // Export audit logs
     const url = await this.securityAudit.exportAuditLogs(
       {
@@ -138,9 +151,9 @@ export class SecurityAuditController {
         resourceId: body.resourceId,
         outcome: body.outcome,
       },
-      body.format || 'json'
+      body.format || 'json',
     );
-    
+
     // Create an audit log for this export
     this.observability.log('Audit logs exported', {
       service: SecurityAuditController.name,
@@ -148,10 +161,10 @@ export class SecurityAuditController {
       action: 'export_audit_logs',
       data: { format: body.format || 'json' },
     });
-    
+
     return { url };
   }
-  
+
   /**
    * Purge old audit logs
    */
@@ -159,20 +172,22 @@ export class SecurityAuditController {
   @ApiOperation({ summary: 'Purge old audit logs' })
   @ApiResponse({ status: 200, description: 'Number of records purged' })
   async purgeAuditLogs(
-    @Body() body: { olderThan: string }
+    @Body() body: { olderThan: string },
   ): Promise<{ purged: number }> {
     // Check if the user has admin role
     const request = this.getRequest();
     if (!request.user || request.user.role !== 'admin') {
-      throw new UnauthorizedException('Only administrators can purge audit logs');
+      throw new UnauthorizedException(
+        'Only administrators can purge audit logs',
+      );
     }
-    
+
     // Parse the date string
     const olderThan = new Date(body.olderThan);
-    
+
     // Purge audit logs
     const purged = await this.securityAudit.purgeAuditLogs(olderThan);
-    
+
     // Create an audit log for this purge
     this.observability.log('Audit logs purged', {
       service: SecurityAuditController.name,
@@ -180,10 +195,10 @@ export class SecurityAuditController {
       action: 'purge_audit_logs',
       data: { olderThan: body.olderThan, purged },
     });
-    
+
     return { purged };
   }
-  
+
   /**
    * Get the current request
    */

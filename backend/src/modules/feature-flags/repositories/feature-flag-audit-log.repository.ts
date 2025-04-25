@@ -1,10 +1,10 @@
-import { Injectable, Logger, OnModuleInit } from "@nestjs/common";
+import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 
-import { FirestoreConfigService } from "src/config/firestore.config";
+import { FirestoreConfigService } from 'src/config/firestore.config';
 
-import { FirestoreBaseRepository } from "src/common/repositories";
+import { FirestoreBaseRepository } from 'src/common/repositories';
 
-import { FeatureFlagAuditLog } from "../interfaces/types";
+import { FeatureFlagAuditLog } from '../interfaces/types';
 
 /**
  * Repository for managing feature flag audit logs
@@ -17,7 +17,7 @@ export class FeatureFlagAuditLogRepository
   protected readonly logger = new Logger(FeatureFlagAuditLogRepository.name);
 
   constructor(firestoreConfigService: FirestoreConfigService) {
-    super(firestoreConfigService, "feature_flag_audit_logs", {
+    super(firestoreConfigService, 'feature_flag_audit_logs', {
       enableCache: false, // No caching for audit logs
       useSoftDeletes: false, // We don't want to delete audit logs
     });
@@ -27,7 +27,7 @@ export class FeatureFlagAuditLogRepository
    * Initialize the repository when the module loads
    */
   onModuleInit(): void {
-    this.logger.log("FeatureFlagAuditLogRepository initialized");
+    this.logger.log('FeatureFlagAuditLogRepository initialized');
   }
 
   /**
@@ -37,10 +37,10 @@ export class FeatureFlagAuditLogRepository
    */
   async findByFlagId(flagId: string): Promise<FeatureFlagAuditLog[]> {
     return this.find({
-      advancedFilters: [{ field: "flagId", operator: "==", value: flagId }],
+      advancedFilters: [{ field: 'flagId', operator: '==', value: flagId }],
       queryOptions: {
-        orderBy: "timestamp",
-        direction: "desc",
+        orderBy: 'timestamp',
+        direction: 'desc',
       },
     });
   }
@@ -52,10 +52,10 @@ export class FeatureFlagAuditLogRepository
    */
   async findByFlagKey(flagKey: string): Promise<FeatureFlagAuditLog[]> {
     return this.find({
-      advancedFilters: [{ field: "flagKey", operator: "==", value: flagKey }],
+      advancedFilters: [{ field: 'flagKey', operator: '==', value: flagKey }],
       queryOptions: {
-        orderBy: "timestamp",
-        direction: "desc",
+        orderBy: 'timestamp',
+        direction: 'desc',
       },
     });
   }
@@ -68,11 +68,11 @@ export class FeatureFlagAuditLogRepository
   async findByUser(userId: string): Promise<FeatureFlagAuditLog[]> {
     return this.find({
       advancedFilters: [
-        { field: "performedBy", operator: "==", value: userId },
+        { field: 'performedBy', operator: '==', value: userId },
       ],
       queryOptions: {
-        orderBy: "timestamp",
-        direction: "desc",
+        orderBy: 'timestamp',
+        direction: 'desc',
       },
     });
   }
@@ -83,13 +83,13 @@ export class FeatureFlagAuditLogRepository
    * @returns List of audit logs for the action
    */
   async findByAction(
-    action: "created" | "updated" | "deleted" | "toggled",
+    action: 'created' | 'updated' | 'deleted' | 'toggled',
   ): Promise<FeatureFlagAuditLog[]> {
     return this.find({
-      advancedFilters: [{ field: "action", operator: "==", value: action }],
+      advancedFilters: [{ field: 'action', operator: '==', value: action }],
       queryOptions: {
-        orderBy: "timestamp",
-        direction: "desc",
+        orderBy: 'timestamp',
+        direction: 'desc',
       },
     });
   }
@@ -103,8 +103,8 @@ export class FeatureFlagAuditLogRepository
   async findRecent(limit = 20, offset = 0): Promise<FeatureFlagAuditLog[]> {
     return this.find({
       queryOptions: {
-        orderBy: "timestamp",
-        direction: "desc",
+        orderBy: 'timestamp',
+        direction: 'desc',
         limit,
         offset,
       },

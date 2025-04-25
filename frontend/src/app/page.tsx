@@ -1,7 +1,8 @@
 'use client';
 
-import { Text, Stack, Button, SimpleGrid } from '@/lib/ui';
 import { IconShoppingCart, IconChartLine, IconBrandShopee } from '@tabler/icons-react';
+
+import { Text, Stack, Button, SimpleGrid } from '@/lib/ui';
 
 export default function HomePage() {
   return (

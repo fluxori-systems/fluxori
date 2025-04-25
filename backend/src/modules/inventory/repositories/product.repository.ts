@@ -1,12 +1,12 @@
-import { Injectable, Logger } from "@nestjs/common";
+import { Injectable, Logger } from '@nestjs/common';
 
 import {
   FirestoreBaseRepository,
   FirestoreAdvancedFilter,
-} from "../../../common/repositories";
-import { FirestoreConfigService } from "../../../config/firestore.config";
-import { ProductStatus } from "../interfaces/types";
-import { Product } from "../models/product.schema";
+} from '../../../common/repositories';
+import { FirestoreConfigService } from '../../../config/firestore.config';
+import { ProductStatus } from '../interfaces/types';
+import { Product } from '../models/product.schema';
 
 /**
  * Repository for Product entities
@@ -16,12 +16,12 @@ export class ProductRepository extends FirestoreBaseRepository<Product> {
   protected readonly logger = new Logger(ProductRepository.name);
 
   constructor(firestoreConfigService: FirestoreConfigService) {
-    super(firestoreConfigService, "products", {
+    super(firestoreConfigService, 'products', {
       useSoftDeletes: true,
       useVersioning: true,
       enableCache: true,
       cacheTTLMs: 5 * 60 * 1000, // 5 minutes
-      requiredFields: ["organizationId", "sku", "name", "status"],
+      requiredFields: ['organizationId', 'sku', 'name', 'status'],
     });
   }
 
@@ -33,7 +33,7 @@ export class ProductRepository extends FirestoreBaseRepository<Product> {
   async findByOrganization(organizationId: string): Promise<Product[]> {
     return this.find({
       advancedFilters: [
-        { field: "organizationId", operator: "==", value: organizationId },
+        { field: 'organizationId', operator: '==', value: organizationId },
       ],
     });
   }
@@ -50,8 +50,8 @@ export class ProductRepository extends FirestoreBaseRepository<Product> {
   ): Promise<Product | null> {
     const results = await this.find({
       advancedFilters: [
-        { field: "organizationId", operator: "==", value: organizationId },
-        { field: "sku", operator: "==", value: sku },
+        { field: 'organizationId', operator: '==', value: organizationId },
+        { field: 'sku', operator: '==', value: sku },
       ],
     });
 
@@ -70,8 +70,8 @@ export class ProductRepository extends FirestoreBaseRepository<Product> {
   ): Promise<Product | null> {
     const results = await this.find({
       advancedFilters: [
-        { field: "organizationId", operator: "==", value: organizationId },
-        { field: "barcode", operator: "==", value: barcode },
+        { field: 'organizationId', operator: '==', value: organizationId },
+        { field: 'barcode', operator: '==', value: barcode },
       ],
     });
 
@@ -90,8 +90,8 @@ export class ProductRepository extends FirestoreBaseRepository<Product> {
   ): Promise<Product[]> {
     return this.find({
       advancedFilters: [
-        { field: "organizationId", operator: "==", value: organizationId },
-        { field: "status", operator: "==", value: status },
+        { field: 'organizationId', operator: '==', value: organizationId },
+        { field: 'status', operator: '==', value: status },
       ],
     });
   }
@@ -128,8 +128,8 @@ export class ProductRepository extends FirestoreBaseRepository<Product> {
   ): Promise<Product[]> {
     return this.find({
       advancedFilters: [
-        { field: "organizationId", operator: "==", value: organizationId },
-        { field: "brandId", operator: "==", value: brandId },
+        { field: 'organizationId', operator: '==', value: organizationId },
+        { field: 'brandId', operator: '==', value: brandId },
       ],
     });
   }
@@ -197,7 +197,7 @@ export class ProductRepository extends FirestoreBaseRepository<Product> {
     return products.filter((product) => {
       const name = product.name.toLowerCase();
       const sku = product.sku.toLowerCase();
-      const description = product.description?.toLowerCase() || "";
+      const description = product.description?.toLowerCase() || '';
 
       return (
         name.includes(normalizedSearch) ||
@@ -229,30 +229,30 @@ export class ProductRepository extends FirestoreBaseRepository<Product> {
   }): Promise<Product[]> {
     // Create advanced filters
     const advancedFilters: FirestoreAdvancedFilter<Product>[] = [
-      { field: "organizationId", operator: "==", value: params.organizationId },
+      { field: 'organizationId', operator: '==', value: params.organizationId },
     ];
 
     // Add optional filters
     if (params.status) {
       advancedFilters.push({
-        field: "status",
-        operator: "==",
+        field: 'status',
+        operator: '==',
         value: params.status,
       });
     }
 
     if (params.brandId) {
       advancedFilters.push({
-        field: "brandId",
-        operator: "==",
+        field: 'brandId',
+        operator: '==',
         value: params.brandId,
       });
     }
 
     if (params.hasVariants !== undefined) {
       advancedFilters.push({
-        field: "hasVariants",
-        operator: "==",
+        field: 'hasVariants',
+        operator: '==',
         value: params.hasVariants,
       });
     }
@@ -261,7 +261,7 @@ export class ProductRepository extends FirestoreBaseRepository<Product> {
     let products = await this.find({
       advancedFilters,
       queryOptions: {
-        orderBy: "name",
+        orderBy: 'name',
         limit: params.limit,
         offset: params.offset,
       },
@@ -321,7 +321,7 @@ export class ProductRepository extends FirestoreBaseRepository<Product> {
       products = products.filter((product) => {
         const name = product.name.toLowerCase();
         const sku = product.sku.toLowerCase();
-        const description = product.description?.toLowerCase() || "";
+        const description = product.description?.toLowerCase() || '';
 
         return (
           name.includes(normalizedSearch) ||

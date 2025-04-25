@@ -6,8 +6,9 @@
  */
 
 import { MantineTheme } from '@mantine/core';
-import { DesignTokens, SpacingScale } from '../types/tokens';
+
 import { lightTheme } from '../tokens';
+import { DesignTokens, SpacingScale } from '../types/tokens';
 
 /**
  * Converts a Mantine theme to our design system tokens format

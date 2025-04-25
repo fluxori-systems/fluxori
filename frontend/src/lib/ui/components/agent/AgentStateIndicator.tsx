@@ -1,10 +1,11 @@
 'use client';
 
 import React from 'react';
-import { Text } from '../Text';
-import { Group } from '../Group';
+
 import { AIProcessingIndicator } from '../../../motion/components/AIProcessingIndicator';
 import { useMotion } from '../../../motion/context/MotionContext';
+import { Group } from '../Group';
+import { Text } from '../Text';
 
 export interface AgentStateIndicatorProps {
   /** Current agent state */

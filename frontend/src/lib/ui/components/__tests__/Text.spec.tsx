@@ -3,9 +3,11 @@ import '@testing-library/jest-dom';
 'use client';
 
 import React from 'react';
+
 import { describe, test, expect, vi } from 'vitest';
-import { renderWithProviders } from '../../../../testing/utils/render';
+
 import { setupNetworkConditions } from '../../../../testing/utils/networkTesting';
+import { renderWithProviders } from '../../../../testing/utils/render';
 
 // Import the Text component type before mocking
 import { Text as OriginalText } from '../Text';

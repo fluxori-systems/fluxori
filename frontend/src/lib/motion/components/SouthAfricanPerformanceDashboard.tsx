@@ -1,16 +1,17 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { 
-  PerformanceInsight,
-  defaultPerformanceAnalyticsService 
-} from '../services/performance/performance-analytics.service';
+
 import { 
   DeviceProfile, 
   NetworkProfile,
   southAfricanDeviceProfiles,
   southAfricanNetworkProfiles
 } from '../data/device-profiles';
+import { 
+  PerformanceInsight,
+  defaultPerformanceAnalyticsService 
+} from '../services/performance/performance-analytics.service';
 import { defaultPerformanceMonitoringService } from '../services/performance/performance-monitoring.service';
 
 // Network information type for narrowing in checks

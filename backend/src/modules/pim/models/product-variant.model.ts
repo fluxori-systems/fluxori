@@ -1,16 +1,16 @@
 /**
  * Product Variant Model
- * 
+ *
  * Model for product variants in the PIM module
  */
 
-import { TenantEntity } from '../../../types/google-cloud.types';
 import { Product } from './product.model';
+import { TenantEntity } from '../../../types/google-cloud.types';
 import { ProductAttribute } from '../interfaces/types';
 
 /**
  * Product variant entity
- * 
+ *
  * A product variant is a specific version of a product with unique attributes
  * (e.g., different color, size, etc.)
  */
@@ -19,22 +19,22 @@ export interface ProductVariant extends TenantEntity {
    * Reference to the parent product ID
    */
   parentId: string;
-  
+
   /**
    * Variant-specific SKU
    */
   sku: string;
-  
+
   /**
    * Variant name (usually parent name + attribute values)
    */
   name: string;
-  
+
   /**
    * Variant-specific attributes that differ from parent
    */
   attributes: ProductAttribute[];
-  
+
   /**
    * Variant-specific pricing (overrides parent pricing if present)
    */
@@ -43,33 +43,33 @@ export interface ProductVariant extends TenantEntity {
      * Base price amount (without tax)
      */
     basePrice?: number;
-    
+
     /**
      * Whether this price includes VAT
      */
     vatIncluded?: boolean;
-    
+
     /**
      * Currency code (e.g., 'ZAR', 'USD', 'EUR')
      */
     currency?: string;
-    
+
     /**
      * Special or sale price, if applicable
      */
     specialPrice?: number;
-    
+
     /**
      * Start date for special price
      */
     specialPriceFromDate?: Date;
-    
+
     /**
      * End date for special price
      */
     specialPriceToDate?: Date;
   };
-  
+
   /**
    * Variant-specific images
    */
@@ -78,13 +78,13 @@ export interface ProductVariant extends TenantEntity {
      * Main variant image
      */
     main?: string;
-    
+
     /**
      * Additional gallery images
      */
     gallery?: string[];
   };
-  
+
   /**
    * Variant-specific stock information
    */
@@ -93,38 +93,38 @@ export interface ProductVariant extends TenantEntity {
      * Whether the variant is in stock
      */
     inStock: boolean;
-    
+
     /**
      * Available quantity
      */
     quantity: number;
-    
+
     /**
      * Warehouse stock levels (for multi-warehouse)
      */
     warehouseStock?: Record<string, number>;
   };
-  
+
   /**
    * Whether this variant is the default option
    */
   isDefault?: boolean;
-  
+
   /**
    * Position for sorting when displaying variants
    */
   position?: number;
-  
+
   /**
    * Variant-specific dimensions in cm [length, width, height]
    */
   dimensions?: [number, number, number];
-  
+
   /**
    * Variant-specific weight in kilograms
    */
   weight?: number;
-  
+
   /**
    * Marketplace mappings for this variant
    */
@@ -133,28 +133,28 @@ export interface ProductVariant extends TenantEntity {
      * Marketplace ID
      */
     marketplaceId: string;
-    
+
     /**
      * External variant ID in the marketplace
      */
     externalId: string;
-    
+
     /**
      * External variant SKU
      */
     externalSku?: string;
-    
+
     /**
      * Last sync timestamp
      */
     lastSynced?: Date;
-    
+
     /**
      * Sync status
      */
     status: 'active' | 'inactive' | 'pending' | 'error';
   }[];
-  
+
   /**
    * Region-specific variant data
    */
@@ -168,7 +168,7 @@ export interface ProductVariant extends TenantEntity {
        */
       saBarcode?: string;
     };
-    
+
     /**
      * Europe specific data
      */
@@ -179,7 +179,7 @@ export interface ProductVariant extends TenantEntity {
       eanCode?: string;
     };
   };
-  
+
   /**
    * URL key/slug for this variant
    */
@@ -194,17 +194,17 @@ export interface VariantGroup {
    * Parent product ID
    */
   productId: string;
-  
+
   /**
    * Variant attributes - which attributes create the variants
    */
   variantAttributes: string[];
-  
+
   /**
    * List of variants in this group
    */
   variants: ProductVariant[];
-  
+
   /**
    * Display mode for variant selection
    */
@@ -214,7 +214,10 @@ export interface VariantGroup {
 /**
  * Product variant creation DTO
  */
-export type CreateProductVariantDto = Omit<ProductVariant, 'id' | 'createdAt' | 'updatedAt' | 'isDeleted' | 'deletedAt' | 'version'>;
+export type CreateProductVariantDto = Omit<
+  ProductVariant,
+  'id' | 'createdAt' | 'updatedAt' | 'isDeleted' | 'deletedAt' | 'version'
+>;
 
 /**
  * Product variant update DTO

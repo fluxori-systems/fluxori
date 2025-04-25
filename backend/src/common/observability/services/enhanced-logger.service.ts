@@ -1,29 +1,24 @@
-import {
-  Injectable,
-  LogLevel,
-  Inject,
-  Optional,
-} from "@nestjs/common";
-import { ConfigService } from "@nestjs/config";
+import { Injectable, LogLevel, Inject, Optional } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 
-import { Logging, Entry } from "@google-cloud/logging";
-import { v4 as uuidv4 } from "uuid";
+import { Logging, Entry } from '@google-cloud/logging';
+import { v4 as uuidv4 } from 'uuid';
 
 // Import interfaces
-import {
-  LogContext,
-  StructuredLogEntry,
-  TraceContext,
-  IEnhancedLoggerService,
-} from "../interfaces/observability.interfaces";
 
 // Import constants
 import {
   SENSITIVE_DATA_FIELDS,
   SAMPLING_RATES,
-} from "../constants/observability.constants";
-import { OBSERVABILITY_TOKENS } from "../constants/observability.tokens";
-import { DEFAULT_OBSERVABILITY_OPTIONS } from "../interfaces/observability-options.interface";
+} from '../constants/observability.constants';
+import { OBSERVABILITY_TOKENS } from '../constants/observability.tokens';
+import { DEFAULT_OBSERVABILITY_OPTIONS } from '../interfaces/observability-options.interface';
+import {
+  LogContext,
+  StructuredLogEntry,
+  TraceContext,
+  IEnhancedLoggerService,
+} from '../interfaces/observability.interfaces';
 
 /**
  * Enhanced logger service that extends the basic NestJS logger with
@@ -57,22 +52,24 @@ export class EnhancedLoggerService implements IEnhancedLoggerService {
 
   constructor(
     private readonly configService: ConfigService,
-    @Optional() @Inject(OBSERVABILITY_TOKENS.OBSERVABILITY_OPTIONS) private readonly options?: any,
+    @Optional()
+    @Inject(OBSERVABILITY_TOKENS.OBSERVABILITY_OPTIONS)
+    private readonly options?: any,
   ) {
     // Apply options with defaults
     const mergedOptions = { ...DEFAULT_OBSERVABILITY_OPTIONS, ...options };
     const loggingOptions = mergedOptions.logging || {};
 
-    this.projectId = this.configService.get<string>("GCP_PROJECT_ID", "");
+    this.projectId = this.configService.get<string>('GCP_PROJECT_ID', '');
     this.logName = this.configService.get<string>(
-      "GCP_LOG_NAME",
-      "fluxori-api",
+      'GCP_LOG_NAME',
+      'fluxori-api',
     );
     this.isProduction =
-      this.configService.get<string>("NODE_ENV", "development") ===
-      "production";
+      this.configService.get<string>('NODE_ENV', 'development') ===
+      'production';
 
-    this.logToConsole = this.configService.get<boolean>("LOG_TO_CONSOLE", true);
+    this.logToConsole = this.configService.get<boolean>('LOG_TO_CONSOLE', true);
     this.sanitizeLogs =
       loggingOptions.sanitizeLogs !== undefined
         ? loggingOptions.sanitizeLogs
@@ -84,15 +81,15 @@ export class EnhancedLoggerService implements IEnhancedLoggerService {
     this.debugSamplingRate =
       loggingOptions.debugSamplingRate || SAMPLING_RATES.DEBUG_LOGS;
     this.environment =
-      mergedOptions.environment || process.env.NODE_ENV || "development";
+      mergedOptions.environment || process.env.NODE_ENV || 'development';
     this.region =
-      mergedOptions.region || process.env.GCP_REGION || "africa-south1";
+      mergedOptions.region || process.env.GCP_REGION || 'africa-south1';
 
     // Add global context
     this.setGlobalContext({
       environment: this.environment,
       region: this.region,
-      service: mergedOptions.appName || "fluxori-api",
+      service: mergedOptions.appName || 'fluxori-api',
       ...(loggingOptions.customFields || {}),
     });
 
@@ -105,10 +102,10 @@ export class EnhancedLoggerService implements IEnhancedLoggerService {
         this.logStream = this.cloudLogging.log(this.logName);
         this.log(
           `Enhanced logger initialized for project ${this.projectId}`,
-          "LoggerService",
+          'LoggerService',
         );
       } catch (error) {
-        console.error("Failed to initialize Cloud Logging:", error);
+        console.error('Failed to initialize Cloud Logging:', error);
       }
     }
   }
@@ -120,7 +117,7 @@ export class EnhancedLoggerService implements IEnhancedLoggerService {
     message: string | Record<string, any>,
     context?: string | LogContext,
   ): void {
-    this.writeLog("log" as LogLevel, message, context);
+    this.writeLog('log' as LogLevel, message, context);
   }
 
   /**
@@ -137,13 +134,13 @@ export class EnhancedLoggerService implements IEnhancedLoggerService {
     if (message instanceof Error) {
       errorMessage = message.message;
       errorTrace = message.stack;
-    } else if (typeof message === "object") {
+    } else if (typeof message === 'object') {
       errorMessage = JSON.stringify(message);
     } else {
       errorMessage = message;
     }
 
-    this.writeLog("error", errorMessage, context, errorTrace);
+    this.writeLog('error', errorMessage, context, errorTrace);
   }
 
   /**
@@ -153,7 +150,7 @@ export class EnhancedLoggerService implements IEnhancedLoggerService {
     message: string | Record<string, any>,
     context?: string | LogContext,
   ): void {
-    this.writeLog("warn", message, context);
+    this.writeLog('warn', message, context);
   }
 
   /**
@@ -167,7 +164,7 @@ export class EnhancedLoggerService implements IEnhancedLoggerService {
     if (this.isProduction && Math.random() > this.debugSamplingRate) {
       return;
     }
-    this.writeLog("debug", message, context);
+    this.writeLog('debug', message, context);
   }
 
   /**
@@ -181,7 +178,7 @@ export class EnhancedLoggerService implements IEnhancedLoggerService {
     if (this.isProduction && Math.random() > this.debugSamplingRate / 2) {
       return;
     }
-    this.writeLog("verbose", message, context);
+    this.writeLog('verbose', message, context);
   }
 
   /**
@@ -228,8 +225,8 @@ export class EnhancedLoggerService implements IEnhancedLoggerService {
     let logMessage: string;
     let logData: Record<string, any> | undefined;
 
-    if (typeof message === "object") {
-      logMessage = message.message || "Object logged";
+    if (typeof message === 'object') {
+      logMessage = message.message || 'Object logged';
       logData = message;
     } else {
       logMessage = message;
@@ -239,7 +236,7 @@ export class EnhancedLoggerService implements IEnhancedLoggerService {
     let contextName: string | undefined;
     let logContext: LogContext = {};
 
-    if (typeof context === "string") {
+    if (typeof context === 'string') {
       contextName = context;
     } else if (context) {
       logContext = context;
@@ -261,7 +258,7 @@ export class EnhancedLoggerService implements IEnhancedLoggerService {
       context: {
         ...this.globalContext,
         ...logContext,
-        service: contextName || this.globalContext.service || "fluxori-api",
+        service: contextName || this.globalContext.service || 'fluxori-api',
       },
       data: logData,
       timestamp: new Date(),
@@ -290,19 +287,19 @@ export class EnhancedLoggerService implements IEnhancedLoggerService {
    */
   private formatForConsole(log: StructuredLogEntry): string {
     const timestamp = log.timestamp.toISOString();
-    const context = log.context?.service ? `[${log.context.service}]` : "";
+    const context = log.context?.service ? `[${log.context.service}]` : '';
     const traceId = log.context?.trace?.traceId
       ? `(trace: ${log.context.trace.traceId})`
-      : "";
+      : '';
 
     let message = `${timestamp} ${log.severity.toUpperCase()} ${context} ${log.message} ${traceId}`;
 
     if (log.data && Object.keys(log.data).length > 0) {
-      message += "\nData: " + JSON.stringify(log.data, null, 2);
+      message += '\nData: ' + JSON.stringify(log.data, null, 2);
     }
 
     if (log.stack) {
-      message += "\nStack: " + log.stack;
+      message += '\nStack: ' + log.stack;
     }
 
     return message;
@@ -332,16 +329,16 @@ export class EnhancedLoggerService implements IEnhancedLoggerService {
         : this.formatForConsole(structuredLog);
 
       switch (level) {
-        case "error":
+        case 'error':
           console.error(consoleMessage);
           break;
-        case "warn":
+        case 'warn':
           console.warn(consoleMessage);
           break;
-        case "debug":
+        case 'debug':
           console.debug(consoleMessage);
           break;
-        case "verbose":
+        case 'verbose':
           console.debug(consoleMessage);
           break;
         default:
@@ -357,17 +354,17 @@ export class EnhancedLoggerService implements IEnhancedLoggerService {
         // Create metadata with proper GCP resource
         const metadata = {
           resource: {
-            type: "cloud_run_revision",
+            type: 'cloud_run_revision',
             labels: {
-              service_name: "fluxori-api",
-              revision_name: process.env.K_REVISION || "local",
+              service_name: 'fluxori-api',
+              revision_name: process.env.K_REVISION || 'local',
             },
           },
           severity,
           // Add trace information if available
           ...(structuredLog.context?.trace?.traceId && {
-            "logging.googleapis.com/trace": `projects/${this.projectId}/traces/${structuredLog.context.trace.traceId}`,
-            "logging.googleapis.com/spanId": structuredLog.context.trace.spanId,
+            'logging.googleapis.com/trace': `projects/${this.projectId}/traces/${structuredLog.context.trace.traceId}`,
+            'logging.googleapis.com/spanId': structuredLog.context.trace.spanId,
           }),
         };
 
@@ -386,7 +383,7 @@ export class EnhancedLoggerService implements IEnhancedLoggerService {
           console.error(`Failed to write to Cloud Logging: ${err.message}`);
         });
       } catch (error) {
-        console.error("Failed to write to Cloud Logging:", error);
+        console.error('Failed to write to Cloud Logging:', error);
       }
     }
   }
@@ -396,16 +393,16 @@ export class EnhancedLoggerService implements IEnhancedLoggerService {
    */
   private mapLogLevelToSeverity(level: LogLevel): string {
     switch (level) {
-      case "error":
-        return "ERROR";
-      case "warn":
-        return "WARNING";
-      case "debug":
-        return "DEBUG";
-      case "verbose":
-        return "DEBUG";
+      case 'error':
+        return 'ERROR';
+      case 'warn':
+        return 'WARNING';
+      case 'debug':
+        return 'DEBUG';
+      case 'verbose':
+        return 'DEBUG';
       default:
-        return "INFO";
+        return 'INFO';
     }
   }
 
@@ -424,7 +421,7 @@ export class EnhancedLoggerService implements IEnhancedLoggerService {
 
     // Recursively sanitize
     const sanitizeRecursive = (current: any): any => {
-      if (!current || typeof current !== "object") {
+      if (!current || typeof current !== 'object') {
         return current;
       }
 
@@ -442,8 +439,8 @@ export class EnhancedLoggerService implements IEnhancedLoggerService {
             key.toLowerCase().includes(field.toLowerCase()),
           )
         ) {
-          result[key] = "[REDACTED]";
-        } else if (typeof value === "object" && value !== null) {
+          result[key] = '[REDACTED]';
+        } else if (typeof value === 'object' && value !== null) {
           // Recursively sanitize objects
           result[key] = sanitizeRecursive(value);
         } else {

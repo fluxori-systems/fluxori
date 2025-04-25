@@ -1,6 +1,6 @@
-import { Injectable, Logger } from "@nestjs/common";
+import { Injectable, Logger } from '@nestjs/common';
 
-import { DocumentChunk, ChunkingOptions } from "../interfaces/types";
+import { DocumentChunk, ChunkingOptions } from '../interfaces/types';
 
 /**
  * Service for document chunking operations
@@ -21,14 +21,14 @@ export class DocumentChunkingService {
     text: string,
     options: ChunkingOptions = {},
   ): DocumentChunk[] {
-    const { chunkSize = 1000, chunkOverlap = 200, separator = "\n" } = options;
+    const { chunkSize = 1000, chunkOverlap = 200, separator = '\n' } = options;
 
     if (chunkSize <= 0) {
-      throw new Error("Chunk size must be positive");
+      throw new Error('Chunk size must be positive');
     }
 
     if (chunkOverlap >= chunkSize) {
-      throw new Error("Chunk overlap must be less than chunk size");
+      throw new Error('Chunk overlap must be less than chunk size');
     }
 
     this.logger.log(
@@ -39,7 +39,7 @@ export class DocumentChunkingService {
     const segments = text.split(separator);
 
     const chunks: DocumentChunk[] = [];
-    let currentChunk = "";
+    let currentChunk = '';
     let currentChunkTokens = 0;
     let index = 0;
 
@@ -62,19 +62,19 @@ export class DocumentChunkingService {
         });
 
         // Start a new chunk with overlap
-        const words = currentChunk.split(" ");
+        const words = currentChunk.split(' ');
         const overlapTokens = Math.min(chunkOverlap, currentChunkTokens);
         const overlapWords = Math.ceil(
           words.length * (overlapTokens / currentChunkTokens),
         );
 
         currentChunk =
-          words.slice(-overlapWords).join(" ") + separator + segment;
+          words.slice(-overlapWords).join(' ') + separator + segment;
         currentChunkTokens = Math.ceil(currentChunk.length / 4);
         index++;
       } else {
         // Add segment to current chunk
-        currentChunk += (currentChunk ? separator : "") + segment;
+        currentChunk += (currentChunk ? separator : '') + segment;
         currentChunkTokens = Math.ceil(currentChunk.length / 4);
       }
     }

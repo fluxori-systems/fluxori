@@ -1,10 +1,11 @@
 /**
  * Regional Configuration Repository
- * 
+ *
  * Repository for managing region configurations in the enhanced regional support framework
  */
 
 import { Injectable, Logger } from '@nestjs/common';
+
 import { FirestoreBaseRepository } from '../../../common/repositories/firestore-base.repository';
 import { RegionConfiguration } from '../services/enhanced-regional/regional-configuration.service';
 
@@ -14,21 +15,18 @@ import { RegionConfiguration } from '../services/enhanced-regional/regional-conf
 @Injectable()
 export class RegionalConfigurationRepository extends FirestoreBaseRepository<RegionConfiguration> {
   constructor() {
-    super(
-      'regional_configurations',
-      {
-        idField: 'id',
-        defaultOrderField: 'name',
-        defaultOrderDirection: 'asc',
-      },
-    );
-    
+    super('regional_configurations', {
+      idField: 'id',
+      defaultOrderField: 'name',
+      defaultOrderDirection: 'asc',
+    });
+
     this.logger = new Logger(RegionalConfigurationRepository.name);
   }
-  
+
   /**
    * Find region by country code
-   * 
+   *
    * @param countryCode ISO country code
    * @param tenantId Tenant ID
    * @returns Region configurations matching the country code
@@ -48,10 +46,10 @@ export class RegionalConfigurationRepository extends FirestoreBaseRepository<Reg
       tenantId,
     );
   }
-  
+
   /**
    * Find active regions
-   * 
+   *
    * @param tenantId Tenant ID
    * @returns Active region configurations
    */
@@ -67,10 +65,10 @@ export class RegionalConfigurationRepository extends FirestoreBaseRepository<Reg
       tenantId,
     );
   }
-  
+
   /**
    * Find regions that support a specific currency
-   * 
+   *
    * @param currencyCode Currency code
    * @param tenantId Tenant ID
    * @returns Region configurations that support the currency
@@ -80,16 +78,17 @@ export class RegionalConfigurationRepository extends FirestoreBaseRepository<Reg
     tenantId: string,
   ): Promise<RegionConfiguration[]> {
     const regions = await this.findAll(tenantId);
-    
-    return regions.filter(region => 
-      region.primaryCurrency === currencyCode ||
-      region.supportedCurrencies.includes(currencyCode)
+
+    return regions.filter(
+      (region) =>
+        region.primaryCurrency === currencyCode ||
+        region.supportedCurrencies.includes(currencyCode),
     );
   }
-  
+
   /**
    * Find regions that support a specific language
-   * 
+   *
    * @param languageCode Language code
    * @param tenantId Tenant ID
    * @returns Region configurations that support the language
@@ -99,16 +98,17 @@ export class RegionalConfigurationRepository extends FirestoreBaseRepository<Reg
     tenantId: string,
   ): Promise<RegionConfiguration[]> {
     const regions = await this.findAll(tenantId);
-    
-    return regions.filter(region => 
-      region.primaryLanguage === languageCode ||
-      region.supportedLanguages.includes(languageCode)
+
+    return regions.filter(
+      (region) =>
+        region.primaryLanguage === languageCode ||
+        region.supportedLanguages.includes(languageCode),
     );
   }
-  
+
   /**
    * Find regions that support a specific marketplace
-   * 
+   *
    * @param marketplaceId Marketplace ID
    * @param tenantId Tenant ID
    * @returns Region configurations that support the marketplace
@@ -118,15 +118,15 @@ export class RegionalConfigurationRepository extends FirestoreBaseRepository<Reg
     tenantId: string,
   ): Promise<RegionConfiguration[]> {
     const regions = await this.findAll(tenantId);
-    
-    return regions.filter(region => 
-      region.supportedMarketplaces.includes(marketplaceId)
+
+    return regions.filter((region) =>
+      region.supportedMarketplaces.includes(marketplaceId),
     );
   }
-  
+
   /**
    * Find regions by business rule
-   * 
+   *
    * @param rule Business rule key
    * @param value Business rule value
    * @param tenantId Tenant ID
@@ -138,9 +138,7 @@ export class RegionalConfigurationRepository extends FirestoreBaseRepository<Reg
     tenantId: string,
   ): Promise<RegionConfiguration[]> {
     const regions = await this.findAll(tenantId);
-    
-    return regions.filter(region => 
-      region.businessRules[rule] === value
-    );
+
+    return regions.filter((region) => region.businessRules[rule] === value);
   }
 }

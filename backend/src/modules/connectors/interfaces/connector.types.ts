@@ -24,7 +24,7 @@ export enum ConnectionQuality {
   FAIR = 'fair',
   POOR = 'poor',
   CRITICAL = 'critical',
-  UNKNOWN = 'unknown'
+  UNKNOWN = 'unknown',
 }
 
 export interface OperationResult<T> {

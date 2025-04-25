@@ -1,11 +1,13 @@
 'use client';
 
 import React, { forwardRef, useRef, useState } from 'react';
+
 import { TextInput, Textarea, NumberInput, Select, MultiSelect, Checkbox } from '@mantine/core';
-import { useCombinedRefs } from '../utils/use-combined-refs';
-import {  useConnectionQuality  } from '../hooks/useConnection';
-import { useComponentAnimation } from '../hooks/useComponentAnimation';
+
 import { Text } from './Text';
+import { useComponentAnimation } from '../hooks/useComponentAnimation';
+import {  useConnectionQuality  } from '../hooks/useConnection';
+import { useCombinedRefs } from '../utils/use-combined-refs';
 
 /**
  * Form field types supported by the component

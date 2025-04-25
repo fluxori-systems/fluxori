@@ -9,7 +9,7 @@ export interface FeatureFlagAuditLogSchema {
   // Required fields
   flagId: string;
   flagKey: string;
-  action: "created" | "updated" | "deleted" | "toggled";
+  action: 'created' | 'updated' | 'deleted' | 'toggled';
   performedBy: string;
   timestamp: Date;
   changes: Array<{

@@ -8,11 +8,10 @@
  */
 
 import React, { createContext, useContext, useState, ReactNode } from 'react';
-import { firebaseAuth } from '../lib/firebase/config';
 
-import { User } from '../types/user/user.types';
-import { UserRole, UserStatus } from '../types/user/user.types';
+import { firebaseAuth } from '../lib/firebase/config';
 import { OrganizationStatus, SubscriptionPlan } from '../types/organization/organization.types';
+import { User , UserRole, UserStatus } from '../types/user/user.types';
 
 // Mock user repository
 const userRepository = {

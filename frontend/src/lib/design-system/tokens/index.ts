@@ -3,11 +3,11 @@
  */
 
 import { lightModeColors, darkModeColors } from './colors';
-import { typography, fontFaceDeclarations } from './typography';
-import { spacing } from './spacing';
+import { motion, reducedMotionStyles } from './motion';
 import { radii } from './radii';
 import { lightShadows, darkShadows } from './shadows';
-import { motion, reducedMotionStyles } from './motion';
+import { spacing } from './spacing';
+import { typography, fontFaceDeclarations } from './typography';
 import { DesignTokens, ZIndexScale } from '../types/tokens';
 
 /**

@@ -1,6 +1,7 @@
 import { Injectable, Logger, Inject } from '@nestjs/common';
-import * as DLP from '@google-cloud/dlp';
 import { ConfigService } from '@nestjs/config';
+
+import * as DLP from '@google-cloud/dlp';
 
 import { ObservabilityService } from '../../../common/observability';
 
@@ -13,20 +14,20 @@ export class DlpService {
   private readonly logger = new Logger(DlpService.name);
   private readonly dlpClient: any;
   private readonly projectId: string;
-  
+
   constructor(
     @Inject('SECURITY_MODULE_OPTIONS') private readonly options: any,
     private readonly configService: ConfigService,
     private readonly observability: ObservabilityService,
   ) {
     this.projectId = this.configService.get<string>('GCP_PROJECT_ID') || '';
-    
+
     // Initialize GCP DLP client
     this.dlpClient = new DLP.DlpServiceClient();
-    
+
     this.logger.log('DLP service initialized');
   }
-  
+
   /**
    * Scan text for sensitive information
    * @param text The text to scan
@@ -35,13 +36,13 @@ export class DlpService {
    */
   async scanText(
     text: string,
-    config?: Record<string, any>
+    config?: Record<string, any>,
   ): Promise<{ hasSensitiveInfo: boolean; infoTypes: string[] }> {
     const span = this.observability.startTrace('security.scanText', {
       textLength: text.length,
       hasConfig: !!config,
     });
-    
+
     try {
       // Default info types to inspect
       const defaultInfoTypes = [
@@ -55,13 +56,13 @@ export class DlpService {
         { name: 'PASSWORD' },
         { name: 'API_KEY' },
       ];
-      
+
       // Allow configuration to override or extend the default info types
       const infoTypes = config?.infoTypes || defaultInfoTypes;
-      
+
       // Minimum likelihood setting (how confident the API must be to report a finding)
       const minLikelihood = config?.minLikelihood || 'LIKELY';
-      
+
       // Configure the inspection request
       const request: Record<string, any> = {
         parent: `projects/${this.projectId}/locations/global`,
@@ -77,27 +78,34 @@ export class DlpService {
           value: text,
         },
       };
-      
+
       // Execute the inspection
       const [response] = await this.dlpClient.inspectContent(request);
       const findings = response.result?.findings || [];
-      
+
       // Extract info types from the findings
-      const detectedInfoTypes = findings.map((finding: Record<string, any>) => finding.infoType?.name || 'UNKNOWN');
-      
+      const detectedInfoTypes = findings.map(
+        (finding: Record<string, any>) => finding.infoType?.name || 'UNKNOWN',
+      );
+
       // Record metrics
       this.observability.incrementCounter('dlp.scan.count');
       if (findings.length > 0) {
-        this.observability.incrementCounter('dlp.findings.count', findings.length);
+        this.observability.incrementCounter(
+          'dlp.findings.count',
+          findings.length,
+        );
       }
-      
+
       span.setAttribute('dlp.findings.count', findings.length);
       span.end();
-      
+
       // Deduplicate info types using object instead of Set to avoid ES2015 requirement
       const uniqueInfoTypes: Record<string, boolean> = {};
-      detectedInfoTypes.forEach((type: string) => { uniqueInfoTypes[type] = true; });
-      
+      detectedInfoTypes.forEach((type: string) => {
+        uniqueInfoTypes[type] = true;
+      });
+
       return {
         hasSensitiveInfo: findings.length > 0,
         infoTypes: Object.keys(uniqueInfoTypes),
@@ -105,14 +113,16 @@ export class DlpService {
     } catch (error) {
       span.recordException(error);
       span.end();
-      
+
       this.logger.error(`DLP scan failed: ${error.message}`, error.stack);
       this.observability.error('DLP scan failed', error, DlpService.name);
-      
-      throw new Error(`Failed to scan text for sensitive information: ${error.message}`);
+
+      throw new Error(
+        `Failed to scan text for sensitive information: ${error.message}`,
+      );
     }
   }
-  
+
   /**
    * Redact sensitive information from text
    * @param text The text to redact
@@ -124,13 +134,13 @@ export class DlpService {
     config?: {
       infoTypes?: Array<{ name: string }>;
       replaceWith?: string;
-    }
+    },
   ): Promise<string> {
     const span = this.observability.startTrace('security.redactText', {
       textLength: text.length,
       hasConfig: !!config,
     });
-    
+
     try {
       // Default info types to redact
       const defaultInfoTypes = [
@@ -142,13 +152,13 @@ export class DlpService {
         { name: 'PASSWORD' },
         { name: 'API_KEY' },
       ];
-      
+
       // Allow configuration to override or extend the default info types
       const infoTypes = config?.infoTypes || defaultInfoTypes;
-      
+
       // Default replacement character
       const replaceWith = config?.replaceWith || '[REDACTED]';
-      
+
       // Configure the redaction request
       const request: Record<string, any> = {
         parent: `projects/${this.projectId}/locations/global`,
@@ -171,7 +181,7 @@ export class DlpService {
           },
         },
       };
-      
+
       // Add custom replacement string if specified
       if (replaceWith !== '[REDACTED]') {
         request.deidentifyConfig = {
@@ -190,28 +200,28 @@ export class DlpService {
           },
         };
       }
-      
+
       // Execute the redaction
       const [response] = await this.dlpClient.deidentifyContent(request);
       const redactedText = response.item?.value || '';
-      
+
       // Record metrics
       this.observability.incrementCounter('dlp.redact.count');
-      
+
       span.end();
       return redactedText;
     } catch (error) {
       span.recordException(error);
       span.end();
-      
+
       this.logger.error(`DLP redaction failed: ${error.message}`, error.stack);
       this.observability.error('DLP redaction failed', error, DlpService.name);
-      
+
       // Return the original text if redaction fails, but log the error
       return text;
     }
   }
-  
+
   /**
    * Mask specific pattern in text (e.g., credit card numbers)
    * @param text The text to mask
@@ -221,14 +231,18 @@ export class DlpService {
    */
   async maskText(
     text: string,
-    pattern: 'CREDIT_CARD_NUMBER' | 'PHONE_NUMBER' | 'EMAIL_ADDRESS' | 'SOUTH_AFRICA_ID_NUMBER',
-    maskChar = '*'
+    pattern:
+      | 'CREDIT_CARD_NUMBER'
+      | 'PHONE_NUMBER'
+      | 'EMAIL_ADDRESS'
+      | 'SOUTH_AFRICA_ID_NUMBER',
+    maskChar = '*',
   ): Promise<string> {
     const span = this.observability.startTrace('security.maskText', {
       textLength: text.length,
       pattern,
     });
-    
+
     try {
       // Configure the masking request
       const request: Record<string, any> = {
@@ -259,48 +273,48 @@ export class DlpService {
           },
         },
       };
-      
+
       // Execute the masking
       const [response] = await this.dlpClient.deidentifyContent(request);
       const maskedText = response.item?.value || '';
-      
+
       // Record metrics
       this.observability.incrementCounter('dlp.mask.count');
-      
+
       span.end();
       return maskedText;
     } catch (error) {
       span.recordException(error);
       span.end();
-      
+
       this.logger.error(`DLP masking failed: ${error.message}`, error.stack);
       this.observability.error('DLP masking failed', error, DlpService.name);
-      
+
       // Return the original text if masking fails, but log the error
       return text;
     }
   }
-  
+
   /**
    * Scan structured data for sensitive information
    * @param data The data object to scan
    * @returns Results of the scan
    */
   async scanStructuredData(
-    data: Record<string, any>
+    data: Record<string, any>,
   ): Promise<{ hasSensitiveInfo: boolean; sensitiveFields: string[] }> {
     const span = this.observability.startTrace('security.scanStructuredData');
-    
+
     try {
       // Convert structured data to JSON string
       const jsonString = JSON.stringify(data);
-      
+
       // Scan the JSON string for sensitive information
       const result = await this.scanText(jsonString);
-      
+
       // If sensitive information is found, scan each field to identify which ones contain it
       const sensitiveFields: string[] = [];
-      
+
       if (result.hasSensitiveInfo) {
         // Scan each field individually
         for (const [key, value] of Object.entries(data)) {
@@ -318,7 +332,7 @@ export class DlpService {
           }
         }
       }
-      
+
       span.end();
       return {
         hasSensitiveInfo: result.hasSensitiveInfo,
@@ -327,14 +341,21 @@ export class DlpService {
     } catch (error) {
       span.recordException(error);
       span.end();
-      
-      this.logger.error(`Failed to scan structured data: ${error.message}`, error.stack);
-      this.observability.error('Structured data scan failed', error, DlpService.name);
-      
+
+      this.logger.error(
+        `Failed to scan structured data: ${error.message}`,
+        error.stack,
+      );
+      this.observability.error(
+        'Structured data scan failed',
+        error,
+        DlpService.name,
+      );
+
       throw new Error(`Failed to scan structured data: ${error.message}`);
     }
   }
-  
+
   /**
    * Get the health status of the DLP service
    * @returns Health status
@@ -343,12 +364,15 @@ export class DlpService {
     try {
       // Perform a simple test to verify the DLP service is working
       await this.scanText('test@example.com 4111111111111111');
-      
+
       return { status: 'healthy' };
     } catch (error) {
-      this.logger.error(`DLP service health check failed: ${error.message}`, error.stack);
-      
-      return { 
+      this.logger.error(
+        `DLP service health check failed: ${error.message}`,
+        error.stack,
+      );
+
+      return {
         status: 'unhealthy',
         error: error.message,
       };

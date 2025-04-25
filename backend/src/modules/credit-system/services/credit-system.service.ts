@@ -1,18 +1,12 @@
-import { Injectable, Logger, OnModuleInit } from "@nestjs/common";
+import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 
-import { v4 as uuidv4 } from "uuid";
+import { v4 as uuidv4 } from 'uuid';
 
-import { FeatureFlagService } from "src/modules/feature-flags";
-import { ModelRegistryRepository } from "src/modules/agent-framework";
+import { ModelRegistryRepository } from 'src/modules/agent-framework';
+import { FeatureFlagService } from 'src/modules/feature-flags';
 
-import { 
-  CreditAllocationRepository,
-  CreditPricingTierRepository,
-  CreditReservationRepository,
-  CreditTransactionRepository,
-  CreditUsageLogRepository,
-} from "../repositories";
-import { 
+import { AgentFrameworkDependencies } from '../interfaces/dependencies';
+import {
   CreditAllocation,
   CreditCheckRequest,
   CreditCheckResponse,
@@ -22,9 +16,15 @@ import {
   CreditUsageLog,
   CreditUsageRequest,
   CreditUsageType,
-  TokenUsageCalculation 
-} from "../interfaces/types";
-import { AgentFrameworkDependencies } from "../interfaces/dependencies";
+  TokenUsageCalculation,
+} from '../interfaces/types';
+import {
+  CreditAllocationRepository,
+  CreditPricingTierRepository,
+  CreditReservationRepository,
+  CreditTransactionRepository,
+  CreditUsageLogRepository,
+} from '../repositories';
 
 /**
  * Service for managing credit system operations
@@ -37,13 +37,16 @@ export class CreditSystemService implements OnModuleInit {
   private cacheHitCount = 0;
   private cacheMissCount = 0;
   private responseTimeMs: number[] = [];
-  private modelPricingCache: Map<string, {
-    modelId: string;
-    provider: string;
-    inputCost: number;
-    outputCost: number;
-    timestamp: number;
-  }> = new Map();
+  private modelPricingCache: Map<
+    string,
+    {
+      modelId: string;
+      provider: string;
+      inputCost: number;
+      outputCost: number;
+      timestamp: number;
+    }
+  > = new Map();
 
   constructor(
     private readonly allocationRepository: CreditAllocationRepository,
@@ -60,20 +63,20 @@ export class CreditSystemService implements OnModuleInit {
    * Initialize service
    */
   async onModuleInit() {
-    this.logger.log("Initializing Credit System Service");
-    
+    this.logger.log('Initializing Credit System Service');
+
     // Load active pricing tiers into cache
     await this.refreshPricingCache();
-    
+
     // Clean up any expired reservations
     await this.cleanupExpiredReservations();
-    
+
     // Set up periodic tasks
     setInterval(() => this.refreshPricingCache(), 30 * 60 * 1000); // Refresh pricing cache every 30 minutes
     setInterval(() => this.cleanupExpiredReservations(), 5 * 60 * 1000); // Cleanup expired reservations every 5 minutes
-    
+
     this.isInitialized = true;
-    this.logger.log("Credit System Service initialized");
+    this.logger.log('Credit System Service initialized');
   }
 
   /**
@@ -81,13 +84,13 @@ export class CreditSystemService implements OnModuleInit {
    */
   private async refreshPricingCache(): Promise<void> {
     try {
-      this.logger.debug("Refreshing pricing cache");
-      
+      this.logger.debug('Refreshing pricing cache');
+
       const activeTiers = await this.pricingRepository.findAllActive();
-      
+
       // Clear the cache
       this.modelPricingCache.clear();
-      
+
       // Add active tiers to cache
       for (const tier of activeTiers) {
         const cacheKey = `${tier.modelId}:${tier.modelProvider}`;
@@ -99,10 +102,15 @@ export class CreditSystemService implements OnModuleInit {
           timestamp: Date.now(),
         });
       }
-      
-      this.logger.debug(`Refreshed pricing cache with ${activeTiers.length} tiers`);
+
+      this.logger.debug(
+        `Refreshed pricing cache with ${activeTiers.length} tiers`,
+      );
     } catch (error) {
-      this.logger.error(`Error refreshing pricing cache: ${error.message}`, error.stack);
+      this.logger.error(
+        `Error refreshing pricing cache: ${error.message}`,
+        error.stack,
+      );
     }
   }
 
@@ -111,15 +119,18 @@ export class CreditSystemService implements OnModuleInit {
    */
   private async cleanupExpiredReservations(): Promise<void> {
     try {
-      this.logger.debug("Cleaning up expired reservations");
-      
+      this.logger.debug('Cleaning up expired reservations');
+
       const count = await this.reservationRepository.cleanupExpired();
-      
+
       if (count > 0) {
         this.logger.log(`Cleaned up ${count} expired credit reservations`);
       }
     } catch (error) {
-      this.logger.error(`Error cleaning up expired reservations: ${error.message}`, error.stack);
+      this.logger.error(
+        `Error cleaning up expired reservations: ${error.message}`,
+        error.stack,
+      );
     }
   }
 
@@ -143,8 +154,10 @@ export class CreditSystemService implements OnModuleInit {
     expirationDate?: Date,
     metadata?: Record<string, any>,
   ): Promise<CreditAllocation> {
-    this.logger.log(`Creating allocation of ${totalCredits} credits for organization ${organizationId}`);
-    
+    this.logger.log(
+      `Creating allocation of ${totalCredits} credits for organization ${organizationId}`,
+    );
+
     try {
       // Create the allocation
       const allocation = await this.allocationRepository.create({
@@ -158,13 +171,13 @@ export class CreditSystemService implements OnModuleInit {
         isActive: true,
         metadata,
       });
-      
+
       // Record the transaction
       await this.transactionRepository.create({
         organizationId,
         userId,
         amount: totalCredits,
-        transactionType: "credit",
+        transactionType: 'credit',
         usageType: CreditUsageType.TOKEN_USAGE, // Default
         metadata: {
           allocationId: allocation.id,
@@ -172,10 +185,13 @@ export class CreditSystemService implements OnModuleInit {
           ...metadata,
         },
       });
-      
+
       return allocation;
     } catch (error) {
-      this.logger.error(`Error creating allocation: ${error.message}`, error.stack);
+      this.logger.error(
+        `Error creating allocation: ${error.message}`,
+        error.stack,
+      );
       throw new Error(`Failed to create credit allocation: ${error.message}`);
     }
   }
@@ -197,17 +213,22 @@ export class CreditSystemService implements OnModuleInit {
           organizationId,
           userId,
         );
-        
+
         if (userAllocation) {
           return userAllocation;
         }
       }
-      
+
       // Fall back to organization-level allocation
       return this.allocationRepository.findActiveByOrganization(organizationId);
     } catch (error) {
-      this.logger.error(`Error fetching active allocation: ${error.message}`, error.stack);
-      throw new Error(`Failed to fetch active credit allocation: ${error.message}`);
+      this.logger.error(
+        `Error fetching active allocation: ${error.message}`,
+        error.stack,
+      );
+      throw new Error(
+        `Failed to fetch active credit allocation: ${error.message}`,
+      );
     }
   }
 
@@ -220,7 +241,7 @@ export class CreditSystemService implements OnModuleInit {
     request: CreditCheckRequest,
   ): Promise<CreditCheckResponse> {
     const startTime = Date.now();
-    
+
     try {
       // Calculate cost for the operation
       const cost = await this.calculateCost(
@@ -228,48 +249,53 @@ export class CreditSystemService implements OnModuleInit {
         request.expectedInputTokens,
         request.expectedOutputTokens,
       );
-      
+
       // Get active allocation for the organization
       const allocation = await this.getActiveAllocation(
         request.organizationId,
         request.userId,
       );
-      
+
       if (!allocation) {
         return {
           hasCredits: false,
           availableCredits: 0,
           estimatedCost: cost,
-          reason: "No active credit allocation found",
+          reason: 'No active credit allocation found',
         };
       }
-      
+
       // Check if feature is enabled via feature flags
       const featureKey = `credit-intensive-${request.usageType.toLowerCase()}`;
-      const featureEnabled = await this.featureFlagService.isEnabled(featureKey, {
-        organizationId: request.organizationId,
-        userId: request.userId,
-      });
-      
+      const featureEnabled = await this.featureFlagService.isEnabled(
+        featureKey,
+        {
+          organizationId: request.organizationId,
+          userId: request.userId,
+        },
+      );
+
       if (!featureEnabled) {
         return {
           hasCredits: false,
           availableCredits: allocation.remainingCredits,
           estimatedCost: cost,
-          reason: "Feature is disabled by feature flag",
+          reason: 'Feature is disabled by feature flag',
         };
       }
-      
+
       // Calculate available credits (accounting for any pending reservations)
-      const pendingReservations = await this.reservationRepository.getTotalReserved(
-        request.organizationId,
-      );
-      
-      const availableCredits = allocation.remainingCredits - pendingReservations;
-      
+      const pendingReservations =
+        await this.reservationRepository.getTotalReserved(
+          request.organizationId,
+        );
+
+      const availableCredits =
+        allocation.remainingCredits - pendingReservations;
+
       // Check if there are enough credits
       const hasCredits = availableCredits >= cost;
-      
+
       // If there are enough credits and a reservation is requested
       if (hasCredits && request.operationId) {
         // Create a reservation
@@ -279,14 +305,14 @@ export class CreditSystemService implements OnModuleInit {
           operationId: request.operationId,
           reservationAmount: cost,
           usageType: request.usageType,
-          status: "pending",
+          status: 'pending',
           expirationDate: new Date(Date.now() + this.reservationExpirationMs),
           metadata: request.metadata,
         });
-        
+
         // Record response time
         this.recordResponseTime(startTime);
-        
+
         return {
           hasCredits: true,
           availableCredits,
@@ -294,22 +320,25 @@ export class CreditSystemService implements OnModuleInit {
           reservationId: reservation.id,
         };
       }
-      
+
       // Record response time
       this.recordResponseTime(startTime);
-      
+
       return {
         hasCredits,
         availableCredits,
         estimatedCost: cost,
-        reason: hasCredits ? undefined : "Insufficient credits",
+        reason: hasCredits ? undefined : 'Insufficient credits',
       };
     } catch (error) {
-      this.logger.error(`Error checking credits: ${error.message}`, error.stack);
-      
+      this.logger.error(
+        `Error checking credits: ${error.message}`,
+        error.stack,
+      );
+
       // Record response time
       this.recordResponseTime(startTime);
-      
+
       return {
         hasCredits: false,
         availableCredits: 0,
@@ -324,11 +353,9 @@ export class CreditSystemService implements OnModuleInit {
    * @param request Credit usage request
    * @returns Created usage log
    */
-  async recordUsage(
-    request: CreditUsageRequest,
-  ): Promise<CreditUsageLog> {
+  async recordUsage(request: CreditUsageRequest): Promise<CreditUsageLog> {
     const startTime = Date.now();
-    
+
     try {
       // Calculate cost for the operation
       const cost = await this.calculateCost(
@@ -336,7 +363,7 @@ export class CreditSystemService implements OnModuleInit {
         request.inputTokens,
         request.outputTokens,
       );
-      
+
       // Create usage log
       const usageLog = await this.usageLogRepository.create({
         organizationId: request.organizationId,
@@ -359,21 +386,23 @@ export class CreditSystemService implements OnModuleInit {
           reservationId: request.reservationId,
         },
       });
-      
+
       // Handle reservation if provided
       if (request.reservationId) {
-        const reservation = await this.reservationRepository.findById(request.reservationId);
-        
+        const reservation = await this.reservationRepository.findById(
+          request.reservationId,
+        );
+
         if (reservation) {
           // Mark the reservation as confirmed
           await this.reservationRepository.updateStatus(
             request.reservationId,
-            "confirmed",
+            'confirmed',
           );
-          
+
           // Use the reservation amount as the cost
           const reservationCost = reservation.reservationAmount;
-          
+
           // Deduct the credits from the allocation
           await this.deductCredits(
             request.organizationId,
@@ -389,14 +418,14 @@ export class CreditSystemService implements OnModuleInit {
             request.resourceType,
             request.metadata,
           );
-          
+
           // Record response time
           this.recordResponseTime(startTime);
-          
+
           return usageLog;
         }
       }
-      
+
       // Deduct the credits from the allocation if no reservation or reservation not found
       await this.deductCredits(
         request.organizationId,
@@ -412,17 +441,17 @@ export class CreditSystemService implements OnModuleInit {
         request.resourceType,
         request.metadata,
       );
-      
+
       // Record response time
       this.recordResponseTime(startTime);
-      
+
       return usageLog;
     } catch (error) {
       this.logger.error(`Error recording usage: ${error.message}`, error.stack);
-      
+
       // Record response time
       this.recordResponseTime(startTime);
-      
+
       throw new Error(`Failed to record credit usage: ${error.message}`);
     }
   }
@@ -443,29 +472,29 @@ export class CreditSystemService implements OnModuleInit {
       // Try to get pricing from cache
       const modelInfo = await this.getModelInfoForPricing(modelId);
       const cacheKey = `${modelId}:${modelInfo?.provider}`;
-      
+
       if (this.modelPricingCache.has(cacheKey)) {
         this.cacheHitCount++;
         const pricing = this.modelPricingCache.get(cacheKey);
-        
+
         if (pricing) {
           const inputCost = (inputTokens * pricing.inputCost) / 1000;
           const outputCost = (outputTokens * pricing.outputCost) / 1000;
-          
+
           // Minimum cost is 1 credit
           return Math.max(1, Math.ceil(inputCost + outputCost));
         }
       }
-      
+
       this.cacheMissCount++;
-      
+
       // Pricing not in cache, try to get from database
       if (modelInfo) {
         const pricingTier = await this.pricingRepository.findActiveForModel(
           modelId,
           modelInfo.provider,
         );
-        
+
         if (pricingTier) {
           // Update cache
           this.modelPricingCache.set(cacheKey, {
@@ -475,46 +504,50 @@ export class CreditSystemService implements OnModuleInit {
             outputCost: pricingTier.outputTokenCost,
             timestamp: Date.now(),
           });
-          
+
           const inputCost = (inputTokens * pricingTier.inputTokenCost) / 1000;
-          const outputCost = (outputTokens * pricingTier.outputTokenCost) / 1000;
-          
+          const outputCost =
+            (outputTokens * pricingTier.outputTokenCost) / 1000;
+
           // Minimum cost is 1 credit
           return Math.max(1, Math.ceil(inputCost + outputCost));
         }
       }
-      
+
       // If not found in database, use fallback pricing based on model name
-      if (modelId.includes("gpt-4")) {
-        const inputCost = (inputTokens * 0.03) / 1000 * 100; // Convert dollars to credits (100 credits = $1)
-        const outputCost = (outputTokens * 0.06) / 1000 * 100;
-        
+      if (modelId.includes('gpt-4')) {
+        const inputCost = ((inputTokens * 0.03) / 1000) * 100; // Convert dollars to credits (100 credits = $1)
+        const outputCost = ((outputTokens * 0.06) / 1000) * 100;
+
         return Math.max(1, Math.ceil(inputCost + outputCost));
-      } else if (modelId.includes("gpt-3.5")) {
-        const inputCost = (inputTokens * 0.001) / 1000 * 100;
-        const outputCost = (outputTokens * 0.002) / 1000 * 100;
-        
+      } else if (modelId.includes('gpt-3.5')) {
+        const inputCost = ((inputTokens * 0.001) / 1000) * 100;
+        const outputCost = ((outputTokens * 0.002) / 1000) * 100;
+
         return Math.max(1, Math.ceil(inputCost + outputCost));
-      } else if (modelId.includes("vertex") || modelId.includes("gemini")) {
-        const inputCost = (inputTokens * 0.0005) / 1000 * 100;
-        const outputCost = (outputTokens * 0.0015) / 1000 * 100;
-        
+      } else if (modelId.includes('vertex') || modelId.includes('gemini')) {
+        const inputCost = ((inputTokens * 0.0005) / 1000) * 100;
+        const outputCost = ((outputTokens * 0.0015) / 1000) * 100;
+
         return Math.max(1, Math.ceil(inputCost + outputCost));
-      } else if (modelId.includes("embed")) {
-        const inputCost = (inputTokens * 0.0001) / 1000 * 100;
+      } else if (modelId.includes('embed')) {
+        const inputCost = ((inputTokens * 0.0001) / 1000) * 100;
         const outputCost = 0;
-        
+
         return Math.max(1, Math.ceil(inputCost + outputCost));
       } else {
         // Default pricing
-        const inputCost = (inputTokens * 0.01) / 1000 * 100;
-        const outputCost = (outputTokens * 0.02) / 1000 * 100;
-        
+        const inputCost = ((inputTokens * 0.01) / 1000) * 100;
+        const outputCost = ((outputTokens * 0.02) / 1000) * 100;
+
         return Math.max(1, Math.ceil(inputCost + outputCost));
       }
     } catch (error) {
-      this.logger.error(`Error calculating cost: ${error.message}`, error.stack);
-      
+      this.logger.error(
+        `Error calculating cost: ${error.message}`,
+        error.stack,
+      );
+
       // Fallback to a safe default
       return Math.max(1, Math.ceil((inputTokens + outputTokens) / 1000));
     }
@@ -525,16 +558,16 @@ export class CreditSystemService implements OnModuleInit {
    * @param modelId Model ID
    * @returns Model information or null if not found
    */
-  private async getModelInfoForPricing(modelId: string): Promise<{ 
-    provider: string; 
-    costPer1kInputTokens: number; 
-    costPer1kOutputTokens: number; 
+  private async getModelInfoForPricing(modelId: string): Promise<{
+    provider: string;
+    costPer1kInputTokens: number;
+    costPer1kOutputTokens: number;
   } | null> {
     try {
       // Using findAll() and filtering as findByModelName is not available
       const allModels = await this.modelRegistryRepository.findAll();
-      const model = allModels.find(m => m.model === modelId);
-      
+      const model = allModels.find((m) => m.model === modelId);
+
       if (model) {
         return {
           provider: model.provider,
@@ -542,10 +575,13 @@ export class CreditSystemService implements OnModuleInit {
           costPer1kOutputTokens: model.costPer1kOutputTokens,
         };
       }
-      
+
       return null;
     } catch (error) {
-      this.logger.error(`Error getting model info: ${error.message}`, error.stack);
+      this.logger.error(
+        `Error getting model info: ${error.message}`,
+        error.stack,
+      );
       return null;
     }
   }
@@ -581,25 +617,26 @@ export class CreditSystemService implements OnModuleInit {
     metadata?: Record<string, any>,
   ): Promise<CreditAllocation> {
     // Get active allocation
-    const allocation = await this.getActiveAllocation(
-      organizationId,
-      userId,
-    );
-    
+    const allocation = await this.getActiveAllocation(organizationId, userId);
+
     if (!allocation) {
-      throw new Error(`No active credit allocation found for organization ${organizationId}`);
+      throw new Error(
+        `No active credit allocation found for organization ${organizationId}`,
+      );
     }
-    
+
     if (allocation.remainingCredits < amount) {
-      throw new Error(`Insufficient credits: Required ${amount}, Available ${allocation.remainingCredits}`);
+      throw new Error(
+        `Insufficient credits: Required ${amount}, Available ${allocation.remainingCredits}`,
+      );
     }
-    
+
     // Create transaction record
     await this.transactionRepository.create({
       organizationId,
       userId,
       amount,
-      transactionType: "debit",
+      transactionType: 'debit',
       usageType,
       modelId,
       modelProvider,
@@ -610,12 +647,9 @@ export class CreditSystemService implements OnModuleInit {
       resourceType,
       metadata,
     });
-    
+
     // Deduct credits from allocation
-    return this.allocationRepository.decrementCredits(
-      allocation.id,
-      amount,
-    );
+    return this.allocationRepository.decrementCredits(allocation.id, amount);
   }
 
   /**
@@ -635,17 +669,17 @@ export class CreditSystemService implements OnModuleInit {
     try {
       // Get the allocation
       const allocation = await this.allocationRepository.findById(allocationId);
-      
+
       if (!allocation) {
         throw new Error(`Credit allocation not found: ${allocationId}`);
       }
-      
+
       // Create transaction record
       await this.transactionRepository.create({
         organizationId: allocation.organizationId,
         userId,
         amount,
-        transactionType: "credit",
+        transactionType: 'credit',
         usageType: CreditUsageType.TOKEN_USAGE, // Default
         metadata: {
           allocationId,
@@ -653,12 +687,9 @@ export class CreditSystemService implements OnModuleInit {
           ...metadata,
         },
       });
-      
+
       // Add credits to allocation
-      return this.allocationRepository.addCredits(
-        allocationId,
-        amount,
-      );
+      return this.allocationRepository.addCredits(allocationId, amount);
     } catch (error) {
       this.logger.error(`Error adding credits: ${error.message}`, error.stack);
       throw new Error(`Failed to add credits: ${error.message}`);
@@ -675,10 +706,7 @@ export class CreditSystemService implements OnModuleInit {
     organizationId: string,
     limit: number = 50,
   ): Promise<CreditTransaction[]> {
-    return this.transactionRepository.findByOrganization(
-      organizationId,
-      limit,
-    );
+    return this.transactionRepository.findByOrganization(organizationId, limit);
   }
 
   /**
@@ -691,10 +719,7 @@ export class CreditSystemService implements OnModuleInit {
     organizationId: string,
     limit: number = 50,
   ): Promise<CreditUsageLog[]> {
-    return this.usageLogRepository.findByOrganization(
-      organizationId,
-      limit,
-    );
+    return this.usageLogRepository.findByOrganization(organizationId, limit);
   }
 
   /**
@@ -722,29 +747,32 @@ export class CreditSystemService implements OnModuleInit {
    * @param messages Chat messages
    * @returns Token usage calculation
    */
-  async calculateTokenUsage(modelId: string, messages: any[]): Promise<TokenUsageCalculation> {
+  async calculateTokenUsage(
+    modelId: string,
+    messages: any[],
+  ): Promise<TokenUsageCalculation> {
     try {
       // Get model from registry
       const allModels = await this.modelRegistryRepository.findAll();
-      const model = allModels.find(m => m.model === modelId);
-      
+      const model = allModels.find((m) => m.model === modelId);
+
       if (!model) {
         throw new Error(`Model not found: ${modelId}`);
       }
-      
+
       // Count tokens in messages
       const tokenCounts = await this.agentFrameworkDeps.countTokensInMessages(
         model,
         messages,
       );
-      
+
       // Calculate cost
       const creditCost = await this.calculateCost(
         modelId,
         tokenCounts.inputTokens,
         tokenCounts.outputTokens,
       );
-      
+
       return {
         inputTokens: tokenCounts.inputTokens,
         outputTokens: tokenCounts.outputTokens,
@@ -754,28 +782,31 @@ export class CreditSystemService implements OnModuleInit {
         modelProvider: model.provider,
       };
     } catch (error) {
-      this.logger.error(`Error calculating token usage: ${error.message}`, error.stack);
-      
+      this.logger.error(
+        `Error calculating token usage: ${error.message}`,
+        error.stack,
+      );
+
       // Fallback to estimation
       const estimatedInputTokens = this.estimateTokensFromMessages(messages);
       const estimatedOutputTokens = Math.ceil(estimatedInputTokens * 0.5); // Rough estimate
-      
+
       // Calculate cost
       const creditCost = await this.calculateCost(
         modelId,
         estimatedInputTokens,
         estimatedOutputTokens,
       );
-      
+
       const modelInfo = await this.getModelInfoForPricing(modelId);
-      
+
       return {
         inputTokens: estimatedInputTokens,
         outputTokens: estimatedOutputTokens,
         totalTokens: estimatedInputTokens + estimatedOutputTokens,
         creditCost,
         modelId,
-        modelProvider: modelInfo?.provider || "unknown",
+        modelProvider: modelInfo?.provider || 'unknown',
       };
     }
   }
@@ -787,24 +818,24 @@ export class CreditSystemService implements OnModuleInit {
    */
   private estimateTokensFromMessages(messages: any[]): number {
     let totalChars = 0;
-    
+
     for (const message of messages) {
-      if (typeof message.content === "string") {
+      if (typeof message.content === 'string') {
         totalChars += message.content.length;
       } else if (Array.isArray(message.content)) {
         for (const part of message.content) {
-          if (typeof part === "string") {
+          if (typeof part === 'string') {
             totalChars += part.length;
-          } else if (part && typeof part.text === "string") {
+          } else if (part && typeof part.text === 'string') {
             totalChars += part.text.length;
           }
         }
       }
-      
+
       // Add some overhead for message structure
       totalChars += 20;
     }
-    
+
     // Average of 4 characters per token for English text
     return Math.ceil(totalChars / 4);
   }
@@ -815,12 +846,12 @@ export class CreditSystemService implements OnModuleInit {
    */
   private recordResponseTime(startTime: number): void {
     const responseTime = Date.now() - startTime;
-    
+
     // Keep only the last 100 response times
     if (this.responseTimeMs.length >= 100) {
       this.responseTimeMs.shift();
     }
-    
+
     this.responseTimeMs.push(responseTime);
   }
 
@@ -838,52 +869,64 @@ export class CreditSystemService implements OnModuleInit {
     try {
       // Get the latest transaction
       const transactions = await this.transactionRepository.findByOrganization(
-        "system", // Special organization ID for system-level operations
+        'system', // Special organization ID for system-level operations
         1,
       );
-      
+
       // Handle different date types for the latest transaction
       let latestTransaction: Date | undefined = undefined;
       if (transactions.length > 0) {
         const txCreatedAt = transactions[0].createdAt;
         if (txCreatedAt instanceof Date) {
           latestTransaction = txCreatedAt;
-        } else if (typeof txCreatedAt === 'string' || typeof txCreatedAt === 'number') {
+        } else if (
+          typeof txCreatedAt === 'string' ||
+          typeof txCreatedAt === 'number'
+        ) {
           latestTransaction = new Date(txCreatedAt);
         } else if (txCreatedAt && typeof txCreatedAt.toDate === 'function') {
           // Handle Firestore Timestamp
           latestTransaction = txCreatedAt.toDate();
         }
       }
-      
+
       // Get reservation count
       const reservations = await this.reservationRepository.find({
-        filter: { status: "pending" } as any,
+        filter: { status: 'pending' } as any,
       });
-      
+
       // Calculate cache hit rate
       const totalCacheRequests = this.cacheHitCount + this.cacheMissCount;
-      const cacheHitRate = totalCacheRequests > 0 
-        ? (this.cacheHitCount / totalCacheRequests) * 100 
-        : 0;
-      
+      const cacheHitRate =
+        totalCacheRequests > 0
+          ? (this.cacheHitCount / totalCacheRequests) * 100
+          : 0;
+
       // Calculate average latency
-      const averageLatency = this.responseTimeMs.length > 0 
-        ? this.responseTimeMs.reduce((sum, time) => sum + time, 0) / this.responseTimeMs.length 
-        : 0;
-      
+      const averageLatency =
+        this.responseTimeMs.length > 0
+          ? this.responseTimeMs.reduce((sum, time) => sum + time, 0) /
+            this.responseTimeMs.length
+          : 0;
+
       return {
         isOperational: this.isInitialized,
-        latestTransaction: latestTransaction instanceof Date 
-          ? latestTransaction 
-          : latestTransaction ? new Date(latestTransaction) : undefined,
+        latestTransaction:
+          latestTransaction instanceof Date
+            ? latestTransaction
+            : latestTransaction
+              ? new Date(latestTransaction)
+              : undefined,
         reservationCount: reservations.length,
         cacheHitRate,
         averageLatency,
       };
     } catch (error) {
-      this.logger.error(`Error getting system status: ${error.message}`, error.stack);
-      
+      this.logger.error(
+        `Error getting system status: ${error.message}`,
+        error.stack,
+      );
+
       return {
         isOperational: false,
         reservationCount: 0,
@@ -900,24 +943,25 @@ export class CreditSystemService implements OnModuleInit {
    */
   async releaseReservation(reservationId: string): Promise<boolean> {
     try {
-      const reservation = await this.reservationRepository.findById(reservationId);
-      
+      const reservation =
+        await this.reservationRepository.findById(reservationId);
+
       if (!reservation) {
         throw new Error(`Reservation not found: ${reservationId}`);
       }
-      
-      if (reservation.status !== "pending") {
+
+      if (reservation.status !== 'pending') {
         throw new Error(`Reservation is not pending: ${reservationId}`);
       }
-      
-      await this.reservationRepository.updateStatus(
-        reservationId,
-        "released",
-      );
-      
+
+      await this.reservationRepository.updateStatus(reservationId, 'released');
+
       return true;
     } catch (error) {
-      this.logger.error(`Error releasing reservation: ${error.message}`, error.stack);
+      this.logger.error(
+        `Error releasing reservation: ${error.message}`,
+        error.stack,
+      );
       return false;
     }
   }

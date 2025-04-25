@@ -3,16 +3,6 @@
 import axios, { AxiosInstance, InternalAxiosRequestConfig, AxiosResponse, AxiosError } from 'axios';
 
 // Import types
-import { 
-  SignedUrlParams, 
-  SignedUrlResponse, 
-  FileListParams, 
-  FileMetadata, 
-  FileOperationResponse, 
-  DownloadUrlResponse,
-  DownloadUrlParams,
-  AttachFileParams
-} from '../types/storage.types';
 
 import { 
   UsageHistoryParams, 
@@ -26,7 +16,6 @@ import {
   EndpointUsage,
   CreditPurchaseResponse
 } from '../types/analytics.types';
-
 import { 
   Organization, 
   User, 
@@ -36,7 +25,6 @@ import {
   RegisterResponse,
   ApiError
 } from '../types/api.types';
-
 import {
   Product,
   ProductCategory,
@@ -47,6 +35,16 @@ import {
   ProductType,
   ProductStatus
 } from '../types/product/product.types';
+import { 
+  SignedUrlParams, 
+  SignedUrlResponse, 
+  FileListParams, 
+  FileMetadata, 
+  FileOperationResponse, 
+  DownloadUrlResponse,
+  DownloadUrlParams,
+  AttachFileParams
+} from '../types/storage.types';
 
 /**
  * Creates and returns a properly typed API client instance

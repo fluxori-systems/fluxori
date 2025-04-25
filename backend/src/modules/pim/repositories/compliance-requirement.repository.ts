@@ -1,10 +1,11 @@
 /**
  * Compliance Requirement Repository
- * 
+ *
  * Repository for managing compliance requirements in the advanced compliance framework
  */
 
 import { Injectable, Logger } from '@nestjs/common';
+
 import { FirestoreBaseRepository } from '../../../common/repositories/firestore-base.repository';
 import { ComplianceRequirement } from '../services/compliance/compliance-framework.service';
 
@@ -14,21 +15,18 @@ import { ComplianceRequirement } from '../services/compliance/compliance-framewo
 @Injectable()
 export class ComplianceRequirementRepository extends FirestoreBaseRepository<ComplianceRequirement> {
   constructor() {
-    super(
-      'compliance_requirements',
-      {
-        idField: 'id',
-        defaultOrderField: 'requiredBy',
-        defaultOrderDirection: 'asc',
-      },
-    );
-    
+    super('compliance_requirements', {
+      idField: 'id',
+      defaultOrderField: 'requiredBy',
+      defaultOrderDirection: 'asc',
+    });
+
     this.logger = new Logger(ComplianceRequirementRepository.name);
   }
-  
+
   /**
    * Find requirements for a product
-   * 
+   *
    * @param productId Product ID
    * @param tenantId Tenant ID
    * @returns Matching compliance requirements
@@ -48,10 +46,10 @@ export class ComplianceRequirementRepository extends FirestoreBaseRepository<Com
       tenantId,
     );
   }
-  
+
   /**
    * Find requirement for a specific product and rule
-   * 
+   *
    * @param productId Product ID
    * @param ruleId Rule ID
    * @param tenantId Tenant ID
@@ -77,13 +75,13 @@ export class ComplianceRequirementRepository extends FirestoreBaseRepository<Com
       ],
       tenantId,
     );
-    
+
     return results.length > 0 ? results[0] : null;
   }
-  
+
   /**
    * Find requirements by status
-   * 
+   *
    * @param status Compliance status
    * @param tenantId Tenant ID
    * @returns Matching compliance requirements
@@ -103,10 +101,10 @@ export class ComplianceRequirementRepository extends FirestoreBaseRepository<Com
       tenantId,
     );
   }
-  
+
   /**
    * Find requirements with upcoming due dates
-   * 
+   *
    * @param date Cutoff date
    * @param tenantId Tenant ID
    * @returns Compliance requirements due by the given date
@@ -131,10 +129,10 @@ export class ComplianceRequirementRepository extends FirestoreBaseRepository<Com
       tenantId,
     );
   }
-  
+
   /**
    * Find requirements assigned to a user
-   * 
+   *
    * @param userId User ID
    * @param tenantId Tenant ID
    * @returns Compliance requirements assigned to the user

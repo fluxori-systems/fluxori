@@ -1,7 +1,9 @@
 'use client';
 
 import { useState, useEffect, ReactNode } from 'react';
+
 import { useRouter } from 'next/navigation';
+
 import { 
   Stack, 
   Center, 
@@ -9,7 +11,9 @@ import {
   Text, 
   ThemeIcon 
 } from '@mantine/core';
+
 import { IconAlertTriangle, IconLock } from '@tabler/icons-react';
+
 import { useAuth } from '../../hooks/useAuth';
 
 interface RouteGuardProps {

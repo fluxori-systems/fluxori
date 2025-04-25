@@ -4,20 +4,20 @@
  * Provides health check endpoints and indicators for the application
  */
 
-import { Module } from "@nestjs/common";
-import { ConfigModule } from "@nestjs/config";
+import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import {
   HealthCheckService,
   DiskHealthIndicator,
   MemoryHealthIndicator,
   HttpHealthIndicator,
-} from "@nestjs/terminus";
+} from '@nestjs/terminus';
 
-import { FirestoreHealthIndicator } from "./firestore-health.indicator";
-import { HealthController } from "./health.controller";
-import { GoogleCloudStorageService } from "../common/storage/google-cloud-storage.service";
-import { STORAGE_SERVICE } from "../common/storage/storage.interface";
-import { FirestoreConfigService } from "../config/firestore.config";
+import { FirestoreHealthIndicator } from './firestore-health.indicator';
+import { HealthController } from './health.controller';
+import { GoogleCloudStorageService } from '../common/storage/google-cloud-storage.service';
+import { STORAGE_SERVICE } from '../common/storage/storage.interface';
+import { FirestoreConfigService } from '../config/firestore.config';
 
 @Module({
   imports: [ConfigModule],

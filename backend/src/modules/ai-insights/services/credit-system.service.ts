@@ -1,8 +1,8 @@
-import { Injectable, Logger } from "@nestjs/common";
+import { Injectable, Logger } from '@nestjs/common';
 
-import { FirestoreBaseRepository } from "../../../common/repositories/firestore-base.repository";
-import { FirestoreConfigService } from "../../../config/firestore.config";
-import { FirestoreEntity } from "../../../types/google-cloud.types";
+import { FirestoreBaseRepository } from '../../../common/repositories/firestore-base.repository';
+import { FirestoreConfigService } from '../../../config/firestore.config';
+import { FirestoreEntity } from '../../../types/google-cloud.types';
 
 /**
  * Credit Transaction entity for Firestore
@@ -12,7 +12,7 @@ interface CreditTransaction extends FirestoreEntity {
   userId: string;
   amount: number;
   balance: number;
-  type: "purchase" | "usage" | "refund" | "expiration" | "bonus";
+  type: 'purchase' | 'usage' | 'refund' | 'expiration' | 'bonus';
   description: string;
   metadata?: Record<string, any>;
   relatedEntityId?: string;
@@ -35,14 +35,14 @@ interface CreditBalance extends FirestoreEntity {
  */
 @Injectable()
 class CreditTransactionRepository extends FirestoreBaseRepository<CreditTransaction> {
-  protected readonly collectionName = "credit_transactions";
+  protected readonly collectionName = 'credit_transactions';
 
   constructor(firestoreConfigService: FirestoreConfigService) {
-    super(firestoreConfigService, "credit_transactions", {
+    super(firestoreConfigService, 'credit_transactions', {
       useVersioning: true,
       enableCache: true,
       cacheTTLMs: 5 * 60 * 1000,
-      requiredFields: ["organizationId", "userId", "amount", "type"],
+      requiredFields: ['organizationId', 'userId', 'amount', 'type'],
     });
   }
 
@@ -57,8 +57,8 @@ class CreditTransactionRepository extends FirestoreBaseRepository<CreditTransact
     return this.find({
       filter: { organizationId } as Partial<CreditTransaction>,
       queryOptions: {
-        orderBy: "createdAt",
-        direction: "desc",
+        orderBy: 'createdAt',
+        direction: 'desc',
       },
     });
   }
@@ -72,8 +72,8 @@ class CreditTransactionRepository extends FirestoreBaseRepository<CreditTransact
     return this.find({
       filter: { userId } as Partial<CreditTransaction>,
       queryOptions: {
-        orderBy: "createdAt",
-        direction: "desc",
+        orderBy: 'createdAt',
+        direction: 'desc',
       },
     });
   }
@@ -84,14 +84,14 @@ class CreditTransactionRepository extends FirestoreBaseRepository<CreditTransact
  */
 @Injectable()
 class CreditBalanceRepository extends FirestoreBaseRepository<CreditBalance> {
-  protected readonly collectionName = "credit_balances";
+  protected readonly collectionName = 'credit_balances';
 
   constructor(firestoreConfigService: FirestoreConfigService) {
-    super(firestoreConfigService, "credit_balances", {
+    super(firestoreConfigService, 'credit_balances', {
       useVersioning: true,
       enableCache: true,
       cacheTTLMs: 2 * 60 * 1000,
-      requiredFields: ["organizationId", "currentBalance"],
+      requiredFields: ['organizationId', 'currentBalance'],
     });
   }
 
@@ -117,7 +117,7 @@ export interface AddCreditsDto {
   organizationId: string;
   userId: string;
   amount: number;
-  type: "purchase" | "bonus";
+  type: 'purchase' | 'bonus';
   description: string;
   metadata?: Record<string, any>;
 }
@@ -188,7 +188,7 @@ export class CreditSystemService {
           balance.lifetimeCredits + addCreditsDto.amount;
 
         // Update balance in database
-        const balanceCollectionName = this.balanceRepository["collectionName"];
+        const balanceCollectionName = this.balanceRepository['collectionName'];
         const balanceRef = this.firestoreConfigService.getDocument(
           balanceCollectionName,
           balance.id,
@@ -202,7 +202,7 @@ export class CreditSystemService {
         // Create transaction record
         const transactionData: Omit<
           CreditTransaction,
-          "id" | "createdAt" | "updatedAt"
+          'id' | 'createdAt' | 'updatedAt'
         > = {
           organizationId: addCreditsDto.organizationId,
           userId: addCreditsDto.userId,
@@ -214,7 +214,7 @@ export class CreditSystemService {
         };
 
         const transactionCollectionName =
-          this.transactionRepository["collectionName"];
+          this.transactionRepository['collectionName'];
         const transactionRef = this.firestoreConfigService
           .getCollection(transactionCollectionName)
           .doc();
@@ -266,7 +266,7 @@ export class CreditSystemService {
         const newLifetimeUsage = balance.lifetimeUsage + useCreditsDto.amount;
 
         // Update balance in database
-        const balanceCollectionName = this.balanceRepository["collectionName"];
+        const balanceCollectionName = this.balanceRepository['collectionName'];
         const balanceRef = this.firestoreConfigService.getDocument(
           balanceCollectionName,
           balance.id,
@@ -280,13 +280,13 @@ export class CreditSystemService {
         // Create transaction record
         const transactionData: Omit<
           CreditTransaction,
-          "id" | "createdAt" | "updatedAt"
+          'id' | 'createdAt' | 'updatedAt'
         > = {
           organizationId: useCreditsDto.organizationId,
           userId: useCreditsDto.userId,
           amount: -useCreditsDto.amount, // Negative amount for usage
           balance: newBalance,
-          type: "usage",
+          type: 'usage',
           description: useCreditsDto.description,
           relatedEntityId: useCreditsDto.relatedEntityId,
           relatedEntityType: useCreditsDto.relatedEntityType,
@@ -294,7 +294,7 @@ export class CreditSystemService {
         };
 
         const transactionCollectionName =
-          this.transactionRepository["collectionName"];
+          this.transactionRepository['collectionName'];
         const transactionRef = this.firestoreConfigService
           .getCollection(transactionCollectionName)
           .doc();
@@ -365,16 +365,16 @@ export class CreditSystemService {
     let outputTokenRate = 0;
 
     // Set rates based on model
-    if (modelName.includes("gpt-4")) {
+    if (modelName.includes('gpt-4')) {
       inputTokenRate = 0.03;
       outputTokenRate = 0.06;
-    } else if (modelName.includes("gpt-3.5")) {
+    } else if (modelName.includes('gpt-3.5')) {
       inputTokenRate = 0.0015;
       outputTokenRate = 0.002;
-    } else if (modelName.includes("text-embedding")) {
+    } else if (modelName.includes('text-embedding')) {
       inputTokenRate = 0.0001;
       outputTokenRate = 0;
-    } else if (modelName.includes("vertex")) {
+    } else if (modelName.includes('vertex')) {
       // Example for Google Vertex AI models
       inputTokenRate = 0.002;
       outputTokenRate = 0.01;

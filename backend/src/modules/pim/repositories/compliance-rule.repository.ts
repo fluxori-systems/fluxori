@@ -1,10 +1,11 @@
 /**
  * Compliance Rule Repository
- * 
+ *
  * Repository for managing compliance rules in the advanced compliance framework
  */
 
 import { Injectable, Logger } from '@nestjs/common';
+
 import { FirestoreBaseRepository } from '../../../common/repositories/firestore-base.repository';
 import { ComplianceRule } from '../services/compliance/compliance-framework.service';
 
@@ -14,21 +15,18 @@ import { ComplianceRule } from '../services/compliance/compliance-framework.serv
 @Injectable()
 export class ComplianceRuleRepository extends FirestoreBaseRepository<ComplianceRule> {
   constructor() {
-    super(
-      'compliance_rules',
-      {
-        idField: 'id',
-        defaultOrderField: 'updatedAt',
-        defaultOrderDirection: 'desc',
-      },
-    );
-    
+    super('compliance_rules', {
+      idField: 'id',
+      defaultOrderField: 'updatedAt',
+      defaultOrderDirection: 'desc',
+    });
+
     this.logger = new Logger(ComplianceRuleRepository.name);
   }
-  
+
   /**
    * Find rules by product type and region
-   * 
+   *
    * @param productType Product type
    * @param regionCode Region code
    * @param tenantId Tenant ID
@@ -55,10 +53,10 @@ export class ComplianceRuleRepository extends FirestoreBaseRepository<Compliance
       tenantId,
     );
   }
-  
+
   /**
    * Find rules by authority
-   * 
+   *
    * @param authority Compliance authority
    * @param tenantId Tenant ID
    * @returns Matching compliance rules
@@ -78,10 +76,10 @@ export class ComplianceRuleRepository extends FirestoreBaseRepository<Compliance
       tenantId,
     );
   }
-  
+
   /**
    * Find rules by category
-   * 
+   *
    * @param category Compliance category
    * @param tenantId Tenant ID
    * @returns Matching compliance rules
@@ -101,10 +99,10 @@ export class ComplianceRuleRepository extends FirestoreBaseRepository<Compliance
       tenantId,
     );
   }
-  
+
   /**
    * Find rules with complex filters
-   * 
+   *
    * @param filters Filter criteria
    * @param tenantId Tenant ID
    * @returns Matching compliance rules
@@ -115,7 +113,7 @@ export class ComplianceRuleRepository extends FirestoreBaseRepository<Compliance
   ): Promise<ComplianceRule[]> {
     // Convert filters to array of filter objects for the base repository
     const filterArray = [];
-    
+
     for (const [key, value] of Object.entries(filters)) {
       // Handle special cases for array containment
       if (key === 'regionCodes') {
@@ -124,8 +122,7 @@ export class ComplianceRuleRepository extends FirestoreBaseRepository<Compliance
           operator: 'array-contains',
           value,
         });
-      }
-      else if (key === 'productTypes') {
+      } else if (key === 'productTypes') {
         filterArray.push({
           field: 'productTypes',
           operator: 'array-contains',
@@ -169,7 +166,7 @@ export class ComplianceRuleRepository extends FirestoreBaseRepository<Compliance
         });
       }
     }
-    
+
     return this.findWithFilters(filterArray, tenantId);
   }
 }

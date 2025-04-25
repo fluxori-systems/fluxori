@@ -1,7 +1,11 @@
 'use client';
 
 import { RefObject, useEffect } from 'react';
+
 import { gsap } from 'gsap';
+
+import { defaultConnectionService } from './connection-service.impl';
+import { defaultPerformanceMonitoringService } from './performance/performance-monitoring.service';
 import { 
   IAnimationService,
   ComponentAnimationConfig,
@@ -9,15 +13,13 @@ import {
   AnimationFrameRecord,
   PerformanceAnalysisResult 
 } from '../../shared/services/animation-service.interface';
+import { complexityPresets } from '../../shared/types/motion-tokens';
 import {
   AnimationParams,
   AnimationStrategyConfig,
   MotionMode,
   NetworkCondition
 } from '../../shared/types/motion-types';
-import { defaultConnectionService } from './connection-service.impl';
-import { complexityPresets } from '../../shared/types/motion-tokens';
-import { defaultPerformanceMonitoringService } from './performance/performance-monitoring.service';
 
 /**
  * Implementation of the animation service interface

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+
 import { observabilityApi } from '../../api/observability.api';
 import { Trace, TraceSpan } from '../../types/observability.types';
 

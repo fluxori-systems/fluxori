@@ -1,9 +1,9 @@
-import { Injectable, Logger } from "@nestjs/common";
-import { ConfigService } from "@nestjs/config";
+import { Injectable, Logger } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 
-import { RepricingEngineService } from "./repricing-engine.service";
-import { BuyBoxHistoryRepository } from "../repositories/buybox-history.repository";
-import { BuyBoxStatusRepository } from "../repositories/buybox-status.repository";
+import { RepricingEngineService } from './repricing-engine.service';
+import { BuyBoxHistoryRepository } from '../repositories/buybox-history.repository';
+import { BuyBoxStatusRepository } from '../repositories/buybox-status.repository';
 
 /**
  * Service for scheduling repricing operations
@@ -26,12 +26,12 @@ export class RepricingSchedulerService {
   async onModuleInit() {
     // Check if auto-scheduling is enabled
     const autoSchedule = this.configService.get<boolean>(
-      "REPRICING_AUTO_SCHEDULE",
+      'REPRICING_AUTO_SCHEDULE',
       false,
     );
 
     if (autoSchedule) {
-      this.logger.log("Auto-scheduling repricing jobs");
+      this.logger.log('Auto-scheduling repricing jobs');
 
       // Schedule the first run after 1 minute
       setTimeout(() => {
@@ -45,14 +45,14 @@ export class RepricingSchedulerService {
    */
   async runScheduledRepricing() {
     if (this.isRunning) {
-      this.logger.log("Repricing already running, skipping");
+      this.logger.log('Repricing already running, skipping');
       return;
     }
 
     this.isRunning = true;
 
     try {
-      this.logger.log("Running scheduled repricing");
+      this.logger.log('Running scheduled repricing');
 
       // Get all organizations
       const organizations = await this.getOrganizations();
@@ -159,7 +159,7 @@ export class RepricingSchedulerService {
   private async cleanupOldHistory(organizationId: string): Promise<number> {
     // Get history retention period from config (default 30 days)
     const retentionDays = this.configService.get<number>(
-      "BUYBOX_HISTORY_RETENTION_DAYS",
+      'BUYBOX_HISTORY_RETENTION_DAYS',
       30,
     );
 

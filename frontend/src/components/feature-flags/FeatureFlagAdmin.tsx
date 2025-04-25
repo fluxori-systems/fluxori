@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useMemo } from 'react';
+
 import { featureFlagsApi } from '../../api/feature-flags.api';
+import { useAuth } from '../../hooks/useAuth';
 import { 
   FeatureFlag,
   FeatureFlagType,
   Environment
 } from '../../types/feature-flags/feature-flag.types';
-import { useAuth } from '../../hooks/useAuth';
 
 // Interface for the admin component
 interface FeatureFlagAdminProps {

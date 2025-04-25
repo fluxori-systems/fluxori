@@ -5,11 +5,14 @@
 
 /// <reference types="@testing-library/jest-dom/vitest" />
 import '@testing-library/jest-dom';
-import { vi, expect } from 'vitest';
+import React from 'react';
+
 import * as matchers from '@testing-library/jest-dom/matchers';
+import { vi, expect } from 'vitest';
+
 import { setupMockBrowserAPIs } from '../mocks/browser-apis';
 import { setupMockPlatformAPIs } from '../mocks/platform-apis';
-import React from 'react';
+
 
 // Import type augmentations
 import '../types/vitest-augmentations';

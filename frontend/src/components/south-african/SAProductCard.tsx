@@ -1,12 +1,13 @@
 'use client';
 
 import React, { useState, useRef } from 'react';
-import { Card, Text } from '../../lib/ui';
-import { useConnectionQuality } from '../../lib/motion/hooks/useConnectionQuality';
-import { formatCurrency } from '../../utils/currency-formatter';
-import { useCombinedRefs } from '../../lib/ui/utils/use-combined-refs';
-import { useComponentAnimation } from '../../lib/ui/hooks/useComponentAnimation';
+
 import { useTokenTracking } from '../../lib/design-system/utils/token-analysis';
+import { useConnectionQuality } from '../../lib/motion/hooks/useConnectionQuality';
+import { Card, Text } from '../../lib/ui';
+import { useComponentAnimation } from '../../lib/ui/hooks/useComponentAnimation';
+import { useCombinedRefs } from '../../lib/ui/utils/use-combined-refs';
+import { formatCurrency } from '../../utils/currency-formatter';
 
 export interface SAProductCardProps {
   /** Product title */

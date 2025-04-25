@@ -25,35 +25,47 @@ export function createRepositoryStats(): RepositoryStats {
     writes: 0,
     cacheHits: 0,
     cacheMisses: 0,
-    errors: 0
+    errors: 0,
   };
 }
 
 /**
  * Increment read count
  */
-export function incrementReads(stats: RepositoryStats, count: number = 1): void {
+export function incrementReads(
+  stats: RepositoryStats,
+  count: number = 1,
+): void {
   stats.reads += count;
 }
 
 /**
  * Increment write count
  */
-export function incrementWrites(stats: RepositoryStats, count: number = 1): void {
+export function incrementWrites(
+  stats: RepositoryStats,
+  count: number = 1,
+): void {
   stats.writes += count;
 }
 
 /**
  * Increment cache hit count
  */
-export function incrementCacheHits(stats: RepositoryStats, count: number = 1): void {
+export function incrementCacheHits(
+  stats: RepositoryStats,
+  count: number = 1,
+): void {
   stats.cacheHits += count;
 }
 
 /**
  * Increment cache miss count
  */
-export function incrementCacheMisses(stats: RepositoryStats, count: number = 1): void {
+export function incrementCacheMisses(
+  stats: RepositoryStats,
+  count: number = 1,
+): void {
   stats.cacheMisses += count;
 }
 

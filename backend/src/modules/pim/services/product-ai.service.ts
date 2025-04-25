@@ -1,11 +1,12 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { AgentService } from '../../agent-framework';
-import { CreditSystemService } from '../../credit-system';
-import { FeatureFlagService } from '../../feature-flags';
-import { CreditUsageType } from '../../credit-system/interfaces/types';
 import { ConfigService } from '@nestjs/config';
+
+import { AgentService } from '../../agent-framework';
 import { ModelRegistryRepository } from '../../agent-framework/repositories/model-registry.repository';
 import { TokenEstimator } from '../../agent-framework/utils/token-estimator';
+import { CreditSystemService } from '../../credit-system';
+import { CreditUsageType } from '../../credit-system/interfaces/types';
+import { FeatureFlagService } from '../../feature-flags';
 
 // Define interfaces for ProductAI service
 export interface ProductDescriptionOptions {
@@ -46,10 +47,10 @@ export interface TokenUsage {
 
 export interface DescriptionGenerationResult {
   description: string;
-  seoMetadata?: { 
-    title: string; 
-    description: string; 
-    keywords: string[] 
+  seoMetadata?: {
+    title: string;
+    description: string;
+    keywords: string[];
   };
   success: boolean;
   tokenUsage?: TokenUsage;
@@ -73,7 +74,8 @@ export class ProductAiService {
     private readonly configService: ConfigService,
     private readonly tokenEstimator: TokenEstimator,
   ) {
-    this.defaultModelId = this.configService.get<string>('DEFAULT_AI_MODEL_ID') || 'gpt-4o';
+    this.defaultModelId =
+      this.configService.get<string>('DEFAULT_AI_MODEL_ID') || 'gpt-4o';
   }
 
   /**
@@ -88,13 +90,17 @@ export class ProductAiService {
     productData: ProductData,
     organizationId: string,
     userId: string,
-    options?: ProductDescriptionOptions
+    options?: ProductDescriptionOptions,
   ): Promise<DescriptionGenerationResult> {
     try {
       // Default options
       const length = options?.length || 'medium';
-      const seoOptimized = options?.seoOptimized !== undefined ? options.seoOptimized : true;
-      const marketplaceOptimized = options?.marketplaceOptimized !== undefined ? options.marketplaceOptimized : false;
+      const seoOptimized =
+        options?.seoOptimized !== undefined ? options.seoOptimized : true;
+      const marketplaceOptimized =
+        options?.marketplaceOptimized !== undefined
+          ? options.marketplaceOptimized
+          : false;
       const targetMarketplace = options?.targetMarketplace || '';
       const language = options?.language || 'en';
 
@@ -113,13 +119,18 @@ export class ProductAiService {
       }
 
       // Construct the agent prompt
-      const systemPrompt = this.constructProductDescriptionPrompt(
-        productData, 
-        { length, seoOptimized, marketplaceOptimized, targetMarketplace, language }
-      );
+      const systemPrompt = this.constructProductDescriptionPrompt(productData, {
+        length,
+        seoOptimized,
+        marketplaceOptimized,
+        targetMarketplace,
+        language,
+      });
 
       // Get available model
-      const model = await this.modelRegistryRepository.findById(this.defaultModelId);
+      const model = await this.modelRegistryRepository.findById(
+        this.defaultModelId,
+      );
       if (!model) {
         throw new Error(`Model ${this.defaultModelId} not found in registry`);
       }
@@ -128,7 +139,7 @@ export class ProductAiService {
       const estimatedInputTokens = this.tokenEstimator.estimateTokens(
         systemPrompt + JSON.stringify(productData),
       );
-      
+
       const estimatedOutputTokens = this.getEstimatedOutputTokens(length);
 
       // Check credit availability
@@ -143,7 +154,9 @@ export class ProductAiService {
       });
 
       if (!creditCheck.hasCredits) {
-        this.logger.warn('Insufficient credits for product description generation');
+        this.logger.warn(
+          'Insufficient credits for product description generation',
+        );
         return {
           description: '',
           success: false,
@@ -202,7 +215,10 @@ export class ProductAiService {
         },
       };
     } catch (error) {
-      this.logger.error(`Error generating product description: ${error.message}`, error.stack);
+      this.logger.error(
+        `Error generating product description: ${error.message}`,
+        error.stack,
+      );
       return {
         description: '',
         success: false,
@@ -254,9 +270,11 @@ export class ProductAiService {
 
       // Get system prompt for SEO optimization
       const systemPrompt = this.constructSeoOptimizationPrompt();
-      
+
       // Get model
-      const model = await this.modelRegistryRepository.findById(this.defaultModelId);
+      const model = await this.modelRegistryRepository.findById(
+        this.defaultModelId,
+      );
       if (!model) {
         throw new Error(`Model ${this.defaultModelId} not found in registry`);
       }
@@ -265,7 +283,7 @@ export class ProductAiService {
       const estimatedInputTokens = this.tokenEstimator.estimateTokens(
         systemPrompt + JSON.stringify(product),
       );
-      
+
       const estimatedOutputTokens = 1000; // Reasonable estimate for SEO suggestions
 
       // Check credit availability
@@ -300,11 +318,11 @@ export class ProductAiService {
 
       // Format product data
       const userMessage = JSON.stringify(product, null, 2);
-      
+
       // Send message
       const startTime = Date.now();
       const response = await this.agentService.sendMessage(
-        conversation.id, 
+        conversation.id,
         userMessage,
       );
       const processingTime = Date.now() - startTime;
@@ -349,7 +367,10 @@ export class ProductAiService {
         },
       };
     } catch (error) {
-      this.logger.error(`Error generating SEO suggestions: ${error.message}`, error.stack);
+      this.logger.error(
+        `Error generating SEO suggestions: ${error.message}`,
+        error.stack,
+      );
       return {
         title: '',
         metaDescription: '',
@@ -398,9 +419,11 @@ export class ProductAiService {
 
       // Get system prompt
       const systemPrompt = this.constructProductClassificationPrompt();
-      
+
       // Get model
-      const model = await this.modelRegistryRepository.findById(this.defaultModelId);
+      const model = await this.modelRegistryRepository.findById(
+        this.defaultModelId,
+      );
       if (!model) {
         throw new Error(`Model ${this.defaultModelId} not found in registry`);
       }
@@ -409,7 +432,7 @@ export class ProductAiService {
       const estimatedInputTokens = this.tokenEstimator.estimateTokens(
         systemPrompt + JSON.stringify(productData),
       );
-      
+
       const estimatedOutputTokens = 800; // Reasonable estimate for classification results
 
       // Check credit availability
@@ -441,11 +464,11 @@ export class ProductAiService {
 
       // Format product data
       const userMessage = JSON.stringify(productData, null, 2);
-      
+
       // Send message
       const startTime = Date.now();
       const response = await this.agentService.sendMessage(
-        conversation.id, 
+        conversation.id,
         userMessage,
       );
       const processingTime = Date.now() - startTime;
@@ -455,7 +478,9 @@ export class ProductAiService {
       try {
         result = JSON.parse(response.content);
       } catch (e) {
-        this.logger.error(`Failed to parse classification results: ${e.message}`);
+        this.logger.error(
+          `Failed to parse classification results: ${e.message}`,
+        );
         result = {
           categories: [],
           attributeSuggestions: {},
@@ -486,7 +511,10 @@ export class ProductAiService {
         },
       };
     } catch (error) {
-      this.logger.error(`Error classifying product: ${error.message}`, error.stack);
+      this.logger.error(
+        `Error classifying product: ${error.message}`,
+        error.stack,
+      );
       return {
         categories: [],
         success: false,
@@ -530,9 +558,11 @@ export class ProductAiService {
 
       // Get system prompt
       const systemPrompt = this.constructAttributeExtractionPrompt();
-      
+
       // Get model
-      const model = await this.modelRegistryRepository.findById(this.defaultModelId);
+      const model = await this.modelRegistryRepository.findById(
+        this.defaultModelId,
+      );
       if (!model) {
         throw new Error(`Model ${this.defaultModelId} not found in registry`);
       }
@@ -541,7 +571,7 @@ export class ProductAiService {
       const estimatedInputTokens = this.tokenEstimator.estimateTokens(
         systemPrompt + productText,
       );
-      
+
       const estimatedOutputTokens = Math.min(1500, productText.length); // Conservative estimate
 
       // Check credit availability
@@ -576,7 +606,7 @@ export class ProductAiService {
       // Send message
       const startTime = Date.now();
       const response = await this.agentService.sendMessage(
-        conversation.id, 
+        conversation.id,
         productText,
       );
       const processingTime = Date.now() - startTime;
@@ -619,7 +649,10 @@ export class ProductAiService {
         },
       };
     } catch (error) {
-      this.logger.error(`Error extracting attributes: ${error.message}`, error.stack);
+      this.logger.error(
+        `Error extracting attributes: ${error.message}`,
+        error.stack,
+      );
       return {
         extractedAttributes: {},
         features: [],
@@ -665,7 +698,7 @@ INSTRUCTIONS:
       prompt += `
 - Optimize specifically for ${options.targetMarketplace} marketplace
 - Follow ${options.targetMarketplace}'s best practices for product content`;
-      
+
       // Add specific marketplace guidelines
       if (options.targetMarketplace.toLowerCase() === 'takealot') {
         prompt += `
@@ -691,11 +724,15 @@ ${options.seoOptimized ? '- seoMetadata: { title, description, keywords }' : ''}
 Example response structure:
 {
   "description": "Your well-crafted product description here...",
-  ${options.seoOptimized ? `"seoMetadata": {
+  ${
+    options.seoOptimized
+      ? `"seoMetadata": {
     "title": "SEO-optimized product title",
     "description": "Meta description for search engines",
     "keywords": ["keyword1", "keyword2", "keyword3"]
-  }` : ''}
+  }`
+      : ''
+  }
 }`;
 
     return prompt;
@@ -810,7 +847,9 @@ Provide your response in JSON format with these fields:
    * Get estimated output tokens based on description length
    * @param length Description length option
    */
-  private getEstimatedOutputTokens(length: 'short' | 'medium' | 'long'): number {
+  private getEstimatedOutputTokens(
+    length: 'short' | 'medium' | 'long',
+  ): number {
     switch (length) {
       case 'short':
         return 300;

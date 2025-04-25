@@ -5,19 +5,19 @@ import {
   CallHandler,
   Inject,
   Optional,
-} from "@nestjs/common";
+} from '@nestjs/common';
 
-import { Request, Response } from "express";
-import { Observable } from "rxjs";
-import { tap } from "rxjs/operators";
+import { Request, Response } from 'express';
+import { Observable } from 'rxjs';
+import { tap } from 'rxjs/operators';
 
 // Import services
 import {
   ObservabilityModuleOptions,
   DEFAULT_OBSERVABILITY_OPTIONS,
-} from "../interfaces/observability-options.interface";
-import { LogContext } from "../interfaces/observability.interfaces";
-import { EnhancedLoggerService } from "../services/enhanced-logger.service";
+} from '../interfaces/observability-options.interface';
+import { LogContext } from '../interfaces/observability.interfaces';
+import { EnhancedLoggerService } from '../services/enhanced-logger.service';
 
 // Import interfaces
 
@@ -33,7 +33,7 @@ export class LoggingInterceptor implements NestInterceptor {
   constructor(
     private readonly logger: EnhancedLoggerService,
     @Optional()
-    @Inject("OBSERVABILITY_OPTIONS")
+    @Inject('OBSERVABILITY_OPTIONS')
     private readonly options?: ObservabilityModuleOptions,
   ) {
     // Apply options with defaults
@@ -51,7 +51,7 @@ export class LoggingInterceptor implements NestInterceptor {
    */
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     // Only apply to HTTP requests
-    if (context.getType() !== "http") {
+    if (context.getType() !== 'http') {
       return next.handle();
     }
 
@@ -64,8 +64,8 @@ export class LoggingInterceptor implements NestInterceptor {
 
     // Create log context
     const logContext: LogContext = {
-      service: "HttpLogger",
-      ...(traceId && { trace: { traceId, spanId: "", startTime: new Date() } }),
+      service: 'HttpLogger',
+      ...(traceId && { trace: { traceId, spanId: '', startTime: new Date() } }),
     };
 
     // Add user context if available
@@ -147,22 +147,22 @@ export class LoggingInterceptor implements NestInterceptor {
 
     const result: Record<string, any> = {};
     const sensitiveHeaders = [
-      "authorization",
-      "cookie",
-      "set-cookie",
-      "x-auth-token",
-      "api-key",
-      "apikey",
-      "password",
-      "refresh-token",
-      "access-token",
+      'authorization',
+      'cookie',
+      'set-cookie',
+      'x-auth-token',
+      'api-key',
+      'apikey',
+      'password',
+      'refresh-token',
+      'access-token',
     ];
 
     // Clone only safe headers
     for (const [key, value] of Object.entries(headers)) {
       const lowerKey = key.toLowerCase();
       if (sensitiveHeaders.includes(lowerKey)) {
-        result[key] = "[REDACTED]";
+        result[key] = '[REDACTED]';
       } else {
         result[key] = value;
       }

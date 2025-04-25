@@ -1,10 +1,12 @@
 'use client';
 
 import React, { useRef, useEffect, useMemo } from 'react';
+
 import { Chart, registerables } from 'chart.js';
+
 import { useNetworkAwareChart } from '../../hooks/useNetworkAwareChart';
-import { NetworkAwarePieChartProps, ChartDataPoint } from '../../types/chart.types';
 import { Text } from '../../lib/ui/components/Text';
+import { NetworkAwarePieChartProps, ChartDataPoint } from '../../types/chart.types';
 
 // Register Chart.js components
 Chart.register(...registerables);

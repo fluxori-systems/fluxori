@@ -1,16 +1,17 @@
 'use client';
 
 import { RefObject, useEffect, useState, useCallback } from 'react';
+
+import { useService } from '../../shared/providers/service-provider';
 import { 
   IAnimationService,
   ComponentAnimationConfig
 } from '../../shared/services/animation-service.interface';
+import { SERVICE_KEYS } from '../../shared/services/service-registry';
 import { 
   AnimationMode,
   MotionMode
 } from '../../shared/types/motion-types';
-import { SERVICE_KEYS } from '../../shared/services/service-registry';
-import { useService } from '../../shared/providers/service-provider';
 
 /**
  * Safely get the animation service, either from context or a fallback

@@ -1,12 +1,12 @@
-import { FirestoreEntity, Timestamp } from "../../../types/google-cloud.types";
+import { FirestoreEntity, Timestamp } from '../../../types/google-cloud.types';
 
 /**
  * User role enum
  */
 export enum UserRole {
-  ADMIN = "admin",
-  USER = "user",
-  MANAGER = "manager",
+  ADMIN = 'admin',
+  USER = 'user',
+  MANAGER = 'manager',
 }
 
 /**
@@ -36,7 +36,7 @@ export interface User extends FirestoreEntity {
 
   /** User preferences */
   preferences?: {
-    theme?: "light" | "dark" | "system";
+    theme?: 'light' | 'dark' | 'system';
     notifications?: boolean;
     language?: string;
   };

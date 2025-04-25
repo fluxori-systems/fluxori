@@ -3,11 +3,11 @@ import {
   Logger,
   NotFoundException,
   ConflictException,
-} from "@nestjs/common";
+} from '@nestjs/common';
 
-import { WarehouseType, WarehouseLocation } from "../interfaces/types";
-import { Warehouse } from "../models/warehouse.schema";
-import { WarehouseRepository } from "../repositories/warehouse.repository";
+import { WarehouseType, WarehouseLocation } from '../interfaces/types';
+import { Warehouse } from '../models/warehouse.schema';
+import { WarehouseRepository } from '../repositories/warehouse.repository';
 
 /**
  * DTO for creating a new warehouse

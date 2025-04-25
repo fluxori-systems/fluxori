@@ -3,15 +3,15 @@
  * Provides utilities for managing transactions in repositories
  */
 
-import { Logger } from "@nestjs/common";
+import { Logger } from '@nestjs/common';
 
-import { Firestore, Transaction, WriteBatch } from "@google-cloud/firestore";
+import { Firestore, Transaction, WriteBatch } from '@google-cloud/firestore';
 
 import {
   TransactionContext,
   TransactionExecutionOptions,
   FirestoreBatchWriteResult,
-} from "../../../types/google-cloud.types";
+} from '../../../types/google-cloud.types';
 
 /**
  * Repository transaction interface
@@ -50,7 +50,7 @@ export async function executeTransaction<T>(
   options: Partial<TransactionExecutionOptions> = {},
 ): Promise<T> {
   const mergedOptions = { ...DEFAULT_TRANSACTION_OPTIONS, ...options };
-  const logger = new Logger("Transaction");
+  const logger = new Logger('Transaction');
 
   let attempts = 0;
 
@@ -125,7 +125,7 @@ export async function executeTransaction<T>(
     lastError?.stack,
   );
 
-  throw lastError || new Error("Transaction failed");
+  throw lastError || new Error('Transaction failed');
 }
 
 /**
@@ -150,14 +150,14 @@ export async function executeBatch(
     await batch.commit();
 
     return {
-      status: "success",
+      status: 'success',
       successCount: 1,
       errorCount: 0,
       writtenCount: 1,
     };
   } catch (error) {
     return {
-      status: "error",
+      status: 'error',
       successCount: 0,
       errorCount: 1,
       errors: [{ index: 0, error: error as Error }],
@@ -208,9 +208,9 @@ export async function executeMultiBatch(
   });
 
   // Determine overall status
-  let status: "success" | "partial" | "error" = "success";
+  let status: 'success' | 'partial' | 'error' = 'success';
   if (errorCount > 0) {
-    status = successCount > 0 ? "partial" : "error";
+    status = successCount > 0 ? 'partial' : 'error';
   }
 
   return {

@@ -5,6 +5,7 @@
  */
 
 import { TenantFirestoreService } from '../lib/firebase/firestore.service';
+import { QueryOptions } from '../types/core/entity.types';
 import { 
   StockLevel, 
   StockMovement, 
@@ -13,7 +14,6 @@ import {
   StockStatus,
   WarehouseType
 } from '../types/inventory/inventory.types';
-import { QueryOptions } from '../types/core/entity.types';
 
 /**
  * Repository for StockLevel entities

@@ -1,20 +1,20 @@
-import { Module } from "@nestjs/common";
-import { ConfigModule } from "@nestjs/config";
+import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 
 // Repositories
-import { MarketplaceController } from "./controllers/marketplace.controller";
-import { MarketplaceCredentialsRepository } from "./repositories/marketplace-credentials.repository";
+import { MarketplaceController } from './controllers/marketplace.controller';
+import { MarketplaceCredentialsRepository } from './repositories/marketplace-credentials.repository';
 
 // Services
-import { MarketplaceAdapterFactory } from "./services/marketplace-adapter.factory";
-import { MarketplaceSyncService } from "./services/marketplace-sync.service";
+import { MarketplaceAdapterFactory } from './services/marketplace-adapter.factory';
+import { MarketplaceSyncService } from './services/marketplace-sync.service';
 
 // Controllers
 
 // Import modules and tokens for cross-module dependencies
-import { FirestoreConfigService } from "../../config/firestore.config";
-import { InventoryModule } from "../inventory/inventory.module";
-import { PRODUCT_SERVICE_TOKEN } from "../../shared/tokens";
+import { FirestoreConfigService } from '../../config/firestore.config';
+import { PRODUCT_SERVICE_TOKEN } from '../../shared/tokens';
+import { InventoryModule } from '../inventory/inventory.module';
 
 /**
  * Marketplaces module for integrating with various e-commerce platforms
@@ -39,7 +39,7 @@ import { PRODUCT_SERVICE_TOKEN } from "../../shared/tokens";
 
     // Register adapter factory as a single instance
     {
-      provide: "MARKETPLACE_ADAPTERS_FACTORY",
+      provide: 'MARKETPLACE_ADAPTERS_FACTORY',
       useExisting: MarketplaceAdapterFactory,
     },
 

@@ -9,17 +9,17 @@
  * - Run with Node.js: node update-repository-imports.js
  */
 
-import * as fs from "fs";
-import * as path from "path";
-import * as util from "util";
+import * as fs from 'fs';
+import * as path from 'path';
+import * as util from 'util';
 
 const readFileAsync = util.promisify(fs.readFile);
 const writeFileAsync = util.promisify(fs.writeFile);
 const readdirAsync = util.promisify(fs.readdir);
 const statAsync = util.promisify(fs.stat);
 
-const SRC_DIR = path.resolve(__dirname, "../../../");
-const EXCLUDED_DIRS = ["node_modules", "dist", "migration-tools"];
+const SRC_DIR = path.resolve(__dirname, '../../../');
+const EXCLUDED_DIRS = ['node_modules', 'dist', 'migration-tools'];
 
 interface FileChange {
   file: string;
@@ -48,9 +48,9 @@ async function walkDirectory(dir: string): Promise<string[]> {
       const subDirFiles = await walkDirectory(entryPath);
       files.push(...subDirFiles);
     } else if (
-      entry.endsWith(".ts") &&
-      !entry.endsWith(".d.ts") &&
-      !entry.endsWith(".spec.ts")
+      entry.endsWith('.ts') &&
+      !entry.endsWith('.d.ts') &&
+      !entry.endsWith('.spec.ts')
     ) {
       files.push(entryPath);
     }
@@ -63,7 +63,7 @@ async function walkDirectory(dir: string): Promise<string[]> {
  * Replace repository imports and constructors
  */
 async function replaceRepositoryCode(file: string): Promise<FileChange> {
-  const content = await readFileAsync(file, "utf8");
+  const content = await readFileAsync(file, 'utf8');
   const result: FileChange = {
     file,
     replaced: false,
@@ -76,7 +76,7 @@ async function replaceRepositoryCode(file: string): Promise<FileChange> {
     /import\s+{([^}]*)FirestoreBaseRepository([^}]*)}.*from\s+['"]([^'"]*\/common\/repositories\/firestore-base\.repository)['"]/g,
     (match, before, after, path) => {
       result.importsChanged = true;
-      return `import {${before}UnifiedFirestoreRepository${after}} from '${path.replace("firestore-base.repository", "unified-firestore.repository")}'`;
+      return `import {${before}UnifiedFirestoreRepository${after}} from '${path.replace('firestore-base.repository', 'unified-firestore.repository')}'`;
     },
   );
 
@@ -123,7 +123,7 @@ async function replaceRepositoryCode(file: string): Promise<FileChange> {
 
   // Check if any changes were made
   if (content !== newContent) {
-    await writeFileAsync(file, newContent, "utf8");
+    await writeFileAsync(file, newContent, 'utf8');
     result.replaced = true;
   }
 
@@ -135,7 +135,7 @@ async function replaceRepositoryCode(file: string): Promise<FileChange> {
  */
 async function main() {
   try {
-    console.log("Starting repository migration...");
+    console.log('Starting repository migration...');
 
     const files = await walkDirectory(SRC_DIR);
     const changes: FileChange[] = [];
@@ -148,7 +148,7 @@ async function main() {
       }
     }
 
-    console.log("\nMigration summary:");
+    console.log('\nMigration summary:');
     console.log(`Total files processed: ${files.length}`);
     console.log(`Files changed: ${changes.length}`);
     console.log(
@@ -158,9 +158,9 @@ async function main() {
       `Constructor changes: ${changes.filter((c) => c.constructorChanged).length}`,
     );
 
-    console.log("\nDone! Please review the changes and run tests.");
+    console.log('\nDone! Please review the changes and run tests.');
   } catch (error) {
-    console.error("Error during migration:", error);
+    console.error('Error during migration:', error);
   }
 }
 

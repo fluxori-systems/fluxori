@@ -1,6 +1,6 @@
 /**
  * Data Protection Controller
- * 
+ *
  * This controller provides API endpoints for enhanced data protection features
  * in the PIM module, including personal data protection, consent management,
  * and data subject requests.
@@ -20,9 +20,10 @@ import {
   HttpException,
   HttpStatus,
 } from '@nestjs/common';
+
 import { FirebaseAuthGuard } from '../../../common/guards/firebase-auth.guard';
 import { GetUser } from '../../auth/decorators/get-user.decorator';
-import { 
+import {
   DataProtectionService,
   DataProtectionPolicy,
   DataSensitivityLevel,
@@ -82,7 +83,13 @@ class CreateConsentDto {
  * DTO for creating a data subject request
  */
 class CreateDataSubjectRequestDto {
-  type: 'access' | 'rectification' | 'erasure' | 'restriction' | 'portability' | 'objection';
+  type:
+    | 'access'
+    | 'rectification'
+    | 'erasure'
+    | 'restriction'
+    | 'portability'
+    | 'objection';
   dataSubjectId: string;
   dataSubjectEmail: string;
   details: string;
@@ -103,13 +110,11 @@ class UpdateDataSubjectRequestStatusDto {
 @UseGuards(FirebaseAuthGuard)
 export class DataProtectionController {
   private readonly logger = new Logger(DataProtectionController.name);
-  
-  constructor(
-    private readonly dataProtectionService: DataProtectionService,
-  ) {
+
+  constructor(private readonly dataProtectionService: DataProtectionService) {
     this.logger.log('Data Protection Controller initialized');
   }
-  
+
   /**
    * Scan a product for sensitive information
    */
@@ -145,26 +150,25 @@ export class DataProtectionController {
           cardExpiry: '12/25',
         },
       };
-      
-      return this.dataProtectionService.scanProduct(
-        product,
-        user.tenantId,
-        {
-          skipRedaction: scanDto.skipRedaction,
-          skipFields: scanDto.skipFields,
-          onlyFields: scanDto.onlyFields,
-          region: scanDto.region,
-        },
-      );
+
+      return this.dataProtectionService.scanProduct(product, user.tenantId, {
+        skipRedaction: scanDto.skipRedaction,
+        skipFields: scanDto.skipFields,
+        onlyFields: scanDto.onlyFields,
+        region: scanDto.region,
+      });
     } catch (error) {
-      this.logger.error(`Error scanning product: ${error.message}`, error.stack);
+      this.logger.error(
+        `Error scanning product: ${error.message}`,
+        error.stack,
+      );
       throw new HttpException(
         `Failed to scan product: ${error.message}`,
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
-  
+
   /**
    * Redact sensitive information from text
    */
@@ -181,7 +185,7 @@ export class DataProtectionController {
           replaceWith: redactDto.replaceWith,
         },
       );
-      
+
       return {
         original: redactDto.text,
         redacted,
@@ -194,7 +198,7 @@ export class DataProtectionController {
       );
     }
   }
-  
+
   /**
    * Check if product data is exportable
    */
@@ -231,21 +235,24 @@ export class DataProtectionController {
           cardExpiry: '12/25',
         },
       };
-      
+
       return this.dataProtectionService.isProductDataExportable(
         product,
         region || 'south-africa',
         user.tenantId,
       );
     } catch (error) {
-      this.logger.error(`Error checking export rules: ${error.message}`, error.stack);
+      this.logger.error(
+        `Error checking export rules: ${error.message}`,
+        error.stack,
+      );
       throw new HttpException(
         `Failed to check export rules: ${error.message}`,
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
-  
+
   /**
    * Prepare a product for export
    */
@@ -282,21 +289,24 @@ export class DataProtectionController {
           cardExpiry: '12/25',
         },
       };
-      
+
       return this.dataProtectionService.prepareProductForExport(
         product,
         region || 'south-africa',
         user.tenantId,
       );
     } catch (error) {
-      this.logger.error(`Error preparing product for export: ${error.message}`, error.stack);
+      this.logger.error(
+        `Error preparing product for export: ${error.message}`,
+        error.stack,
+      );
       throw new HttpException(
         `Failed to prepare product for export: ${error.message}`,
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
-  
+
   /**
    * Get all data protection policies
    */
@@ -308,14 +318,17 @@ export class DataProtectionController {
     try {
       return this.dataProtectionService.getDataPolicies(region);
     } catch (error) {
-      this.logger.error(`Error getting data policies: ${error.message}`, error.stack);
+      this.logger.error(
+        `Error getting data policies: ${error.message}`,
+        error.stack,
+      );
       throw new HttpException(
         `Failed to get data policies: ${error.message}`,
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
-  
+
   /**
    * Add a new data protection policy
    */
@@ -327,14 +340,17 @@ export class DataProtectionController {
     try {
       return this.dataProtectionService.addDataPolicy(policyDto);
     } catch (error) {
-      this.logger.error(`Error adding data policy: ${error.message}`, error.stack);
+      this.logger.error(
+        `Error adding data policy: ${error.message}`,
+        error.stack,
+      );
       throw new HttpException(
         `Failed to add data policy: ${error.message}`,
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
-  
+
   /**
    * Check if compliance is enabled for a region
    */
@@ -344,27 +360,36 @@ export class DataProtectionController {
     @GetUser() user: any,
   ) {
     try {
-      const enabled = await this.dataProtectionService.isComplianceEnabledForRegion(
-        region,
-        user.tenantId,
-      );
-      
+      const enabled =
+        await this.dataProtectionService.isComplianceEnabledForRegion(
+          region,
+          user.tenantId,
+        );
+
       return {
         region,
         complianceEnabled: enabled,
-        complianceFramework: region === 'south-africa' || region === 'za' ? 'POPIA' : 
-                             ['eu', 'europe', 'gb', 'de', 'fr', 'it', 'es', 'nl'].includes(region) ? 'GDPR' : 
-                             'Standard',
+        complianceFramework:
+          region === 'south-africa' || region === 'za'
+            ? 'POPIA'
+            : ['eu', 'europe', 'gb', 'de', 'fr', 'it', 'es', 'nl'].includes(
+                  region,
+                )
+              ? 'GDPR'
+              : 'Standard',
       };
     } catch (error) {
-      this.logger.error(`Error checking region compliance: ${error.message}`, error.stack);
+      this.logger.error(
+        `Error checking region compliance: ${error.message}`,
+        error.stack,
+      );
       throw new HttpException(
         `Failed to check region compliance: ${error.message}`,
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
-  
+
   /**
    * Create a consent record
    */
@@ -382,14 +407,17 @@ export class DataProtectionController {
         user.tenantId,
       );
     } catch (error) {
-      this.logger.error(`Error creating consent record: ${error.message}`, error.stack);
+      this.logger.error(
+        `Error creating consent record: ${error.message}`,
+        error.stack,
+      );
       throw new HttpException(
         `Failed to create consent record: ${error.message}`,
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
-  
+
   /**
    * Withdraw consent
    */
@@ -405,14 +433,17 @@ export class DataProtectionController {
         user.tenantId,
       );
     } catch (error) {
-      this.logger.error(`Error withdrawing consent: ${error.message}`, error.stack);
+      this.logger.error(
+        `Error withdrawing consent: ${error.message}`,
+        error.stack,
+      );
       throw new HttpException(
         `Failed to withdraw consent: ${error.message}`,
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
-  
+
   /**
    * Create a data subject request
    */
@@ -430,14 +461,17 @@ export class DataProtectionController {
         user.tenantId,
       );
     } catch (error) {
-      this.logger.error(`Error creating data subject request: ${error.message}`, error.stack);
+      this.logger.error(
+        `Error creating data subject request: ${error.message}`,
+        error.stack,
+      );
       throw new HttpException(
         `Failed to create data subject request: ${error.message}`,
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
-  
+
   /**
    * Update a data subject request status
    */
@@ -456,7 +490,10 @@ export class DataProtectionController {
         user.tenantId,
       );
     } catch (error) {
-      this.logger.error(`Error updating data subject request: ${error.message}`, error.stack);
+      this.logger.error(
+        `Error updating data subject request: ${error.message}`,
+        error.stack,
+      );
       throw new HttpException(
         `Failed to update data subject request: ${error.message}`,
         HttpStatus.INTERNAL_SERVER_ERROR,

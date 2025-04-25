@@ -4,12 +4,12 @@ import {
   ExecutionContext,
   UnauthorizedException,
   Logger,
-} from "@nestjs/common";
-import { ConfigService } from "@nestjs/config";
-import { Reflector } from "@nestjs/core";
+} from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { Reflector } from '@nestjs/core';
 
-import { Request } from "express";
-import * as admin from "firebase-admin";
+import { Request } from 'express';
+import * as admin from 'firebase-admin';
 
 /**
  * Firebase Authentication Guard
@@ -41,7 +41,7 @@ export class FirebaseAuthGuard implements CanActivate {
     } catch (error) {
       try {
         // Initialize Firebase App
-        const projectId = this.configService.get<string>("GCP_PROJECT_ID");
+        const projectId = this.configService.get<string>('GCP_PROJECT_ID');
 
         admin.initializeApp({
           credential: admin.credential.applicationDefault(),
@@ -70,8 +70,8 @@ export class FirebaseAuthGuard implements CanActivate {
    */
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const isPublic =
-      this.reflector.get<boolean>("isPublic", context.getHandler()) ||
-      this.reflector.get<boolean>("isPublic", context.getClass());
+      this.reflector.get<boolean>('isPublic', context.getHandler()) ||
+      this.reflector.get<boolean>('isPublic', context.getClass());
 
     if (isPublic) {
       return true;
@@ -88,11 +88,11 @@ export class FirebaseAuthGuard implements CanActivate {
     const token = this.extractTokenFromHeader(request);
 
     if (!token) {
-      throw new UnauthorizedException("Missing authentication token");
+      throw new UnauthorizedException('Missing authentication token');
     }
 
     if (!this.initialized) {
-      throw new UnauthorizedException("Authentication service unavailable");
+      throw new UnauthorizedException('Authentication service unavailable');
     }
 
     try {
@@ -111,7 +111,7 @@ export class FirebaseAuthGuard implements CanActivate {
       return true;
     } catch (error) {
       this.logger.warn(`Authentication failed: ${error.message}`);
-      throw new UnauthorizedException("Invalid authentication token");
+      throw new UnauthorizedException('Invalid authentication token');
     }
   }
 
@@ -127,8 +127,8 @@ export class FirebaseAuthGuard implements CanActivate {
       return undefined;
     }
 
-    const [type, token] = authHeader.split(" ");
+    const [type, token] = authHeader.split(' ');
 
-    return type === "Bearer" ? token : undefined;
+    return type === 'Bearer' ? token : undefined;
   }
 }

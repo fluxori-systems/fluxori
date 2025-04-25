@@ -9,14 +9,14 @@ import {
   Logger,
   HttpException,
   HttpStatus,
-} from "@nestjs/common";
+} from '@nestjs/common';
 
 import {
   FirebaseAuthGuard,
   GetUser,
   DecodedFirebaseToken,
   AuthUtils,
-} from "src/common/auth";
+} from 'src/common/auth';
 
 import {
   CreateConversationRequest,
@@ -25,15 +25,15 @@ import {
   ConversationResponse,
   AgentResponse,
   ModelComplexity,
-} from "../interfaces/types";
-import { AgentService } from "../services/agent.service";
+} from '../interfaces/types';
+import { AgentService } from '../services/agent.service';
 
 // We're using the DecodedFirebaseToken interface from common/auth
 
 /**
  * Controller for agent framework endpoints
  */
-@Controller("api/agent-framework")
+@Controller('api/agent-framework')
 @UseGuards(FirebaseAuthGuard)
 export class AgentController {
   private readonly logger = new Logger(AgentController.name);
@@ -46,7 +46,7 @@ export class AgentController {
    * @param user Authenticated user
    * @returns New conversation
    */
-  @Post("conversations")
+  @Post('conversations')
   async createConversation(
     @Body() createRequest: CreateConversationRequest,
     @GetUser() user: DecodedFirebaseToken,
@@ -54,7 +54,7 @@ export class AgentController {
     try {
       // Ensure the user is working with their own data using our auth utilities
       if (!AuthUtils.isOwner(user, createRequest.userId)) {
-        throw new HttpException("Unauthorized", HttpStatus.UNAUTHORIZED);
+        throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
       }
 
       const conversation =
@@ -83,7 +83,7 @@ export class AgentController {
    * @param user Authenticated user
    * @returns Agent response
    */
-  @Post("messages")
+  @Post('messages')
   async sendMessage(
     @Body() messageRequest: SendMessageRequest,
     @GetUser() user: any,
@@ -91,7 +91,7 @@ export class AgentController {
     try {
       // Ensure the user is working with their own data
       if (user.uid !== messageRequest.userId) {
-        throw new HttpException("Unauthorized", HttpStatus.UNAUTHORIZED);
+        throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
       }
 
       return this.agentService.sendMessage(messageRequest);
@@ -110,9 +110,9 @@ export class AgentController {
    * @param user Authenticated user
    * @returns Conversation
    */
-  @Get("conversations/:id")
+  @Get('conversations/:id')
   async getConversation(
-    @Param("id") id: string,
+    @Param('id') id: string,
     @GetUser() user: any,
   ): Promise<ConversationResponse> {
     try {
@@ -136,10 +136,10 @@ export class AgentController {
    * @param user Authenticated user
    * @returns List of conversations
    */
-  @Get("conversations")
+  @Get('conversations')
   async listConversations(
-    @Query("organizationId") organizationId: string,
-    @Query("limit") limit = 20,
+    @Query('organizationId') organizationId: string,
+    @Query('limit') limit = 20,
     @GetUser() user: any,
   ): Promise<ConversationResponse[]> {
     try {
@@ -165,9 +165,9 @@ export class AgentController {
    * @param organizationId Organization ID
    * @returns List of agent configurations
    */
-  @Get("configs")
+  @Get('configs')
   async getAgentConfigurations(
-    @Query("organizationId") organizationId: string,
+    @Query('organizationId') organizationId: string,
   ): Promise<AgentConfig[]> {
     try {
       return this.agentService.getAgentConfigurations(organizationId);
@@ -191,17 +191,17 @@ export class AgentController {
    * @param capabilities Optional comma-separated required capabilities
    * @returns Best model or 404 if none found
    */
-  @Get("models/best")
+  @Get('models/best')
   async getBestModel(
-    @Query("organizationId") organizationId: string,
-    @Query("complexity") complexity: ModelComplexity,
-    @Query("provider") provider?: string,
-    @Query("capabilities") capabilities?: string,
+    @Query('organizationId') organizationId: string,
+    @Query('complexity') complexity: ModelComplexity,
+    @Query('provider') provider?: string,
+    @Query('capabilities') capabilities?: string,
   ) {
     try {
       // Parse capabilities if provided
       const requiredCapabilities = capabilities
-        ? capabilities.split(",")
+        ? capabilities.split(',')
         : undefined;
 
       const model = await this.agentService.getBestModelForTask(
@@ -213,7 +213,7 @@ export class AgentController {
 
       if (!model) {
         throw new HttpException(
-          "No suitable model found",
+          'No suitable model found',
           HttpStatus.NOT_FOUND,
         );
       }
@@ -240,10 +240,10 @@ export class AgentController {
    * @param user Authenticated user
    * @returns Number of archived conversations
    */
-  @Post("conversations/archive")
+  @Post('conversations/archive')
   async archiveOldConversations(
-    @Query("organizationId") organizationId: string,
-    @Query("keepActive") keepActive = 10,
+    @Query('organizationId') organizationId: string,
+    @Query('keepActive') keepActive = 10,
     @GetUser() user: any,
   ): Promise<{ archivedCount: number }> {
     try {

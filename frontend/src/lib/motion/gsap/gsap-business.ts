@@ -14,19 +14,19 @@
 import { gsap } from 'gsap';
 
 // Business license plugins
-import { SplitText } from 'gsap/SplitText';
+import { CustomBounce } from 'gsap/CustomBounce';
+import { CustomEase } from 'gsap/CustomEase';
+import { CustomWiggle } from 'gsap/CustomWiggle';
 import { DrawSVGPlugin } from 'gsap/DrawSVGPlugin';
-import { MotionPathPlugin } from 'gsap/MotionPathPlugin';
-import { MorphSVGPlugin } from 'gsap/MorphSVGPlugin';
 import { Flip } from 'gsap/Flip';
 import { GSDevTools } from 'gsap/GSDevTools';
-import { ScrambleTextPlugin } from 'gsap/ScrambleTextPlugin';
-import { CustomEase } from 'gsap/CustomEase';
-import { CustomBounce } from 'gsap/CustomBounce';
-import { CustomWiggle } from 'gsap/CustomWiggle';
+import { InertiaPlugin } from 'gsap/InertiaPlugin';
+import { MorphSVGPlugin } from 'gsap/MorphSVGPlugin';
+import { MotionPathPlugin } from 'gsap/MotionPathPlugin';
 import { Physics2DPlugin } from 'gsap/Physics2DPlugin';
 import { PhysicsPropsPlugin } from 'gsap/PhysicsPropsPlugin';
-import { InertiaPlugin } from 'gsap/InertiaPlugin';
+import { ScrambleTextPlugin } from 'gsap/ScrambleTextPlugin';
+import { SplitText } from 'gsap/SplitText';
 
 /**
  * GSAP Business license token

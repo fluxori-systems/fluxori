@@ -4,9 +4,9 @@ import {
   NotFoundException,
   BadRequestException,
   OnModuleInit,
-} from "@nestjs/common";
+} from '@nestjs/common';
 
-import { Timestamp } from "@google-cloud/firestore";
+import { Timestamp } from '@google-cloud/firestore';
 
 import {
   FeatureFlag,
@@ -19,9 +19,9 @@ import {
   Environment,
   FlagSubscription,
   ScheduleConfig,
-} from "../interfaces/types";
-import { FeatureFlagAuditLogRepository } from "../repositories/feature-flag-audit-log.repository";
-import { FeatureFlagRepository } from "../repositories/feature-flag.repository";
+} from '../interfaces/types';
+import { FeatureFlagAuditLogRepository } from '../repositories/feature-flag-audit-log.repository';
+import { FeatureFlagRepository } from '../repositories/feature-flag.repository';
 
 @Injectable()
 export class FeatureFlagService implements OnModuleInit {
@@ -41,13 +41,13 @@ export class FeatureFlagService implements OnModuleInit {
    * Initialize service and load flags into cache
    */
   async onModuleInit() {
-    this.logger.log("Initializing Feature Flag Service");
+    this.logger.log('Initializing Feature Flag Service');
     await this.refreshCache();
 
     // Set up a periodic refresh of the cache
     setInterval(() => {
       this.refreshCache().catch((err) =>
-        this.logger.error("Failed to refresh feature flag cache", err),
+        this.logger.error('Failed to refresh feature flag cache', err),
       );
     }, 60000); // Refresh every 60 seconds
   }
@@ -56,7 +56,7 @@ export class FeatureFlagService implements OnModuleInit {
    * Refresh the flag cache
    */
   private async refreshCache(): Promise<void> {
-    this.logger.debug("Refreshing feature flag cache");
+    this.logger.debug('Refreshing feature flag cache');
     const flags = await this.featureFlagRepository.findAll();
 
     // Update the cache
@@ -100,12 +100,12 @@ export class FeatureFlagService implements OnModuleInit {
     await this.auditLogRepository.create({
       flagId: newFlag.id,
       flagKey: newFlag.key,
-      action: "created",
+      action: 'created',
       performedBy: userId,
       timestamp: Timestamp.now(),
       changes: [
         {
-          field: "all",
+          field: 'all',
           oldValue: null,
           newValue: newFlag,
         },
@@ -165,7 +165,7 @@ export class FeatureFlagService implements OnModuleInit {
       await this.auditLogRepository.create({
         flagId: updatedFlag.id,
         flagKey: updatedFlag.key,
-        action: "updated",
+        action: 'updated',
         performedBy: userId,
         timestamp: Timestamp.now(),
         changes,
@@ -215,12 +215,12 @@ export class FeatureFlagService implements OnModuleInit {
     await this.auditLogRepository.create({
       flagId: updatedFlag.id,
       flagKey: updatedFlag.key,
-      action: "toggled",
+      action: 'toggled',
       performedBy: userId,
       timestamp: Timestamp.now(),
       changes: [
         {
-          field: "enabled",
+          field: 'enabled',
           oldValue: existingFlag.enabled,
           newValue: toggleDTO.enabled,
         },
@@ -251,12 +251,12 @@ export class FeatureFlagService implements OnModuleInit {
     await this.auditLogRepository.create({
       flagId: existingFlag.id,
       flagKey: existingFlag.key,
-      action: "deleted",
+      action: 'deleted',
       performedBy: userId,
       timestamp: Timestamp.now(),
       changes: [
         {
-          field: "all",
+          field: 'all',
           oldValue: existingFlag,
           newValue: null,
         },
@@ -345,9 +345,9 @@ export class FeatureFlagService implements OnModuleInit {
         return {
           flagKey,
           enabled: false,
-          source: "error",
+          source: 'error',
           timestamp: new Date(),
-          reason: "Flag not found",
+          reason: 'Flag not found',
         };
       }
 
@@ -356,9 +356,9 @@ export class FeatureFlagService implements OnModuleInit {
         return {
           flagKey,
           enabled: false,
-          source: "evaluation",
+          source: 'evaluation',
           timestamp: new Date(),
-          reason: "Flag is disabled",
+          reason: 'Flag is disabled',
         };
       }
 
@@ -375,9 +375,9 @@ export class FeatureFlagService implements OnModuleInit {
           return {
             flagKey,
             enabled: flag.defaultValue,
-            source: "default",
+            source: 'default',
             timestamp: new Date(),
-            reason: "Environment mismatch",
+            reason: 'Environment mismatch',
           };
         }
       }
@@ -394,9 +394,9 @@ export class FeatureFlagService implements OnModuleInit {
           return {
             flagKey,
             enabled: flag.defaultValue,
-            source: "default",
+            source: 'default',
             timestamp: new Date(),
-            reason: "Scheduled start date not reached",
+            reason: 'Scheduled start date not reached',
           };
         }
 
@@ -404,9 +404,9 @@ export class FeatureFlagService implements OnModuleInit {
           return {
             flagKey,
             enabled: flag.defaultValue,
-            source: "default",
+            source: 'default',
             timestamp: new Date(),
-            reason: "Scheduled end date passed",
+            reason: 'Scheduled end date passed',
           };
         }
 
@@ -420,9 +420,9 @@ export class FeatureFlagService implements OnModuleInit {
             return {
               flagKey,
               enabled: flag.defaultValue,
-              source: "default",
+              source: 'default',
               timestamp: new Date(),
-              reason: "Outside of scheduled recurrence window",
+              reason: 'Outside of scheduled recurrence window',
             };
           }
         }
@@ -435,9 +435,9 @@ export class FeatureFlagService implements OnModuleInit {
           return {
             flagKey,
             enabled: true,
-            source: "evaluation",
+            source: 'evaluation',
             timestamp: new Date(),
-            reason: "Boolean flag enabled",
+            reason: 'Boolean flag enabled',
           };
 
         case FeatureFlagType.PERCENTAGE:
@@ -446,9 +446,9 @@ export class FeatureFlagService implements OnModuleInit {
             return {
               flagKey,
               enabled: flag.defaultValue,
-              source: "default",
+              source: 'default',
               timestamp: new Date(),
-              reason: "Percentage not set",
+              reason: 'Percentage not set',
             };
           }
 
@@ -470,7 +470,7 @@ export class FeatureFlagService implements OnModuleInit {
           return {
             flagKey,
             enabled: isEnabled,
-            source: "evaluation",
+            source: 'evaluation',
             timestamp: new Date(),
             reason: `Percentage rollout: ${normalizedHash}% (threshold: ${flag.percentage}%)`,
           };
@@ -481,9 +481,9 @@ export class FeatureFlagService implements OnModuleInit {
             return {
               flagKey,
               enabled: flag.defaultValue,
-              source: "default",
+              source: 'default',
               timestamp: new Date(),
-              reason: "User targeting not configured",
+              reason: 'User targeting not configured',
             };
           }
 
@@ -516,11 +516,11 @@ export class FeatureFlagService implements OnModuleInit {
           return {
             flagKey,
             enabled: isUserTargeted,
-            source: "evaluation",
+            source: 'evaluation',
             timestamp: new Date(),
             reason: isUserTargeted
-              ? "User is in target group"
-              : "User is not in target group",
+              ? 'User is in target group'
+              : 'User is not in target group',
           };
 
         case FeatureFlagType.ORGANIZATION_TARGETED:
@@ -529,9 +529,9 @@ export class FeatureFlagService implements OnModuleInit {
             return {
               flagKey,
               enabled: flag.defaultValue,
-              source: "default",
+              source: 'default',
               timestamp: new Date(),
-              reason: "Organization targeting not configured",
+              reason: 'Organization targeting not configured',
             };
           }
 
@@ -560,18 +560,18 @@ export class FeatureFlagService implements OnModuleInit {
           return {
             flagKey,
             enabled: isOrgTargeted,
-            source: "evaluation",
+            source: 'evaluation',
             timestamp: new Date(),
             reason: isOrgTargeted
-              ? "Organization is in target group"
-              : "Organization is not in target group",
+              ? 'Organization is in target group'
+              : 'Organization is not in target group',
           };
 
         default:
           return {
             flagKey,
             enabled: flag.defaultValue,
-            source: "default",
+            source: 'default',
             timestamp: new Date(),
             reason: `Unknown flag type: ${flag.type}`,
           };
@@ -581,7 +581,7 @@ export class FeatureFlagService implements OnModuleInit {
       return {
         flagKey,
         enabled: false, // Safe default
-        source: "error",
+        source: 'error',
         timestamp: new Date(),
         reason: `Evaluation error: ${error.message}`,
       };
@@ -654,7 +654,7 @@ export class FeatureFlagService implements OnModuleInit {
     // Validate key format (lowercase, alphanumeric with hyphens)
     if (!/^[a-z0-9-]+$/.test(flagDTO.key)) {
       throw new BadRequestException(
-        "Flag key must be lowercase alphanumeric with hyphens only",
+        'Flag key must be lowercase alphanumeric with hyphens only',
       );
     }
 
@@ -667,7 +667,7 @@ export class FeatureFlagService implements OnModuleInit {
           flagDTO.percentage > 100
         ) {
           throw new BadRequestException(
-            "Percentage flags require a percentage value between 0-100",
+            'Percentage flags require a percentage value between 0-100',
           );
         }
         break;
@@ -680,7 +680,7 @@ export class FeatureFlagService implements OnModuleInit {
             !flagDTO.userTargeting.userEmails)
         ) {
           throw new BadRequestException(
-            "User-targeted flags require user targeting configuration",
+            'User-targeted flags require user targeting configuration',
           );
         }
         break;
@@ -692,7 +692,7 @@ export class FeatureFlagService implements OnModuleInit {
             !flagDTO.organizationTargeting.organizationTypes)
         ) {
           throw new BadRequestException(
-            "Organization-targeted flags require organization targeting configuration",
+            'Organization-targeted flags require organization targeting configuration',
           );
         }
         break;
@@ -705,7 +705,7 @@ export class FeatureFlagService implements OnModuleInit {
             !flagDTO.schedule.recurrence)
         ) {
           throw new BadRequestException(
-            "Scheduled flags require schedule configuration",
+            'Scheduled flags require schedule configuration',
           );
         }
         break;
@@ -722,11 +722,11 @@ export class FeatureFlagService implements OnModuleInit {
     if (!schedule.recurrence) return true;
 
     // For 'once' type, we only need to check the date range, which is already done
-    if (schedule.recurrence.type === "once") return true;
+    if (schedule.recurrence.type === 'once') return true;
 
     // Check day of week for weekly recurrence
     if (
-      schedule.recurrence.type === "weekly" &&
+      schedule.recurrence.type === 'weekly' &&
       schedule.recurrence.daysOfWeek &&
       schedule.recurrence.daysOfWeek.length > 0
     ) {
@@ -747,8 +747,8 @@ export class FeatureFlagService implements OnModuleInit {
 
       // Check if the current time falls within any of the time ranges
       return schedule.recurrence.timeRanges.some((range) => {
-        const [startHour, startMinute] = range.startTime.split(":").map(Number);
-        const [endHour, endMinute] = range.endTime.split(":").map(Number);
+        const [startHour, startMinute] = range.startTime.split(':').map(Number);
+        const [endHour, endMinute] = range.endTime.split(':').map(Number);
 
         const startTimeMinutes = startHour * 60 + startMinute;
         const endTimeMinutes = endHour * 60 + endMinute;
@@ -785,7 +785,7 @@ export class FeatureFlagService implements OnModuleInit {
       try {
         listener(flagKey, isEnabled);
       } catch (error) {
-        this.logger.error("Error in flag change listener:", error);
+        this.logger.error('Error in flag change listener:', error);
       }
     });
 
@@ -823,7 +823,7 @@ export class FeatureFlagService implements OnModuleInit {
       // Notify the subscriber
       subscription.callback(result);
     } catch (error) {
-      this.logger.error("Error evaluating flags for subscription:", error);
+      this.logger.error('Error evaluating flags for subscription:', error);
     }
   }
 }

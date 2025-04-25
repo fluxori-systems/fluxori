@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { SystemHealthInfo, HealthCheckResult } from '../../types/observability.types';
+
 import { observabilityApi } from '../../api/observability.api';
+import { SystemHealthInfo, HealthCheckResult } from '../../types/observability.types';
 
 interface HealthStatusCardProps {
   refreshInterval?: number; // in milliseconds

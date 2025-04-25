@@ -1,21 +1,21 @@
-import os from "os";
+import os from 'os';
 
-import { Injectable, Inject, Optional, OnModuleInit } from "@nestjs/common";
-import { ConfigService } from "@nestjs/config";
+import { Injectable, Inject, Optional, OnModuleInit } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 
 // Import interfaces
+import { OBSERVABILITY_TOKENS } from '../constants/observability.tokens';
+import { DEFAULT_OBSERVABILITY_OPTIONS } from '../interfaces/observability-options.interface';
 import {
   HealthStatus,
   ComponentHealth,
   HealthCheckResult,
   HealthCheckFunction,
   IHealthService,
-  IEnhancedLoggerService
-} from "../interfaces/observability.interfaces";
-import { DEFAULT_OBSERVABILITY_OPTIONS } from "../interfaces/observability-options.interface";
+  IEnhancedLoggerService,
+} from '../interfaces/observability.interfaces';
 
 // Import constants
-import { OBSERVABILITY_TOKENS } from "../constants/observability.tokens";
 
 /**
  * Health service that provides health check capabilities.
@@ -44,8 +44,11 @@ export class HealthService implements IHealthService, OnModuleInit {
 
   constructor(
     private readonly configService: ConfigService,
-    @Inject(OBSERVABILITY_TOKENS.LOGGER_SERVICE) private readonly logger: IEnhancedLoggerService,
-    @Optional() @Inject(OBSERVABILITY_TOKENS.OBSERVABILITY_OPTIONS) private readonly options?: any,
+    @Inject(OBSERVABILITY_TOKENS.LOGGER_SERVICE)
+    private readonly logger: IEnhancedLoggerService,
+    @Optional()
+    @Inject(OBSERVABILITY_TOKENS.OBSERVABILITY_OPTIONS)
+    private readonly options?: any,
   ) {
     // Apply options with defaults
     const mergedOptions = { ...DEFAULT_OBSERVABILITY_OPTIONS, ...options };
@@ -56,17 +59,17 @@ export class HealthService implements IHealthService, OnModuleInit {
     this.exposeDetails =
       healthOptions.exposeDetails !== undefined
         ? healthOptions.exposeDetails
-        : process.env.NODE_ENV !== "production";
+        : process.env.NODE_ENV !== 'production';
     this.environment =
-      mergedOptions.environment || process.env.NODE_ENV || "development";
+      mergedOptions.environment || process.env.NODE_ENV || 'development';
     this.region =
-      mergedOptions.region || process.env.GCP_REGION || "africa-south1";
-    this.serviceName = mergedOptions.appName || "fluxori-api";
+      mergedOptions.region || process.env.GCP_REGION || 'africa-south1';
+    this.serviceName = mergedOptions.appName || 'fluxori-api';
     this.checkIntervalMs = healthOptions.healthCheckInterval || 60000; // 1 minute
-    this.version = process.env.npm_package_version || "1.0.0";
+    this.version = process.env.npm_package_version || '1.0.0';
 
     if (this.enabled) {
-      this.logger.log("Health service initialized", "HealthService");
+      this.logger.log('Health service initialized', 'HealthService');
 
       // Register default health checks
       if (healthOptions.registerDefaultHealthChecks !== false) {
@@ -89,13 +92,13 @@ export class HealthService implements IHealthService, OnModuleInit {
               if (result.status === HealthStatus.HEALTHY) {
                 this.logger.log(
                   `System health recovered to HEALTHY from ${this.lastStatus}`,
-                  "HealthService",
+                  'HealthService',
                 );
               } else {
                 this.logger.warn(
                   `System health degraded to ${result.status} from ${this.lastStatus}`,
                   {
-                    service: "HealthService",
+                    service: 'HealthService',
                     healthResult: this.exposeDetails
                       ? result
                       : { status: result.status },
@@ -107,9 +110,9 @@ export class HealthService implements IHealthService, OnModuleInit {
           })
           .catch((err) => {
             this.logger.error(
-              "Failed to run health checks",
+              'Failed to run health checks',
               err,
-              "HealthService",
+              'HealthService',
             );
           });
       }, this.checkIntervalMs);
@@ -134,7 +137,7 @@ export class HealthService implements IHealthService, OnModuleInit {
     if (this.logger?.debug) {
       this.logger.debug(
         `Registered health check for ${component}`,
-        "HealthService",
+        'HealthService',
       );
     }
   }
@@ -253,7 +256,7 @@ export class HealthService implements IHealthService, OnModuleInit {
    */
   private registerDefaultHealthChecks(): void {
     // System memory health check
-    this.registerHealthCheck("system.memory", async () => {
+    this.registerHealthCheck('system.memory', async () => {
       const freeMem = os.freemem();
       const totalMem = os.totalmem();
       const freeMemPercentage = (freeMem / totalMem) * 100;
@@ -266,7 +269,7 @@ export class HealthService implements IHealthService, OnModuleInit {
       }
 
       return {
-        component: "system.memory",
+        component: 'system.memory',
         status,
         details: {
           freeMemoryMB: Math.round(freeMem / (1024 * 1024)),
@@ -278,7 +281,7 @@ export class HealthService implements IHealthService, OnModuleInit {
     });
 
     // CPU load health check
-    this.registerHealthCheck("system.cpu", async () => {
+    this.registerHealthCheck('system.cpu', async () => {
       const loadAvg = os.loadavg();
       const cpuCount = os.cpus().length;
       const relativeLoad = loadAvg[0] / cpuCount;
@@ -291,7 +294,7 @@ export class HealthService implements IHealthService, OnModuleInit {
       }
 
       return {
-        component: "system.cpu",
+        component: 'system.cpu',
         status,
         details: {
           loadAverage1min: loadAvg[0],
@@ -306,21 +309,21 @@ export class HealthService implements IHealthService, OnModuleInit {
 
     // Disk space health check
     // Note: This is a simplified check as detailed disk space info requires additional libraries
-    this.registerHealthCheck("system.disk", async () => {
+    this.registerHealthCheck('system.disk', async () => {
       // In a real implementation, use a library like 'diskusage' to get actual disk space
       // For now, we'll just report healthy
       return {
-        component: "system.disk",
+        component: 'system.disk',
         status: HealthStatus.HEALTHY,
         details: {
-          note: "Disk space check is a placeholder",
+          note: 'Disk space check is a placeholder',
         },
         timestamp: new Date(),
       };
     });
 
     // Uptime health check
-    this.registerHealthCheck("system.uptime", async () => {
+    this.registerHealthCheck('system.uptime', async () => {
       const uptimeSeconds = process.uptime();
 
       // System is degraded if it's a very new restart (less than 1 minute)
@@ -328,7 +331,7 @@ export class HealthService implements IHealthService, OnModuleInit {
         uptimeSeconds < 60 ? HealthStatus.DEGRADED : HealthStatus.HEALTHY;
 
       return {
-        component: "system.uptime",
+        component: 'system.uptime',
         status,
         details: {
           uptimeSeconds: Math.round(uptimeSeconds),
@@ -338,7 +341,7 @@ export class HealthService implements IHealthService, OnModuleInit {
       };
     });
 
-    this.logger.log("Default health checks registered", "HealthService");
+    this.logger.log('Default health checks registered', 'HealthService');
   }
 
   /**
@@ -357,6 +360,6 @@ export class HealthService implements IHealthService, OnModuleInit {
     if (remainingSeconds > 0 || parts.length === 0)
       parts.push(`${remainingSeconds}s`);
 
-    return parts.join(" ");
+    return parts.join(' ');
   }
 }

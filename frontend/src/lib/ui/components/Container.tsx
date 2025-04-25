@@ -1,13 +1,15 @@
 'use client';
 
 import React, { forwardRef, useRef, useEffect, useState } from 'react';
+
 import { Container as MantineContainer } from '@mantine/core';
+
+import { useTokenTracking } from '../../design-system/utils/token-analysis';
+import { useSouthAfricanMarketOptimizations } from '../../shared/hooks/useSouthAfricanMarketOptimizations';
+import { useConnectionQuality, useNetworkAware } from '../hooks/useConnection';
 import { BaseComponentProps, Spacing, AnimatableComponentProps } from '../types';
 import { getSpacingValue } from '../utils/token-helpers';
 import { useCombinedRefs } from '../utils/use-combined-refs';
-import { useTokenTracking } from '../../design-system/utils/token-analysis';
-import { useConnectionQuality, useNetworkAware } from '../hooks/useConnection';
-import { useSouthAfricanMarketOptimizations } from '../../shared/hooks/useSouthAfricanMarketOptimizations';
 /**
  * Container sizing options with semantic names
  */

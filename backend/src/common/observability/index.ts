@@ -11,16 +11,16 @@
  */
 
 // Export module
-export { ObservabilityModule } from "./observability.module";
+export { ObservabilityModule } from './observability.module';
 
 // Export services by interface
-export { 
+export {
   IEnhancedLoggerService,
   IMetricsService,
   ITracingService,
   IHealthService,
   IObservabilityService,
-  
+
   // Export other interfaces
   LogContext,
   Span,
@@ -52,7 +52,11 @@ export { TracingInterceptor } from './interceptors/tracing.interceptor';
 export { ObservabilityModuleOptions } from './interfaces/observability-options.interface';
 
 // Export constants
-export { METRIC_NAMES, TRACE_ATTRIBUTES, OBSERVABILITY_PROVIDERS } from './constants/observability.constants';
+export {
+  METRIC_NAMES,
+  TRACE_ATTRIBUTES,
+  OBSERVABILITY_PROVIDERS,
+} from './constants/observability.constants';
 export { OBSERVABILITY_TOKENS } from './constants/observability.tokens';
 
 // Export controllers

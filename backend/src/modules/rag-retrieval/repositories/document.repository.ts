@@ -1,12 +1,12 @@
-import { Injectable, Logger } from "@nestjs/common";
+import { Injectable, Logger } from '@nestjs/common';
 
 import {
   FirestoreBaseRepository,
   FirestoreAdvancedFilter,
-} from "../../../common/repositories";
-import { FirestoreConfigService } from "../../../config/firestore.config";
-import { DocumentStatus, DocumentType } from "../interfaces/types";
-import { Document } from "../models/document.schema";
+} from '../../../common/repositories';
+import { FirestoreConfigService } from '../../../config/firestore.config';
+import { DocumentStatus, DocumentType } from '../interfaces/types';
+import { Document } from '../models/document.schema';
 
 /**
  * Repository for Document entities
@@ -14,15 +14,15 @@ import { Document } from "../models/document.schema";
 @Injectable()
 export class DocumentRepository extends FirestoreBaseRepository<Document> {
   // Collection name in Firestore
-  protected readonly collectionName = "documents";
+  protected readonly collectionName = 'documents';
 
   constructor(firestoreConfigService: FirestoreConfigService) {
-    super(firestoreConfigService, "documents", {
+    super(firestoreConfigService, 'documents', {
       useSoftDeletes: true,
       useVersioning: true,
       enableCache: true,
       cacheTTLMs: 5 * 60 * 1000, // 5 minutes
-      requiredFields: ["organizationId", "title", "documentType", "status"],
+      requiredFields: ['organizationId', 'title', 'documentType', 'status'],
     });
   }
 
@@ -34,7 +34,7 @@ export class DocumentRepository extends FirestoreBaseRepository<Document> {
   async findByOrganization(organizationId: string): Promise<Document[]> {
     return this.find({
       advancedFilters: [
-        { field: "organizationId", operator: "==", value: organizationId },
+        { field: 'organizationId', operator: '==', value: organizationId },
       ],
     });
   }
@@ -47,7 +47,7 @@ export class DocumentRepository extends FirestoreBaseRepository<Document> {
   async findByType(documentType: DocumentType): Promise<Document[]> {
     return this.find({
       advancedFilters: [
-        { field: "documentType", operator: "==", value: documentType },
+        { field: 'documentType', operator: '==', value: documentType },
       ],
     });
   }
@@ -59,7 +59,7 @@ export class DocumentRepository extends FirestoreBaseRepository<Document> {
    */
   async findByStatus(status: DocumentStatus): Promise<Document[]> {
     return this.find({
-      advancedFilters: [{ field: "status", operator: "==", value: status }],
+      advancedFilters: [{ field: 'status', operator: '==', value: status }],
     });
   }
 
@@ -86,40 +86,40 @@ export class DocumentRepository extends FirestoreBaseRepository<Document> {
     // Add filters
     if (params.organizationId) {
       advancedFilters.push({
-        field: "organizationId",
-        operator: "==",
+        field: 'organizationId',
+        operator: '==',
         value: params.organizationId,
       });
     }
 
     if (params.documentType) {
       advancedFilters.push({
-        field: "documentType",
-        operator: "==",
+        field: 'documentType',
+        operator: '==',
         value: params.documentType,
       });
     }
 
     if (params.status) {
       advancedFilters.push({
-        field: "status",
-        operator: "==",
+        field: 'status',
+        operator: '==',
         value: params.status,
       });
     }
 
     if (params.isIndexed !== undefined) {
       advancedFilters.push({
-        field: "isIndexed",
-        operator: "==",
+        field: 'isIndexed',
+        operator: '==',
         value: params.isIndexed,
       });
     }
 
     if (params.isPublic !== undefined) {
       advancedFilters.push({
-        field: "isPublic",
-        operator: "==",
+        field: 'isPublic',
+        operator: '==',
         value: params.isPublic,
       });
     }
@@ -128,8 +128,8 @@ export class DocumentRepository extends FirestoreBaseRepository<Document> {
     let documents = await this.find({
       advancedFilters,
       queryOptions: {
-        orderBy: "createdAt",
-        direction: "desc",
+        orderBy: 'createdAt',
+        direction: 'desc',
         limit: params.limit,
         offset: params.offset,
       },

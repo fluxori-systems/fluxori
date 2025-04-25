@@ -3,8 +3,7 @@
  * This file defines the contracts for logging, tracing, and metrics
  */
 
-import { LogLevel } from "@nestjs/common";
-import { LoggerService } from "@nestjs/common";
+import { LogLevel, LoggerService } from '@nestjs/common';
 
 /**
  * Trace context that is propagated throughout the system
@@ -195,31 +194,31 @@ export interface Span {
  * Span status
  */
 export enum SpanStatus {
-  OK = "ok",
-  ERROR = "error",
+  OK = 'ok',
+  ERROR = 'error',
 }
 
 /**
  * Metrics category
  */
 export enum MetricCategory {
-  BUSINESS = "business",
-  TECHNICAL = "technical",
-  PERFORMANCE = "performance",
-  RELIABILITY = "reliability",
-  SECURITY = "security",
-  USER_EXPERIENCE = "user_experience",
+  BUSINESS = 'business',
+  TECHNICAL = 'technical',
+  PERFORMANCE = 'performance',
+  RELIABILITY = 'reliability',
+  SECURITY = 'security',
+  USER_EXPERIENCE = 'user_experience',
 }
 
 /**
  * Metric value types
  */
 export enum MetricValueType {
-  INT64 = "int64",
-  DOUBLE = "double",
-  DISTRIBUTION = "distribution",
-  BOOLEAN = "boolean",
-  STRING = "string",
+  INT64 = 'int64',
+  DOUBLE = 'double',
+  DISTRIBUTION = 'distribution',
+  BOOLEAN = 'boolean',
+  STRING = 'string',
 }
 
 /**
@@ -308,9 +307,9 @@ export interface MetricReporter {
  * Service health status
  */
 export enum HealthStatus {
-  HEALTHY = "healthy",
-  DEGRADED = "degraded",
-  UNHEALTHY = "unhealthy",
+  HEALTHY = 'healthy',
+  DEGRADED = 'degraded',
+  UNHEALTHY = 'unhealthy',
 }
 
 /**
@@ -378,7 +377,7 @@ export interface HealthCheckResult {
   timestamp: Date;
 }
 
-/** 
+/**
  * Type for health check functions
  */
 export type HealthCheckFunction = () => Promise<ComponentHealth>;
@@ -421,16 +420,18 @@ export interface IMetricsService extends MetricReporter {
   /**
    * Get distribution statistics for a metric
    */
-  getDistributionStats(metricName: string): {
-    count: number;
-    min: number;
-    max: number;
-    mean: number;
-    p50: number;
-    p90: number;
-    p95: number;
-    p99: number;
-  } | undefined;
+  getDistributionStats(metricName: string):
+    | {
+        count: number;
+        min: number;
+        max: number;
+        mean: number;
+        p50: number;
+        p90: number;
+        p95: number;
+        p99: number;
+      }
+    | undefined;
 
   /**
    * Get all metrics
@@ -529,36 +530,101 @@ export interface IObservabilityService {
   startTrace(name: string, attributes?: Record<string, any>): Span;
   startSpan(options: SpanOptions, traceId?: string): Span;
   endSpan(span: Span): void;
-  extractTraceContext(headers: Record<string, string | string[]>): TraceContext | undefined;
-  injectTraceContext(span: Span, headers: Record<string, string | string[]>): void;
-  traceFunction<T>(name: string, fn: () => T | Promise<T>, parentSpan?: Span, attributes?: Record<string, any>): Promise<T>;
-  
+  extractTraceContext(
+    headers: Record<string, string | string[]>,
+  ): TraceContext | undefined;
+  injectTraceContext(
+    span: Span,
+    headers: Record<string, string | string[]>,
+  ): void;
+  traceFunction<T>(
+    name: string,
+    fn: () => T | Promise<T>,
+    parentSpan?: Span,
+    attributes?: Record<string, any>,
+  ): Promise<T>;
+
   // Logging methods
   log(message: string, context?: string | LogContext): void;
-  error(message: string | Error, trace?: string, context?: string | LogContext): void;
+  error(
+    message: string | Error,
+    trace?: string,
+    context?: string | LogContext,
+  ): void;
   warn(message: string, context?: string | LogContext): void;
   debug(message: string, context?: string | LogContext): void;
   verbose(message: string, context?: string | LogContext): void;
   setGlobalContext(context: Record<string, any>): void;
-  
+
   // Metrics methods
   registerMetric(options: MetricOptions): void;
-  incrementCounter(metricName: string, value?: number, labels?: Record<string, string>): void;
-  recordGauge(metricName: string, value: number, labels?: Record<string, string>): void;
-  recordDistribution(metricName: string, value: number, labels?: Record<string, string>): void;
+  incrementCounter(
+    metricName: string,
+    value?: number,
+    labels?: Record<string, string>,
+  ): void;
+  recordGauge(
+    metricName: string,
+    value: number,
+    labels?: Record<string, string>,
+  ): void;
+  recordDistribution(
+    metricName: string,
+    value: number,
+    labels?: Record<string, string>,
+  ): void;
   startTimer(metricName: string, labels?: Record<string, string>): () => void;
-  getDistributionStats(metricName: string): { count: number, min: number, max: number, mean: number, p50: number, p90: number, p95: number, p99: number } | undefined;
-  
+  getDistributionStats(metricName: string):
+    | {
+        count: number;
+        min: number;
+        max: number;
+        mean: number;
+        p50: number;
+        p90: number;
+        p95: number;
+        p99: number;
+      }
+    | undefined;
+
   // Health methods
-  registerHealthCheck(component: string, checkFunction: HealthCheckFunction): void;
+  registerHealthCheck(
+    component: string,
+    checkFunction: HealthCheckFunction,
+  ): void;
   runHealthChecks(): Promise<HealthCheckResult>;
   getPublicHealthCheck(): Promise<{ status: string; region: string }>;
   getDetailedHealthCheck(): Promise<HealthCheckResult>;
-  
+
   // Convenience Methods
-  trackHttpRequest(method: string, path: string, statusCode: number, durationMs: number, userId?: string, organizationId?: string): void;
-  trackDatabaseOperation(operation: string, collection: string, durationMs: number, success?: boolean): void;
+  trackHttpRequest(
+    method: string,
+    path: string,
+    statusCode: number,
+    durationMs: number,
+    userId?: string,
+    organizationId?: string,
+  ): void;
+  trackDatabaseOperation(
+    operation: string,
+    collection: string,
+    durationMs: number,
+    success?: boolean,
+  ): void;
   trackCacheOperation(cache: string, hit: boolean): void;
-  trackAIModelUsage(model: string, operation: string, inputTokens: number, outputTokens: number, durationMs: number, creditCost: number, organizationId?: string): void;
-  trackFeatureFlagEvaluation(flag: string, enabled: boolean, userId?: string, organizationId?: string): void;
+  trackAIModelUsage(
+    model: string,
+    operation: string,
+    inputTokens: number,
+    outputTokens: number,
+    durationMs: number,
+    creditCost: number,
+    organizationId?: string,
+  ): void;
+  trackFeatureFlagEvaluation(
+    flag: string,
+    enabled: boolean,
+    userId?: string,
+    organizationId?: string,
+  ): void;
 }

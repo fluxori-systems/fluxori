@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Card, Container, Group, Stack, Text, Button } from '@/lib/ui';
-import { 
+
+import { Card, Container, Group, Stack, Text, Button , 
   AgentMessage,
   AgentConfidenceDisplay,
   AgentStateIndicator,

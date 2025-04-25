@@ -1,11 +1,11 @@
-import { Injectable, Logger } from "@nestjs/common";
+import { Injectable, Logger } from '@nestjs/common';
 
 import {
   FirestoreBaseRepository,
   FirestoreAdvancedFilter,
-} from "../../../common/repositories";
-import { FirestoreConfigService } from "../../../config/firestore.config";
-import { StockLevel } from "../models/stock-level.schema";
+} from '../../../common/repositories';
+import { FirestoreConfigService } from '../../../config/firestore.config';
+import { StockLevel } from '../models/stock-level.schema';
 
 /**
  * Repository for Stock Level entities
@@ -15,16 +15,16 @@ export class StockLevelRepository extends FirestoreBaseRepository<StockLevel> {
   protected readonly logger = new Logger(StockLevelRepository.name);
 
   constructor(firestoreConfigService: FirestoreConfigService) {
-    super(firestoreConfigService, "stock_levels", {
+    super(firestoreConfigService, 'stock_levels', {
       useSoftDeletes: true,
       useVersioning: true,
       enableCache: true,
       cacheTTLMs: 3 * 60 * 1000, // 3 minutes
       requiredFields: [
-        "organizationId",
-        "productId",
-        "warehouseId",
-        "quantity",
+        'organizationId',
+        'productId',
+        'warehouseId',
+        'quantity',
       ],
     });
   }
@@ -37,7 +37,7 @@ export class StockLevelRepository extends FirestoreBaseRepository<StockLevel> {
   async findByOrganization(organizationId: string): Promise<StockLevel[]> {
     return this.find({
       advancedFilters: [
-        { field: "organizationId", operator: "==", value: organizationId },
+        { field: 'organizationId', operator: '==', value: organizationId },
       ],
     });
   }
@@ -50,7 +50,7 @@ export class StockLevelRepository extends FirestoreBaseRepository<StockLevel> {
   async findByProduct(productId: string): Promise<StockLevel[]> {
     return this.find({
       advancedFilters: [
-        { field: "productId", operator: "==", value: productId },
+        { field: 'productId', operator: '==', value: productId },
       ],
     });
   }
@@ -63,7 +63,7 @@ export class StockLevelRepository extends FirestoreBaseRepository<StockLevel> {
   async findByWarehouse(warehouseId: string): Promise<StockLevel[]> {
     return this.find({
       advancedFilters: [
-        { field: "warehouseId", operator: "==", value: warehouseId },
+        { field: 'warehouseId', operator: '==', value: warehouseId },
       ],
     });
   }
@@ -80,8 +80,8 @@ export class StockLevelRepository extends FirestoreBaseRepository<StockLevel> {
   ): Promise<StockLevel | null> {
     const results = await this.find({
       advancedFilters: [
-        { field: "productId", operator: "==", value: productId },
-        { field: "warehouseId", operator: "==", value: warehouseId },
+        { field: 'productId', operator: '==', value: productId },
+        { field: 'warehouseId', operator: '==', value: warehouseId },
       ],
     });
 
@@ -100,8 +100,8 @@ export class StockLevelRepository extends FirestoreBaseRepository<StockLevel> {
   ): Promise<StockLevel[]> {
     return this.find({
       advancedFilters: [
-        { field: "warehouseId", operator: "==", value: warehouseId },
-        { field: "locationId", operator: "==", value: locationId },
+        { field: 'warehouseId', operator: '==', value: warehouseId },
+        { field: 'locationId', operator: '==', value: locationId },
       ],
     });
   }
@@ -187,38 +187,38 @@ export class StockLevelRepository extends FirestoreBaseRepository<StockLevel> {
   }): Promise<StockLevel[]> {
     // Create advanced filters
     const advancedFilters: FirestoreAdvancedFilter<StockLevel>[] = [
-      { field: "organizationId", operator: "==", value: params.organizationId },
+      { field: 'organizationId', operator: '==', value: params.organizationId },
     ];
 
     // Add optional filters
     if (params.productId) {
       advancedFilters.push({
-        field: "productId",
-        operator: "==",
+        field: 'productId',
+        operator: '==',
         value: params.productId,
       });
     }
 
     if (params.warehouseId) {
       advancedFilters.push({
-        field: "warehouseId",
-        operator: "==",
+        field: 'warehouseId',
+        operator: '==',
         value: params.warehouseId,
       });
     }
 
     if (params.locationId) {
       advancedFilters.push({
-        field: "locationId",
-        operator: "==",
+        field: 'locationId',
+        operator: '==',
         value: params.locationId,
       });
     }
 
     if (params.status) {
       advancedFilters.push({
-        field: "status",
-        operator: "==",
+        field: 'status',
+        operator: '==',
         value: params.status,
       });
     }

@@ -1,12 +1,14 @@
 /**
  * Mobile-First Detection Service
- * 
+ *
  * This service provides detection and optimization capabilities for mobile devices,
  * with special attention to devices common in South African markets.
  */
 
 import { Injectable, Logger } from '@nestjs/common';
+
 import { Request } from 'express';
+
 import { MarketContextService } from './market-context.service';
 
 /**
@@ -114,72 +116,79 @@ export class MobileFirstDetectionService {
 
   /**
    * Detect device profile from request
-   * 
+   *
    * @param request Express request object
    * @returns Device profile information
    */
   detectDeviceProfile(request: Request): DeviceProfile {
     const userAgent = request.headers['user-agent'] || '';
     const saveData = request.headers['save-data'] === 'on';
-    const viewportWidth = parseInt(request.headers['viewport-width'] as string) || 0;
-    const viewportHeight = parseInt(request.headers['viewport-height'] as string) || 0;
+    const viewportWidth =
+      parseInt(request.headers['viewport-width'] as string) || 0;
+    const viewportHeight =
+      parseInt(request.headers['viewport-height'] as string) || 0;
     const dpr = parseFloat(request.headers['dpr'] as string) || 1;
     const acceptHeader = request.headers.accept || '';
-    
+
     // Network information - may be provided by client middleware
     const networkQualityHeader = request.headers['x-network-quality'] as string;
     const rttHeader = parseInt(request.headers['x-network-rtt'] as string) || 0;
-    const downlinkHeader = parseFloat(request.headers['x-network-downlink'] as string) || 0;
-    
+    const downlinkHeader =
+      parseFloat(request.headers['x-network-downlink'] as string) || 0;
+
     // Detect device type
     const deviceType = this.detectDeviceType(userAgent, viewportWidth);
-    
+
     // Detect network quality
     const networkQuality = this.detectNetworkQuality(
-      networkQualityHeader, 
-      rttHeader, 
+      networkQualityHeader,
+      rttHeader,
       downlinkHeader,
-      userAgent
+      userAgent,
     );
-    
+
     // Detect South African network provider
     const networkProvider = this.detectSouthAfricanNetworkProvider(userAgent);
-    
+
     // Determine if client accepts WebP
     const acceptsWebp = acceptHeader.includes('image/webp');
-    
+
     // Determine if client accepts AVIF
     const acceptsAvif = acceptHeader.includes('image/avif');
-    
+
     // Calculate preferred image quality based on device and network
     const preferredImageQuality = this.calculatePreferredImageQuality(
-      deviceType, 
-      networkQuality, 
-      saveData, 
-      dpr
+      deviceType,
+      networkQuality,
+      saveData,
+      dpr,
     );
-    
+
     // Determine preferred response size based on device and network
     const preferredResponseSize = this.determinePreferredResponseSize(
       deviceType,
       networkQuality,
-      saveData
+      saveData,
     );
-    
+
     // Determine device capabilities
     const capabilities = {
       supportsServiceWorker: !this.isFeaturePhone(userAgent),
-      supportsWebPush: !this.isFeaturePhone(userAgent) && !this.isLowEndDevice(userAgent),
+      supportsWebPush:
+        !this.isFeaturePhone(userAgent) && !this.isLowEndDevice(userAgent),
       supportsOfflineMode: !this.isFeaturePhone(userAgent),
       supportsProgressiveLoading: !this.isFeaturePhone(userAgent),
     };
-    
+
     return {
       deviceType,
-      isMobile: deviceType === DeviceType.MOBILE || deviceType === DeviceType.FEATURE_PHONE,
-      screenSize: viewportWidth > 0 && viewportHeight > 0 
-        ? { width: viewportWidth, height: viewportHeight } 
-        : undefined,
+      isMobile:
+        deviceType === DeviceType.MOBILE ||
+        deviceType === DeviceType.FEATURE_PHONE,
+      screenSize:
+        viewportWidth > 0 && viewportHeight > 0
+          ? { width: viewportWidth, height: viewportHeight }
+          : undefined,
       networkQuality,
       isSavingData: saveData,
       networkProvider,
@@ -194,16 +203,18 @@ export class MobileFirstDetectionService {
 
   /**
    * Get optimization options based on device profile
-   * 
+   *
    * @param profile Device profile
    * @returns Optimization options
    */
   getOptimizationOptions(profile: DeviceProfile): MobileOptimizationOptions {
     // Base configuration
     const options: MobileOptimizationOptions = {
-      minifyJson: profile.networkQuality === NetworkQuality.POOR || profile.isSavingData,
+      minifyJson:
+        profile.networkQuality === NetworkQuality.POOR || profile.isSavingData,
       omitNullValues: profile.networkQuality !== NetworkQuality.EXCELLENT,
-      omitEmptyArrays: profile.networkQuality === NetworkQuality.POOR || profile.isSavingData,
+      omitEmptyArrays:
+        profile.networkQuality === NetworkQuality.POOR || profile.isSavingData,
       excludeFields: [],
       includeFields: [],
       maxPagingSize: this.calculateMaxPageSize(profile),
@@ -214,7 +225,7 @@ export class MobileFirstDetectionService {
         format: 'original',
       },
     };
-    
+
     // Adjust image format based on device support
     if (profile.acceptsAvif) {
       options.imageTransform.format = 'avif';
@@ -223,7 +234,7 @@ export class MobileFirstDetectionService {
     } else {
       options.imageTransform.format = 'jpeg';
     }
-    
+
     // Adjust image size based on device type
     if (profile.deviceType === DeviceType.MOBILE) {
       options.imageTransform.maxWidth = 640;
@@ -236,28 +247,39 @@ export class MobileFirstDetectionService {
       options.imageTransform.maxHeight = 480;
       options.imageTransform.format = 'jpeg'; // Feature phones often have limited format support
     }
-    
+
     // Further optimization for data saving mode
     if (profile.isSavingData) {
-      options.imageTransform.quality = Math.min(profile.preferredImageQuality, 60);
-      options.excludeFields.push('description_full', 'meta_description', 'specifications');
+      options.imageTransform.quality = Math.min(
+        profile.preferredImageQuality,
+        60,
+      );
+      options.excludeFields.push(
+        'description_full',
+        'meta_description',
+        'specifications',
+      );
     }
-    
+
     // Apply organization-specific or regional settings
-    if (profile.networkProvider === SouthAfricanNetworkProvider.MTN ||
-        profile.networkProvider === SouthAfricanNetworkProvider.VODACOM) {
+    if (
+      profile.networkProvider === SouthAfricanNetworkProvider.MTN ||
+      profile.networkProvider === SouthAfricanNetworkProvider.VODACOM
+    ) {
       // Major networks in SA have more reliable connections, but can still benefit
       // from optimizations for rural areas
-      options.maxPagingSize = Math.min(options.maxPagingSize, 
-        profile.networkQuality === NetworkQuality.POOR ? 10 : 20);
+      options.maxPagingSize = Math.min(
+        options.maxPagingSize,
+        profile.networkQuality === NetworkQuality.POOR ? 10 : 20,
+      );
     }
-    
+
     return options;
   }
-  
+
   /**
    * Apply mobile optimizations to a response payload
-   * 
+   *
    * @param data Original response data
    * @param options Optimization options
    * @returns Optimized response data
@@ -268,72 +290,79 @@ export class MobileFirstDetectionService {
     } else if (typeof data === 'object' && data !== null) {
       return this.optimizeObject(data, options) as any;
     }
-    
+
     return data;
   }
-  
+
   /**
    * Optimize a list of products for mobile response
-   * 
+   *
    * @param products List of products
    * @param options Optimization options
    * @returns Optimized product list
    */
-  optimizeProductListForMobile<T>(products: T[], options: MobileOptimizationOptions): T[] {
+  optimizeProductListForMobile<T>(
+    products: T[],
+    options: MobileOptimizationOptions,
+  ): T[] {
     return this.optimizeArray(products, options);
   }
-  
+
   /**
    * Generate client hints for mobile optimization
-   * 
+   *
    * @returns Object with headers to include in responses
    */
   generateClientHintsHeaders(): Record<string, string> {
     return {
-      'Accept-CH': 'Viewport-Width, Viewport-Height, DPR, Save-Data, Device-Memory, RTT, Downlink, ECT',
-      'Vary': 'Accept, User-Agent, Viewport-Width, DPR, Save-Data',
+      'Accept-CH':
+        'Viewport-Width, Viewport-Height, DPR, Save-Data, Device-Memory, RTT, Downlink, ECT',
+      Vary: 'Accept, User-Agent, Viewport-Width, DPR, Save-Data',
       'Critical-CH': 'Viewport-Width, DPR, Save-Data',
-      'Permissions-Policy': 'ch-viewport-width=*, ch-viewport-height=*, ch-dpr=*, ch-device-memory=*, ch-save-data=*, ch-rtt=*, ch-downlink=*, ch-ect=*',
+      'Permissions-Policy':
+        'ch-viewport-width=*, ch-viewport-height=*, ch-dpr=*, ch-device-memory=*, ch-save-data=*, ch-rtt=*, ch-downlink=*, ch-ect=*',
     };
   }
 
   /**
    * Calculate if a user is in a load-shedding affected area based on headers and location
-   * 
+   *
    * @param request Express request object
    * @returns Whether the user is likely affected by load shedding
    */
   isInLoadSheddingArea(request: Request): boolean {
     const userAgent = request.headers['user-agent'] || '';
     const provider = this.detectSouthAfricanNetworkProvider(userAgent);
-    
+
     // Load shedding indicators from client-side detection
     const loadSheddingHeader = request.headers['x-load-shedding'];
     if (loadSheddingHeader === 'active') {
       return true;
     }
-    
+
     // Time-based heuristic for South Africa
     // Load shedding is more common during evening peak hours
     const now = new Date();
-    const saTime = new Date(now.toLocaleString('en-US', { timeZone: 'Africa/Johannesburg' }));
+    const saTime = new Date(
+      now.toLocaleString('en-US', { timeZone: 'Africa/Johannesburg' }),
+    );
     const hour = saTime.getHours();
-    
+
     // Evening peak hours (higher probability of load shedding)
     const isPeakHour = hour >= 17 && hour <= 21;
-    
+
     // Location in South Africa + peak hour + mobile network
     // is a reasonable heuristic for potential load shedding
     if (isPeakHour && provider !== SouthAfricanNetworkProvider.UNKNOWN) {
       return true;
     }
-    
+
     return false;
   }
 
   /**
    * Generate viewport hints for responsive images
-   * 
+   *
    * @param profile Device profile
    * @returns Viewport hints for image sizing
    */
@@ -341,10 +370,10 @@ export class MobileFirstDetectionService {
     if (!profile.screenSize) {
       return {};
     }
-    
+
     const { width, height } = profile.screenSize;
     const dpr = profile.devicePixelRatio || 1;
-    
+
     return {
       viewport: {
         width,
@@ -358,16 +387,19 @@ export class MobileFirstDetectionService {
         small: Math.min(320 * dpr, 640),
         medium: Math.min(640 * dpr, 1280),
         large: Math.min(1080 * dpr, 1920),
-      }
+      },
     };
   }
 
   // Private helper methods
-  
+
   /**
    * Detect device type from User-Agent and viewport info
    */
-  private detectDeviceType(userAgent: string, viewportWidth: number): DeviceType {
+  private detectDeviceType(
+    userAgent: string,
+    viewportWidth: number,
+  ): DeviceType {
     // Feature phone detection
     if (
       this.SOUTH_AFRICAN_DEVICE_PATTERNS.OPERA_MINI.test(userAgent) ||
@@ -375,26 +407,28 @@ export class MobileFirstDetectionService {
     ) {
       return DeviceType.FEATURE_PHONE;
     }
-    
+
     // Mobile detection
     if (
-      /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|mobile/i.test(userAgent)
+      /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|mobile/i.test(
+        userAgent,
+      )
     ) {
       // Distinguish between tablets and phones based on UA and viewport width
       if (
-        /iPad|Tablet|tablet/i.test(userAgent) || 
+        /iPad|Tablet|tablet/i.test(userAgent) ||
         (viewportWidth > 0 && viewportWidth >= 768)
       ) {
         return DeviceType.TABLET;
       }
-      
+
       return DeviceType.MOBILE;
     }
-    
+
     // Fallback to desktop for unknown patterns
     return DeviceType.DESKTOP;
   }
-  
+
   /**
    * Detect network quality from headers and heuristics
    */
@@ -411,7 +445,7 @@ export class MobileFirstDetectionService {
       if (qualityHeader === 'fair') return NetworkQuality.FAIR;
       if (qualityHeader === 'poor') return NetworkQuality.POOR;
     }
-    
+
     // Assess based on RTT and downlink
     if (rtt > 0 || downlink > 0) {
       // Both RTT and downlink available
@@ -421,7 +455,7 @@ export class MobileFirstDetectionService {
         if (rtt < 300 && downlink > 1) return NetworkQuality.FAIR;
         return NetworkQuality.POOR;
       }
-      
+
       // Only RTT available
       if (rtt > 0) {
         if (rtt < 50) return NetworkQuality.EXCELLENT;
@@ -429,54 +463,56 @@ export class MobileFirstDetectionService {
         if (rtt < 300) return NetworkQuality.FAIR;
         return NetworkQuality.POOR;
       }
-      
+
       // Only downlink available
       if (downlink > 10) return NetworkQuality.EXCELLENT;
       if (downlink > 5) return NetworkQuality.GOOD;
       if (downlink > 1) return NetworkQuality.FAIR;
       return NetworkQuality.POOR;
     }
-    
+
     // Fallback heuristics based on device
     if (this.isFeaturePhone(userAgent)) {
       return NetworkQuality.POOR;
     }
-    
+
     if (this.isLowEndDevice(userAgent)) {
       return NetworkQuality.FAIR;
     }
-    
+
     // Default for desktop and unknown devices
     return NetworkQuality.GOOD;
   }
-  
+
   /**
    * Detect South African network provider from User-Agent
    */
-  private detectSouthAfricanNetworkProvider(userAgent: string): SouthAfricanNetworkProvider {
+  private detectSouthAfricanNetworkProvider(
+    userAgent: string,
+  ): SouthAfricanNetworkProvider {
     if (this.SOUTH_AFRICAN_DEVICE_PATTERNS.VODACOM.test(userAgent)) {
       return SouthAfricanNetworkProvider.VODACOM;
     }
-    
+
     if (this.SOUTH_AFRICAN_DEVICE_PATTERNS.MTN.test(userAgent)) {
       return SouthAfricanNetworkProvider.MTN;
     }
-    
+
     if (this.SOUTH_AFRICAN_DEVICE_PATTERNS.TELKOM.test(userAgent)) {
       return SouthAfricanNetworkProvider.TELKOM;
     }
-    
+
     if (this.SOUTH_AFRICAN_DEVICE_PATTERNS.CELL_C.test(userAgent)) {
       return SouthAfricanNetworkProvider.CELL_C;
     }
-    
+
     if (this.SOUTH_AFRICAN_DEVICE_PATTERNS.RAIN.test(userAgent)) {
       return SouthAfricanNetworkProvider.RAIN;
     }
-    
+
     return SouthAfricanNetworkProvider.UNKNOWN;
   }
-  
+
   /**
    * Calculate preferred image quality based on device and network
    */
@@ -488,7 +524,7 @@ export class MobileFirstDetectionService {
   ): number {
     // Base quality for different device types
     let quality = 85; // Default quality
-    
+
     if (deviceType === DeviceType.FEATURE_PHONE) {
       quality = 60;
     } else if (deviceType === DeviceType.MOBILE) {
@@ -496,7 +532,7 @@ export class MobileFirstDetectionService {
     } else if (deviceType === DeviceType.TABLET) {
       quality = 80;
     }
-    
+
     // Adjust for network quality
     if (networkQuality === NetworkQuality.POOR) {
       quality -= 15;
@@ -505,21 +541,21 @@ export class MobileFirstDetectionService {
     } else if (networkQuality === NetworkQuality.EXCELLENT) {
       quality += 5;
     }
-    
+
     // Adjust for save-data mode
     if (saveData) {
       quality -= 15;
     }
-    
+
     // Adjust for high-DPR screens which need higher quality
     if (dpr > 2) {
       quality += 5;
     }
-    
+
     // Keep quality in valid range
     return Math.max(30, Math.min(100, quality));
   }
-  
+
   /**
    * Determine preferred response size based on profile
    */
@@ -531,25 +567,28 @@ export class MobileFirstDetectionService {
     if (saveData || networkQuality === NetworkQuality.POOR) {
       return 'minimal';
     }
-    
+
     if (deviceType === DeviceType.FEATURE_PHONE) {
       return 'minimal';
     }
-    
-    if (deviceType === DeviceType.MOBILE && networkQuality !== NetworkQuality.EXCELLENT) {
+
+    if (
+      deviceType === DeviceType.MOBILE &&
+      networkQuality !== NetworkQuality.EXCELLENT
+    ) {
       return 'standard';
     }
-    
+
     return 'full';
   }
-  
+
   /**
    * Calculate maximum page size based on profile
    */
   private calculateMaxPageSize(profile: DeviceProfile): number {
     // Base page size
     let pageSize = 25;
-    
+
     // Adjust for device type
     if (profile.deviceType === DeviceType.FEATURE_PHONE) {
       pageSize = 10;
@@ -558,7 +597,7 @@ export class MobileFirstDetectionService {
     } else if (profile.deviceType === DeviceType.DESKTOP) {
       pageSize = 50;
     }
-    
+
     // Adjust for network quality
     if (profile.networkQuality === NetworkQuality.POOR) {
       pageSize = Math.min(pageSize, 10);
@@ -567,15 +606,15 @@ export class MobileFirstDetectionService {
     } else if (profile.networkQuality === NetworkQuality.EXCELLENT) {
       pageSize += 10;
     }
-    
+
     // Adjust for save-data mode
     if (profile.isSavingData) {
       pageSize = Math.min(pageSize, 10);
     }
-    
+
     return pageSize;
   }
-  
+
   /**
    * Check if a device is a feature phone
    */
@@ -585,7 +624,7 @@ export class MobileFirstDetectionService {
       this.SOUTH_AFRICAN_DEVICE_PATTERNS.NOKIA_FEATURE.test(userAgent)
     );
   }
-  
+
   /**
    * Check if a device is low-end
    */
@@ -596,14 +635,14 @@ export class MobileFirstDetectionService {
       this.SOUTH_AFRICAN_DEVICE_PATTERNS.LOW_END_ANDROID.test(userAgent)
     );
   }
-  
+
   /**
    * Optimize an array of objects
    */
   private optimizeArray<T>(data: T[], options: MobileOptimizationOptions): T[] {
-    return data.map(item => this.optimizeObject(item, options));
+    return data.map((item) => this.optimizeObject(item, options));
   }
-  
+
   /**
    * Optimize an object by applying options
    */
@@ -611,34 +650,37 @@ export class MobileFirstDetectionService {
     if (typeof data !== 'object' || data === null) {
       return data;
     }
-    
+
     const result = { ...data };
-    
+
     // Apply field filtering
     for (const key in result) {
       // Skip if key doesn't exist
       if (!Object.prototype.hasOwnProperty.call(result, key)) {
         continue;
       }
-      
+
       // Handle excludeFields
       if (options.excludeFields.includes(key)) {
         delete result[key];
         continue;
       }
-      
+
       // Handle includeFields (if specified, only keep those fields)
-      if (options.includeFields.length > 0 && !options.includeFields.includes(key)) {
+      if (
+        options.includeFields.length > 0 &&
+        !options.includeFields.includes(key)
+      ) {
         delete result[key];
         continue;
       }
-      
+
       // Handle null values
       if (options.omitNullValues && result[key] === null) {
         delete result[key];
         continue;
       }
-      
+
       // Handle empty arrays
       if (
         options.omitEmptyArrays &&
@@ -648,7 +690,7 @@ export class MobileFirstDetectionService {
         delete result[key];
         continue;
       }
-      
+
       // Recursively optimize nested objects and arrays
       if (typeof result[key] === 'object' && result[key] !== null) {
         if (Array.isArray(result[key])) {
@@ -658,7 +700,7 @@ export class MobileFirstDetectionService {
         }
       }
     }
-    
+
     return result;
   }
 }

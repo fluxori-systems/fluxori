@@ -1,12 +1,13 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+
 import { DeviceProfile, NetworkProfile, getDeviceProfile, getNetworkProfile } from '../data/device-profiles';
-import { defaultPerformanceMonitoringService } from '../services/performance/performance-monitoring.service';
 import { 
   PerformanceInsight, 
   defaultPerformanceAnalyticsService 
 } from '../services/performance/performance-analytics.service';
+import { defaultPerformanceMonitoringService } from '../services/performance/performance-monitoring.service';
 
 /**
  * Interface for the hook return value

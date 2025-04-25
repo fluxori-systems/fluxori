@@ -3,26 +3,26 @@
  */
 
 export enum InsightType {
-  SALES_TREND = "sales_trend",
-  INVENTORY_ALERT = "inventory_alert",
-  PRICING_RECOMMENDATION = "pricing_recommendation",
-  MARKET_OPPORTUNITY = "market_opportunity",
-  COMPETITOR_CHANGE = "competitor_change",
-  ANOMALY_DETECTION = "anomaly_detection",
+  SALES_TREND = 'sales_trend',
+  INVENTORY_ALERT = 'inventory_alert',
+  PRICING_RECOMMENDATION = 'pricing_recommendation',
+  MARKET_OPPORTUNITY = 'market_opportunity',
+  COMPETITOR_CHANGE = 'competitor_change',
+  ANOMALY_DETECTION = 'anomaly_detection',
 }
 
 export enum InsightSeverity {
-  LOW = "low",
-  MEDIUM = "medium",
-  HIGH = "high",
-  CRITICAL = "critical",
+  LOW = 'low',
+  MEDIUM = 'medium',
+  HIGH = 'high',
+  CRITICAL = 'critical',
 }
 
 export enum InsightStatus {
-  NEW = "new",
-  ACKNOWLEDGED = "acknowledged",
-  RESOLVED = "resolved",
-  DISMISSED = "dismissed",
+  NEW = 'new',
+  ACKNOWLEDGED = 'acknowledged',
+  RESOLVED = 'resolved',
+  DISMISSED = 'dismissed',
 }
 
 export interface IInsight {

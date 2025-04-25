@@ -1,8 +1,14 @@
 import { Test, TestingModule } from '@nestjs/testing';
+
+import {
+  TaxRateRequest,
+  TaxRateResult,
+  TaxJurisdiction,
+  TaxType,
+} from '../interfaces/tax-rate.interface';
+import { TaxRateRepository } from '../repositories/tax-rate.repository';
 import { AfricanTaxFrameworkService } from '../services/african-tax-framework.service';
 import { TaxRateService } from '../services/tax-rate.service';
-import { TaxRateRepository } from '../repositories/tax-rate.repository';
-import { TaxRateRequest, TaxRateResult, TaxJurisdiction, TaxType } from '../interfaces/tax-rate.interface';
 
 describe('AfricanTaxFrameworkService', () => {
   let service: AfricanTaxFrameworkService;
@@ -36,9 +42,13 @@ describe('AfricanTaxFrameworkService', () => {
       ],
     }).compile();
 
-    service = module.get<AfricanTaxFrameworkService>(AfricanTaxFrameworkService);
+    service = module.get<AfricanTaxFrameworkService>(
+      AfricanTaxFrameworkService,
+    );
     taxRateService = module.get(TaxRateService) as jest.Mocked<TaxRateService>;
-    taxRateRepository = module.get(TaxRateRepository) as jest.Mocked<TaxRateRepository>;
+    taxRateRepository = module.get(
+      TaxRateRepository,
+    ) as jest.Mocked<TaxRateRepository>;
   });
 
   it('should be defined', () => {
@@ -225,7 +235,11 @@ describe('AfricanTaxFrameworkService', () => {
 
       const regionalRate = {
         id: 'lagos-vat-1',
-        jurisdiction: { country: 'NG', region: 'Lagos', level: 'province' as const },
+        jurisdiction: {
+          country: 'NG',
+          region: 'Lagos',
+          level: 'province' as const,
+        },
         taxType: TaxType.VAT,
         rate: 0.025,
         name: 'Lagos State VAT',
@@ -235,7 +249,9 @@ describe('AfricanTaxFrameworkService', () => {
         updatedAt: new Date(),
       };
 
-      taxRateRepository.findAllRatesForJurisdiction.mockResolvedValue([regionalRate]);
+      taxRateRepository.findAllRatesForJurisdiction.mockResolvedValue([
+        regionalRate,
+      ]);
 
       const result = await service.calculateAfricanTax(request);
       expect(taxRateService.getCurrentRate).toHaveBeenCalledWith(request);
@@ -370,7 +386,7 @@ describe('AfricanTaxFrameworkService', () => {
 
     it('should return hardcoded SA exemptions if not in database', async () => {
       taxRateRepository.findSpecialRatesByJurisdiction.mockResolvedValue([]);
-      
+
       const result = await service.getSpecialProductTaxCategories('ZA');
       expect(result.length).toBe(3);
       expect(result[0].productType).toBe('BasicFoodstuffs');
@@ -388,7 +404,7 @@ describe('AfricanTaxFrameworkService', () => {
           name: 'Zero-Rated Books',
           validFrom: new Date('2020-01-01'),
           validTo: null,
-          metadata: { 
+          metadata: {
             isSpecialRate: true,
             productType: 'EducationalBooks',
           },
@@ -403,17 +419,19 @@ describe('AfricanTaxFrameworkService', () => {
           name: 'Zero-Rated Medical',
           validFrom: new Date('2020-01-01'),
           validTo: null,
-          metadata: { 
+          metadata: {
             isSpecialRate: true,
             productType: 'MedicalSupplies',
           },
           createdAt: new Date(),
           updatedAt: new Date(),
-        }
+        },
       ];
-      
-      taxRateRepository.findSpecialRatesByJurisdiction.mockResolvedValue(specialRates);
-      
+
+      taxRateRepository.findSpecialRatesByJurisdiction.mockResolvedValue(
+        specialRates,
+      );
+
       const result = await service.getSpecialProductTaxCategories('ZA');
       expect(result.length).toBe(2);
       expect(result[0].productType).toBe('EducationalBooks');

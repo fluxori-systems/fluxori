@@ -5,6 +5,7 @@
  */
 
 import { useState, useCallback, useRef } from 'react';
+
 import { useAnimationService } from '../services';
 
 interface AnimationPerformanceConfig {

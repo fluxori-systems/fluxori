@@ -2,9 +2,9 @@
  * User roles in the system
  */
 export enum UserRole {
-  ADMIN = "admin",
-  USER = "user",
-  MANAGER = "manager",
+  ADMIN = 'admin',
+  USER = 'user',
+  MANAGER = 'manager',
 }
 
 /**

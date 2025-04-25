@@ -1,13 +1,14 @@
 'use client';
 
 import React, { forwardRef, useState, useRef } from 'react';
-import { Text } from '../../components/Text';
+
+import { DashboardSectionProps, DashboardDensity } from '../../../design-system/types/dashboard';
+import { useSouthAfricanMarketOptimizations } from '../../../shared/hooks/useSouthAfricanMarketOptimizations';
+import { useCombinedRefs } from '../../../shared/utils/ref-utils';
 import { Button } from '../../components/Button';
 import { Card } from '../../components/Card';
-import { useCombinedRefs } from '../../../shared/utils/ref-utils';
+import { Text } from '../../components/Text';
 import { useConnectionQuality } from '../../hooks/useConnection';
-import { useSouthAfricanMarketOptimizations } from '../../../shared/hooks/useSouthAfricanMarketOptimizations';
-import { DashboardSectionProps, DashboardDensity } from '../../../design-system/types/dashboard';
 
 interface DashboardSectionComponentProps extends DashboardSectionProps {
   /** Current dashboard density */

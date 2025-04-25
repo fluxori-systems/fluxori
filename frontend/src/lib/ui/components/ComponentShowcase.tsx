@@ -1,16 +1,17 @@
 'use client';
 
 import { useState } from 'react';
-import { Container } from './Container';
-import { Text } from './Text';
+
+import { AgentMessage } from './AgentMessage';
+import { Alert } from './Alert';
 import { Button } from './Button';
 import { Card, CardSection } from './Card';
+import { Container } from './Container';
+import { FormField } from './FormField';
+import { Grid } from './Grid';
 import { Group } from './Group';
 import { Stack } from './Stack';
-import { Alert } from './Alert';
-import { FormField } from './FormField';
-import { AgentMessage } from './AgentMessage';
-import { Grid } from './Grid';
+import { Text } from './Text';
 
 export interface ComponentShowcaseProps {
   /** Show all components */

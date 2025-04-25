@@ -1,29 +1,29 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable } from '@nestjs/common';
 
-import { FirestoreBaseRepository } from "../../../common/repositories/firestore-base.repository";
-import { FirestoreConfigService } from "../../../config/firestore.config";
-import { CreditPricingTier } from "../interfaces/types";
+import { FirestoreBaseRepository } from '../../../common/repositories/firestore-base.repository';
+import { FirestoreConfigService } from '../../../config/firestore.config';
+import { CreditPricingTier } from '../interfaces/types';
 
 /**
  * Repository for credit pricing tiers
  */
 @Injectable()
 export class CreditPricingTierRepository extends FirestoreBaseRepository<CreditPricingTier> {
-  protected readonly collectionName = "credit_pricing_tiers";
+  protected readonly collectionName = 'credit_pricing_tiers';
 
   constructor(firestoreConfigService: FirestoreConfigService) {
-    super(firestoreConfigService, "credit_pricing_tiers", {
+    super(firestoreConfigService, 'credit_pricing_tiers', {
       useVersioning: true,
       enableCache: true,
       cacheTTLMs: 30 * 60 * 1000, // 30 minutes (pricing doesn't change often)
       requiredFields: [
-        "modelId",
-        "modelProvider",
-        "displayName",
-        "inputTokenCost",
-        "outputTokenCost",
-        "effectiveDate",
-        "isActive",
+        'modelId',
+        'modelProvider',
+        'displayName',
+        'inputTokenCost',
+        'outputTokenCost',
+        'effectiveDate',
+        'isActive',
       ],
     });
   }
@@ -41,53 +41,57 @@ export class CreditPricingTierRepository extends FirestoreBaseRepository<CreditP
     region?: string,
   ): Promise<CreditPricingTier | null> {
     const currentDate = new Date();
-    
+
     const pricingTiers = await this.find({
-      filter: { 
+      filter: {
         modelId,
         modelProvider,
         isActive: true,
       } as Partial<CreditPricingTier>,
     });
-    
+
     // Filter to find the active tier as of the current date
     const activeTiers = pricingTiers.filter((tier) => {
-      const effectiveDate = tier.effectiveDate instanceof Date 
-        ? tier.effectiveDate 
-        : new Date(tier.effectiveDate);
-      
+      const effectiveDate =
+        tier.effectiveDate instanceof Date
+          ? tier.effectiveDate
+          : new Date(tier.effectiveDate);
+
       // Skip if not yet effective
       if (effectiveDate > currentDate) {
         return false;
       }
-      
+
       // Skip if expired
       if (tier.expirationDate) {
-        const expirationDate = tier.expirationDate instanceof Date 
-          ? tier.expirationDate 
-          : new Date(tier.expirationDate);
-        
+        const expirationDate =
+          tier.expirationDate instanceof Date
+            ? tier.expirationDate
+            : new Date(tier.expirationDate);
+
         if (expirationDate < currentDate) {
           return false;
         }
       }
-      
+
       return true;
     });
-    
+
     // Sort by effective date in descending order to get the most recent
     activeTiers.sort((a, b) => {
-      const dateA = a.effectiveDate instanceof Date 
-        ? a.effectiveDate 
-        : new Date(a.effectiveDate);
-      
-      const dateB = b.effectiveDate instanceof Date 
-        ? b.effectiveDate 
-        : new Date(b.effectiveDate);
-      
+      const dateA =
+        a.effectiveDate instanceof Date
+          ? a.effectiveDate
+          : new Date(a.effectiveDate);
+
+      const dateB =
+        b.effectiveDate instanceof Date
+          ? b.effectiveDate
+          : new Date(b.effectiveDate);
+
       return dateB.getTime() - dateA.getTime();
     });
-    
+
     // Return the most recent active tier
     return activeTiers.length > 0 ? activeTiers[0] : null;
   }
@@ -98,33 +102,35 @@ export class CreditPricingTierRepository extends FirestoreBaseRepository<CreditP
    */
   async findAllActive(): Promise<CreditPricingTier[]> {
     const currentDate = new Date();
-    
+
     const pricingTiers = await this.find({
       filter: { isActive: true } as Partial<CreditPricingTier>,
     });
-    
+
     // Filter to find the active tiers as of the current date
     return pricingTiers.filter((tier) => {
-      const effectiveDate = tier.effectiveDate instanceof Date 
-        ? tier.effectiveDate 
-        : new Date(tier.effectiveDate);
-      
+      const effectiveDate =
+        tier.effectiveDate instanceof Date
+          ? tier.effectiveDate
+          : new Date(tier.effectiveDate);
+
       // Skip if not yet effective
       if (effectiveDate > currentDate) {
         return false;
       }
-      
+
       // Skip if expired
       if (tier.expirationDate) {
-        const expirationDate = tier.expirationDate instanceof Date 
-          ? tier.expirationDate 
-          : new Date(tier.expirationDate);
-        
+        const expirationDate =
+          tier.expirationDate instanceof Date
+            ? tier.expirationDate
+            : new Date(tier.expirationDate);
+
         if (expirationDate < currentDate) {
           return false;
         }
       }
-      
+
       return true;
     });
   }
@@ -152,7 +158,7 @@ export class CreditPricingTierRepository extends FirestoreBaseRepository<CreditP
       isActive: false,
     });
   }
-  
+
   /**
    * Find pricing tiers by provider
    * @param modelProvider Model provider

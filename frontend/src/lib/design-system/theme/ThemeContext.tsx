@@ -7,8 +7,9 @@ import {
   useEffect, 
   ReactNode 
 } from 'react';
-import { ColorMode, DesignTokens, ThemeContextType } from '../types/tokens';
+
 import { lightTheme, darkTheme } from '../tokens';
+import { ColorMode, DesignTokens, ThemeContextType } from '../types/tokens';
 
 // Create theme context with default values
 const ThemeContext = createContext<ThemeContextType>({

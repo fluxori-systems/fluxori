@@ -1,15 +1,15 @@
-import { Injectable, Logger } from "@nestjs/common";
+import { Injectable, Logger } from '@nestjs/common';
 
-import { AIModelConfigService } from "./ai-model-config.service";
-import { CreditSystemService } from "./credit-system.service";
-import { InsightService } from "./insight.service";
+import { AIModelConfigService } from './ai-model-config.service';
+import { CreditSystemService } from './credit-system.service';
+import { InsightService } from './insight.service';
 import {
   InsightType,
   InsightSeverity,
   CreateInsightDto,
   AIAnalysisResult,
   AIModelConfig,
-} from "../interfaces/types";
+} from '../interfaces/types';
 
 /**
  * Request for generating insights
@@ -17,7 +17,7 @@ import {
 export interface GenerateInsightsRequest {
   organizationId: string;
   userId: string;
-  dataType: "inventory" | "sales" | "marketplaces" | "competitors";
+  dataType: 'inventory' | 'sales' | 'marketplaces' | 'competitors';
   data: Record<string, any>;
   options?: {
     modelProvider?: string;
@@ -202,99 +202,99 @@ export class InsightGenerationService {
     await new Promise((resolve) => setTimeout(resolve, 2000));
 
     // Example response with mock insights
-    const organizationId = data.organizationId || "unknown";
+    const organizationId = data.organizationId || 'unknown';
     const mockInsights: CreateInsightDto[] = [];
 
     // Generate mock insights based on data type
-    if (dataType === "inventory") {
+    if (dataType === 'inventory') {
       // Example inventory insight
       mockInsights.push({
         organizationId,
         type: InsightType.INVENTORY_ALERT,
-        title: "Low stock alert for high-demand products",
+        title: 'Low stock alert for high-demand products',
         description:
-          "Several products with high sales velocity are approaching low stock levels.",
+          'Several products with high sales velocity are approaching low stock levels.',
         severity: InsightSeverity.HIGH,
         confidence: 0.87,
         data: {
           affectedProducts: [
             {
-              id: "product-1",
-              name: "Product 1",
+              id: 'product-1',
+              name: 'Product 1',
               stock: 5,
               salesVelocity: 2.3,
             },
             {
-              id: "product-2",
-              name: "Product 2",
+              id: 'product-2',
+              name: 'Product 2',
               stock: 8,
               salesVelocity: 1.8,
             },
           ],
           recommendation:
-            "Restock these items within 3 days to avoid stockouts",
+            'Restock these items within 3 days to avoid stockouts',
         },
       });
-    } else if (dataType === "sales") {
+    } else if (dataType === 'sales') {
       // Example sales insight
       mockInsights.push({
         organizationId,
         type: InsightType.SALES_TREND,
-        title: "Significant increase in category performance",
+        title: 'Significant increase in category performance',
         description:
-          "Electronics category has shown 32% growth over the last 30 days.",
+          'Electronics category has shown 32% growth over the last 30 days.',
         severity: InsightSeverity.MEDIUM,
         confidence: 0.92,
         data: {
-          category: "Electronics",
+          category: 'Electronics',
           previousPeriod: { revenue: 24500, units: 126 },
           currentPeriod: { revenue: 32340, units: 165 },
           growthRate: 0.32,
-          topProducts: ["product-5", "product-12", "product-8"],
+          topProducts: ['product-5', 'product-12', 'product-8'],
         },
       });
-    } else if (dataType === "marketplaces") {
+    } else if (dataType === 'marketplaces') {
       // Example marketplace insight
       mockInsights.push({
         organizationId,
         type: InsightType.MARKET_OPPORTUNITY,
-        title: "New marketplace opportunity detected",
+        title: 'New marketplace opportunity detected',
         description:
-          "Your top 5 products have high potential on Marketplace X based on competitive analysis.",
+          'Your top 5 products have high potential on Marketplace X based on competitive analysis.',
         severity: InsightSeverity.MEDIUM,
         confidence: 0.78,
         data: {
-          marketplace: "Marketplace X",
+          marketplace: 'Marketplace X',
           potentialRevenue: 45000,
-          competitiveAdvantage: "Lower price point and faster shipping",
+          competitiveAdvantage: 'Lower price point and faster shipping',
           recommendedProducts: [
-            "product-3",
-            "product-7",
-            "product-9",
-            "product-11",
-            "product-15",
+            'product-3',
+            'product-7',
+            'product-9',
+            'product-11',
+            'product-15',
           ],
         },
       });
-    } else if (dataType === "competitors") {
+    } else if (dataType === 'competitors') {
       // Example competitor insight
       mockInsights.push({
         organizationId,
         type: InsightType.COMPETITOR_CHANGE,
-        title: "Competitor price reduction detected",
+        title: 'Competitor price reduction detected',
         description:
-          "Main competitor has reduced prices across 15 comparable products by an average of 12%.",
+          'Main competitor has reduced prices across 15 comparable products by an average of 12%.',
         severity: InsightSeverity.HIGH,
         confidence: 0.85,
         data: {
-          competitor: "Competitor A",
+          competitor: 'Competitor A',
           averagePriceReduction: 0.12,
           affectedProducts: [
-            { id: "product-4", yourPrice: 49.99, newCompetitorPrice: 42.99 },
-            { id: "product-6", yourPrice: 89.99, newCompetitorPrice: 79.99 },
+            { id: 'product-4', yourPrice: 49.99, newCompetitorPrice: 42.99 },
+            { id: 'product-6', yourPrice: 89.99, newCompetitorPrice: 79.99 },
             // More products would be listed here
           ],
-          recommendation: "Review pricing strategy for affected products",
+          recommendation: 'Review pricing strategy for affected products',
         },
       });
     }
@@ -357,7 +357,7 @@ export class InsightGenerationService {
 
     // Add cost based on processing time for expensive models
     let processingCost = 0;
-    if (modelConfig.modelName.includes("gpt-4")) {
+    if (modelConfig.modelName.includes('gpt-4')) {
       // Add 1 credit per second of processing for GPT-4
       processingCost = Math.ceil(processingTime / 1000);
     }

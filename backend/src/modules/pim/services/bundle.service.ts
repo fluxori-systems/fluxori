@@ -1,9 +1,19 @@
-import { Injectable, Logger, NotFoundException, BadRequestException } from '@nestjs/common';
-import { ProductService } from './product.service';
-import { Product, ProductStatus } from '../models/product.model';
-import { ProductType } from '../interfaces/types';
+import {
+  Injectable,
+  Logger,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
+
 import { LoadSheddingResilienceService } from './load-shedding-resilience.service';
-import { PricingStrategy, BundleComponent, Bundle } from '../models/bundle.model';
+import { ProductService } from './product.service';
+import { ProductType } from '../interfaces/types';
+import {
+  PricingStrategy,
+  BundleComponent,
+  Bundle,
+} from '../models/bundle.model';
+import { Product, ProductStatus } from '../models/product.model';
 import { BundleRepository } from '../repositories/bundle.repository';
 
 /**
@@ -36,7 +46,11 @@ export class BundleService {
         quantity: number;
         isRequired?: boolean;
       }>;
-      pricingStrategy: 'FIXED_PRICE' | 'DISCOUNT_PERCENTAGE' | 'COMPONENT_SUM' | 'CUSTOM_FORMULA';
+      pricingStrategy:
+        | 'FIXED_PRICE'
+        | 'DISCOUNT_PERCENTAGE'
+        | 'COMPONENT_SUM'
+        | 'CUSTOM_FORMULA';
       pricingValue?: number | string;
       categoryId?: string;
       images?: string[];
@@ -51,7 +65,7 @@ export class BundleService {
         name: bundleData.name,
         description: bundleData.description || '',
         sku: bundleData.sku,
-        components: bundleData.components.map(c => ({
+        components: bundleData.components.map((c) => ({
           productId: c.productId,
           sku: c.sku || '',
           quantity: c.quantity,
@@ -62,12 +76,13 @@ export class BundleService {
         categoryId: bundleData.categoryId,
         images: bundleData.images || [],
         attributes: bundleData.attributes || {},
-        isActive: bundleData.isActive !== undefined ? bundleData.isActive : true,
+        isActive:
+          bundleData.isActive !== undefined ? bundleData.isActive : true,
         organizationId,
         createdAt: new Date(),
         updatedAt: new Date(),
       };
-      
+
       // Create product for the bundle
       const productData: Partial<Product> = {
         name: bundleData.name,
@@ -78,14 +93,14 @@ export class BundleService {
         categoryId: bundleData.categoryId,
         images: bundleData.images,
         attributes: bundleData.attributes,
-        bundleComponents: bundleData.components.map(c => ({
+        bundleComponents: bundleData.components.map((c) => ({
           productId: c.productId,
           sku: c.sku || '',
           quantity: c.quantity,
           isRequired: c.isRequired !== undefined ? c.isRequired : true,
         })),
       };
-      
+
       // Calculate initial bundle price
       const price = await this.calculateInitialBundlePrice(
         bundleData.components,
@@ -93,20 +108,23 @@ export class BundleService {
         bundleData.pricingValue,
         organizationId,
       );
-      
+
       // Set product price
       productData.price = price.final;
-      
+
       // Save bundle with load shedding resilience
       return await this.loadSheddingResilienceService.executeWithResilience(
         async () => {
           // Create bundle first
           const savedBundle = await this.bundleRepository.create(bundle);
-          
+
           // Create corresponding product
           productData.bundleId = savedBundle.id;
-          await this.productService.create(productData as Product, organizationId);
-          
+          await this.productService.create(
+            productData as Product,
+            organizationId,
+          );
+
           return savedBundle;
         },
         'create-bundle',
@@ -125,11 +143,11 @@ export class BundleService {
   async getBundleById(id: string, organizationId: string): Promise<Bundle> {
     try {
       const bundle = await this.bundleRepository.findById(id);
-      
+
       if (!bundle || bundle.organizationId !== organizationId) {
         return null;
       }
-      
+
       return bundle;
     } catch (error) {
       this.logger.error(`Error getting bundle: ${error.message}`, error.stack);
@@ -154,14 +172,15 @@ export class BundleService {
       // Set default options
       const limit = options?.limit || 100;
       const offset = options?.offset || 0;
-      const isActive = options?.isActive !== undefined ? options.isActive : true;
-      
+      const isActive =
+        options?.isActive !== undefined ? options.isActive : true;
+
       // Query bundles
       const bundles = await this.bundleRepository.findByOrganization(
         organizationId,
         { limit, offset, isActive },
       );
-      
+
       return bundles;
     } catch (error) {
       this.logger.error(`Error getting bundles: ${error.message}`, error.stack);
@@ -187,7 +206,11 @@ export class BundleService {
         quantity: number;
         isRequired?: boolean;
       }>;
-      pricingStrategy?: 'FIXED_PRICE' | 'DISCOUNT_PERCENTAGE' | 'COMPONENT_SUM' | 'CUSTOM_FORMULA';
+      pricingStrategy?:
+        | 'FIXED_PRICE'
+        | 'DISCOUNT_PERCENTAGE'
+        | 'COMPONENT_SUM'
+        | 'CUSTOM_FORMULA';
       pricingValue?: number | string;
       categoryId?: string;
       images?: string[];
@@ -202,76 +225,99 @@ export class BundleService {
       if (!bundle) {
         throw new NotFoundException(`Bundle not found with ID: ${id}`);
       }
-      
+
       // Update bundle
       const updatedBundle: Bundle = {
         ...bundle,
         ...updateData,
         updatedAt: new Date(),
       };
-      
+
       // Get the bundle's product
-      const bundleProduct = await this.productService.findByBundleId(id, organizationId);
+      const bundleProduct = await this.productService.findByBundleId(
+        id,
+        organizationId,
+      );
       if (!bundleProduct) {
-        throw new NotFoundException(`Bundle product not found for bundle ID: ${id}`);
+        throw new NotFoundException(
+          `Bundle product not found for bundle ID: ${id}`,
+        );
       }
-      
+
       // Update product data
       const productUpdates: Partial<Product> = {};
-      
+
       if (updateData.name) productUpdates.name = updateData.name;
-      if (updateData.description) productUpdates.description = updateData.description;
+      if (updateData.description)
+        productUpdates.description = updateData.description;
       if (updateData.sku) productUpdates.sku = updateData.sku;
-      if (updateData.categoryId) productUpdates.categoryId = updateData.categoryId;
+      if (updateData.categoryId)
+        productUpdates.categoryId = updateData.categoryId;
       if (updateData.images) productUpdates.images = updateData.images;
-      if (updateData.attributes) productUpdates.attributes = updateData.attributes;
+      if (updateData.attributes)
+        productUpdates.attributes = updateData.attributes;
       if (updateData.isActive !== undefined) {
-        productUpdates.status = updateData.isActive ? ProductStatus.ACTIVE : ProductStatus.INACTIVE;
+        productUpdates.status = updateData.isActive
+          ? ProductStatus.ACTIVE
+          : ProductStatus.INACTIVE;
       }
-      
+
       // Update bundle components if provided
       if (updateData.components) {
-        productUpdates.bundleComponents = updateData.components.map(c => ({
+        productUpdates.bundleComponents = updateData.components.map((c) => ({
           productId: c.productId,
           sku: c.sku || '',
           quantity: c.quantity,
           isRequired: c.isRequired !== undefined ? c.isRequired : true,
         }));
-        
+
         // Update bundle's components
-        updatedBundle.components = updateData.components.map(c => ({
+        updatedBundle.components = updateData.components.map((c) => ({
           productId: c.productId,
           sku: c.sku || '',
           quantity: c.quantity,
           isRequired: c.isRequired !== undefined ? c.isRequired : true,
         }));
       }
-      
+
       // If pricing strategy or components changed, recalculate price
-      if (updateData.pricingStrategy || updateData.pricingValue || updateData.components) {
+      if (
+        updateData.pricingStrategy ||
+        updateData.pricingValue ||
+        updateData.components
+      ) {
         const components = updateData.components || bundle.components;
-        const pricingStrategy = updateData.pricingStrategy as PricingStrategy || bundle.pricingStrategy;
-        const pricingValue = updateData.pricingValue !== undefined ? updateData.pricingValue : bundle.pricingValue;
-        
+        const pricingStrategy =
+          (updateData.pricingStrategy as PricingStrategy) ||
+          bundle.pricingStrategy;
+        const pricingValue =
+          updateData.pricingValue !== undefined
+            ? updateData.pricingValue
+            : bundle.pricingValue;
+
         const price = await this.calculateInitialBundlePrice(
           components,
           pricingStrategy,
           pricingValue,
           organizationId,
         );
-        
+
         productUpdates.price = price.final;
       }
-      
+
       // Save changes with load shedding resilience
       return await this.loadSheddingResilienceService.executeWithResilience(
         async () => {
           // Update bundle
           const updated = await this.bundleRepository.update(id, updatedBundle);
-          
+
           // Update product
-          await this.productService.update(bundleProduct.id, productUpdates, organizationId);
-          
+          await this.productService.update(
+            bundleProduct.id,
+            productUpdates,
+            organizationId,
+          );
+
           return updated;
         },
         'update-bundle',
@@ -294,16 +340,19 @@ export class BundleService {
       if (!bundle) {
         throw new NotFoundException(`Bundle not found with ID: ${id}`);
       }
-      
+
       // Get bundle product
-      const bundleProduct = await this.productService.findByBundleId(id, organizationId);
-      
+      const bundleProduct = await this.productService.findByBundleId(
+        id,
+        organizationId,
+      );
+
       // Delete bundle with load shedding resilience
       await this.loadSheddingResilienceService.executeWithResilience(
         async () => {
           // Delete bundle
           await this.bundleRepository.delete(id);
-          
+
           // Delete or update product if it exists
           if (bundleProduct) {
             await this.productService.delete(bundleProduct.id, organizationId);
@@ -339,32 +388,42 @@ export class BundleService {
       if (!bundle) {
         throw new NotFoundException(`Bundle not found with ID: ${bundleId}`);
       }
-      
+
       // Check if component already exists
       const existingComponentIndex = bundle.components.findIndex(
-        c => c.productId === componentData.productId,
+        (c) => c.productId === componentData.productId,
       );
-      
+
       if (existingComponentIndex >= 0) {
-        throw new BadRequestException(`Component with product ID ${componentData.productId} already exists in bundle`);
+        throw new BadRequestException(
+          `Component with product ID ${componentData.productId} already exists in bundle`,
+        );
       }
-      
+
       // Add component
       const newComponent: BundleComponent = {
         productId: componentData.productId,
         sku: componentData.sku || '',
         quantity: componentData.quantity,
-        isRequired: componentData.isRequired !== undefined ? componentData.isRequired : true,
+        isRequired:
+          componentData.isRequired !== undefined
+            ? componentData.isRequired
+            : true,
       };
-      
+
       const updatedComponents = [...bundle.components, newComponent];
-      
+
       // Get bundle product
-      const bundleProduct = await this.productService.findByBundleId(bundleId, organizationId);
+      const bundleProduct = await this.productService.findByBundleId(
+        bundleId,
+        organizationId,
+      );
       if (!bundleProduct) {
-        throw new NotFoundException(`Bundle product not found for bundle ID: ${bundleId}`);
+        throw new NotFoundException(
+          `Bundle product not found for bundle ID: ${bundleId}`,
+        );
       }
-      
+
       // Calculate new price
       const price = await this.calculateInitialBundlePrice(
         updatedComponents,
@@ -372,7 +431,7 @@ export class BundleService {
         bundle.pricingValue,
         organizationId,
       );
-      
+
       // Update bundle with load shedding resilience
       return await this.loadSheddingResilienceService.executeWithResilience(
         async () => {
@@ -382,7 +441,7 @@ export class BundleService {
             components: updatedComponents,
             updatedAt: new Date(),
           });
-          
+
           // Update product
           await this.productService.update(
             bundleProduct.id,
@@ -392,13 +451,16 @@ export class BundleService {
             },
             organizationId,
           );
-          
+
           return updatedBundle;
         },
         'add-component',
       );
     } catch (error) {
-      this.logger.error(`Error adding component: ${error.message}`, error.stack);
+      this.logger.error(
+        `Error adding component: ${error.message}`,
+        error.stack,
+      );
       throw error;
     }
   }
@@ -426,26 +488,35 @@ export class BundleService {
       if (!bundle) {
         throw new NotFoundException(`Bundle not found with ID: ${bundleId}`);
       }
-      
+
       // Find component
-      const componentIndex = bundle.components.findIndex(c => c.productId === productId);
+      const componentIndex = bundle.components.findIndex(
+        (c) => c.productId === productId,
+      );
       if (componentIndex < 0) {
-        throw new NotFoundException(`Component with product ID ${productId} not found in bundle`);
+        throw new NotFoundException(
+          `Component with product ID ${productId} not found in bundle`,
+        );
       }
-      
+
       // Update component
       const updatedComponents = [...bundle.components];
       updatedComponents[componentIndex] = {
         ...updatedComponents[componentIndex],
         ...updateData,
       };
-      
+
       // Get bundle product
-      const bundleProduct = await this.productService.findByBundleId(bundleId, organizationId);
+      const bundleProduct = await this.productService.findByBundleId(
+        bundleId,
+        organizationId,
+      );
       if (!bundleProduct) {
-        throw new NotFoundException(`Bundle product not found for bundle ID: ${bundleId}`);
+        throw new NotFoundException(
+          `Bundle product not found for bundle ID: ${bundleId}`,
+        );
       }
-      
+
       // Calculate new price
       const price = await this.calculateInitialBundlePrice(
         updatedComponents,
@@ -453,7 +524,7 @@ export class BundleService {
         bundle.pricingValue,
         organizationId,
       );
-      
+
       // Update bundle with load shedding resilience
       return await this.loadSheddingResilienceService.executeWithResilience(
         async () => {
@@ -463,7 +534,7 @@ export class BundleService {
             components: updatedComponents,
             updatedAt: new Date(),
           });
-          
+
           // Update product
           await this.productService.update(
             bundleProduct.id,
@@ -473,13 +544,16 @@ export class BundleService {
             },
             organizationId,
           );
-          
+
           return updatedBundle;
         },
         'update-component',
       );
     } catch (error) {
-      this.logger.error(`Error updating component: ${error.message}`, error.stack);
+      this.logger.error(
+        `Error updating component: ${error.message}`,
+        error.stack,
+      );
       throw error;
     }
   }
@@ -501,27 +575,40 @@ export class BundleService {
       if (!bundle) {
         throw new NotFoundException(`Bundle not found with ID: ${bundleId}`);
       }
-      
+
       // Find component
-      const componentIndex = bundle.components.findIndex(c => c.productId === productId);
+      const componentIndex = bundle.components.findIndex(
+        (c) => c.productId === productId,
+      );
       if (componentIndex < 0) {
-        throw new NotFoundException(`Component with product ID ${productId} not found in bundle`);
+        throw new NotFoundException(
+          `Component with product ID ${productId} not found in bundle`,
+        );
       }
-      
+
       // Remove component
-      const updatedComponents = bundle.components.filter(c => c.productId !== productId);
-      
+      const updatedComponents = bundle.components.filter(
+        (c) => c.productId !== productId,
+      );
+
       // Ensure at least one component remains
       if (updatedComponents.length === 0) {
-        throw new BadRequestException('Cannot remove last component from bundle');
+        throw new BadRequestException(
+          'Cannot remove last component from bundle',
+        );
       }
-      
+
       // Get bundle product
-      const bundleProduct = await this.productService.findByBundleId(bundleId, organizationId);
+      const bundleProduct = await this.productService.findByBundleId(
+        bundleId,
+        organizationId,
+      );
       if (!bundleProduct) {
-        throw new NotFoundException(`Bundle product not found for bundle ID: ${bundleId}`);
+        throw new NotFoundException(
+          `Bundle product not found for bundle ID: ${bundleId}`,
+        );
       }
-      
+
       // Calculate new price
       const price = await this.calculateInitialBundlePrice(
         updatedComponents,
@@ -529,7 +616,7 @@ export class BundleService {
         bundle.pricingValue,
         organizationId,
       );
-      
+
       // Update bundle with load shedding resilience
       return await this.loadSheddingResilienceService.executeWithResilience(
         async () => {
@@ -539,7 +626,7 @@ export class BundleService {
             components: updatedComponents,
             updatedAt: new Date(),
           });
-          
+
           // Update product
           await this.productService.update(
             bundleProduct.id,
@@ -549,13 +636,16 @@ export class BundleService {
             },
             organizationId,
           );
-          
+
           return updatedBundle;
         },
         'remove-component',
       );
     } catch (error) {
-      this.logger.error(`Error removing component: ${error.message}`, error.stack);
+      this.logger.error(
+        `Error removing component: ${error.message}`,
+        error.stack,
+      );
       throw error;
     }
   }
@@ -580,17 +670,20 @@ export class BundleService {
       if (!bundle) {
         throw new NotFoundException(`Bundle not found with ID: ${bundleId}`);
       }
-      
+
       // Calculate price based on current component prices
       const components = bundle.components || [];
       const pricingStrategy = bundle.pricingStrategy;
       const pricingValue = bundle.pricingValue;
-      
+
       // Get component prices
       const componentPrices = await Promise.all(
-        components.map(async component => {
+        components.map(async (component) => {
           try {
-            const product = await this.productService.findById(component.productId, organizationId);
+            const product = await this.productService.findById(
+              component.productId,
+              organizationId,
+            );
             return {
               productId: component.productId,
               name: product?.name || 'Unknown',
@@ -610,18 +703,21 @@ export class BundleService {
           }
         }),
       );
-      
+
       // Calculate total component price
-      const componentTotal = componentPrices.reduce((total, item) => total + item.subtotal, 0);
-      
+      const componentTotal = componentPrices.reduce(
+        (total, item) => total + item.subtotal,
+        0,
+      );
+
       // Calculate final price based on pricing strategy
       let finalPrice = 0;
       let discount = 0;
-      let calculationDetails: Record<string, any> = {
+      const calculationDetails: Record<string, any> = {
         components: componentPrices,
         componentTotal,
       };
-      
+
       switch (pricingStrategy) {
         case PricingStrategy.FIXED_PRICE: {
           // Fixed price, ignore component prices
@@ -631,10 +727,11 @@ export class BundleService {
           calculationDetails.fixedPrice = finalPrice;
           break;
         }
-        
+
         case PricingStrategy.DISCOUNT_PERCENTAGE: {
           // Apply percentage discount to component total
-          const discountPercentage = typeof pricingValue === 'number' ? pricingValue : 0;
+          const discountPercentage =
+            typeof pricingValue === 'number' ? pricingValue : 0;
           discount = (componentTotal * discountPercentage) / 100;
           finalPrice = componentTotal - discount;
           calculationDetails.strategy = 'Discount Percentage';
@@ -642,7 +739,7 @@ export class BundleService {
           calculationDetails.discountAmount = discount;
           break;
         }
-        
+
         case PricingStrategy.COMPONENT_SUM: {
           // Just sum up component prices
           finalPrice = componentTotal;
@@ -650,7 +747,7 @@ export class BundleService {
           calculationDetails.strategy = 'Component Sum';
           break;
         }
-        
+
         case PricingStrategy.CUSTOM_FORMULA: {
           // Custom pricing formula (simplified implementation)
           // In a real implementation, this would evaluate a formula expression
@@ -658,11 +755,12 @@ export class BundleService {
           discount = componentTotal * 0.1;
           finalPrice = componentTotal - discount;
           calculationDetails.strategy = 'Custom Formula';
-          calculationDetails.formula = pricingValue?.toString() || 'Default 10% discount';
+          calculationDetails.formula =
+            pricingValue?.toString() || 'Default 10% discount';
           calculationDetails.discountAmount = discount;
           break;
         }
-        
+
         default: {
           // Default to component sum
           finalPrice = componentTotal;
@@ -671,10 +769,10 @@ export class BundleService {
           break;
         }
       }
-      
+
       // Ensure price is not negative
       finalPrice = Math.max(0, finalPrice);
-      
+
       return {
         componentTotal,
         discount,
@@ -682,7 +780,10 @@ export class BundleService {
         calculationDetails,
       };
     } catch (error) {
-      this.logger.error(`Error calculating bundle price: ${error.message}`, error.stack);
+      this.logger.error(
+        `Error calculating bundle price: ${error.message}`,
+        error.stack,
+      );
       throw error;
     }
   }
@@ -713,9 +814,12 @@ export class BundleService {
     try {
       // Get component prices
       const componentPrices = await Promise.all(
-        components.map(async component => {
+        components.map(async (component) => {
           try {
-            const product = await this.productService.findById(component.productId, organizationId);
+            const product = await this.productService.findById(
+              component.productId,
+              organizationId,
+            );
             return {
               productId: component.productId,
               price: product?.price || 0,
@@ -733,14 +837,17 @@ export class BundleService {
           }
         }),
       );
-      
+
       // Calculate total component price
-      const componentTotal = componentPrices.reduce((total, item) => total + item.subtotal, 0);
-      
+      const componentTotal = componentPrices.reduce(
+        (total, item) => total + item.subtotal,
+        0,
+      );
+
       // Calculate price based on pricing strategy
       let finalPrice = 0;
       let discount = 0;
-      
+
       switch (pricingStrategy) {
         case PricingStrategy.FIXED_PRICE: {
           // Fixed price, ignore component prices
@@ -748,22 +855,23 @@ export class BundleService {
           discount = componentTotal - finalPrice;
           break;
         }
-        
+
         case PricingStrategy.DISCOUNT_PERCENTAGE: {
           // Apply percentage discount to component total
-          const discountPercentage = typeof pricingValue === 'number' ? pricingValue : 0;
+          const discountPercentage =
+            typeof pricingValue === 'number' ? pricingValue : 0;
           discount = (componentTotal * discountPercentage) / 100;
           finalPrice = componentTotal - discount;
           break;
         }
-        
+
         case PricingStrategy.COMPONENT_SUM: {
           // Just sum up component prices
           finalPrice = componentTotal;
           discount = 0;
           break;
         }
-        
+
         case PricingStrategy.CUSTOM_FORMULA: {
           // Custom pricing formula (simplified implementation)
           // In a real implementation, this would evaluate a formula expression
@@ -772,7 +880,7 @@ export class BundleService {
           finalPrice = componentTotal - discount;
           break;
         }
-        
+
         default: {
           // Default to component sum
           finalPrice = componentTotal;
@@ -780,17 +888,20 @@ export class BundleService {
           break;
         }
       }
-      
+
       // Ensure price is not negative
       finalPrice = Math.max(0, finalPrice);
-      
+
       return {
         componentTotal,
         discount,
         final: finalPrice,
       };
     } catch (error) {
-      this.logger.error(`Error calculating initial bundle price: ${error.message}`, error.stack);
+      this.logger.error(
+        `Error calculating initial bundle price: ${error.message}`,
+        error.stack,
+      );
       throw error;
     }
   }

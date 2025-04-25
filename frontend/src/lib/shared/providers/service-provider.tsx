@@ -1,6 +1,7 @@
 'use client';
 
 import { ReactNode, createContext, useContext, useMemo } from 'react';
+
 import { 
   IAnimationService, 
   ANIMATION_SERVICE_KEY 
@@ -10,6 +11,7 @@ import {
   CONNECTION_SERVICE_KEY 
 } from '../services/connection-service.interface';
 import { SERVICE_KEYS } from '../services/service-registry';
+
 import type { MotionContextType } from '../interfaces/motion-hooks.interface';
 
 // Create context to hold all service implementations

@@ -1,8 +1,10 @@
 'use client';
 
-import { useRouter, useSearchParams } from 'next/navigation';
-import Link from 'next/link';
 import { Suspense } from 'react';
+
+import Link from 'next/link';
+import { useRouter, useSearchParams } from 'next/navigation';
+
 import { 
   Container, 
   Paper, 
@@ -21,6 +23,7 @@ import {
   Alert,
   Loader
 } from '@mantine/core';
+
 import { 
   IconAlertTriangle, 
   IconArrowLeft, 
@@ -30,6 +33,7 @@ import {
   IconShield, 
   IconUserShield 
 } from '@tabler/icons-react';
+
 import { useAuth } from '../../hooks/useAuth';
 
 /**

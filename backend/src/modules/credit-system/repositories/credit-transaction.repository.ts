@@ -1,22 +1,27 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable } from '@nestjs/common';
 
-import { FirestoreBaseRepository } from "../../../common/repositories/firestore-base.repository";
-import { FirestoreConfigService } from "../../../config/firestore.config";
-import { CreditTransaction, CreditUsageType } from "../interfaces/types";
+import { FirestoreBaseRepository } from '../../../common/repositories/firestore-base.repository';
+import { FirestoreConfigService } from '../../../config/firestore.config';
+import { CreditTransaction, CreditUsageType } from '../interfaces/types';
 
 /**
  * Repository for credit transactions
  */
 @Injectable()
 export class CreditTransactionRepository extends FirestoreBaseRepository<CreditTransaction> {
-  protected readonly collectionName = "credit_transactions";
+  protected readonly collectionName = 'credit_transactions';
 
   constructor(firestoreConfigService: FirestoreConfigService) {
-    super(firestoreConfigService, "credit_transactions", {
+    super(firestoreConfigService, 'credit_transactions', {
       useVersioning: true,
       enableCache: true,
       cacheTTLMs: 2 * 60 * 1000, // 2 minutes
-      requiredFields: ["organizationId", "amount", "transactionType", "usageType"],
+      requiredFields: [
+        'organizationId',
+        'amount',
+        'transactionType',
+        'usageType',
+      ],
     });
   }
 
@@ -33,8 +38,8 @@ export class CreditTransactionRepository extends FirestoreBaseRepository<CreditT
     return this.find({
       filter: { organizationId } as Partial<CreditTransaction>,
       queryOptions: {
-        orderBy: "createdAt",
-        direction: "desc",
+        orderBy: 'createdAt',
+        direction: 'desc',
         limit: limit || 100,
       },
     });
@@ -53,13 +58,13 @@ export class CreditTransactionRepository extends FirestoreBaseRepository<CreditT
     limit?: number,
   ): Promise<CreditTransaction[]> {
     return this.find({
-      filter: { 
+      filter: {
         organizationId,
         userId,
       } as Partial<CreditTransaction>,
       queryOptions: {
-        orderBy: "createdAt",
-        direction: "desc",
+        orderBy: 'createdAt',
+        direction: 'desc',
         limit: limit || 50,
       },
     });
@@ -78,13 +83,13 @@ export class CreditTransactionRepository extends FirestoreBaseRepository<CreditT
     limit?: number,
   ): Promise<CreditTransaction[]> {
     return this.find({
-      filter: { 
+      filter: {
         organizationId,
         usageType,
       } as Partial<CreditTransaction>,
       queryOptions: {
-        orderBy: "createdAt",
-        direction: "desc",
+        orderBy: 'createdAt',
+        direction: 'desc',
         limit: limit || 50,
       },
     });
@@ -103,13 +108,13 @@ export class CreditTransactionRepository extends FirestoreBaseRepository<CreditT
     limit?: number,
   ): Promise<CreditTransaction[]> {
     return this.find({
-      filter: { 
+      filter: {
         organizationId,
         modelId,
       } as Partial<CreditTransaction>,
       queryOptions: {
-        orderBy: "createdAt",
-        direction: "desc",
+        orderBy: 'createdAt',
+        direction: 'desc',
         limit: limit || 50,
       },
     });
@@ -126,7 +131,7 @@ export class CreditTransactionRepository extends FirestoreBaseRepository<CreditT
    */
   async getSumByType(
     organizationId: string,
-    transactionType: "credit" | "debit",
+    transactionType: 'credit' | 'debit',
     usageType?: CreditUsageType,
     startDate?: Date,
     endDate?: Date,
@@ -149,26 +154,32 @@ export class CreditTransactionRepository extends FirestoreBaseRepository<CreditT
     if (startDate || endDate) {
       filteredTransactions = transactions.filter((transaction) => {
         // Handle different date types, including Firestore Timestamp
-      let createdAt: Date;
-      if (transaction.createdAt instanceof Date) {
-        createdAt = transaction.createdAt;
-      } else if (typeof transaction.createdAt === 'string' || typeof transaction.createdAt === 'number') {
-        createdAt = new Date(transaction.createdAt);
-      } else if (transaction.createdAt && typeof transaction.createdAt.toDate === 'function') {
-        // Handle Firestore Timestamp
-        createdAt = transaction.createdAt.toDate();
-      } else {
-        createdAt = new Date(); // Fallback
-      }
-        
+        let createdAt: Date;
+        if (transaction.createdAt instanceof Date) {
+          createdAt = transaction.createdAt;
+        } else if (
+          typeof transaction.createdAt === 'string' ||
+          typeof transaction.createdAt === 'number'
+        ) {
+          createdAt = new Date(transaction.createdAt);
+        } else if (
+          transaction.createdAt &&
+          typeof transaction.createdAt.toDate === 'function'
+        ) {
+          // Handle Firestore Timestamp
+          createdAt = transaction.createdAt.toDate();
+        } else {
+          createdAt = new Date(); // Fallback
+        }
+
         if (startDate && createdAt < startDate) {
           return false;
         }
-        
+
         if (endDate && createdAt > endDate) {
           return false;
         }
-        
+
         return true;
       });
     }

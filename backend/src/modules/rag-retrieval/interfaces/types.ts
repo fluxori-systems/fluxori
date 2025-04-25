@@ -1,36 +1,36 @@
 /**
  * Types for the RAG Retrieval module
  */
-import { FirestoreEntity } from "../../../types/google-cloud.types";
+import { FirestoreEntity } from '../../../types/google-cloud.types';
 
 /**
  * Document type enum
  */
 export enum DocumentType {
-  PDF = "pdf",
-  TEXT = "text",
-  HTML = "html",
-  MARKDOWN = "markdown",
-  JSON = "json",
-  CSV = "csv",
-  DOCX = "docx",
-  XLSX = "xlsx",
-  PPTX = "pptx",
-  IMAGE = "image",
-  AUDIO = "audio",
-  VIDEO = "video",
-  OTHER = "other",
+  PDF = 'pdf',
+  TEXT = 'text',
+  HTML = 'html',
+  MARKDOWN = 'markdown',
+  JSON = 'json',
+  CSV = 'csv',
+  DOCX = 'docx',
+  XLSX = 'xlsx',
+  PPTX = 'pptx',
+  IMAGE = 'image',
+  AUDIO = 'audio',
+  VIDEO = 'video',
+  OTHER = 'other',
 }
 
 /**
  * Document status enum
  */
 export enum DocumentStatus {
-  PENDING = "pending",
-  PROCESSING = "processing",
-  INDEXED = "indexed",
-  FAILED = "failed",
-  DELETED = "deleted",
+  PENDING = 'pending',
+  PROCESSING = 'processing',
+  INDEXED = 'indexed',
+  FAILED = 'failed',
+  DELETED = 'deleted',
 }
 
 /**
@@ -50,12 +50,12 @@ export interface DocumentChunk {
  * Embedding provider type
  */
 export enum EmbeddingProviderType {
-  OPENAI = "openai",
-  VERTEX_AI = "vertex_ai",
-  AZURE = "azure",
-  COHERE = "cohere",
-  HUGGINGFACE = "huggingface",
-  CUSTOM = "custom",
+  OPENAI = 'openai',
+  VERTEX_AI = 'vertex_ai',
+  AZURE = 'azure',
+  COHERE = 'cohere',
+  HUGGINGFACE = 'huggingface',
+  CUSTOM = 'custom',
 }
 
 /**

@@ -3,10 +3,12 @@ import '@testing-library/jest-dom';
 'use client';
 
 import React from 'react';
+
 import { describe, test, expect, vi } from 'vitest';
-import { renderWithProviders } from '../../../../testing/utils/render';
-import { setupNetworkConditions } from '../../../../testing/utils/networkTesting';
+
 import { Assertions } from '../../../../testing/utils/assertions';
+import { setupNetworkConditions } from '../../../../testing/utils/networkTesting';
+import { renderWithProviders } from '../../../../testing/utils/render';
 
 // Define Container props interface for type safety
 interface ContainerProps {

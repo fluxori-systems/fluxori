@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+
 import { 
   NetworkAwareLineChart, 
   NetworkAwareBarChart, 
@@ -8,8 +9,8 @@ import {
   type ChartConnectionQuality,
   type ChartDataPoint
 } from '../../components/charts';
-import { Text } from '../../lib/ui/components/Text';
 import { useSouthAfricanMarketOptimizations } from '../../lib/shared/hooks/useSouthAfricanMarketOptimizations';
+import { Text } from '../../lib/ui/components/Text';
 
 // Sample data for line chart
 interface LineDataPoint extends ChartDataPoint {

@@ -1,5 +1,5 @@
-import { Module } from "@nestjs/common";
-import { ConfigModule } from "@nestjs/config";
+import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 
 /**
  * OrderIngestion module for handling order data from various sources

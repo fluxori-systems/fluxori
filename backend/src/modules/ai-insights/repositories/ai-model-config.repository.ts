@@ -1,8 +1,8 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable } from '@nestjs/common';
 
-import { FirestoreBaseRepository } from "../../../common/repositories";
-import { FirestoreConfigService } from "../../../config/firestore.config";
-import { AIModelConfig } from "../models/ai-model-config.schema";
+import { FirestoreBaseRepository } from '../../../common/repositories';
+import { FirestoreConfigService } from '../../../config/firestore.config';
+import { AIModelConfig } from '../models/ai-model-config.schema';
 
 /**
  * Repository for AI Model Configuration
@@ -10,15 +10,15 @@ import { AIModelConfig } from "../models/ai-model-config.schema";
 @Injectable()
 export class AIModelConfigRepository extends FirestoreBaseRepository<AIModelConfig> {
   // Collection name in Firestore
-  protected readonly collectionName = "ai_model_configs";
+  protected readonly collectionName = 'ai_model_configs';
 
   constructor(firestoreConfigService: FirestoreConfigService) {
-    super(firestoreConfigService, "ai_model_configs", {
+    super(firestoreConfigService, 'ai_model_configs', {
       useSoftDeletes: true,
       useVersioning: true,
       enableCache: true,
       cacheTTLMs: 10 * 60 * 1000, // 10 minutes
-      requiredFields: ["organizationId", "modelProvider", "modelName"],
+      requiredFields: ['organizationId', 'modelProvider', 'modelName'],
     });
   }
 

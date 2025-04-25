@@ -9,14 +9,19 @@ import {
   Query,
   BadRequestException,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 
-import { ProductAiService } from '../services/product-ai.service';
-import { ProductService } from '../services/product.service';
-import { FirebaseAuthGuard } from '../../auth/guards/firebase-auth.guard';
-import { GetUser } from '../../auth/decorators/get-user.decorator';
 import { LoggingInterceptor } from '../../../common/observability/interceptors/logging.interceptor';
 import { TracingInterceptor } from '../../../common/observability/interceptors/tracing.interceptor';
+import { GetUser } from '../../auth/decorators/get-user.decorator';
+import { FirebaseAuthGuard } from '../../auth/guards/firebase-auth.guard';
+import { ProductAiService } from '../services/product-ai.service';
+import { ProductService } from '../services/product.service';
 
 /**
  * DTO for generating product descriptions
@@ -119,21 +124,29 @@ export class CatalogOptimizationController {
    */
   @Post('description')
   @ApiOperation({ summary: 'Generate AI-powered product description' })
-  @ApiResponse({ status: 201, description: 'Product description generated successfully' })
+  @ApiResponse({
+    status: 201,
+    description: 'Product description generated successfully',
+  })
   async generateProductDescription(
     @Body() dto: GenerateProductDescriptionDto,
     @GetUser() user: any,
   ): Promise<any> {
     try {
       let productData: any;
-      
+
       // If productId is provided, fetch product data
       if (dto.productId) {
-        const product = await this.productService.findById(dto.productId, user.organizationId);
+        const product = await this.productService.findById(
+          dto.productId,
+          user.organizationId,
+        );
         if (!product) {
-          throw new BadRequestException(`Product not found with ID: ${dto.productId}`);
+          throw new BadRequestException(
+            `Product not found with ID: ${dto.productId}`,
+          );
         }
-        
+
         // Format product data for AI service
         productData = {
           name: product.name,
@@ -148,9 +161,11 @@ export class CatalogOptimizationController {
         // Use provided product data
         productData = dto.productData;
       } else {
-        throw new BadRequestException('Either productId or productData must be provided');
+        throw new BadRequestException(
+          'Either productId or productData must be provided',
+        );
       }
-      
+
       // Generate description
       const result = await this.productAiService.generateProductDescription(
         productData,
@@ -164,13 +179,15 @@ export class CatalogOptimizationController {
           language: dto.language,
         },
       );
-      
+
       return result;
     } catch (error) {
       if (error instanceof BadRequestException) {
         throw error;
       }
-      throw new BadRequestException(`Failed to generate product description: ${error.message}`);
+      throw new BadRequestException(
+        `Failed to generate product description: ${error.message}`,
+      );
     }
   }
 
@@ -179,18 +196,26 @@ export class CatalogOptimizationController {
    */
   @Post('seo-optimization')
   @ApiOperation({ summary: 'Generate SEO optimization suggestions' })
-  @ApiResponse({ status: 201, description: 'SEO suggestions generated successfully' })
+  @ApiResponse({
+    status: 201,
+    description: 'SEO suggestions generated successfully',
+  })
   async generateSeoSuggestions(
     @Body() dto: SeoOptimizationDto,
     @GetUser() user: any,
   ): Promise<any> {
     try {
       // Fetch product
-      const product = await this.productService.findById(dto.productId, user.organizationId);
+      const product = await this.productService.findById(
+        dto.productId,
+        user.organizationId,
+      );
       if (!product) {
-        throw new BadRequestException(`Product not found with ID: ${dto.productId}`);
+        throw new BadRequestException(
+          `Product not found with ID: ${dto.productId}`,
+        );
       }
-      
+
       // Format product data
       const productData = {
         id: product.id,
@@ -199,20 +224,22 @@ export class CatalogOptimizationController {
         category: product.category?.name || '',
         attributes: product.attributes || {},
       };
-      
+
       // Generate SEO suggestions
       const result = await this.productAiService.generateSeoSuggestions(
         productData,
         user.organizationId,
         user.uid,
       );
-      
+
       return result;
     } catch (error) {
       if (error instanceof BadRequestException) {
         throw error;
       }
-      throw new BadRequestException(`Failed to generate SEO suggestions: ${error.message}`);
+      throw new BadRequestException(
+        `Failed to generate SEO suggestions: ${error.message}`,
+      );
     }
   }
 
@@ -220,8 +247,13 @@ export class CatalogOptimizationController {
    * Extract product attributes from unstructured text
    */
   @Post('extract-attributes')
-  @ApiOperation({ summary: 'Extract product attributes from unstructured text' })
-  @ApiResponse({ status: 201, description: 'Attributes extracted successfully' })
+  @ApiOperation({
+    summary: 'Extract product attributes from unstructured text',
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'Attributes extracted successfully',
+  })
   async extractAttributes(
     @Body() dto: AttributeExtractionDto,
     @GetUser() user: any,
@@ -230,20 +262,22 @@ export class CatalogOptimizationController {
       if (!dto.productText || dto.productText.trim().length === 0) {
         throw new BadRequestException('Product text is required');
       }
-      
+
       // Extract attributes
       const result = await this.productAiService.extractProductAttributes(
         dto.productText,
         user.organizationId,
         user.uid,
       );
-      
+
       return result;
     } catch (error) {
       if (error instanceof BadRequestException) {
         throw error;
       }
-      throw new BadRequestException(`Failed to extract attributes: ${error.message}`);
+      throw new BadRequestException(
+        `Failed to extract attributes: ${error.message}`,
+      );
     }
   }
 
@@ -260,14 +294,19 @@ export class CatalogOptimizationController {
   ): Promise<any> {
     try {
       // Fetch product
-      const product = await this.productService.findById(productId, user.organizationId);
+      const product = await this.productService.findById(
+        productId,
+        user.organizationId,
+      );
       if (!product) {
-        throw new BadRequestException(`Product not found with ID: ${productId}`);
+        throw new BadRequestException(
+          `Product not found with ID: ${productId}`,
+        );
       }
-      
+
       // Update product with new description
       const updates: any = { description: body.description };
-      
+
       // Add SEO metadata if provided
       if (body.seoMetadata) {
         if (body.seoMetadata.title) {
@@ -276,18 +315,21 @@ export class CatalogOptimizationController {
         if (body.seoMetadata.description) {
           updates.seoDescription = body.seoMetadata.description;
         }
-        if (body.seoMetadata.keywords && Array.isArray(body.seoMetadata.keywords)) {
+        if (
+          body.seoMetadata.keywords &&
+          Array.isArray(body.seoMetadata.keywords)
+        ) {
           updates.keywords = body.seoMetadata.keywords;
         }
       }
-      
+
       // Update product
       const updatedProduct = await this.productService.update(
         productId,
         updates,
         user.organizationId,
       );
-      
+
       return {
         success: true,
         product: updatedProduct,
@@ -296,7 +338,9 @@ export class CatalogOptimizationController {
       if (error instanceof BadRequestException) {
         throw error;
       }
-      throw new BadRequestException(`Failed to apply description: ${error.message}`);
+      throw new BadRequestException(
+        `Failed to apply description: ${error.message}`,
+      );
     }
   }
 }

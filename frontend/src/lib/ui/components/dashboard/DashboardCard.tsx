@@ -1,14 +1,15 @@
 'use client';
 
 import React, { forwardRef, useRef, useState, useEffect } from 'react';
-import { Card, CardSection } from '../../components/Card';
-import { Button } from '../../components/Button';
-import { Text } from '../../components/Text';
-import { useConnectionQuality } from '../../hooks/useConnection';
+
+import { DashboardCardBaseProps, DashboardDensity } from '../../../design-system/types/dashboard';
+import { useTokenTracking } from '../../../design-system/utils/token-analysis';
 import { useSouthAfricanMarketOptimizations } from '../../../shared/hooks/useSouthAfricanMarketOptimizations';
 import { useCombinedRefs } from '../../../shared/utils/ref-utils';
-import { useTokenTracking } from '../../../design-system/utils/token-analysis';
-import { DashboardCardBaseProps, DashboardDensity } from '../../../design-system/types/dashboard';
+import { Button } from '../../components/Button';
+import { Card, CardSection } from '../../components/Card';
+import { Text } from '../../components/Text';
+import { useConnectionQuality } from '../../hooks/useConnection';
 
 export interface BaseDashboardCardProps extends DashboardCardBaseProps {
   /** Card content */

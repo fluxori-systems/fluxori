@@ -1,13 +1,14 @@
 'use client';
 
 import React, { useState } from 'react';
+
+import { useConnectionQuality } from '../../../motion/hooks';
 import { Button } from '../Button';
+import { Card } from '../Card';
 import { Group } from '../Group';
 import { Text } from '../Text';
-import { Card } from '../Card';
-import { AgentInteractiveElementProps } from './types';
-import { useConnectionQuality } from '../../../motion/hooks';
 import { useAgentConversation } from './AgentConversation';
+import { AgentInteractiveElementProps } from './types';
 
 /**
  * Interactive element component for agent responses

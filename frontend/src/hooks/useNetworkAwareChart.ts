@@ -1,10 +1,11 @@
 'use client';
 
 import { useMemo } from 'react';
+
+import { useDesignTokens } from '../lib/design-system/hooks/useDesignTokens';
+import { motion } from '../lib/design-system/tokens/motion';
 import { useConnectionQuality } from '../lib/motion/hooks/useConnectionQuality';
 import { useSouthAfricanMarketOptimizations } from '../lib/shared/hooks/useSouthAfricanMarketOptimizations';
-import { motion } from '../lib/design-system/tokens/motion';
-import { useDesignTokens } from '../lib/design-system/hooks/useDesignTokens';
 
 // Connection quality levels for chart optimization
 export type ChartConnectionQuality = 'high' | 'medium' | 'low' | 'poor';

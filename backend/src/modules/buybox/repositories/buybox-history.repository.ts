@@ -1,14 +1,14 @@
-import { Injectable, Logger } from "@nestjs/common";
+import { Injectable, Logger } from '@nestjs/common';
 
-import { FirestoreConfigService } from "src/config/firestore.config";
+import { FirestoreConfigService } from 'src/config/firestore.config';
 
 import {
   FirestoreBaseRepository,
   QueryFilter as FirestoreAdvancedFilter,
-} from "src/common/repositories";
+} from 'src/common/repositories';
 
-import { BuyBoxStatus as BuyBoxStatusEnum } from "../interfaces/types";
-import { BuyBoxHistory } from "../models/buybox-history.schema";
+import { BuyBoxStatus as BuyBoxStatusEnum } from '../interfaces/types';
+import { BuyBoxHistory } from '../models/buybox-history.schema';
 
 /**
  * Repository for BuyBox History entities
@@ -18,15 +18,15 @@ export class BuyBoxHistoryRepository extends FirestoreBaseRepository<BuyBoxHisto
   protected readonly logger = new Logger(BuyBoxHistoryRepository.name);
 
   constructor(firestoreConfigService: FirestoreConfigService) {
-    super(firestoreConfigService, "buybox_history", {
+    super(firestoreConfigService, 'buybox_history', {
       useSoftDeletes: true,
       useVersioning: true,
       enableCache: false, // No caching for history items
       requiredFields: [
-        "organizationId",
-        "productId",
-        "marketplaceId",
-        "timestamp",
+        'organizationId',
+        'productId',
+        'marketplaceId',
+        'timestamp',
       ],
     });
   }
@@ -44,8 +44,8 @@ export class BuyBoxHistoryRepository extends FirestoreBaseRepository<BuyBoxHisto
     return this.find({
       filter: { organizationId } as Partial<BuyBoxHistory>,
       queryOptions: {
-        orderBy: "timestamp",
-        direction: "desc",
+        orderBy: 'timestamp',
+        direction: 'desc',
         limit,
       },
     });
@@ -64,8 +64,8 @@ export class BuyBoxHistoryRepository extends FirestoreBaseRepository<BuyBoxHisto
     return this.find({
       filter: { productId } as Partial<BuyBoxHistory>,
       queryOptions: {
-        orderBy: "timestamp",
-        direction: "desc",
+        orderBy: 'timestamp',
+        direction: 'desc',
         limit,
       },
     });
@@ -89,8 +89,8 @@ export class BuyBoxHistoryRepository extends FirestoreBaseRepository<BuyBoxHisto
         marketplaceId,
       } as Partial<BuyBoxHistory>,
       queryOptions: {
-        orderBy: "timestamp",
-        direction: "desc",
+        orderBy: 'timestamp',
+        direction: 'desc',
         limit,
       },
     });
@@ -122,8 +122,8 @@ export class BuyBoxHistoryRepository extends FirestoreBaseRepository<BuyBoxHisto
 
     // Basic query options
     const options = {
-      orderBy: "timestamp" as keyof BuyBoxHistory,
-      direction: "desc" as "asc" | "desc",
+      orderBy: 'timestamp' as keyof BuyBoxHistory,
+      direction: 'desc' as 'asc' | 'desc',
       limit: params.limit,
       offset: params.offset,
     };
@@ -166,7 +166,7 @@ export class BuyBoxHistoryRepository extends FirestoreBaseRepository<BuyBoxHisto
    * @returns Created history item
    */
   async createFromStatus(status: any): Promise<BuyBoxHistory> {
-    const historyData: Omit<BuyBoxHistory, "id" | "createdAt" | "updatedAt"> = {
+    const historyData: Omit<BuyBoxHistory, 'id' | 'createdAt' | 'updatedAt'> = {
       organizationId: status.organizationId,
       productId: status.productId,
       productSku: status.productSku,

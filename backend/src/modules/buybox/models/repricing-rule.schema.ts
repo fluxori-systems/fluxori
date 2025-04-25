@@ -1,8 +1,8 @@
 /**
  * Repricing Rule Schema
  */
-import { FirestoreEntity } from "../../../types/google-cloud.types";
-import { PricingRuleOperation } from "../interfaces/types";
+import { FirestoreEntity } from '../../../types/google-cloud.types';
+import { PricingRuleOperation } from '../interfaces/types';
 
 /**
  * Repricing Rule entity for Firestore
@@ -38,7 +38,7 @@ export interface RepricingRule extends FirestoreEntity {
   minMargin?: number;
 
   // Schedule
-  scheduleType: "always" | "once" | "recurring";
+  scheduleType: 'always' | 'once' | 'recurring';
   startDate?: Date;
   endDate?: Date;
   daysOfWeek?: number[]; // 0 = Sunday, 6 = Saturday

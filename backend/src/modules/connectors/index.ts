@@ -1,6 +1,6 @@
 /**
  * Connectors Module
- * 
+ *
  * This module provides standardized connectors for various marketplaces and services.
  * It includes base classes, interfaces, and concrete implementations for
  * connecting to external APIs with built-in South African network optimizations.

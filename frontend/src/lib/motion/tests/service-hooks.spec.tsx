@@ -1,7 +1,9 @@
 'use client';
 
 import React from 'react';
+
 import { describe, test, expect, vi } from 'vitest';
+
 import { renderHook } from '../../../testing/utils/render';
 import { useConnectionQuality, useReducedMotion } from '../hooks';
 

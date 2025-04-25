@@ -1,15 +1,15 @@
 /**
  * Repository Module Public API
- * 
+ *
  * This file defines the public interface of the Repository module, exporting only what should be
  * accessible to other modules. This ensures proper encapsulation and prevents direct access to
  * internal components.
  */
 
 // Export main repository implementations
-export { 
+export {
   FirestoreBaseRepository,
-  TenantAwareRepository as TenantRepository
+  TenantAwareRepository as TenantRepository,
 } from './firestore-base.repository';
 
 // Export repository interfaces
@@ -29,7 +29,7 @@ export type {
   UpdateDocumentOptions,
   DeleteDocumentOptions,
   BatchDeleteOptions,
-  PaginationResult
+  PaginationResult,
 } from './types';
 
 // Export validation utilities
@@ -39,14 +39,11 @@ export {
   validateRequiredFields,
   validateEntityId,
   isEntityDeleted,
-  validateBatchItems
+  validateBatchItems,
 } from './utils/validation';
 
 // Export cache utilities
-export {
-  RepositoryCache,
-  CacheOptions
-} from './utils/cache';
+export { RepositoryCache, CacheOptions } from './utils/cache';
 
 // Export stats utilities
 export {
@@ -59,22 +56,19 @@ export {
   recordError,
   getStatsSnapshot,
   resetStats,
-  calculateCacheHitRatio
+  calculateCacheHitRatio,
 } from './utils/stats';
 
-// Export transaction utilities 
+// Export transaction utilities
 export {
   RepositoryTransaction,
   TransactionOperation,
   executeTransaction,
-  executeBatch
+  executeBatch,
 } from './utils/transactions';
 
 // Export converter utilities
-export {
-  RepositoryConverter,
-  EntityConverter
-} from './utils/converters';
+export { RepositoryConverter, EntityConverter } from './utils/converters';
 
 // Helper Functions
 export {
@@ -82,15 +76,15 @@ export {
   equalTo,
   greaterThan,
   lessThan,
-  
+
   // Pagination
   paginatedQuery,
-  
+
   // Common Filters
   organizationFilters,
   deletedStateFilters,
-  
+
   // Options
   STANDARD_REPOSITORY_OPTIONS,
-  createRepositoryOptions
+  createRepositoryOptions,
 } from './utils/helpers';

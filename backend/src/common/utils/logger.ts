@@ -2,10 +2,10 @@ import {
   Injectable,
   LoggerService,
   Logger as NestLogger,
-} from "@nestjs/common";
-import { ConfigService } from "@nestjs/config";
+} from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 
-import { Logging } from "@google-cloud/logging";
+import { Logging } from '@google-cloud/logging';
 
 /**
  * Factory for creating loggers with consistent configuration
@@ -51,7 +51,7 @@ export class Logger implements LoggerService {
   private logName: string;
   private projectId: string;
   private isProduction: boolean;
-  private context: string = "Fluxori";
+  private context: string = 'Fluxori';
 
   constructor(
     private configService: ConfigService | NestLogger,
@@ -73,10 +73,10 @@ export class Logger implements LoggerService {
 
     // Cast configService to actual ConfigService for get() method access
     const config = this.configService as ConfigService;
-    this.projectId = config.get<string>("GCP_PROJECT_ID", "");
-    this.logName = config.get<string>("GCP_LOG_NAME", "fluxori-api");
+    this.projectId = config.get<string>('GCP_PROJECT_ID', '');
+    this.logName = config.get<string>('GCP_LOG_NAME', 'fluxori-api');
     this.isProduction =
-      config.get<string>("NODE_ENV", "development") === "production";
+      config.get<string>('NODE_ENV', 'development') === 'production';
 
     // Initialize Google Cloud Logging if we're in production
     if (this.isProduction && this.projectId) {
@@ -96,13 +96,13 @@ export class Logger implements LoggerService {
       const log = this.cloudLogging.log(this.logName);
       const metadata = {
         resource: {
-          type: "cloud_run_revision",
+          type: 'cloud_run_revision',
           labels: {
-            service_name: "fluxori-api",
-            revision_name: process.env.K_REVISION || "local",
+            service_name: 'fluxori-api',
+            revision_name: process.env.K_REVISION || 'local',
           },
         },
-        severity: "INFO",
+        severity: 'INFO',
       };
 
       const entry = log.entry(metadata, {
@@ -114,7 +114,7 @@ export class Logger implements LoggerService {
       log.write(entry).catch((err) => {
         this.nestLogger.error(
           `Failed to write to Cloud Logging: ${err.message}`,
-          "Logger",
+          'Logger',
         );
       });
     }
@@ -130,13 +130,13 @@ export class Logger implements LoggerService {
       const log = this.cloudLogging.log(this.logName);
       const metadata = {
         resource: {
-          type: "cloud_run_revision",
+          type: 'cloud_run_revision',
           labels: {
-            service_name: "fluxori-api",
-            revision_name: process.env.K_REVISION || "local",
+            service_name: 'fluxori-api',
+            revision_name: process.env.K_REVISION || 'local',
           },
         },
-        severity: "ERROR",
+        severity: 'ERROR',
       };
 
       const entry = log.entry(metadata, {
@@ -149,7 +149,7 @@ export class Logger implements LoggerService {
       log.write(entry).catch((err) => {
         this.nestLogger.error(
           `Failed to write to Cloud Logging: ${err.message}`,
-          "Logger",
+          'Logger',
         );
       });
     }
@@ -165,13 +165,13 @@ export class Logger implements LoggerService {
       const log = this.cloudLogging.log(this.logName);
       const metadata = {
         resource: {
-          type: "cloud_run_revision",
+          type: 'cloud_run_revision',
           labels: {
-            service_name: "fluxori-api",
-            revision_name: process.env.K_REVISION || "local",
+            service_name: 'fluxori-api',
+            revision_name: process.env.K_REVISION || 'local',
           },
         },
-        severity: "WARNING",
+        severity: 'WARNING',
       };
 
       const entry = log.entry(metadata, {
@@ -183,7 +183,7 @@ export class Logger implements LoggerService {
       log.write(entry).catch((err) => {
         this.nestLogger.error(
           `Failed to write to Cloud Logging: ${err.message}`,
-          "Logger",
+          'Logger',
         );
       });
     }
@@ -199,13 +199,13 @@ export class Logger implements LoggerService {
       const log = this.cloudLogging.log(this.logName);
       const metadata = {
         resource: {
-          type: "cloud_run_revision",
+          type: 'cloud_run_revision',
           labels: {
-            service_name: "fluxori-api",
-            revision_name: process.env.K_REVISION || "local",
+            service_name: 'fluxori-api',
+            revision_name: process.env.K_REVISION || 'local',
           },
         },
-        severity: "DEBUG",
+        severity: 'DEBUG',
       };
 
       const entry = log.entry(metadata, {
@@ -217,7 +217,7 @@ export class Logger implements LoggerService {
       log.write(entry).catch((err) => {
         this.nestLogger.error(
           `Failed to write to Cloud Logging: ${err.message}`,
-          "Logger",
+          'Logger',
         );
       });
     }
@@ -233,13 +233,13 @@ export class Logger implements LoggerService {
       const log = this.cloudLogging.log(this.logName);
       const metadata = {
         resource: {
-          type: "cloud_run_revision",
+          type: 'cloud_run_revision',
           labels: {
-            service_name: "fluxori-api",
-            revision_name: process.env.K_REVISION || "local",
+            service_name: 'fluxori-api',
+            revision_name: process.env.K_REVISION || 'local',
           },
         },
-        severity: "DEBUG",
+        severity: 'DEBUG',
       };
 
       const entry = log.entry(metadata, {
@@ -252,7 +252,7 @@ export class Logger implements LoggerService {
       log.write(entry).catch((err) => {
         this.nestLogger.error(
           `Failed to write to Cloud Logging: ${err.message}`,
-          "Logger",
+          'Logger',
         );
       });
     }

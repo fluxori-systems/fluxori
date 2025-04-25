@@ -1,28 +1,28 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable } from '@nestjs/common';
 
-import { FirestoreBaseRepository } from "../../../common/repositories/firestore-base.repository";
-import { FirestoreConfigService } from "../../../config/firestore.config";
-import { CreditReservation, CreditUsageType } from "../interfaces/types";
+import { FirestoreBaseRepository } from '../../../common/repositories/firestore-base.repository';
+import { FirestoreConfigService } from '../../../config/firestore.config';
+import { CreditReservation, CreditUsageType } from '../interfaces/types';
 
 /**
  * Repository for credit reservations
  */
 @Injectable()
 export class CreditReservationRepository extends FirestoreBaseRepository<CreditReservation> {
-  protected readonly collectionName = "credit_reservations";
+  protected readonly collectionName = 'credit_reservations';
 
   constructor(firestoreConfigService: FirestoreConfigService) {
-    super(firestoreConfigService, "credit_reservations", {
+    super(firestoreConfigService, 'credit_reservations', {
       useVersioning: true,
       enableCache: true,
       cacheTTLMs: 1 * 60 * 1000, // 1 minute (reservations change frequently)
       requiredFields: [
-        "organizationId",
-        "operationId",
-        "reservationAmount",
-        "usageType",
-        "status",
-        "expirationDate",
+        'organizationId',
+        'operationId',
+        'reservationAmount',
+        'usageType',
+        'status',
+        'expirationDate',
       ],
     });
   }
@@ -36,21 +36,22 @@ export class CreditReservationRepository extends FirestoreBaseRepository<CreditR
     organizationId: string,
   ): Promise<CreditReservation[]> {
     const now = new Date();
-    
+
     // Get reservations for the organization
     const reservations = await this.find({
-      filter: { 
+      filter: {
         organizationId,
-        status: "pending",
+        status: 'pending',
       } as Partial<CreditReservation>,
     });
-    
+
     // Filter out expired reservations
     return reservations.filter((reservation) => {
-      const expirationDate = reservation.expirationDate instanceof Date 
-        ? reservation.expirationDate 
-        : new Date(reservation.expirationDate);
-      
+      const expirationDate =
+        reservation.expirationDate instanceof Date
+          ? reservation.expirationDate
+          : new Date(reservation.expirationDate);
+
       return expirationDate > now;
     });
   }
@@ -60,11 +61,13 @@ export class CreditReservationRepository extends FirestoreBaseRepository<CreditR
    * @param operationId Operation ID
    * @returns Reservation or null if not found
    */
-  async findByOperationId(operationId: string): Promise<CreditReservation | null> {
+  async findByOperationId(
+    operationId: string,
+  ): Promise<CreditReservation | null> {
     const reservations = await this.find({
       filter: { operationId } as Partial<CreditReservation>,
     });
-    
+
     return reservations.length > 0 ? reservations[0] : null;
   }
 
@@ -79,22 +82,23 @@ export class CreditReservationRepository extends FirestoreBaseRepository<CreditR
     userId: string,
   ): Promise<CreditReservation[]> {
     const now = new Date();
-    
+
     // Get reservations for the user
     const reservations = await this.find({
-      filter: { 
+      filter: {
         organizationId,
         userId,
-        status: "pending",
+        status: 'pending',
       } as Partial<CreditReservation>,
     });
-    
+
     // Filter out expired reservations
     return reservations.filter((reservation) => {
-      const expirationDate = reservation.expirationDate instanceof Date 
-        ? reservation.expirationDate 
-        : new Date(reservation.expirationDate);
-      
+      const expirationDate =
+        reservation.expirationDate instanceof Date
+          ? reservation.expirationDate
+          : new Date(reservation.expirationDate);
+
       return expirationDate > now;
     });
   }
@@ -106,22 +110,23 @@ export class CreditReservationRepository extends FirestoreBaseRepository<CreditR
    */
   async getTotalReserved(organizationId: string): Promise<number> {
     const now = new Date();
-    
+
     // Get active reservations for the organization
     const reservations = await this.find({
-      filter: { 
+      filter: {
         organizationId,
-        status: "pending",
+        status: 'pending',
       } as Partial<CreditReservation>,
     });
-    
+
     // Filter out expired reservations and sum the amounts
     return reservations
       .filter((reservation) => {
-        const expirationDate = reservation.expirationDate instanceof Date 
-          ? reservation.expirationDate 
-          : new Date(reservation.expirationDate);
-        
+        const expirationDate =
+          reservation.expirationDate instanceof Date
+            ? reservation.expirationDate
+            : new Date(reservation.expirationDate);
+
         return expirationDate > now;
       })
       .reduce((total, reservation) => {
@@ -150,7 +155,7 @@ export class CreditReservationRepository extends FirestoreBaseRepository<CreditR
    */
   async updateStatus(
     reservationId: string,
-    status: "confirmed" | "released" | "expired",
+    status: 'confirmed' | 'released' | 'expired',
   ): Promise<CreditReservation> {
     return this.updateFields(reservationId, {
       status,
@@ -163,29 +168,30 @@ export class CreditReservationRepository extends FirestoreBaseRepository<CreditR
    */
   async cleanupExpired(): Promise<number> {
     const now = new Date();
-    
+
     // Get expired reservations
     const reservations = await this.find({
-      filter: { status: "pending" } as Partial<CreditReservation>,
+      filter: { status: 'pending' } as Partial<CreditReservation>,
     });
-    
+
     const expiredReservations = reservations.filter((reservation) => {
-      const expirationDate = reservation.expirationDate instanceof Date 
-        ? reservation.expirationDate 
-        : new Date(reservation.expirationDate);
-      
+      const expirationDate =
+        reservation.expirationDate instanceof Date
+          ? reservation.expirationDate
+          : new Date(reservation.expirationDate);
+
       return expirationDate <= now;
     });
-    
+
     // Update the status of expired reservations
     const updatePromises = expiredReservations.map((reservation) => {
       return this.updateFields(reservation.id, {
-        status: "expired",
+        status: 'expired',
       });
     });
-    
+
     await Promise.all(updatePromises);
-    
+
     return expiredReservations.length;
   }
 
@@ -200,7 +206,7 @@ export class CreditReservationRepository extends FirestoreBaseRepository<CreditR
     usageType: CreditUsageType,
   ): Promise<CreditReservation[]> {
     return this.find({
-      filter: { 
+      filter: {
         organizationId,
         usageType,
       } as Partial<CreditReservation>,

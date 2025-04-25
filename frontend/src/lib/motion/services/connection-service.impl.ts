@@ -1,8 +1,10 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+
 import { IConnectionService } from '../../shared/services/connection-service.interface';
 import { MotionMode } from '../../shared/types/motion-types';
+
 import type { ConnectionQuality, ConnectionQualityResult } from '../../shared/types/sa-market-types';
 
 // South African mobile network thresholds - these are intentionally conservative

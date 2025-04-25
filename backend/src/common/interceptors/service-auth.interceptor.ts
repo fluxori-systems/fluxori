@@ -5,13 +5,13 @@ import {
   CallHandler,
   UnauthorizedException,
   Logger,
-} from "@nestjs/common";
-import { ConfigService } from "@nestjs/config";
+} from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 
-import { Request } from "express";
-import { Observable } from "rxjs";
+import { Request } from 'express';
+import { Observable } from 'rxjs';
 
-import { ServiceAuthUtils } from "../utils/service-auth";
+import { ServiceAuthUtils } from '../utils/service-auth';
 
 /**
  * Service Authentication Interceptor
@@ -29,7 +29,7 @@ export class ServiceAuthInterceptor implements NestInterceptor {
     private readonly serviceAuthUtils: ServiceAuthUtils,
   ) {
     this.isEnabled =
-      this.configService.get<boolean>("SERVICE_AUTH_ENABLED") ?? false;
+      this.configService.get<boolean>('SERVICE_AUTH_ENABLED') ?? false;
   }
 
   /**
@@ -42,15 +42,15 @@ export class ServiceAuthInterceptor implements NestInterceptor {
     }
 
     const request = context.switchToHttp().getRequest<Request>();
-    const path = request.path || "";
+    const path = request.path || '';
 
     // Check if this is an internal service endpoint
-    if (!path.includes("/internal/")) {
+    if (!path.includes('/internal/')) {
       return next.handle();
     }
 
     // Extract the service auth token from headers
-    const authHeader = request.header("X-Service-Auth") || "";
+    const authHeader = request.header('X-Service-Auth') || '';
 
     // Validate the token
     const validationResult = this.serviceAuthUtils.validateServiceToken(
@@ -62,7 +62,7 @@ export class ServiceAuthInterceptor implements NestInterceptor {
       this.logger.warn(
         `Service auth failed: ${validationResult.error} for path ${path}`,
       );
-      throw new UnauthorizedException("Service authentication failed");
+      throw new UnauthorizedException('Service authentication failed');
     }
 
     // Add service info to request for downstream handlers

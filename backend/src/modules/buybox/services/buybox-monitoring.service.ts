@@ -1,13 +1,13 @@
-import { Injectable, Logger } from "@nestjs/common";
+import { Injectable, Logger } from '@nestjs/common';
 
 import {
   BuyBoxStatus as BuyBoxStatusEnum,
   MarketPosition,
   PriceSourceType,
-} from "../interfaces/types";
-import { BuyBoxStatus } from "../models/buybox-status.schema";
-import { BuyBoxHistoryRepository } from "../repositories/buybox-history.repository";
-import { BuyBoxStatusRepository } from "../repositories/buybox-status.repository";
+} from '../interfaces/types';
+import { BuyBoxStatus } from '../models/buybox-status.schema';
+import { BuyBoxHistoryRepository } from '../repositories/buybox-history.repository';
+import { BuyBoxStatusRepository } from '../repositories/buybox-status.repository';
 
 /**
  * Data for retrieving current BuyBox status
@@ -119,7 +119,7 @@ export class BuyBoxMonitoringService {
       currentPrice: myListing.price,
       currentShipping: myListing.shipping,
       currency:
-        competitorListings.length > 0 ? competitorListings[0].currency : "USD",
+        competitorListings.length > 0 ? competitorListings[0].currency : 'USD',
       listingUrl: myListing.url,
       lastUpdated: new Date(),
       lastChecked: new Date(),

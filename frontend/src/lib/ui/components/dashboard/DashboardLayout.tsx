@@ -1,10 +1,11 @@
 'use client';
 
 import React, { forwardRef, useState, useEffect } from 'react';
+
+import { DashboardDensity, DashboardLayoutConfig } from '../../../design-system/types/dashboard';
+import { useSouthAfricanMarketOptimizations } from '../../../shared/hooks/useSouthAfricanMarketOptimizations';
 import { Button } from '../../components/Button';
 import { useConnectionQuality } from '../../hooks/useConnection';
-import { useSouthAfricanMarketOptimizations } from '../../../shared/hooks/useSouthAfricanMarketOptimizations';
-import { DashboardDensity, DashboardLayoutConfig } from '../../../design-system/types/dashboard';
 
 export interface DashboardLayoutProps {
   /** Dashboard children */

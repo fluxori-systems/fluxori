@@ -1,10 +1,10 @@
-import { Injectable, Logger, OnModuleInit } from "@nestjs/common";
+import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 
 import {
   FeatureFlag,
   FlagEvaluationContext,
   FlagEvaluationResult,
-} from "../interfaces/types";
+} from '../interfaces/types';
 
 /**
  * Service for caching feature flag evaluation results to minimize database reads
@@ -31,7 +31,7 @@ export class FeatureFlagCacheService implements OnModuleInit {
   constructor() {}
 
   onModuleInit() {
-    this.logger.log("FeatureFlagCacheService initialized");
+    this.logger.log('FeatureFlagCacheService initialized');
 
     // Set up periodic cleanup of expired cache entries
     setInterval(() => {
@@ -142,7 +142,7 @@ export class FeatureFlagCacheService implements OnModuleInit {
   clearCache(): void {
     this.flagCache.clear();
     this.evaluationCache.clear();
-    this.logger.log("Feature flag cache cleared");
+    this.logger.log('Feature flag cache cleared');
   }
 
   /**
@@ -199,12 +199,12 @@ export class FeatureFlagCacheService implements OnModuleInit {
   ): string {
     // Create a stable, deterministic hash of the context
     const contextString = JSON.stringify({
-      userId: context.userId || "",
-      userEmail: context.userEmail || "",
-      userRole: context.userRole || "",
-      organizationId: context.organizationId || "",
-      organizationType: context.organizationType || "",
-      environment: context.environment || "",
+      userId: context.userId || '',
+      userEmail: context.userEmail || '',
+      userRole: context.userRole || '',
+      organizationId: context.organizationId || '',
+      organizationType: context.organizationType || '',
+      environment: context.environment || '',
     });
 
     return `${flagKey}:${this.hashString(contextString)}`;

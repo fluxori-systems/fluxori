@@ -1,14 +1,16 @@
 'use client';
 
 import { forwardRef, useState, useEffect, useRef } from 'react';
+
 import { Alert as MantineAlert } from '@mantine/core';
+
 import { Text } from './Text';
+import { useTokenTracking } from '../../design-system/utils/token-analysis';
 import { useMotion, TransitionFade, useConnectionQuality } from '../../motion';
 import { useComponentAnimation } from '../hooks/useComponentAnimation';
-import { useCombinedRefs } from '../utils/use-combined-refs';
-import { getRadiusValue, getIntentColor, getIntentBackgroundColor } from '../utils/token-helpers';
 import { BaseComponentProps, Intent, Radius } from '../types';
-import { useTokenTracking } from '../../design-system/utils/token-analysis';
+import { getRadiusValue, getIntentColor, getIntentBackgroundColor } from '../utils/token-helpers';
+import { useCombinedRefs } from '../utils/use-combined-refs';
 
 /**
  * Alert types for different contexts

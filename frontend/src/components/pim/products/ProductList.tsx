@@ -1,9 +1,11 @@
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
+
 import { useRouter } from 'next/navigation';
-import { useNetworkStatus } from '../../../hooks';
+
 import { api } from '../../../api/apiClient';
+import { useNetworkStatus } from '../../../hooks';
 import { Product, ProductStatus } from '../../../types/product/product.types';
 
 // The ProductList component displays a list of products with filtering and pagination

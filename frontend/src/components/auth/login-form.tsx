@@ -1,8 +1,11 @@
 'use client';
 
 import { useState } from 'react';
+
 import { TextInput, PasswordInput, Paper, Title, Container, Button, Text, Divider, Group, Anchor, Stack } from '@mantine/core';
+
 import { useForm } from 'react-hook-form';
+
 import { useFirebase } from '../../contexts/firebase-context';
 import { LoginCredentials } from '../../types/user/user.types';
 

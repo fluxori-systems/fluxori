@@ -7,7 +7,7 @@
  */
 
 // Re-export module
-export { OrganizationsModule } from "./organizations.module";
+export { OrganizationsModule } from './organizations.module';
 
 // Note: This module is currently a stub without implementing services, controllers, or schemas.
 // As the module is developed, exports should be added here to expose the public API.

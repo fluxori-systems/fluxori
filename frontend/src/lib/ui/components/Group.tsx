@@ -1,17 +1,18 @@
 'use client';
 
 import React, { forwardRef, useRef, useEffect, useState } from 'react';
-import { Group as MantineGroup } from '@mantine/core';
-import { BaseComponentProps, Spacing, AnimatableComponentProps } from '../types';
-import { useTokenTracking } from '../../design-system/utils/token-analysis';
-import { useMantineTheme } from '@mantine/core';
-import { getSpacingFromMantine } from '../../design-system/utils/mantine-theme-adapter';
+
+import { Group as MantineGroup , useMantineTheme } from '@mantine/core';
+
 import { SpacingScale } from '../../design-system/types/tokens';
+import { getSpacingFromMantine } from '../../design-system/utils/mantine-theme-adapter';
+import { useTokenTracking } from '../../design-system/utils/token-analysis';
 
 // Import from shared modules to avoid circular dependencies
 import { useCombinedRefs } from '../../shared/utils/ref-utils';
 import { useComponentAnimation } from '../hooks/useComponentAnimation';
 import { useConnectionQuality, useNetworkAware } from '../hooks/useConnection';
+import { BaseComponentProps, Spacing, AnimatableComponentProps } from '../types';
 
 // Define appropriate justify content values for TypeScript safety
 type JustifyContent = 'flex-start' | 'flex-end' | 'center' | 'space-between' | 'space-around' | 'space-evenly';

@@ -5,8 +5,8 @@
  */
 
 import { FirestoreService } from '../lib/firebase/firestore.service';
-import { User, UserRole } from '../types/user/user.types';
 import { AdvancedFilter } from '../types/core/entity.types';
+import { User, UserRole } from '../types/user/user.types';
 
 /**
  * Repository for User entities

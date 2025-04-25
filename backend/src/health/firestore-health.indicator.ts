@@ -4,19 +4,19 @@
  * Implements health check indicator for Firestore database connections
  */
 
-import { Injectable, Logger } from "@nestjs/common";
-import { HealthIndicatorResult, HealthIndicator } from "@nestjs/terminus";
+import { Injectable, Logger } from '@nestjs/common';
+import { HealthIndicatorResult, HealthIndicator } from '@nestjs/terminus';
 
-import { Timestamp } from "@google-cloud/firestore";
+import { Timestamp } from '@google-cloud/firestore';
 
-import { FirestoreConfigService } from "../config/firestore.config";
-import { isFirestoreTimestamp } from "../types/google-cloud.types";
+import { FirestoreConfigService } from '../config/firestore.config';
+import { isFirestoreTimestamp } from '../types/google-cloud.types';
 
 /**
  * For backwards compatibility with GCP health checks
  */
 export interface HealthResult {
-  status: "UP" | "DOWN";
+  status: 'UP' | 'DOWN';
   details?: Record<string, any>;
   error?: string;
 }
@@ -30,7 +30,7 @@ export interface HealthResult {
 @Injectable()
 export class FirestoreHealthIndicator extends HealthIndicator {
   private readonly logger = new Logger(FirestoreHealthIndicator.name);
-  private readonly testCollection = "_health_checks";
+  private readonly testCollection = '_health_checks';
 
   constructor(private readonly firestoreConfigService: FirestoreConfigService) {
     super();
@@ -47,7 +47,7 @@ export class FirestoreHealthIndicator extends HealthIndicator {
       const db = this.firestoreConfigService.getFirestore();
 
       // Ping Firestore with a trivial operation
-      await db.collection(this.testCollection).doc("ping").set({
+      await db.collection(this.testCollection).doc('ping').set({
         timestamp: new Date(),
         ping: true,
       });
@@ -90,7 +90,7 @@ export class FirestoreHealthIndicator extends HealthIndicator {
 
       // Use a health check collection for the test
       const healthCollection = db.collection(this.testCollection);
-      const docRef = healthCollection.doc("ping");
+      const docRef = healthCollection.doc('ping');
 
       // Write a document
       await docRef.set({
@@ -107,7 +107,7 @@ export class FirestoreHealthIndicator extends HealthIndicator {
       const responseTime = seconds * 1000 + nanoseconds / 1000000;
 
       // Format timestamp properly
-      let timestampString = "unknown";
+      let timestampString = 'unknown';
       if (docData?.timestamp) {
         if (isFirestoreTimestamp(docData.timestamp)) {
           timestampString = docData.timestamp.toDate().toISOString();
@@ -123,7 +123,7 @@ export class FirestoreHealthIndicator extends HealthIndicator {
         responseTime: `${responseTime.toFixed(2)} ms`,
         documentExists: doc.exists,
         timestamp: timestampString,
-        region: this.firestoreConfigService.getRegion() || "default",
+        region: this.firestoreConfigService.getRegion() || 'default',
       });
     } catch (error) {
       const errorMessage =

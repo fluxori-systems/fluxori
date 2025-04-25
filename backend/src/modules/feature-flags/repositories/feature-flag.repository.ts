@@ -1,10 +1,10 @@
-import { Injectable, Logger, OnModuleInit } from "@nestjs/common";
+import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 
-import { FirestoreConfigService } from "src/config/firestore.config";
+import { FirestoreConfigService } from 'src/config/firestore.config';
 
-import { FirestoreBaseRepository } from "src/common/repositories";
+import { FirestoreBaseRepository } from 'src/common/repositories';
 
-import { FeatureFlag, FeatureFlagType, Environment } from "../interfaces/types";
+import { FeatureFlag, FeatureFlagType, Environment } from '../interfaces/types';
 
 /**
  * Repository for managing feature flags
@@ -17,7 +17,7 @@ export class FeatureFlagRepository
   protected readonly logger = new Logger(FeatureFlagRepository.name);
 
   constructor(firestoreConfigService: FirestoreConfigService) {
-    super(firestoreConfigService, "feature_flags", {
+    super(firestoreConfigService, 'feature_flags', {
       enableCache: true,
       cacheTTLMs: 60000, // 1 minute cache TTL for feature flags
       useSoftDeletes: true,
@@ -28,7 +28,7 @@ export class FeatureFlagRepository
    * Initialize the repository when the module loads
    */
   onModuleInit(): void {
-    this.logger.log("FeatureFlagRepository initialized");
+    this.logger.log('FeatureFlagRepository initialized');
   }
 
   /**
@@ -38,7 +38,7 @@ export class FeatureFlagRepository
    */
   async findByKey(key: string): Promise<FeatureFlag | null> {
     const results = await this.find({
-      advancedFilters: [{ field: "key", operator: "==", value: key }],
+      advancedFilters: [{ field: 'key', operator: '==', value: key }],
     });
 
     return results.length > 0 ? results[0] : null;
@@ -54,8 +54,8 @@ export class FeatureFlagRepository
     return this.find({
       advancedFilters: [
         {
-          field: "environments",
-          operator: "array-contains-any",
+          field: 'environments',
+          operator: 'array-contains-any',
           value: [environment, Environment.ALL],
         },
       ],
@@ -69,7 +69,7 @@ export class FeatureFlagRepository
    */
   async findByType(type: FeatureFlagType): Promise<FeatureFlag[]> {
     return this.find({
-      advancedFilters: [{ field: "type", operator: "==", value: type }],
+      advancedFilters: [{ field: 'type', operator: '==', value: type }],
     });
   }
 
@@ -95,8 +95,8 @@ export class FeatureFlagRepository
     const orgTargetedFlags = await this.find({
       advancedFilters: [
         {
-          field: "type",
-          operator: "==",
+          field: 'type',
+          operator: '==',
           value: FeatureFlagType.ORGANIZATION_TARGETED,
         },
       ],
@@ -126,7 +126,7 @@ export class FeatureFlagRepository
     // Retrieve all user-targeted flags
     const userTargetedFlags = await this.find({
       advancedFilters: [
-        { field: "type", operator: "==", value: FeatureFlagType.USER_TARGETED },
+        { field: 'type', operator: '==', value: FeatureFlagType.USER_TARGETED },
       ],
     });
 

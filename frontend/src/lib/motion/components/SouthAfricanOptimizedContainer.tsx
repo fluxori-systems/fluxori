@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useState, useRef } from 'react';
+
 import { useSouthAfricanPerformance } from '../hooks/useSouthAfricanPerformance';
 
 interface SouthAfricanOptimizedContainerProps {

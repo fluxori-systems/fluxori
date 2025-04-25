@@ -1,9 +1,17 @@
-import { Injectable, Inject, Optional } from "@nestjs/common";
-import { ConfigService } from "@nestjs/config";
+import { Injectable, Inject, Optional } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 
-import { v4 as uuidv4 } from "uuid";
+import { v4 as uuidv4 } from 'uuid';
 
 // Import interfaces
+
+// Import constants
+import {
+  TRACE_ATTRIBUTES,
+  SAMPLING_RATES,
+} from '../constants/observability.constants';
+import { OBSERVABILITY_TOKENS } from '../constants/observability.tokens';
+import { DEFAULT_OBSERVABILITY_OPTIONS } from '../interfaces/observability-options.interface';
 import {
   Span,
   TraceContext,
@@ -11,15 +19,7 @@ import {
   SpanStatus,
   ITracingService,
   IEnhancedLoggerService,
-} from "../interfaces/observability.interfaces";
-
-// Import constants
-import {
-  TRACE_ATTRIBUTES,
-  SAMPLING_RATES,
-} from "../constants/observability.constants";
-import { OBSERVABILITY_TOKENS } from "../constants/observability.tokens";
-import { DEFAULT_OBSERVABILITY_OPTIONS } from "../interfaces/observability-options.interface";
+} from '../interfaces/observability.interfaces';
 
 /**
  * Internal span implementation
@@ -98,10 +98,10 @@ class SpanImpl implements Span {
    */
   recordException(exception: Error): void {
     this.setStatus(SpanStatus.ERROR, exception.message);
-    this.addEvent("exception", {
-      "exception.type": exception.name,
-      "exception.message": exception.message,
-      "exception.stacktrace": exception.stack,
+    this.addEvent('exception', {
+      'exception.type': exception.name,
+      'exception.message': exception.message,
+      'exception.stacktrace': exception.stack,
     });
   }
 
@@ -190,8 +190,11 @@ export class TracingService implements ITracingService {
 
   constructor(
     private readonly configService: ConfigService,
-    @Inject(OBSERVABILITY_TOKENS.LOGGER_SERVICE) private readonly logger: IEnhancedLoggerService,
-    @Optional() @Inject(OBSERVABILITY_TOKENS.OBSERVABILITY_OPTIONS) private readonly options?: any,
+    @Inject(OBSERVABILITY_TOKENS.LOGGER_SERVICE)
+    private readonly logger: IEnhancedLoggerService,
+    @Optional()
+    @Inject(OBSERVABILITY_TOKENS.OBSERVABILITY_OPTIONS)
+    private readonly options?: any,
   ) {
     // Apply options with defaults
     const mergedOptions = { ...DEFAULT_OBSERVABILITY_OPTIONS, ...options };
@@ -204,13 +207,13 @@ export class TracingService implements ITracingService {
     this.pathSamplingRates = tracingOptions.pathSamplingRates || {};
     this.maxTraceAttributes = tracingOptions.maxTraceAttributes || 32;
     this.environment =
-      mergedOptions.environment || process.env.NODE_ENV || "development";
+      mergedOptions.environment || process.env.NODE_ENV || 'development';
     this.region =
-      mergedOptions.region || process.env.GCP_REGION || "africa-south1";
-    this.serviceName = mergedOptions.appName || "fluxori-api";
+      mergedOptions.region || process.env.GCP_REGION || 'africa-south1';
+    this.serviceName = mergedOptions.appName || 'fluxori-api';
 
     if (this.enabled && this.logger?.log) {
-      this.logger.log("Tracing service initialized", "TracingService");
+      this.logger.log('Tracing service initialized', 'TracingService');
     }
   }
 
@@ -316,8 +319,8 @@ export class TracingService implements ITracingService {
     // Export the span to the logger
     const spanData = (span as SpanImpl).toJSON();
     if (this.logger?.debug) {
-      this.logger.debug("Span completed", {
-        service: "TracingService",
+      this.logger.debug('Span completed', {
+        service: 'TracingService',
         trace: {
           traceId: span.traceId,
           spanId: span.id,
@@ -399,8 +402,8 @@ export class TracingService implements ITracingService {
       return undefined;
     }
 
-    const traceId = this.getHeaderValue(headers, "x-trace-id");
-    const spanId = this.getHeaderValue(headers, "x-span-id");
+    const traceId = this.getHeaderValue(headers, 'x-trace-id');
+    const spanId = this.getHeaderValue(headers, 'x-span-id');
 
     if (!traceId || !spanId) {
       return undefined;
@@ -409,9 +412,9 @@ export class TracingService implements ITracingService {
     return {
       traceId,
       spanId,
-      parentSpanId: this.getHeaderValue(headers, "x-parent-span-id"),
+      parentSpanId: this.getHeaderValue(headers, 'x-parent-span-id'),
       startTime: new Date(),
-      source: "http",
+      source: 'http',
     };
   }
 
@@ -426,10 +429,10 @@ export class TracingService implements ITracingService {
       return;
     }
 
-    headers["x-trace-id"] = span.traceId;
-    headers["x-span-id"] = span.id;
+    headers['x-trace-id'] = span.traceId;
+    headers['x-span-id'] = span.id;
     if (span.parentSpanId) {
-      headers["x-parent-span-id"] = span.parentSpanId;
+      headers['x-parent-span-id'] = span.parentSpanId;
     }
   }
 
@@ -481,11 +484,11 @@ export class TracingService implements ITracingService {
    * Create a no-op span for when tracing is disabled
    */
   private createNoOpSpan(): Span {
-    const noOpId = "00000000-0000-0000-0000-000000000000";
+    const noOpId = '00000000-0000-0000-0000-000000000000';
 
     return {
       id: noOpId,
-      name: "no-op-span",
+      name: 'no-op-span',
       traceId: noOpId,
       parentSpanId: undefined,
       setAttribute: () => {},

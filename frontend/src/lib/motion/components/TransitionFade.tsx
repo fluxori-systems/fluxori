@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useRef, useEffect } from 'react';
+
 import { useGSAPAnimation } from '../hooks/useGSAPAnimation';
 import { useReducedMotion } from '../hooks/useReducedMotion';
 

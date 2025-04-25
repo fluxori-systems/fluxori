@@ -3,10 +3,10 @@
  * Provides in-memory caching for repository operations
  */
 
-import { Logger } from "@nestjs/common";
+import { Logger } from '@nestjs/common';
 
-import { RepositoryCacheOptions, RepoCacheEntry } from "./repository-types";
-import { FirestoreEntity } from "../../../types/google-cloud.types";
+import { RepositoryCacheOptions, RepoCacheEntry } from './repository-types';
+import { FirestoreEntity } from '../../../types/google-cloud.types';
 
 /**
  * Cache options interface
@@ -41,7 +41,7 @@ export class RepositoryCache<T extends FirestoreEntity> {
   constructor(cacheOptions?: Partial<RepositoryCacheOptions>) {
     this.options = { ...DEFAULT_CACHE_OPTIONS, ...cacheOptions };
 
-    this.logger = this.options.logger || new Logger("RepositoryCache");
+    this.logger = this.options.logger || new Logger('RepositoryCache');
 
     // Periodically clean expired entries
     if (this.options.enabled) {

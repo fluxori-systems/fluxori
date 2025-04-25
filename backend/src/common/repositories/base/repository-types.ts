@@ -9,16 +9,16 @@ import {
   FieldValue,
   Transaction,
   QueryDocumentSnapshot,
-  WriteBatch
-} from "@google-cloud/firestore";
+  WriteBatch,
+} from '@google-cloud/firestore';
 
-import { RepositoryStats } from "./repository-stats";
+import { RepositoryStats } from './repository-stats';
 import {
   FirestoreEntity,
   Timestamp,
   QueryFilterOperator,
-  TransactionContext
-} from "../../../types/google-cloud.types";
+  TransactionContext,
+} from '../../../types/google-cloud.types';
 
 /**
  * Base entity interface all models should implement, aligned with FirestoreEntity
@@ -41,24 +41,50 @@ export interface Repository<T extends BaseEntity, K = string> {
   findById(id: K, options?: FindByIdOptions): Promise<T | null>;
   findAll(options?: FindOptions<T>): Promise<T[]>;
   find(options?: FindOptions<T>): Promise<T[]>;
-  create(data: Omit<T, 'id' | 'createdAt' | 'updatedAt'>, options?: CreateDocumentOptions): Promise<T>;
-  update(id: K, data: Partial<Omit<T, 'id' | 'createdAt' | 'updatedAt'>>, options?: UpdateDocumentOptions): Promise<T>;
+  create(
+    data: Omit<T, 'id' | 'createdAt' | 'updatedAt'>,
+    options?: CreateDocumentOptions,
+  ): Promise<T>;
+  update(
+    id: K,
+    data: Partial<Omit<T, 'id' | 'createdAt' | 'updatedAt'>>,
+    options?: UpdateDocumentOptions,
+  ): Promise<T>;
   delete(id: K, options?: DeleteDocumentOptions): Promise<void>;
-  
+
   // Additional common operations
   findByIds(ids: K[], options?: FindByIdOptions): Promise<T[]>;
-  findBy(field: keyof T | string, value: any, options?: FindOptions<T>): Promise<T[]>;
-  findOneBy(field: keyof T | string, value: any, options?: FindOptions<T>): Promise<T | null>;
+  findBy(
+    field: keyof T | string,
+    value: any,
+    options?: FindOptions<T>,
+  ): Promise<T[]>;
+  findOneBy(
+    field: keyof T | string,
+    value: any,
+    options?: FindOptions<T>,
+  ): Promise<T | null>;
   count(options?: CountDocumentsOptions<T>): Promise<number>;
   exists(id: K): Promise<boolean>;
-  
+
   // Bulk operations
-  createMany(items: Array<Omit<T, 'id' | 'createdAt' | 'updatedAt'>>, options?: CreateDocumentOptions): Promise<T[]>;
-  updateMany(items: Array<{ id: K; data: Partial<Omit<T, 'id' | 'createdAt' | 'updatedAt'>> }>, options?: UpdateDocumentOptions): Promise<T[]>;
+  createMany(
+    items: Array<Omit<T, 'id' | 'createdAt' | 'updatedAt'>>,
+    options?: CreateDocumentOptions,
+  ): Promise<T[]>;
+  updateMany(
+    items: Array<{
+      id: K;
+      data: Partial<Omit<T, 'id' | 'createdAt' | 'updatedAt'>>;
+    }>,
+    options?: UpdateDocumentOptions,
+  ): Promise<T[]>;
   deleteMany(ids: K[], options?: BatchDeleteOptions): Promise<void>;
-  
+
   // Transaction operations
-  runTransaction<R>(callback: (transaction: Transaction) => Promise<R>): Promise<R>;
+  runTransaction<R>(
+    callback: (transaction: Transaction) => Promise<R>,
+  ): Promise<R>;
 }
 
 /**
@@ -83,7 +109,7 @@ export interface QueryOptions<T = any> {
 /**
  * Sort direction for queries
  */
-export type SortDirection = "asc" | "desc";
+export type SortDirection = 'asc' | 'desc';
 
 /**
  * Entity reference type for relationships
@@ -98,7 +124,7 @@ export interface EntityReference {
  */
 export interface FirestoreQueryOptions<T> {
   orderBy?: keyof T | string;
-  direction?: "asc" | "desc";
+  direction?: 'asc' | 'desc';
   limit?: number;
   offset?: number;
   select?: Array<keyof T | string>;

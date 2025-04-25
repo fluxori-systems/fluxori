@@ -4,6 +4,7 @@
  * Enhanced auth hook that provides authentication state and role-based permissions
  */
 import { useCallback } from 'react';
+
 import { useFirebase } from '../contexts/firebase-context';
 import { User, UserRole } from '../types/user/user.types';
 

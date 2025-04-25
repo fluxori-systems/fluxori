@@ -1,7 +1,7 @@
-import { Injectable, Logger, NotFoundException } from "@nestjs/common";
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 
-import { AIModelConfig } from "../models/ai-model-config.schema";
-import { AIModelConfigRepository } from "../repositories/ai-model-config.repository";
+import { AIModelConfig } from '../models/ai-model-config.schema';
+import { AIModelConfigRepository } from '../repositories/ai-model-config.repository';
 
 /**
  * DTO for creating a new AI model configuration
@@ -164,7 +164,7 @@ export class AIModelConfigService {
    */
   async setEnabled(id: string, enabled: boolean): Promise<AIModelConfig> {
     this.logger.log(
-      `${enabled ? "Enabling" : "Disabling"} AI model config ${id}`,
+      `${enabled ? 'Enabling' : 'Disabling'} AI model config ${id}`,
     );
 
     const updated = await this.modelConfigRepository.setEnabled(id, enabled);
@@ -189,7 +189,7 @@ export class AIModelConfigService {
       await this.modelConfigRepository.delete(id);
       return true;
     } catch (error) {
-      if (error.message?.includes("not found")) {
+      if (error.message?.includes('not found')) {
         throw new NotFoundException(`AI model config with ID ${id} not found`);
       }
       throw error;
@@ -231,10 +231,10 @@ export class AIModelConfigService {
 
     // Example validation logic
     try {
-      if (modelProvider === "openai") {
+      if (modelProvider === 'openai') {
         // TODO: Implement actual OpenAI validation
         return { valid: true };
-      } else if (modelProvider === "vertex-ai") {
+      } else if (modelProvider === 'vertex-ai') {
         // TODO: Implement actual Vertex AI validation
         return { valid: true };
       } else {

@@ -1,12 +1,13 @@
 'use client';
 
 import React, { forwardRef, useRef, useEffect, useState } from 'react';
-import { Grid, ColSpan } from '../../components/Grid';
-import { useConnectionQuality } from '../../hooks/useConnection';
+
+import { Layout, DashboardDensity } from '../../../design-system/types/dashboard';
 import { useTokenTracking } from '../../../design-system/utils/token-analysis';
 import { useSouthAfricanMarketOptimizations } from '../../../shared/hooks/useSouthAfricanMarketOptimizations';
 import { useCombinedRefs } from '../../../shared/utils/ref-utils';
-import { Layout, DashboardDensity } from '../../../design-system/types/dashboard';
+import { Grid, ColSpan } from '../../components/Grid';
+import { useConnectionQuality } from '../../hooks/useConnection';
 
 export interface DashboardGridProps {
   /** Children to render */

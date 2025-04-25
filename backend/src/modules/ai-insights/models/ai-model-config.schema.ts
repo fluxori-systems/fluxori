@@ -1,4 +1,4 @@
-import { FirestoreEntity } from "../../../types/google-cloud.types";
+import { FirestoreEntity } from '../../../types/google-cloud.types';
 
 /**
  * AI Model Configuration entity for Firestore

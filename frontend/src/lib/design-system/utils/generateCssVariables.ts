@@ -3,8 +3,8 @@
  * Creates a complete set of CSS variables for both light and dark modes
  */
 
-import { DesignTokens, ColorPalette, ColorToken, SemanticColorToken } from '../types/tokens';
 import { lightTheme, darkTheme } from '../tokens';
+import { DesignTokens, ColorPalette, ColorToken, SemanticColorToken } from '../types/tokens';
 
 /**
  * Converts camelCase to kebab-case

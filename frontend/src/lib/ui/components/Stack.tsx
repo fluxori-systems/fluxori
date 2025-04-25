@@ -1,20 +1,21 @@
 'use client';
 
 import React, { forwardRef, ReactNode, useState, useRef, useEffect, useCallback } from 'react';
+
 import { Stack as MantineStack } from '@mantine/core';
-import { useTokenTracking } from '../../design-system/utils/token-analysis';
+
 import { getSpacingFromMantine } from '../../design-system/utils/mantine-theme-adapter';
+import { useTokenTracking } from '../../design-system/utils/token-analysis';
 
 // Import from shared modules to avoid circular dependencies
-import { useCombinedRefs } from '../../shared/utils/ref-utils';
-import { useComponentAnimation } from '../hooks/useComponentAnimation';
-import { useConnectionQuality, useNetworkAware } from '../hooks/useConnection';
-import { useMotionMode } from '../hooks/useComponentAnimation';
 import { SouthAfricanMarketOptimizer } from '../../shared/components/SouthAfricanMarketOptimizer';
 import { 
   useSouthAfricanMarketOptimizations, 
   SANetworkProfile 
 } from '../../shared/hooks/useSouthAfricanMarketOptimizations';
+import { useCombinedRefs } from '../../shared/utils/ref-utils';
+import { useComponentAnimation , useMotionMode } from '../hooks/useComponentAnimation';
+import { useConnectionQuality, useNetworkAware } from '../hooks/useConnection';
 
 // Define token intent variants for Stack
 export type StackIntent = 'default' | 'content' | 'form' | 'navigation' | 'card';

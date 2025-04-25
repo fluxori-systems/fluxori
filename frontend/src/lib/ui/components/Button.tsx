@@ -1,9 +1,12 @@
 'use client';
 
 import React, { ReactNode, forwardRef, useState, useRef, useCallback } from 'react';
+
 import { Button as MantineButton } from '@mantine/core';
 
 // Import from shared modules to avoid circular dependencies
+import { SAOptimizer } from '../../shared/components/SouthAfricanMarketOptimizer';
+import { useSouthAfricanMarketOptimizations } from '../../shared/hooks/useSouthAfricanMarketOptimizations';
 import { useCombinedRefs } from '../../shared/utils/ref-utils';
 import { 
   useComponentAnimation, 
@@ -11,8 +14,6 @@ import {
   useHoverAnimation 
 } from '../hooks/useComponentAnimation';
 import { useNetworkAware } from '../hooks/useConnection';
-import { useSouthAfricanMarketOptimizations } from '../../shared/hooks/useSouthAfricanMarketOptimizations';
-import { SAOptimizer } from '../../shared/components/SouthAfricanMarketOptimizer';
 /**
  * Button intent variants for different semantic uses
  */

@@ -5,13 +5,13 @@
  */
 
 import { TenantFirestoreService } from '../lib/firebase/firestore.service';
+import { QueryOptions } from '../types/core/entity.types';
 import { 
   Product, 
   ProductCategory, 
   ProductBrand, 
   ProductStatus 
 } from '../types/product/product.types';
-import { QueryOptions } from '../types/core/entity.types';
 
 /**
  * Repository for Product entities

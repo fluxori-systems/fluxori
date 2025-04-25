@@ -3,9 +3,10 @@
  * This file provides utilities for testing with Vitest
  */
 
-import { vi } from 'vitest';
 import React from 'react';
+
 import { render } from '@testing-library/react';
+import { vi } from 'vitest';
 
 // Theme Provider mock (using a regular function to avoid JSX in .ts files)
 export const MockThemeProvider = ({ children }: {children: React.ReactNode}) => {

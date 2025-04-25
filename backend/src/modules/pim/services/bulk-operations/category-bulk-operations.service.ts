@@ -1,8 +1,13 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { BulkOperationsService, BulkOperationOptions, BulkOperationStats } from './bulk-operations.service';
-import { CategoryService } from '../category.service';
-import { Category } from '../../models/category.model';
+
+import {
+  BulkOperationsService,
+  BulkOperationOptions,
+  BulkOperationStats,
+} from './bulk-operations.service';
 import { OperationResult } from '../../interfaces/types';
+import { Category } from '../../models/category.model';
+import { CategoryService } from '../category.service';
 
 /**
  * Category bulk operation types
@@ -12,7 +17,7 @@ export enum CategoryBulkOperationType {
   DELETE = 'delete',
   MOVE = 'move',
   REORDER = 'reorder',
-  UPDATE_MARKETPLACE_MAPPING = 'update_marketplace_mapping'
+  UPDATE_MARKETPLACE_MAPPING = 'update_marketplace_mapping',
 }
 
 /**
@@ -42,7 +47,7 @@ export interface CategoryBulkMarketplaceMappingOperation {
 
 /**
  * CategoryBulkOperationsService
- * 
+ *
  * Service for optimized bulk operations on categories with South African market optimizations
  */
 @Injectable()
@@ -51,34 +56,45 @@ export class CategoryBulkOperationsService {
 
   constructor(
     private readonly bulkOperationsService: BulkOperationsService,
-    private readonly categoryService: CategoryService
+    private readonly categoryService: CategoryService,
   ) {}
 
   /**
    * Execute bulk category updates
-   * 
+   *
    * @param operations Array of update operations
    * @param options Bulk operation options
    * @returns Results of all operations with statistics
    */
   async bulkUpdateCategories(
     operations: CategoryBulkUpdateOperation[],
-    options: Partial<BulkOperationOptions> = {}
-  ): Promise<{ results: Array<OperationResult<Category>>, stats: BulkOperationStats }> {
-    this.logger.log(`Starting bulk category update for ${operations.length} categories`);
-    
-    return this.bulkOperationsService.executeBulk<CategoryBulkUpdateOperation, Category>(
+    options: Partial<BulkOperationOptions> = {},
+  ): Promise<{
+    results: Array<OperationResult<Category>>;
+    stats: BulkOperationStats;
+  }> {
+    this.logger.log(
+      `Starting bulk category update for ${operations.length} categories`,
+    );
+
+    return this.bulkOperationsService.executeBulk<
+      CategoryBulkUpdateOperation,
+      Category
+    >(
       operations,
       async (operation) => {
-        return await this.categoryService.updateCategory(operation.id, operation.updates);
+        return await this.categoryService.updateCategory(
+          operation.id,
+          operation.updates,
+        );
       },
-      options
+      options,
     );
   }
 
   /**
    * Execute bulk category deletions
-   * 
+   *
    * @param organizationId Organization ID
    * @param categoryIds Array of category IDs to delete
    * @param options Bulk operation options
@@ -87,25 +103,33 @@ export class CategoryBulkOperationsService {
   async bulkDeleteCategories(
     organizationId: string,
     categoryIds: string[],
-    options: Partial<BulkOperationOptions> = {}
-  ): Promise<{ results: Array<OperationResult>, stats: BulkOperationStats }> {
-    this.logger.log(`Starting bulk category deletion for ${categoryIds.length} categories`);
-    
-    const operations = categoryIds.map(id => ({ id, organizationId }));
-    
-    return this.bulkOperationsService.executeBulk<{ id: string, organizationId: string }, { id: string }>(
+    options: Partial<BulkOperationOptions> = {},
+  ): Promise<{ results: Array<OperationResult>; stats: BulkOperationStats }> {
+    this.logger.log(
+      `Starting bulk category deletion for ${categoryIds.length} categories`,
+    );
+
+    const operations = categoryIds.map((id) => ({ id, organizationId }));
+
+    return this.bulkOperationsService.executeBulk<
+      { id: string; organizationId: string },
+      { id: string }
+    >(
       operations,
       async (operation) => {
-        await this.categoryService.deleteCategory(operation.id, operation.organizationId);
+        await this.categoryService.deleteCategory(
+          operation.id,
+          operation.organizationId,
+        );
         return { id: operation.id };
       },
-      options
+      options,
     );
   }
 
   /**
    * Execute bulk category moves (change parent)
-   * 
+   *
    * @param organizationId Organization ID
    * @param operations Array of move operations
    * @param options Bulk operation options
@@ -114,34 +138,45 @@ export class CategoryBulkOperationsService {
   async bulkMoveCategories(
     organizationId: string,
     operations: CategoryBulkMoveOperation[],
-    options: Partial<BulkOperationOptions> = {}
-  ): Promise<{ results: Array<OperationResult<Category>>, stats: BulkOperationStats }> {
-    this.logger.log(`Starting bulk category move for ${operations.length} categories`);
-    
-    return this.bulkOperationsService.executeBulk<CategoryBulkMoveOperation, Category>(
+    options: Partial<BulkOperationOptions> = {},
+  ): Promise<{
+    results: Array<OperationResult<Category>>;
+    stats: BulkOperationStats;
+  }> {
+    this.logger.log(
+      `Starting bulk category move for ${operations.length} categories`,
+    );
+
+    return this.bulkOperationsService.executeBulk<
+      CategoryBulkMoveOperation,
+      Category
+    >(
       operations,
       async (operation) => {
         // Get the current category
-        const category = await this.categoryService.getCategoryById(operation.id, organizationId);
-        
+        const category = await this.categoryService.getCategoryById(
+          operation.id,
+          organizationId,
+        );
+
         if (!category) {
           throw new Error(`Category with ID ${operation.id} not found`);
         }
-        
+
         // Update the parentId
         const updates: Partial<Category> = {
-          parentId: operation.newParentId
+          parentId: operation.newParentId,
         };
-        
+
         return await this.categoryService.updateCategory(operation.id, updates);
       },
-      options
+      options,
     );
   }
 
   /**
    * Execute bulk category marketplace mapping updates
-   * 
+   *
    * @param organizationId Organization ID
    * @param operations Array of marketplace mapping operations
    * @param options Bulk operation options
@@ -150,47 +185,59 @@ export class CategoryBulkOperationsService {
   async bulkUpdateCategoryMarketplaceMappings(
     organizationId: string,
     operations: CategoryBulkMarketplaceMappingOperation[],
-    options: Partial<BulkOperationOptions> = {}
-  ): Promise<{ results: Array<OperationResult<Category>>, stats: BulkOperationStats }> {
-    this.logger.log(`Starting bulk category marketplace mapping update for ${operations.length} categories`);
-    
-    return this.bulkOperationsService.executeBulk<CategoryBulkMarketplaceMappingOperation, Category>(
+    options: Partial<BulkOperationOptions> = {},
+  ): Promise<{
+    results: Array<OperationResult<Category>>;
+    stats: BulkOperationStats;
+  }> {
+    this.logger.log(
+      `Starting bulk category marketplace mapping update for ${operations.length} categories`,
+    );
+
+    return this.bulkOperationsService.executeBulk<
+      CategoryBulkMarketplaceMappingOperation,
+      Category
+    >(
       operations,
       async (operation) => {
         // Get the current category
-        const category = await this.categoryService.getCategoryById(operation.id, organizationId);
-        
+        const category = await this.categoryService.getCategoryById(
+          operation.id,
+          organizationId,
+        );
+
         if (!category) {
           throw new Error(`Category with ID ${operation.id} not found`);
         }
-        
+
         // Initialize marketplace mappings if they don't exist
         const marketplaceMappings = category.marketplaceMappings || [];
-        
+
         // Find existing mapping for this marketplace or create a new one
         const existingMappingIndex = marketplaceMappings.findIndex(
-          mapping => mapping.marketplaceId === operation.marketplaceId
+          (mapping) => mapping.marketplaceId === operation.marketplaceId,
         );
-        
+
         if (existingMappingIndex >= 0) {
           // Update existing mapping
-          marketplaceMappings[existingMappingIndex].marketplaceCategoryId = operation.marketplaceCategoryId;
+          marketplaceMappings[existingMappingIndex].marketplaceCategoryId =
+            operation.marketplaceCategoryId;
         } else {
           // Add new mapping
           marketplaceMappings.push({
             marketplaceId: operation.marketplaceId,
-            marketplaceCategoryId: operation.marketplaceCategoryId
+            marketplaceCategoryId: operation.marketplaceCategoryId,
           });
         }
-        
+
         // Update the category with the new mappings
         const updates: Partial<Category> = {
-          marketplaceMappings
+          marketplaceMappings,
         };
-        
+
         return await this.categoryService.updateCategory(operation.id, updates);
       },
-      options
+      options,
     );
   }
 }

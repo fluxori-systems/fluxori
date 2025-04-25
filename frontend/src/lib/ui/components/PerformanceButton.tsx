@@ -1,13 +1,14 @@
 'use client';
 
 import { forwardRef, useRef, useState, useEffect } from 'react';
+
 import { Button, ButtonProps } from './Button';
-import { useAnimationService } from '../../shared/services';
 import { 
   useSouthAfricanMarketOptimizations,
   useAnimationPerformance,
   usePerformanceMonitoring
 } from '../../shared/hooks';
+import { useAnimationService } from '../../shared/services';
 
 /**
  * Performance Button props extend regular Button props

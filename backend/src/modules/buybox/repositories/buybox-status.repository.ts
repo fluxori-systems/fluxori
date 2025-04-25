@@ -1,14 +1,14 @@
-import { Injectable, Logger } from "@nestjs/common";
+import { Injectable, Logger } from '@nestjs/common';
 
-import { FirestoreConfigService } from "src/config/firestore.config";
+import { FirestoreConfigService } from 'src/config/firestore.config';
 
 import {
   FirestoreBaseRepository,
   QueryFilter as FirestoreAdvancedFilter,
-} from "src/common/repositories";
+} from 'src/common/repositories';
 
-import { BuyBoxStatus as BuyBoxStatusEnum } from "../interfaces/types";
-import { BuyBoxStatus } from "../models/buybox-status.schema";
+import { BuyBoxStatus as BuyBoxStatusEnum } from '../interfaces/types';
+import { BuyBoxStatus } from '../models/buybox-status.schema';
 
 /**
  * Repository for BuyBox Status entities
@@ -18,16 +18,16 @@ export class BuyBoxStatusRepository extends FirestoreBaseRepository<BuyBoxStatus
   protected readonly logger = new Logger(BuyBoxStatusRepository.name);
 
   constructor(firestoreConfigService: FirestoreConfigService) {
-    super(firestoreConfigService, "buybox_statuses", {
+    super(firestoreConfigService, 'buybox_statuses', {
       useSoftDeletes: true,
       useVersioning: true,
       enableCache: true,
       cacheTTLMs: 5 * 60 * 1000, // 5 minutes
       requiredFields: [
-        "organizationId",
-        "productId",
-        "marketplaceId",
-        "status",
+        'organizationId',
+        'productId',
+        'marketplaceId',
+        'status',
       ],
     });
   }
@@ -40,7 +40,7 @@ export class BuyBoxStatusRepository extends FirestoreBaseRepository<BuyBoxStatus
   async findByOrganization(organizationId: string): Promise<BuyBoxStatus[]> {
     return this.find({
       advancedFilters: [
-        { field: "organizationId", operator: "==", value: organizationId },
+        { field: 'organizationId', operator: '==', value: organizationId },
       ],
     });
   }
@@ -53,7 +53,7 @@ export class BuyBoxStatusRepository extends FirestoreBaseRepository<BuyBoxStatus
   async findByProduct(productId: string): Promise<BuyBoxStatus[]> {
     return this.find({
       advancedFilters: [
-        { field: "productId", operator: "==", value: productId },
+        { field: 'productId', operator: '==', value: productId },
       ],
     });
   }
@@ -70,8 +70,8 @@ export class BuyBoxStatusRepository extends FirestoreBaseRepository<BuyBoxStatus
   ): Promise<BuyBoxStatus | null> {
     const results = await this.find({
       advancedFilters: [
-        { field: "productId", operator: "==", value: productId },
-        { field: "marketplaceId", operator: "==", value: marketplaceId },
+        { field: 'productId', operator: '==', value: productId },
+        { field: 'marketplaceId', operator: '==', value: marketplaceId },
       ],
     });
 
@@ -90,8 +90,8 @@ export class BuyBoxStatusRepository extends FirestoreBaseRepository<BuyBoxStatus
   ): Promise<BuyBoxStatus[]> {
     return this.find({
       advancedFilters: [
-        { field: "organizationId", operator: "==", value: organizationId },
-        { field: "status", operator: "==", value: status },
+        { field: 'organizationId', operator: '==', value: organizationId },
+        { field: 'status', operator: '==', value: status },
       ],
     });
   }
@@ -104,8 +104,8 @@ export class BuyBoxStatusRepository extends FirestoreBaseRepository<BuyBoxStatus
   async findMonitored(organizationId: string): Promise<BuyBoxStatus[]> {
     return this.find({
       advancedFilters: [
-        { field: "organizationId", operator: "==", value: organizationId },
-        { field: "isMonitored", operator: "==", value: true },
+        { field: 'organizationId', operator: '==', value: organizationId },
+        { field: 'isMonitored', operator: '==', value: true },
       ],
     });
   }
@@ -130,36 +130,36 @@ export class BuyBoxStatusRepository extends FirestoreBaseRepository<BuyBoxStatus
     // Add filters based on params
     if (params.organizationId) {
       advancedFilters.push({
-        field: "organizationId",
-        operator: "==",
+        field: 'organizationId',
+        operator: '==',
         value: params.organizationId,
       });
     }
     if (params.productId) {
       advancedFilters.push({
-        field: "productId",
-        operator: "==",
+        field: 'productId',
+        operator: '==',
         value: params.productId,
       });
     }
     if (params.marketplaceId) {
       advancedFilters.push({
-        field: "marketplaceId",
-        operator: "==",
+        field: 'marketplaceId',
+        operator: '==',
         value: params.marketplaceId,
       });
     }
     if (params.status) {
       advancedFilters.push({
-        field: "status",
-        operator: "==",
+        field: 'status',
+        operator: '==',
         value: params.status,
       });
     }
     if (params.isMonitored !== undefined) {
       advancedFilters.push({
-        field: "isMonitored",
-        operator: "==",
+        field: 'isMonitored',
+        operator: '==',
         value: params.isMonitored,
       });
     }
@@ -168,8 +168,8 @@ export class BuyBoxStatusRepository extends FirestoreBaseRepository<BuyBoxStatus
     return this.find({
       advancedFilters,
       queryOptions: {
-        orderBy: "lastChecked",
-        direction: "desc",
+        orderBy: 'lastChecked',
+        direction: 'desc',
         limit: params.limit,
         offset: params.offset,
       },
@@ -184,7 +184,7 @@ export class BuyBoxStatusRepository extends FirestoreBaseRepository<BuyBoxStatus
   async updateStatus(status: BuyBoxStatus): Promise<BuyBoxStatus | null> {
     // Ensure required fields
     if (!status.id) {
-      throw new Error("Status ID is required for update");
+      throw new Error('Status ID is required for update');
     }
 
     // Set last checked timestamp

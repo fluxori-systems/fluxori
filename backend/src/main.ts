@@ -1,17 +1,17 @@
-import { ValidationPipe } from "@nestjs/common";
-import { ConfigService } from "@nestjs/config";
-import { NestFactory } from "@nestjs/core";
+import { ValidationPipe } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { NestFactory } from '@nestjs/core';
 
-import * as compression from "compression";
-import helmet from "helmet";
+import * as compression from 'compression';
+import helmet from 'helmet';
 
-import { AppModule } from "./app.module";
+import { AppModule } from './app.module';
 import {
   EnhancedLoggerService,
   ObservabilityService,
-} from "./common/observability";
-import { HealthStatus } from "./common/observability/interfaces/observability.interfaces";
-import { setupSwagger } from "./swagger.config";
+} from './common/observability';
+import { HealthStatus } from './common/observability/interfaces/observability.interfaces';
+import { setupSwagger } from './swagger.config';
 
 async function bootstrap() {
   try {
@@ -29,7 +29,7 @@ async function bootstrap() {
     app.useLogger(logger);
 
     // Set global application prefix if specified in config
-    const apiPrefix = configService.get<string>("API_PREFIX", "api");
+    const apiPrefix = configService.get<string>('API_PREFIX', 'api');
     if (apiPrefix) {
       app.setGlobalPrefix(apiPrefix);
     }
@@ -42,8 +42,8 @@ async function bootstrap() {
 
     // Configure CORS options
     app.enableCors({
-      origin: configService.get<string>("CORS_ORIGIN", "*"),
-      methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
+      origin: configService.get<string>('CORS_ORIGIN', '*'),
+      methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
       credentials: true,
     });
 
@@ -60,24 +60,24 @@ async function bootstrap() {
     );
 
     // Set up Swagger documentation if not in production
-    if (process.env.NODE_ENV !== "production") {
+    if (process.env.NODE_ENV !== 'production') {
       setupSwagger(app);
     }
 
     // Start the application
-    const port = configService.get<number>("PORT", 3001);
-    const host = configService.get<string>("HOST", "0.0.0.0");
+    const port = configService.get<number>('PORT', 3001);
+    const host = configService.get<string>('HOST', '0.0.0.0');
 
     // Register additional health checks that require app context
-    observability.registerHealthCheck("app.startup", async () => {
+    observability.registerHealthCheck('app.startup', async () => {
       return {
-        component: "app.startup",
+        component: 'app.startup',
         status: HealthStatus.HEALTHY,
         details: {
           startupTime: new Date(),
           host,
           port,
-          version: process.env.npm_package_version || "1.0.0",
+          version: process.env.npm_package_version || '1.0.0',
         },
         timestamp: new Date(),
       };
@@ -86,37 +86,37 @@ async function bootstrap() {
     await app.listen(port, host);
 
     // Log application start
-    const environment = configService.get<string>("NODE_ENV", "development");
-    const region = configService.get<string>("GCP_REGION", "unknown");
+    const environment = configService.get<string>('NODE_ENV', 'development');
+    const region = configService.get<string>('GCP_REGION', 'unknown');
 
     logger.log(
       `Application is running in ${environment} mode (Region: ${region})`,
-      "Bootstrap",
+      'Bootstrap',
     );
     logger.log(
-      `Server running on: http://${host === "0.0.0.0" ? "localhost" : host}:${port}`,
-      "Bootstrap",
+      `Server running on: http://${host === '0.0.0.0' ? 'localhost' : host}:${port}`,
+      'Bootstrap',
     );
 
     // Log initial metrics
-    observability.recordGauge("system.startup.time", process.uptime());
+    observability.recordGauge('system.startup.time', process.uptime());
 
     // Check system health on startup
     const healthStatus = await observability.getDetailedHealthCheck();
     logger.log(`Initial health check: ${healthStatus.status}`, {
-      service: "Bootstrap",
+      service: 'Bootstrap',
       health: healthStatus,
     });
 
     // Handle shutdown signals
-    process.on("SIGINT", async () => {
-      logger.log("Application is shutting down...", "Bootstrap");
+    process.on('SIGINT', async () => {
+      logger.log('Application is shutting down...', 'Bootstrap');
       await app.close();
       process.exit(0);
     });
 
-    process.on("SIGTERM", async () => {
-      logger.log("Application is terminating...", "Bootstrap");
+    process.on('SIGTERM', async () => {
+      logger.log('Application is terminating...', 'Bootstrap');
       await app.close();
       process.exit(0);
     });
@@ -133,6 +133,6 @@ async function bootstrap() {
 // Run the bootstrap function
 bootstrap().catch((err) => {
   // Catch any unhandled promise rejections during bootstrap
-  console.error("Bootstrap failed", err);
+  console.error('Bootstrap failed', err);
   process.exit(1);
 });

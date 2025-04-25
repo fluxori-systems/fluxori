@@ -2,9 +2,9 @@
  * Enum for image compression quality
  */
 export enum CompressionQuality {
-  LOW = 'low',           // High compression, low quality (smallest file size)
-  MEDIUM = 'medium',     // Medium compression and quality (balanced)
-  HIGH = 'high',         // Low compression, high quality (larger file size)
+  LOW = 'low', // High compression, low quality (smallest file size)
+  MEDIUM = 'medium', // Medium compression and quality (balanced)
+  HIGH = 'high', // Low compression, high quality (larger file size)
   ADAPTIVE = 'adaptive', // Adapts based on network conditions
 }
 
@@ -12,12 +12,12 @@ export enum CompressionQuality {
  * Enum for image resize options
  */
 export enum ResizeOption {
-  NONE = 'none',           // No resizing
+  NONE = 'none', // No resizing
   THUMBNAIL = 'thumbnail', // Small thumbnail (150x150)
-  SMALL = 'small',         // Small image (300x300)
-  MEDIUM = 'medium',       // Medium image (600x600)
-  LARGE = 'large',         // Large image (1200x1200)
-  CUSTOM = 'custom',       // Custom dimensions
+  SMALL = 'small', // Small image (300x300)
+  MEDIUM = 'medium', // Medium image (600x600)
+  LARGE = 'large', // Large image (1200x1200)
+  CUSTOM = 'custom', // Custom dimensions
 }
 
 /**
@@ -128,7 +128,7 @@ export interface ProductImage {
    * Last update date
    */
   updatedAt: Date;
-  
+
   /**
    * Optional tags for the image
    */

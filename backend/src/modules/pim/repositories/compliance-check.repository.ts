@@ -1,10 +1,11 @@
 /**
  * Compliance Check Repository
- * 
+ *
  * Repository for managing compliance check results in the advanced compliance framework
  */
 
 import { Injectable, Logger } from '@nestjs/common';
+
 import { FirestoreBaseRepository } from '../../../common/repositories/firestore-base.repository';
 import { ComplianceCheckResult } from '../services/compliance/compliance-framework.service';
 
@@ -23,21 +24,18 @@ export interface ComplianceCheckRecord extends ComplianceCheckResult {
 @Injectable()
 export class ComplianceCheckRepository extends FirestoreBaseRepository<ComplianceCheckRecord> {
   constructor() {
-    super(
-      'compliance_checks',
-      {
-        idField: 'id',
-        defaultOrderField: 'checkDate',
-        defaultOrderDirection: 'desc',
-      },
-    );
-    
+    super('compliance_checks', {
+      idField: 'id',
+      defaultOrderField: 'checkDate',
+      defaultOrderDirection: 'desc',
+    });
+
     this.logger = new Logger(ComplianceCheckRepository.name);
   }
-  
+
   /**
    * Save a compliance check result
-   * 
+   *
    * @param result Compliance check result
    * @param tenantId Tenant ID
    * @returns Saved record
@@ -52,13 +50,13 @@ export class ComplianceCheckRepository extends FirestoreBaseRepository<Complianc
       tenantId,
       createdAt: new Date(),
     };
-    
+
     return this.create(record, tenantId);
   }
-  
+
   /**
    * Find check results for a product
-   * 
+   *
    * @param productId Product ID
    * @param tenantId Tenant ID
    * @returns Compliance check records
@@ -78,10 +76,10 @@ export class ComplianceCheckRepository extends FirestoreBaseRepository<Complianc
       tenantId,
     );
   }
-  
+
   /**
    * Find check results for a specific rule
-   * 
+   *
    * @param ruleId Rule ID
    * @param tenantId Tenant ID
    * @returns Compliance check records
@@ -101,10 +99,10 @@ export class ComplianceCheckRepository extends FirestoreBaseRepository<Complianc
       tenantId,
     );
   }
-  
+
   /**
    * Find check results for a specific product and rule
-   * 
+   *
    * @param productId Product ID
    * @param ruleId Rule ID
    * @param tenantId Tenant ID
@@ -131,10 +129,10 @@ export class ComplianceCheckRepository extends FirestoreBaseRepository<Complianc
       tenantId,
     );
   }
-  
+
   /**
    * Find check results by status
-   * 
+   *
    * @param status Compliance status
    * @param tenantId Tenant ID
    * @returns Compliance check records
@@ -154,10 +152,10 @@ export class ComplianceCheckRepository extends FirestoreBaseRepository<Complianc
       tenantId,
     );
   }
-  
+
   /**
    * Find check results by date range
-   * 
+   *
    * @param startDate Start date
    * @param endDate End date
    * @param tenantId Tenant ID

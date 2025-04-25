@@ -1,14 +1,14 @@
 /**
  * Product Schema
  */
-import { FirestoreEntity } from "../../../types/google-cloud.types";
+import { FirestoreEntity } from '../../../types/google-cloud.types';
 import {
   ProductStatus,
   ProductVariant,
   ProductPricing,
   ProductSupplier,
   StockLevelThreshold,
-} from "../interfaces/types";
+} from '../interfaces/types';
 
 /**
  * Product entity for Firestore

@@ -3,54 +3,54 @@
  */
 
 export enum ShippingMethod {
-  AIR = "air",
-  SEA = "sea",
-  ROAD = "road",
-  RAIL = "rail",
-  EXPRESS = "express",
+  AIR = 'air',
+  SEA = 'sea',
+  ROAD = 'road',
+  RAIL = 'rail',
+  EXPRESS = 'express',
 }
 
 export enum ShipmentStatus {
-  DRAFT = "draft",
-  BOOKED = "booked",
-  IN_TRANSIT = "in_transit",
-  CUSTOMS = "customs",
-  DELIVERED = "delivered",
-  COMPLETED = "completed",
-  CANCELLED = "cancelled",
+  DRAFT = 'draft',
+  BOOKED = 'booked',
+  IN_TRANSIT = 'in_transit',
+  CUSTOMS = 'customs',
+  DELIVERED = 'delivered',
+  COMPLETED = 'completed',
+  CANCELLED = 'cancelled',
 }
 
 export enum CustomsStatus {
-  NOT_STARTED = "not_started",
-  DOCUMENTS_PREPARING = "documents_preparing",
-  DOCUMENTS_SUBMITTED = "documents_submitted",
-  INSPECTION = "inspection",
-  DUTIES_PENDING = "duties_pending",
-  DUTIES_PAID = "duties_paid",
-  CLEARED = "cleared",
-  REJECTED = "rejected",
+  NOT_STARTED = 'not_started',
+  DOCUMENTS_PREPARING = 'documents_preparing',
+  DOCUMENTS_SUBMITTED = 'documents_submitted',
+  INSPECTION = 'inspection',
+  DUTIES_PENDING = 'duties_pending',
+  DUTIES_PAID = 'duties_paid',
+  CLEARED = 'cleared',
+  REJECTED = 'rejected',
 }
 
 export enum ComplianceStatus {
-  UNKNOWN = "unknown",
-  PENDING_REVIEW = "pending_review",
-  COMPLIANT = "compliant",
-  NON_COMPLIANT = "non_compliant",
-  EXEMPTION = "exemption",
+  UNKNOWN = 'unknown',
+  PENDING_REVIEW = 'pending_review',
+  COMPLIANT = 'compliant',
+  NON_COMPLIANT = 'non_compliant',
+  EXEMPTION = 'exemption',
 }
 
 export enum IncoTerm {
-  EXW = "exw", // Ex Works
-  FCA = "fca", // Free Carrier
-  FAS = "fas", // Free Alongside Ship
-  FOB = "fob", // Free On Board
-  CFR = "cfr", // Cost and Freight
-  CIF = "cif", // Cost, Insurance and Freight
-  CPT = "cpt", // Carriage Paid To
-  CIP = "cip", // Carriage and Insurance Paid To
-  DAP = "dap", // Delivered At Place
-  DPU = "dpu", // Delivered at Place Unloaded
-  DDP = "ddp", // Delivered Duty Paid
+  EXW = 'exw', // Ex Works
+  FCA = 'fca', // Free Carrier
+  FAS = 'fas', // Free Alongside Ship
+  FOB = 'fob', // Free On Board
+  CFR = 'cfr', // Cost and Freight
+  CIF = 'cif', // Cost, Insurance and Freight
+  CPT = 'cpt', // Carriage Paid To
+  CIP = 'cip', // Carriage and Insurance Paid To
+  DAP = 'dap', // Delivered At Place
+  DPU = 'dpu', // Delivered at Place Unloaded
+  DDP = 'ddp', // Delivered Duty Paid
 }
 
 export interface IInternationalShipment {

@@ -9,18 +9,24 @@ import {
   BadRequestException,
   Delete,
 } from '@nestjs/common';
-import { FirebaseAuthGuard } from '../../auth/guards/firebase-auth.guard';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
+
 import { GetUser } from '../../auth/decorators/get-user.decorator';
-import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
-import { 
-  ReportExporterService, 
-  ExportFormat, 
-  ExportOptions, 
-  ReportBundleOptions,
-  ScheduledExport
-} from '../services/report-exporter.service';
+import { FirebaseAuthGuard } from '../../auth/guards/firebase-auth.guard';
 import { LoadSheddingService } from '../services/load-shedding.service';
 import { NetworkAwareStorageService } from '../services/network-aware-storage.service';
+import {
+  ReportExporterService,
+  ExportFormat,
+  ExportOptions,
+  ReportBundleOptions,
+  ScheduledExport,
+} from '../services/report-exporter.service';
 
 /**
  * Controller for managing report exports in the PIM module
@@ -39,7 +45,7 @@ export class ReportExportController {
 
   /**
    * Export a report
-   * 
+   *
    * @param body Export request
    * @param user Authenticated user
    * @returns Export operation details
@@ -48,7 +54,8 @@ export class ReportExportController {
   @ApiOperation({ summary: 'Export a report' })
   @ApiResponse({ status: 201, description: 'Export operation started' })
   async exportReport(
-    @Body() body: {
+    @Body()
+    body: {
       reportType: string;
       reportData: any;
       options: ExportOptions;
@@ -58,16 +65,21 @@ export class ReportExportController {
     try {
       // Auto-detect network conditions for optimizations
       if (body.options.enableNetworkOptimization === undefined) {
-        const networkQuality = await this.networkAwareStorageService.getNetworkQuality();
-        body.options.enableNetworkOptimization = networkQuality.quality !== 'excellent';
+        const networkQuality =
+          await this.networkAwareStorageService.getNetworkQuality();
+        body.options.enableNetworkOptimization =
+          networkQuality.quality !== 'excellent';
       }
-      
+
       // Auto-detect load shedding for resilience
       if (body.options.enableLoadSheddingResilience === undefined) {
-        const isLoadSheddingActive = await this.loadSheddingService.isLoadSheddingActive(user.organizationId);
+        const isLoadSheddingActive =
+          await this.loadSheddingService.isLoadSheddingActive(
+            user.organizationId,
+          );
         body.options.enableLoadSheddingResilience = isLoadSheddingActive;
       }
-      
+
       const operation = await this.reportExporterService.exportReport(
         body.reportType,
         body.reportData,
@@ -75,13 +87,14 @@ export class ReportExportController {
         user.organizationId,
         user.uid,
       );
-      
+
       return {
         exportId: operation.id,
         status: operation.status,
-        message: operation.status === 'queued' 
-          ? 'Export queued for processing due to system conditions' 
-          : 'Export started',
+        message:
+          operation.status === 'queued'
+            ? 'Export queued for processing due to system conditions'
+            : 'Export started',
         networkConditions: operation.networkConditions,
       };
     } catch (error) {
@@ -91,7 +104,7 @@ export class ReportExportController {
 
   /**
    * Get export status
-   * 
+   *
    * @param exportId Export ID
    * @param user Authenticated user
    * @returns Export operation status
@@ -108,7 +121,7 @@ export class ReportExportController {
         exportId,
         user.organizationId,
       );
-      
+
       return {
         exportId: operation.id,
         status: operation.status,
@@ -121,13 +134,15 @@ export class ReportExportController {
         networkConditions: operation.networkConditions,
       };
     } catch (error) {
-      throw new BadRequestException(`Failed to get export status: ${error.message}`);
+      throw new BadRequestException(
+        `Failed to get export status: ${error.message}`,
+      );
     }
   }
 
   /**
    * Schedule a report export
-   * 
+   *
    * @param body Schedule request
    * @param user Authenticated user
    * @returns Scheduled export details
@@ -136,7 +151,8 @@ export class ReportExportController {
   @ApiOperation({ summary: 'Schedule a report export' })
   @ApiResponse({ status: 201, description: 'Report export scheduled' })
   async scheduleExport(
-    @Body() body: {
+    @Body()
+    body: {
       reportType: string;
       reportParams: any;
       format: ExportFormat;
@@ -159,9 +175,10 @@ export class ReportExportController {
         organizationId: user.organizationId,
         userId: user.uid,
       };
-      
-      const scheduledExport = await this.reportExporterService.scheduleExport(schedule);
-      
+
+      const scheduledExport =
+        await this.reportExporterService.scheduleExport(schedule);
+
       return {
         scheduleId: scheduledExport.id,
         reportType: scheduledExport.reportType,
@@ -173,29 +190,29 @@ export class ReportExportController {
         message: 'Report export scheduled successfully',
       };
     } catch (error) {
-      throw new BadRequestException(`Failed to schedule export: ${error.message}`);
+      throw new BadRequestException(
+        `Failed to schedule export: ${error.message}`,
+      );
     }
   }
 
   /**
    * Get scheduled exports
-   * 
+   *
    * @param user Authenticated user
    * @returns List of scheduled exports
    */
   @Get('schedules/list')
   @ApiOperation({ summary: 'Get scheduled exports' })
   @ApiResponse({ status: 200, description: 'Scheduled exports' })
-  async getScheduledExports(
-    @GetUser() user: any,
-  ): Promise<any> {
+  async getScheduledExports(@GetUser() user: any): Promise<any> {
     try {
       const schedules = await this.reportExporterService.getScheduledExports(
         user.organizationId,
       );
-      
+
       return {
-        schedules: schedules.map(schedule => ({
+        schedules: schedules.map((schedule) => ({
           scheduleId: schedule.id,
           reportType: schedule.reportType,
           frequency: schedule.frequency,
@@ -208,13 +225,15 @@ export class ReportExportController {
         count: schedules.length,
       };
     } catch (error) {
-      throw new BadRequestException(`Failed to get scheduled exports: ${error.message}`);
+      throw new BadRequestException(
+        `Failed to get scheduled exports: ${error.message}`,
+      );
     }
   }
 
   /**
    * Cancel a scheduled export
-   * 
+   *
    * @param scheduleId Schedule ID
    * @param user Authenticated user
    * @returns Success message
@@ -231,19 +250,21 @@ export class ReportExportController {
         scheduleId,
         user.organizationId,
       );
-      
+
       return {
         success,
         message: 'Scheduled export cancelled successfully',
       };
     } catch (error) {
-      throw new BadRequestException(`Failed to cancel scheduled export: ${error.message}`);
+      throw new BadRequestException(
+        `Failed to cancel scheduled export: ${error.message}`,
+      );
     }
   }
 
   /**
    * Create a report bundle
-   * 
+   *
    * @param body Bundle request
    * @param user Authenticated user
    * @returns Bundle operation details
@@ -252,7 +273,8 @@ export class ReportExportController {
   @ApiOperation({ summary: 'Create a report bundle' })
   @ApiResponse({ status: 201, description: 'Bundle operation started' })
   async createReportBundle(
-    @Body() body: {
+    @Body()
+    body: {
       reports: Array<{
         reportType: string;
         reportParams: any;
@@ -270,16 +292,20 @@ export class ReportExportController {
     try {
       // Auto-detect network conditions for optimizations
       if (body.enableNetworkOptimization === undefined) {
-        const networkQuality = await this.networkAwareStorageService.getNetworkQuality();
+        const networkQuality =
+          await this.networkAwareStorageService.getNetworkQuality();
         body.enableNetworkOptimization = networkQuality.quality !== 'excellent';
       }
-      
+
       // Auto-detect load shedding for resilience
       if (body.enableLoadSheddingResilience === undefined) {
-        const isLoadSheddingActive = await this.loadSheddingService.isLoadSheddingActive(user.organizationId);
+        const isLoadSheddingActive =
+          await this.loadSheddingService.isLoadSheddingActive(
+            user.organizationId,
+          );
         body.enableLoadSheddingResilience = isLoadSheddingActive;
       }
-      
+
       const bundleOptions: ReportBundleOptions = {
         reports: body.reports,
         format: body.format,
@@ -289,31 +315,34 @@ export class ReportExportController {
         compressBundle: body.compressBundle,
         notificationEmail: body.notificationEmail,
       };
-      
+
       const operation = await this.reportExporterService.createReportBundle(
         bundleOptions,
         user.organizationId,
         user.uid,
       );
-      
+
       return {
         bundleId: operation.id,
         status: operation.status,
-        message: operation.status === 'queued' 
-          ? 'Bundle queued for processing due to system conditions' 
-          : 'Bundle creation started',
+        message:
+          operation.status === 'queued'
+            ? 'Bundle queued for processing due to system conditions'
+            : 'Bundle creation started',
         reportCount: body.reports.length,
         format: body.format,
         networkConditions: operation.networkConditions,
       };
     } catch (error) {
-      throw new BadRequestException(`Failed to create report bundle: ${error.message}`);
+      throw new BadRequestException(
+        `Failed to create report bundle: ${error.message}`,
+      );
     }
   }
 
   /**
    * Get bundle status
-   * 
+   *
    * @param bundleId Bundle ID
    * @param user Authenticated user
    * @returns Bundle operation status
@@ -330,7 +359,7 @@ export class ReportExportController {
         bundleId,
         user.organizationId,
       );
-      
+
       return {
         bundleId: operation.id,
         status: operation.status,
@@ -342,7 +371,9 @@ export class ReportExportController {
         networkConditions: operation.networkConditions,
       };
     } catch (error) {
-      throw new BadRequestException(`Failed to get bundle status: ${error.message}`);
+      throw new BadRequestException(
+        `Failed to get bundle status: ${error.message}`,
+      );
     }
   }
 }

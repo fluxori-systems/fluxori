@@ -1,4 +1,5 @@
 import React, { Component, ErrorInfo, ReactNode } from 'react';
+
 import { observabilityApi } from '../../api/observability.api';
 
 interface ErrorBoundaryProps {

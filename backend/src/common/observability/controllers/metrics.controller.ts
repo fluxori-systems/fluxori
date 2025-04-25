@@ -1,24 +1,24 @@
-import { Controller, Get, Query, Param } from "@nestjs/common";
+import { Controller, Get, Query, Param } from '@nestjs/common';
 import {
   ApiTags,
   ApiOperation,
   ApiResponse,
   ApiQuery,
   ApiParam,
-} from "@nestjs/swagger";
+} from '@nestjs/swagger';
 
 // Import services
-import { METRIC_NAMES } from "../constants/observability.constants";
-import { MetricsService } from "../services/metrics.service";
-import { ObservabilityService } from "../services/observability.service";
+import { METRIC_NAMES } from '../constants/observability.constants';
+import { MetricsService } from '../services/metrics.service';
+import { ObservabilityService } from '../services/observability.service';
 
 // Import constants
 
 /**
  * Controller for metrics endpoints
  */
-@ApiTags("Metrics")
-@Controller("metrics")
+@ApiTags('Metrics')
+@Controller('metrics')
 export class MetricsController {
   constructor(
     private readonly metricsService: MetricsService,
@@ -29,12 +29,12 @@ export class MetricsController {
    * Get all metrics
    */
   @Get()
-  @ApiOperation({ summary: "Get all metrics" })
+  @ApiOperation({ summary: 'Get all metrics' })
   @ApiResponse({
     status: 200,
-    description: "All metrics",
+    description: 'All metrics',
     schema: {
-      type: "object",
+      type: 'object',
     },
   })
   getAllMetrics(): Record<string, Record<string, number>> {
@@ -44,22 +44,22 @@ export class MetricsController {
   /**
    * Get a specific metric
    */
-  @Get(":name")
-  @ApiOperation({ summary: "Get a specific metric" })
+  @Get(':name')
+  @ApiOperation({ summary: 'Get a specific metric' })
   @ApiParam({
-    name: "name",
-    description: "Metric name",
-    example: "http.request.count",
+    name: 'name',
+    description: 'Metric name',
+    example: 'http.request.count',
   })
   @ApiResponse({
     status: 200,
-    description: "Metric values",
+    description: 'Metric values',
     schema: {
-      type: "object",
+      type: 'object',
     },
   })
-  @ApiResponse({ status: 404, description: "Metric not found" })
-  getMetric(@Param("name") name: string): Record<string, number> {
+  @ApiResponse({ status: 404, description: 'Metric not found' })
+  getMetric(@Param('name') name: string): Record<string, number> {
     const metricValues = this.metricsService.getMetricValues(name);
 
     if (!metricValues) {
@@ -72,41 +72,41 @@ export class MetricsController {
   /**
    * Get distribution statistics for a metric
    */
-  @Get(":name/stats")
-  @ApiOperation({ summary: "Get distribution statistics for a metric" })
+  @Get(':name/stats')
+  @ApiOperation({ summary: 'Get distribution statistics for a metric' })
   @ApiParam({
-    name: "name",
-    description: "Metric name",
-    example: "http.request.duration",
+    name: 'name',
+    description: 'Metric name',
+    example: 'http.request.duration',
   })
   @ApiResponse({
     status: 200,
-    description: "Distribution statistics",
+    description: 'Distribution statistics',
     schema: {
-      type: "object",
+      type: 'object',
       properties: {
-        count: { type: "number" },
-        min: { type: "number" },
-        max: { type: "number" },
-        mean: { type: "number" },
-        p50: { type: "number" },
-        p90: { type: "number" },
-        p95: { type: "number" },
-        p99: { type: "number" },
+        count: { type: 'number' },
+        min: { type: 'number' },
+        max: { type: 'number' },
+        mean: { type: 'number' },
+        p50: { type: 'number' },
+        p90: { type: 'number' },
+        p95: { type: 'number' },
+        p99: { type: 'number' },
       },
     },
   })
   @ApiResponse({
     status: 404,
-    description: "Metric not found or not a distribution",
+    description: 'Metric not found or not a distribution',
   })
   getDistributionStats(
-    @Param("name") name: string,
+    @Param('name') name: string,
   ): Record<string, number> | { error: string } {
     const stats = this.metricsService.getDistributionStats(name);
 
     if (!stats) {
-      return { error: "Metric not found or not a distribution" };
+      return { error: 'Metric not found or not a distribution' };
     }
 
     return stats;
@@ -115,26 +115,26 @@ export class MetricsController {
   /**
    * Get HTTP request metrics
    */
-  @Get("http/requests")
-  @ApiOperation({ summary: "Get HTTP request metrics" })
+  @Get('http/requests')
+  @ApiOperation({ summary: 'Get HTTP request metrics' })
   @ApiResponse({
     status: 200,
-    description: "HTTP request metrics",
+    description: 'HTTP request metrics',
     schema: {
-      type: "object",
+      type: 'object',
       properties: {
-        counts: { type: "object" },
+        counts: { type: 'object' },
         durations: {
-          type: "object",
+          type: 'object',
           properties: {
-            mean: { type: "number" },
-            p50: { type: "number" },
-            p90: { type: "number" },
-            p95: { type: "number" },
-            p99: { type: "number" },
+            mean: { type: 'number' },
+            p50: { type: 'number' },
+            p90: { type: 'number' },
+            p95: { type: 'number' },
+            p99: { type: 'number' },
           },
         },
-        errors: { type: "object" },
+        errors: { type: 'object' },
       },
     },
   })
@@ -159,26 +159,26 @@ export class MetricsController {
   /**
    * Get database metrics
    */
-  @Get("database/operations")
-  @ApiOperation({ summary: "Get database operation metrics" })
+  @Get('database/operations')
+  @ApiOperation({ summary: 'Get database operation metrics' })
   @ApiResponse({
     status: 200,
-    description: "Database operation metrics",
+    description: 'Database operation metrics',
     schema: {
-      type: "object",
+      type: 'object',
       properties: {
-        counts: { type: "object" },
+        counts: { type: 'object' },
         durations: {
-          type: "object",
+          type: 'object',
           properties: {
-            mean: { type: "number" },
-            p50: { type: "number" },
-            p90: { type: "number" },
-            p95: { type: "number" },
-            p99: { type: "number" },
+            mean: { type: 'number' },
+            p50: { type: 'number' },
+            p90: { type: 'number' },
+            p95: { type: 'number' },
+            p99: { type: 'number' },
           },
         },
-        errors: { type: "object" },
+        errors: { type: 'object' },
       },
     },
   })
@@ -203,26 +203,26 @@ export class MetricsController {
   /**
    * Get AI metrics
    */
-  @Get("ai/usage")
-  @ApiOperation({ summary: "Get AI usage metrics" })
+  @Get('ai/usage')
+  @ApiOperation({ summary: 'Get AI usage metrics' })
   @ApiResponse({
     status: 200,
-    description: "AI usage metrics",
+    description: 'AI usage metrics',
     schema: {
-      type: "object",
+      type: 'object',
       properties: {
-        tokens: { type: "object" },
+        tokens: { type: 'object' },
         durations: {
-          type: "object",
+          type: 'object',
           properties: {
-            mean: { type: "number" },
-            p50: { type: "number" },
-            p90: { type: "number" },
-            p95: { type: "number" },
-            p99: { type: "number" },
+            mean: { type: 'number' },
+            p50: { type: 'number' },
+            p90: { type: 'number' },
+            p95: { type: 'number' },
+            p99: { type: 'number' },
           },
         },
-        credits: { type: "object" },
+        credits: { type: 'object' },
       },
     },
   })
@@ -247,16 +247,16 @@ export class MetricsController {
   /**
    * Get system metrics
    */
-  @Get("system/resources")
-  @ApiOperation({ summary: "Get system resource metrics" })
+  @Get('system/resources')
+  @ApiOperation({ summary: 'Get system resource metrics' })
   @ApiResponse({
     status: 200,
-    description: "System resource metrics",
+    description: 'System resource metrics',
     schema: {
-      type: "object",
+      type: 'object',
       properties: {
-        memory: { type: "object" },
-        cpu: { type: "object" },
+        memory: { type: 'object' },
+        cpu: { type: 'object' },
       },
     },
   })

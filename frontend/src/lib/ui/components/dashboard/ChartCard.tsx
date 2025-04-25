@@ -1,11 +1,12 @@
 'use client';
 
 import React, { forwardRef, useMemo } from 'react';
-import { Text } from '../../components/Text';
+
 import { DashboardCard, BaseDashboardCardProps } from './DashboardCard';
-import { useConnectionQuality } from '../../hooks/useConnection';
-import { useSouthAfricanMarketOptimizations } from '../../../shared/hooks/useSouthAfricanMarketOptimizations';
 import { ChartCardProps } from '../../../design-system/types/dashboard';
+import { useSouthAfricanMarketOptimizations } from '../../../shared/hooks/useSouthAfricanMarketOptimizations';
+import { Text } from '../../components/Text';
+import { useConnectionQuality } from '../../hooks/useConnection';
 
 export interface DashboardChartCardProps extends Omit<BaseDashboardCardProps, 'type'>, 
   Omit<ChartCardProps, keyof BaseDashboardCardProps> {}

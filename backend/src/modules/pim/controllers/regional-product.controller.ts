@@ -1,6 +1,6 @@
 /**
  * Regional Product Controller
- * 
+ *
  * Controller for managing region-specific product data
  */
 
@@ -17,19 +17,22 @@ import {
   HttpException,
   HttpStatus,
 } from '@nestjs/common';
+
 import { FirebaseAuthGuard } from '../../../common/guards/firebase-auth.guard';
 import { GetUser } from '../../auth/decorators/get-user.decorator';
-import { 
-  RegionalProductEnhancerService, 
-  RegionalProductAttributes, 
+import {
+  RegionalProductEnhancerService,
+  RegionalProductAttributes,
   RegionalValidationResult,
-  RegionalPrice
+  RegionalPrice,
 } from '../services/enhanced-regional/regional-product-enhancer.service';
 
 /**
  * DTO for updating regional product data
  */
-class UpdateRegionalProductDataDto implements Partial<RegionalProductAttributes> {
+class UpdateRegionalProductDataDto
+  implements Partial<RegionalProductAttributes>
+{
   name?: string;
   description?: string;
   searchKeywords?: string[];
@@ -66,13 +69,13 @@ class BulkUpdateRegionalDataDto {
 @UseGuards(FirebaseAuthGuard)
 export class RegionalProductController {
   private readonly logger = new Logger(RegionalProductController.name);
-  
+
   constructor(
     private readonly regionalProductService: RegionalProductEnhancerService,
   ) {
     this.logger.log('Regional Product Controller initialized');
   }
-  
+
   /**
    * Get all regional data for a product
    */
@@ -82,16 +85,22 @@ export class RegionalProductController {
     @GetUser() user: any,
   ) {
     try {
-      return this.regionalProductService.getProductRegionalData(productId, user.tenantId);
+      return this.regionalProductService.getProductRegionalData(
+        productId,
+        user.tenantId,
+      );
     } catch (error) {
-      this.logger.error(`Error fetching product regional data: ${error.message}`, error.stack);
+      this.logger.error(
+        `Error fetching product regional data: ${error.message}`,
+        error.stack,
+      );
       throw new HttpException(
         `Failed to fetch product regional data: ${error.message}`,
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
-  
+
   /**
    * Get regional data for a product in a specific region
    */
@@ -108,14 +117,17 @@ export class RegionalProductController {
         user.tenantId,
       );
     } catch (error) {
-      this.logger.error(`Error fetching product regional data: ${error.message}`, error.stack);
+      this.logger.error(
+        `Error fetching product regional data: ${error.message}`,
+        error.stack,
+      );
       throw new HttpException(
         `Failed to fetch product regional data: ${error.message}`,
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
-  
+
   /**
    * Update regional data for a product
    */
@@ -134,14 +146,17 @@ export class RegionalProductController {
         user.tenantId,
       );
     } catch (error) {
-      this.logger.error(`Error updating product regional data: ${error.message}`, error.stack);
+      this.logger.error(
+        `Error updating product regional data: ${error.message}`,
+        error.stack,
+      );
       throw new HttpException(
         `Failed to update product regional data: ${error.message}`,
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
-  
+
   /**
    * Validate product for a specific region
    */
@@ -158,14 +173,17 @@ export class RegionalProductController {
         user.tenantId,
       );
     } catch (error) {
-      this.logger.error(`Error validating product for region: ${error.message}`, error.stack);
+      this.logger.error(
+        `Error validating product for region: ${error.message}`,
+        error.stack,
+      );
       throw new HttpException(
         `Failed to validate product for region: ${error.message}`,
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
-  
+
   /**
    * Calculate regional prices for a product
    */
@@ -180,14 +198,17 @@ export class RegionalProductController {
         user.tenantId,
       );
     } catch (error) {
-      this.logger.error(`Error calculating regional prices: ${error.message}`, error.stack);
+      this.logger.error(
+        `Error calculating regional prices: ${error.message}`,
+        error.stack,
+      );
       throw new HttpException(
         `Failed to calculate regional prices: ${error.message}`,
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
-  
+
   /**
    * Auto-generate regional data for a product
    */
@@ -200,21 +221,24 @@ export class RegionalProductController {
     try {
       // Parse region IDs if provided
       const parsedRegionIds = regionIds ? regionIds.split(',') : undefined;
-      
+
       return this.regionalProductService.generateRegionalData(
         productId,
         parsedRegionIds,
         user.tenantId,
       );
     } catch (error) {
-      this.logger.error(`Error generating regional data: ${error.message}`, error.stack);
+      this.logger.error(
+        `Error generating regional data: ${error.message}`,
+        error.stack,
+      );
       throw new HttpException(
         `Failed to generate regional data: ${error.message}`,
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
-  
+
   /**
    * Bulk update regional data for multiple products
    */
@@ -231,7 +255,10 @@ export class RegionalProductController {
         user.tenantId,
       );
     } catch (error) {
-      this.logger.error(`Error bulk updating regional data: ${error.message}`, error.stack);
+      this.logger.error(
+        `Error bulk updating regional data: ${error.message}`,
+        error.stack,
+      );
       throw new HttpException(
         `Failed to bulk update regional data: ${error.message}`,
         HttpStatus.INTERNAL_SERVER_ERROR,

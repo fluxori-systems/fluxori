@@ -1,4 +1,4 @@
-import { Injectable, Logger } from "@nestjs/common";
+import { Injectable, Logger } from '@nestjs/common';
 
 import {
   ModelAdapter,
@@ -7,8 +7,8 @@ import {
   ChatCompletionRequest,
   ModelResponse,
   TokenCountResult,
-} from "../interfaces/model-adapter.interface";
-import { ModelRegistryEntry, AgentErrorType } from "../interfaces/types";
+} from '../interfaces/model-adapter.interface';
+import { ModelRegistryEntry, AgentErrorType } from '../interfaces/types';
 
 // Note: This is a partial implementation. In real code, you would import and use the actual Vertex AI client
 // For reference, this is how the import would look
@@ -37,7 +37,7 @@ export class VertexAIModelAdapter implements ModelAdapter {
   }): Promise<void> {
     try {
       this.projectId = config.projectId;
-      this.location = config.location || "europe-west4"; // Default to European region
+      this.location = config.location || 'europe-west4'; // Default to European region
 
       // Note: This is a placeholder. In real code, initialize the actual Vertex AI client
       // this.vertexClient = new VertexAI({
@@ -78,19 +78,19 @@ export class VertexAIModelAdapter implements ModelAdapter {
   supportsModel(modelName: string): boolean {
     // List of supported models - would be more sophisticated in a real implementation
     const supportedModels = [
-      "gemini-pro",
-      "gemini-pro-vision",
-      "gemini-ultra",
-      "text-bison",
-      "text-unicorn",
-      "chat-bison",
-      "claude-3-sonnet",
-      "claude-3-opus",
-      "claude-3-haiku",
+      'gemini-pro',
+      'gemini-pro-vision',
+      'gemini-ultra',
+      'text-bison',
+      'text-unicorn',
+      'chat-bison',
+      'claude-3-sonnet',
+      'claude-3-opus',
+      'claude-3-haiku',
     ];
 
     return supportedModels.some(
-      (model) => modelName.includes(model) || modelName.startsWith("vertex-"),
+      (model) => modelName.includes(model) || modelName.startsWith('vertex-'),
     );
   }
 
@@ -142,7 +142,7 @@ export class VertexAIModelAdapter implements ModelAdapter {
         finishReason: mockResult.finishReason,
         metadata: {
           model: model.model,
-          provider: "vertex-ai",
+          provider: 'vertex-ai',
         },
       };
     } catch (error) {
@@ -212,7 +212,7 @@ export class VertexAIModelAdapter implements ModelAdapter {
         functionCall: mockResult.functionCall,
         metadata: {
           model: model.model,
-          provider: "vertex-ai",
+          provider: 'vertex-ai',
         },
       };
     } catch (error) {
@@ -315,7 +315,7 @@ export class VertexAIModelAdapter implements ModelAdapter {
     try {
       // Note: This is a placeholder. In a real implementation, try to initialize
       // a client with the provided credentials and check if it works
-      return credentials && credentials.type === "service_account";
+      return credentials && credentials.type === 'service_account';
     } catch (error) {
       this.logger.error(
         `Vertex AI credential validation error: ${error.message}`,
@@ -357,22 +357,22 @@ export class VertexAIModelAdapter implements ModelAdapter {
       // Mock implementation for demonstration
       return [
         {
-          model: "gemini-pro",
-          displayName: "Gemini Pro",
-          provider: "vertex-ai",
-          description: "Advanced large language model for text generation",
+          model: 'gemini-pro',
+          displayName: 'Gemini Pro',
+          provider: 'vertex-ai',
+          description: 'Advanced large language model for text generation',
         },
         {
-          model: "gemini-pro-vision",
-          displayName: "Gemini Pro Vision",
-          provider: "vertex-ai",
-          description: "Multimodal model for text and image understanding",
+          model: 'gemini-pro-vision',
+          displayName: 'Gemini Pro Vision',
+          provider: 'vertex-ai',
+          description: 'Multimodal model for text and image understanding',
         },
         {
-          model: "claude-3-sonnet",
-          displayName: "Claude 3 Sonnet",
-          provider: "vertex-ai",
-          description: "Anthropic Claude 3 Sonnet available through Vertex AI",
+          model: 'claude-3-sonnet',
+          displayName: 'Claude 3 Sonnet',
+          provider: 'vertex-ai',
+          description: 'Anthropic Claude 3 Sonnet available through Vertex AI',
         },
       ];
     } catch (error) {
@@ -389,7 +389,7 @@ export class VertexAIModelAdapter implements ModelAdapter {
    * @returns Provider name
    */
   getProviderName(): string {
-    return "vertex-ai";
+    return 'vertex-ai';
   }
 
   /* Helper methods */
@@ -401,7 +401,7 @@ export class VertexAIModelAdapter implements ModelAdapter {
   private ensureInitialized(): void {
     if (!this.initialized) {
       throw new Error(
-        "Vertex AI adapter is not initialized. Call initialize() first.",
+        'Vertex AI adapter is not initialized. Call initialize() first.',
       );
     }
   }
@@ -439,13 +439,13 @@ export class VertexAIModelAdapter implements ModelAdapter {
         ? {
             functionCallingConfig: {
               mode:
-                options.functionCall === "auto"
-                  ? "AUTO"
-                  : options.functionCall === "none"
-                    ? "NONE"
-                    : "ANY",
+                options.functionCall === 'auto'
+                  ? 'AUTO'
+                  : options.functionCall === 'none'
+                    ? 'NONE'
+                    : 'ANY',
               allowedFunctionNames:
-                typeof options.functionCall === "string"
+                typeof options.functionCall === 'string'
                   ? undefined
                   : [options.functionCall],
             },
@@ -464,29 +464,29 @@ export class VertexAIModelAdapter implements ModelAdapter {
     let errorType = AgentErrorType.EXECUTION_ERROR;
 
     if (
-      error.message?.includes("Authentication failed") ||
-      error.message?.includes("Permission denied") ||
+      error.message?.includes('Authentication failed') ||
+      error.message?.includes('Permission denied') ||
       error.code === 403
     ) {
       errorType = AgentErrorType.AUTHORIZATION_ERROR;
     } else if (
-      error.message?.includes("model not found") ||
-      error.message?.includes("model is not available") ||
+      error.message?.includes('model not found') ||
+      error.message?.includes('model is not available') ||
       error.code === 404
     ) {
       errorType = AgentErrorType.MODEL_UNAVAILABLE;
     } else if (
-      error.message?.includes("exceeded quota") ||
-      error.message?.includes("rate limit") ||
+      error.message?.includes('exceeded quota') ||
+      error.message?.includes('rate limit') ||
       error.code === 429
     ) {
       errorType = AgentErrorType.RATE_LIMIT_EXCEEDED;
-    } else if (error.message?.includes("token limit")) {
+    } else if (error.message?.includes('token limit')) {
       errorType = AgentErrorType.TOKEN_LIMIT_EXCEEDED;
     }
 
     const formattedError = new Error(
-      `Vertex AI error (${errorType}): ${error.message || "Unknown error"}`,
+      `Vertex AI error (${errorType}): ${error.message || 'Unknown error'}`,
     );
     (formattedError as any).type = errorType;
     (formattedError as any).originalError = error;
@@ -516,7 +516,7 @@ export class VertexAIModelAdapter implements ModelAdapter {
     modelName: string,
   ): {
     content: string;
-    finishReason: "stop" | "length" | "function_call" | "content_filter";
+    finishReason: 'stop' | 'length' | 'function_call' | 'content_filter';
     functionCall?: {
       name: string;
       arguments: Record<string, any>;
@@ -524,42 +524,42 @@ export class VertexAIModelAdapter implements ModelAdapter {
   } {
     // Check if prompt seems to be requesting a function call
     if (
-      prompt.toLowerCase().includes("weather") &&
-      prompt.toLowerCase().includes("get") &&
-      modelName.includes("gemini")
+      prompt.toLowerCase().includes('weather') &&
+      prompt.toLowerCase().includes('get') &&
+      modelName.includes('gemini')
     ) {
       return {
         content: "I'll get the weather information for you.",
-        finishReason: "function_call",
+        finishReason: 'function_call',
         functionCall: {
-          name: "getWeather",
+          name: 'getWeather',
           arguments: {
-            location: prompt.includes("johannesburg")
-              ? "Johannesburg"
-              : "Cape Town",
-            unit: "celsius",
+            location: prompt.includes('johannesburg')
+              ? 'Johannesburg'
+              : 'Cape Town',
+            unit: 'celsius',
           },
         },
       };
     }
 
     // Generate a simple response based on the prompt
-    let response = "";
+    let response = '';
     if (
-      prompt.toLowerCase().includes("hello") ||
-      prompt.toLowerCase().includes("hi")
+      prompt.toLowerCase().includes('hello') ||
+      prompt.toLowerCase().includes('hi')
     ) {
       response = `Hello! I'm an AI assistant powered by ${modelName}. How can I help you today?`;
-    } else if (prompt.toLowerCase().includes("help")) {
+    } else if (prompt.toLowerCase().includes('help')) {
       response =
-        "I can help you with various tasks like answering questions, providing information, or assisting with specific requests. What do you need help with?";
+        'I can help you with various tasks like answering questions, providing information, or assisting with specific requests. What do you need help with?';
     } else {
       response = `I've processed your request using ${modelName}. Here's a simulated response for development purposes. In production, this would be generated by the actual Vertex AI model.`;
     }
 
     return {
       content: response,
-      finishReason: "stop",
+      finishReason: 'stop',
     };
   }
 }

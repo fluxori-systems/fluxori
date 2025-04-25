@@ -1,9 +1,9 @@
-import { Injectable, Logger } from "@nestjs/common";
+import { Injectable, Logger } from '@nestjs/common';
 
-import { FirestoreBaseRepository } from "../../../common/repositories";
-import { FirestoreConfigService } from "../../../config/firestore.config";
-import { MarketplaceCredentials } from "../interfaces/types";
-import { MarketplaceCredential } from "../models/marketplace-credentials.schema";
+import { FirestoreBaseRepository } from '../../../common/repositories';
+import { FirestoreConfigService } from '../../../config/firestore.config';
+import { MarketplaceCredentials } from '../interfaces/types';
+import { MarketplaceCredential } from '../models/marketplace-credentials.schema';
 
 /**
  * Repository for managing marketplace credentials in Firestore
@@ -11,21 +11,21 @@ import { MarketplaceCredential } from "../models/marketplace-credentials.schema"
 @Injectable()
 export class MarketplaceCredentialsRepository extends FirestoreBaseRepository<MarketplaceCredential> {
   protected readonly logger = new Logger(MarketplaceCredentialsRepository.name);
-  protected readonly collectionName = "marketplace_credentials";
+  protected readonly collectionName = 'marketplace_credentials';
 
   constructor(
     protected readonly firestoreConfigService: FirestoreConfigService,
   ) {
-    super(firestoreConfigService, "marketplace_credentials", {
+    super(firestoreConfigService, 'marketplace_credentials', {
       useSoftDeletes: true,
       useVersioning: true,
       enableCache: true,
       cacheTTLMs: 10 * 60 * 1000, // 10 minutes
       requiredFields: [
-        "marketplaceId",
-        "organizationId",
-        "credentials",
-        "isActive",
+        'marketplaceId',
+        'organizationId',
+        'credentials',
+        'isActive',
       ],
     });
   }
@@ -42,10 +42,10 @@ export class MarketplaceCredentialsRepository extends FirestoreBaseRepository<Ma
   ): Promise<MarketplaceCredential | null> {
     try {
       const querySnapshot = await this.collection
-        .where("marketplaceId", "==", marketplaceId)
-        .where("organizationId", "==", organizationId)
-        .where("isActive", "==", true)
-        .where("isDeleted", "==", false)
+        .where('marketplaceId', '==', marketplaceId)
+        .where('organizationId', '==', organizationId)
+        .where('isActive', '==', true)
+        .where('isDeleted', '==', false)
         .limit(1)
         .get();
 
@@ -74,9 +74,9 @@ export class MarketplaceCredentialsRepository extends FirestoreBaseRepository<Ma
   ): Promise<MarketplaceCredential[]> {
     try {
       const querySnapshot = await this.collection
-        .where("organizationId", "==", organizationId)
-        .where("isActive", "==", true)
-        .where("isDeleted", "==", false)
+        .where('organizationId', '==', organizationId)
+        .where('isActive', '==', true)
+        .where('isDeleted', '==', false)
         .get();
 
       return querySnapshot.docs.map((doc) => this.converter.fromFirestore(doc));
@@ -107,9 +107,11 @@ export class MarketplaceCredentialsRepository extends FirestoreBaseRepository<Ma
 
       // Clean up credentials object
       const cleanCredentials = { ...credentials };
-      if ("organizationId" in cleanCredentials) {
+      if ('organizationId' in cleanCredentials) {
         // Use proper type safety approach by creating a type that allows property deletion
-        const credentialsWithOptionalOrg = cleanCredentials as { organizationId?: string };
+        const credentialsWithOptionalOrg = cleanCredentials as {
+          organizationId?: string;
+        };
         delete credentialsWithOptionalOrg.organizationId; // Don't store organizationId twice
       }
 

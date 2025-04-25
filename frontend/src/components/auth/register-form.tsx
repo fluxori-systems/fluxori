@@ -1,9 +1,13 @@
 'use client';
 
 import { useState } from 'react';
+
 import { useRouter } from 'next/navigation';
+
 import { TextInput, PasswordInput, Paper, Title, Container, Button, Text, Divider, Group, Anchor, Stack, Checkbox } from '@mantine/core';
+
 import { useForm } from 'react-hook-form';
+
 import { useFirebase } from '../../contexts/firebase-context';
 import { RegistrationData } from '../../types/user/user.types';
 

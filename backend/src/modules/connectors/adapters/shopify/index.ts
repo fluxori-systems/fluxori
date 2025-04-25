@@ -1,6 +1,6 @@
 /**
  * Shopify Connector
- * 
+ *
  * Public exports for the Shopify connector.
  */
 

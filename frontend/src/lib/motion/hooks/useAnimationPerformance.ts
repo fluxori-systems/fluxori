@@ -1,6 +1,7 @@
 'use client';
 
 import { useRef, useEffect, useState } from 'react';
+
 import { usePerformanceMonitoring } from './usePerformanceMonitoring';
 import { defaultConnectionService } from '../services/connection-service.impl';
 

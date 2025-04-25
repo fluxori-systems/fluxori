@@ -1,10 +1,12 @@
 'use client';
 
 import React, { useRef, useEffect } from 'react';
+
 import { gsap } from 'gsap';
+
 import { useMotion } from '../context/MotionContext';
-import { aiAnimations, complexityPresets } from '../utils/motion-tokens';
 import { useReducedMotion } from '../hooks/useReducedMotion';
+import { aiAnimations, complexityPresets } from '../utils/motion-tokens';
 
 export interface AIProcessingIndicatorProps {
   /** Type of processing state to display */

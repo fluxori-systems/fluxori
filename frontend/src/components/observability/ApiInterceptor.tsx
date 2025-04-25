@@ -1,8 +1,10 @@
 import React, { useEffect, ReactNode } from 'react';
+
 import axios, { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
+import { v4 as uuidv4 } from 'uuid';
+
 import { observabilityApi } from '../../api/observability.api';
 import { useObservability } from '../../hooks/useObservability';
-import { v4 as uuidv4 } from 'uuid';
 
 interface ApiInterceptorProps {
   children: ReactNode;

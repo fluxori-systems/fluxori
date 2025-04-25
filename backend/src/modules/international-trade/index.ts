@@ -7,7 +7,7 @@
  */
 
 // Re-export module
-export { InternationalTradeModule } from "./international-trade.module";
+export { InternationalTradeModule } from './international-trade.module';
 
 // Re-export types and interfaces
 export {
@@ -29,9 +29,9 @@ export {
   UpdateShipmentDto,
   QueryShipmentsDto,
   ShipmentResponse,
-} from "./interfaces/types";
+} from './interfaces/types';
 
 // Re-export dependency interfaces
-export * from "./interfaces/dependencies";
+export * from './interfaces/dependencies';
 
 // Note: As the module is developed with services or repositories, they should be exported here.

@@ -9,19 +9,19 @@ import {
   Logger,
   NotFoundException,
   ForbiddenException,
-} from "@nestjs/common";
+} from '@nestjs/common';
 
-import { AIModelConfig } from "../models/ai-model-config.schema";
+import { AIModelConfig } from '../models/ai-model-config.schema';
 import {
   AIModelConfigService,
   CreateAIModelConfigDto,
   UpdateAIModelConfigDto,
-} from "../services/ai-model-config.service";
+} from '../services/ai-model-config.service';
 
 /**
  * Controller for AI Model Configuration endpoints
  */
-@Controller("api/ai-model-configs")
+@Controller('api/ai-model-configs')
 export class AIModelConfigController {
   private readonly logger = new Logger(AIModelConfigController.name);
 
@@ -44,8 +44,8 @@ export class AIModelConfigController {
    * @param id Configuration ID
    * @returns Configuration data
    */
-  @Get(":id")
-  async findById(@Param("id") id: string): Promise<AIModelConfig> {
+  @Get(':id')
+  async findById(@Param('id') id: string): Promise<AIModelConfig> {
     return this.modelConfigService.findById(id);
   }
 
@@ -54,9 +54,9 @@ export class AIModelConfigController {
    * @param organizationId Organization ID
    * @returns Array of configurations
    */
-  @Get("organization/:organizationId")
+  @Get('organization/:organizationId')
   async findByOrganization(
-    @Param("organizationId") organizationId: string,
+    @Param('organizationId') organizationId: string,
   ): Promise<AIModelConfig[]> {
     return this.modelConfigService.findByOrganization(organizationId);
   }
@@ -66,9 +66,9 @@ export class AIModelConfigController {
    * @param organizationId Organization ID
    * @returns Default configuration
    */
-  @Get("organization/:organizationId/default")
+  @Get('organization/:organizationId/default')
   async findDefaultConfig(
-    @Param("organizationId") organizationId: string,
+    @Param('organizationId') organizationId: string,
   ): Promise<AIModelConfig> {
     const config =
       await this.modelConfigService.findDefaultConfig(organizationId);
@@ -88,9 +88,9 @@ export class AIModelConfigController {
    * @param updateDto Update data
    * @returns Updated configuration
    */
-  @Put(":id")
+  @Put(':id')
   async update(
-    @Param("id") id: string,
+    @Param('id') id: string,
     @Body() updateDto: UpdateAIModelConfigDto,
   ): Promise<AIModelConfig> {
     return this.modelConfigService.update(id, updateDto);
@@ -101,8 +101,8 @@ export class AIModelConfigController {
    * @param id Configuration ID
    * @returns Updated configuration
    */
-  @Put(":id/set-default")
-  async setAsDefault(@Param("id") id: string): Promise<AIModelConfig> {
+  @Put(':id/set-default')
+  async setAsDefault(@Param('id') id: string): Promise<AIModelConfig> {
     return this.modelConfigService.setAsDefault(id);
   }
 
@@ -111,8 +111,8 @@ export class AIModelConfigController {
    * @param id Configuration ID
    * @returns Updated configuration
    */
-  @Put(":id/enable")
-  async enable(@Param("id") id: string): Promise<AIModelConfig> {
+  @Put(':id/enable')
+  async enable(@Param('id') id: string): Promise<AIModelConfig> {
     return this.modelConfigService.setEnabled(id, true);
   }
 
@@ -121,8 +121,8 @@ export class AIModelConfigController {
    * @param id Configuration ID
    * @returns Updated configuration
    */
-  @Put(":id/disable")
-  async disable(@Param("id") id: string): Promise<AIModelConfig> {
+  @Put(':id/disable')
+  async disable(@Param('id') id: string): Promise<AIModelConfig> {
     return this.modelConfigService.setEnabled(id, false);
   }
 
@@ -131,8 +131,8 @@ export class AIModelConfigController {
    * @param id Configuration ID
    * @returns Success indicator
    */
-  @Delete(":id")
-  async delete(@Param("id") id: string): Promise<{ success: boolean }> {
+  @Delete(':id')
+  async delete(@Param('id') id: string): Promise<{ success: boolean }> {
     await this.modelConfigService.delete(id);
     return { success: true };
   }
@@ -143,13 +143,13 @@ export class AIModelConfigController {
    * @param apiKey API key in body
    * @returns Validation result
    */
-  @Post("validate-credentials")
+  @Post('validate-credentials')
   async validateCredentials(
-    @Body("provider") provider: string,
-    @Body("apiKey") apiKey: string,
+    @Body('provider') provider: string,
+    @Body('apiKey') apiKey: string,
   ): Promise<{ valid: boolean; message?: string }> {
     if (!provider || !apiKey) {
-      throw new ForbiddenException("Provider and API key are required");
+      throw new ForbiddenException('Provider and API key are required');
     }
 
     return this.modelConfigService.validateCredentials(provider, apiKey);

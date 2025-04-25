@@ -33,23 +33,23 @@ export interface IInsightDocument {
 }
 
 export enum InsightType {
-  SALES_TREND = "sales_trend",
-  INVENTORY_ALERT = "inventory_alert",
-  COMPETITOR_CHANGE = "competitor_change",
-  ANOMALY_DETECTION = "anomaly_detection",
-  PRICING_OPPORTUNITY = "pricing_opportunity",
+  SALES_TREND = 'sales_trend',
+  INVENTORY_ALERT = 'inventory_alert',
+  COMPETITOR_CHANGE = 'competitor_change',
+  ANOMALY_DETECTION = 'anomaly_detection',
+  PRICING_OPPORTUNITY = 'pricing_opportunity',
 }
 
 export enum InsightSeverity {
-  LOW = "low",
-  MEDIUM = "medium",
-  HIGH = "high",
-  CRITICAL = "critical",
+  LOW = 'low',
+  MEDIUM = 'medium',
+  HIGH = 'high',
+  CRITICAL = 'critical',
 }
 
 export enum InsightStatus {
-  NEW = "new",
-  VIEWED = "viewed",
-  ACTIONED = "actioned",
-  DISMISSED = "dismissed",
+  NEW = 'new',
+  VIEWED = 'viewed',
+  ACTIONED = 'actioned',
+  DISMISSED = 'dismissed',
 }

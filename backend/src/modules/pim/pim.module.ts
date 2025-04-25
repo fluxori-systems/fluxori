@@ -1,20 +1,31 @@
 import { DynamicModule, Module, forwardRef, Inject } from '@nestjs/common';
-import { ProductController } from './controllers/product.controller';
-import { CategoryController } from './controllers/category.controller';
+
+import { AdvancedImageController } from './controllers/advanced-image.controller';
+import { AfricanTaxFrameworkController } from './controllers/african-tax-framework.controller';
+import { AnalyticsController } from './controllers/analytics.controller';
 import { AttributeTemplateController } from './controllers/attribute-template.controller';
+import { B2BController } from './controllers/b2b.controller';
+import { BulkOperationsController } from './controllers/bulk-operations.controller';
+import { BundleController } from './controllers/bundle.controller';
+import { CatalogOptimizationController } from './controllers/catalog-optimization.controller';
+import { CategoryClassificationController } from './controllers/category-classification.controller';
+import { CategoryController } from './controllers/category.controller';
+import { ProductController } from './controllers/product.controller';
 import { ProductVariantController } from './controllers/product-variant.controller';
 import { MarketplaceConnectorController } from './controllers/marketplace-connector.controller';
 import { ImportExportController } from './controllers/import-export.controller';
-import { ValidationController } from './controllers/validation.controller';
+import { ReportExportController } from './controllers/report-export.controller';
 import { TaxRateController } from './controllers/tax-rate.controller';
-import { BundleController } from './controllers/bundle.controller';
+import { ValidationController } from './controllers/validation.controller';
 import { PricingRuleController } from './controllers/pricing-rule.controller';
 import { ProductReviewController } from './controllers/product-review.controller';
 import { CompetitivePriceMonitoringController } from './controllers/competitive-price-monitoring.controller';
-import { ProductService } from './services/product.service';
-import { CategoryService } from './services/category.service';
 import { AttributeTemplateService } from './services/attribute-template.service';
+import { CategoryService } from './services/category.service';
+import { ProductService } from './services/product.service';
 import { ProductVariantService } from './services/product-variant.service';
+import { RegionalWarehouseService } from './services/regional-warehouse.service';
+import { ReportExporterService } from './services/report-exporter.service';
 import { TakealotConnectorService } from './services/takealot-connector.service';
 import { ImportExportService } from './services/import-export.service';
 import { ValidationService } from './services/validation.service';
@@ -42,29 +53,20 @@ import { MarketplaceSyncService } from './services/marketplace-sync.service';
 import { MarketplaceValidationService } from './services/marketplace-validation.service';
 import { ProductBatchService } from './services/product-batch.service';
 import { PimStorageService } from './services/pim-storage.service';
-import { AdvancedImageController } from './controllers/advanced-image.controller';
-import { AnalyticsController } from './controllers/analytics.controller';
-import { CatalogOptimizationController } from './controllers/catalog-optimization.controller';
-import { CategoryClassificationController } from './controllers/category-classification.controller';
 import { MarketContextService } from './services/market-context.service';
 import { NetworkAwareStorageService } from './services/network-aware-storage.service';
 import { LoadSheddingResilienceService } from './services/load-shedding-resilience.service';
 import { LoadSheddingService } from './services/load-shedding.service';
-import { ReportExporterService } from './services/report-exporter.service';
-import { RegionalWarehouseService } from './services/regional-warehouse.service';
 import { MultiCurrencyService } from './services/multi-currency.service';
 import { AfricanTaxFrameworkService } from './services/african-tax-framework.service';
-import { AfricanTaxFrameworkController } from './controllers/african-tax-framework.controller';
 import { CrossBorderTradeService } from './services/cross-border-trade.service';
 import { CrossBorderTradeController } from './controllers/cross-border-trade.controller';
-import { 
+import {
   BulkOperationsService,
   ProductBulkOperationsService,
   CategoryBulkOperationsService,
-  AttributeTemplateBulkOperationsService
+  AttributeTemplateBulkOperationsService,
 } from './services/bulk-operations';
-import { BulkOperationsController } from './controllers/bulk-operations.controller';
-import { ReportExportController } from './controllers/report-export.controller';
 import { RegionalWarehouseController } from './controllers/regional-warehouse.controller';
 import { MultiCurrencyController } from './controllers/multi-currency.controller';
 import { MobileFirstController } from './controllers/mobile-first.controller';
@@ -86,7 +88,6 @@ import { DataPolicyRepository } from './repositories/data-policy.repository';
 import { ConsentRecordRepository } from './repositories/consent-record.repository';
 import { DataSubjectRequestRepository } from './repositories/data-subject-request.repository';
 import { B2BService } from './services/b2b/b2b-service';
-import { B2BController } from './controllers/b2b.controller';
 import { B2BCustomerRepository } from './repositories/b2b-customer.repository';
 import { CustomerTierRepository } from './repositories/customer-tier.repository';
 import { CustomerGroupRepository } from './repositories/customer-group.repository';
@@ -104,85 +105,85 @@ export interface PimModuleOptions {
    * @default true
    */
   enableSouthAfricanOptimizations?: boolean;
-  
+
   /**
    * Whether to enable VAT rate management
    * @default true
    */
   enableVatRateManagement?: boolean;
-  
+
   /**
    * Whether to enable advanced image processing
    * @default true
    */
   enableAdvancedImageProcessing?: boolean;
-  
+
   /**
    * Whether to enable AI-powered features
    * @default true
    */
   enableAiFeatures?: boolean;
-  
+
   /**
    * Whether to enable marketplace synchronization
    * @default true
    */
   enableMarketplaceSync?: boolean;
-  
+
   /**
-   * Whether to enable load shedding resilience 
+   * Whether to enable load shedding resilience
    * @default true
    */
   enableLoadSheddingResilience?: boolean;
-  
+
   /**
    * Whether to enable dynamic pricing rules
    * @default true
    */
   enableDynamicPricing?: boolean;
-  
+
   /**
    * Whether to enable product reviews
    * @default true
    */
   enableProductReviews?: boolean;
-  
+
   /**
    * Whether to enable multi-currency support
    * @default true
    */
   enableMultiCurrency?: boolean;
-  
+
   /**
    * Whether to enable regional warehouse support
    * @default true
    */
   enableRegionalWarehouse?: boolean;
-  
+
   /**
    * Whether to enable the African tax framework
    * @default true
    */
   enableAfricanTaxFramework?: boolean;
-  
+
   /**
    * Whether to enable cross-border trade features
    * @default true
    */
   enableCrossBorderTrade?: boolean;
-  
+
   /**
    * Whether to enable advanced compliance framework
    * @default true
    */
   enableAdvancedComplianceFramework?: boolean;
-  
+
   /**
    * Whether to enable extended data protection features with POPIA compliance
    * @default true
    */
   enableExtendedDataProtection?: boolean;
-  
+
   /**
    * Whether to enable advanced B2B support features
    * @default true
@@ -192,7 +193,7 @@ export interface PimModuleOptions {
 
 /**
  * Product Information Management Module
- * 
+ *
  * Core module for managing product data, categories, attributes, etc.
  * With specific optimizations for South African e-commerce businesses.
  */
@@ -221,15 +222,15 @@ export class PimModule {
       enableAdvancedB2BSupport: true,
       ...options,
     };
-    
+
     return {
       module: PimModule,
       imports: [
         // Import required modules
-        import('../agent-framework').then(m => m.AgentFrameworkModule),
-        import('../credit-system').then(m => m.CreditSystemModule),
-        import('../feature-flags').then(m => m.FeatureFlagsModule),
-        import('../inventory').then(m => m.InventoryModule),
+        import('../agent-framework').then((m) => m.AgentFrameworkModule),
+        import('../credit-system').then((m) => m.CreditSystemModule),
+        import('../feature-flags').then((m) => m.FeatureFlagsModule),
+        import('../inventory').then((m) => m.InventoryModule),
       ],
       controllers: [
         ProductController,
@@ -259,9 +260,7 @@ export class PimModule {
         RegionalConfigurationController,
         RegionalProductController,
         DataProtectionController,
-        ...(moduleOptions.enableAdvancedB2BSupport ? [
-          B2BController,
-        ] : []),
+        ...(moduleOptions.enableAdvancedB2BSupport ? [B2BController] : []),
       ],
       providers: [
         // Core services
@@ -280,52 +279,50 @@ export class PimModule {
         ProductReviewService,
         CompetitivePriceMonitoringService,
         ImageAnalysisService,
-        
+
         // Marketplace integration services
         MarketplaceSyncService,
         MarketplaceValidationService,
         TakealotConnectorService,
-        
+
         // AI services
         ProductAiService,
-        
+
         // South African optimizations
         MarketContextService,
         NetworkAwareStorageService,
         LoadSheddingResilienceService,
         LoadSheddingService,
-        
+
         // Bulk operations services
         BulkOperationsService,
         ProductBulkOperationsService,
         CategoryBulkOperationsService,
         AttributeTemplateBulkOperationsService,
-        
+
         // Analytics and reporting services
         ReportExporterService,
         LoadSheddingService,
-        
+
         // Phase 2: African Expansion services
         {
           provide: RegionalWarehouseService,
-          useClass: RegionalWarehouseService
+          useClass: RegionalWarehouseService,
         },
         MultiCurrencyService,
         AfricanTaxFrameworkService,
         CrossBorderTradeService,
         MobileFirstDetectionService,
-        
+
         // Phase 3: Platform Enhancement services
         ComplianceFrameworkService,
         RegionalConfigurationService,
         RegionalProductEnhancerService,
         DataProtectionService,
-        
+
         // Advanced B2B Support services
-        ...(moduleOptions.enableAdvancedB2BSupport ? [
-          B2BService,
-        ] : []),
-        
+        ...(moduleOptions.enableAdvancedB2BSupport ? [B2BService] : []),
+
         // Repositories
         ProductRepository,
         CategoryRepository,
@@ -347,18 +344,20 @@ export class PimModule {
         DataPolicyRepository,
         ConsentRecordRepository,
         DataSubjectRequestRepository,
-        
+
         // B2B Repositories
-        ...(moduleOptions.enableAdvancedB2BSupport ? [
-          B2BCustomerRepository,
-          CustomerTierRepository,
-          CustomerGroupRepository,
-          B2BPriceListRepository,
-          B2BContractRepository,
-          PurchaseOrderRepository,
-          ApprovalWorkflowRepository
-        ] : []),
-        
+        ...(moduleOptions.enableAdvancedB2BSupport
+          ? [
+              B2BCustomerRepository,
+              CustomerTierRepository,
+              CustomerGroupRepository,
+              B2BPriceListRepository,
+              B2BContractRepository,
+              PurchaseOrderRepository,
+              ApprovalWorkflowRepository,
+            ]
+          : []),
+
         // Module options
         {
           provide: 'PIM_MODULE_OPTIONS',
@@ -369,7 +368,7 @@ export class PimModule {
           useFactory: (moduleRef) => {
             return moduleRef.get('InventoryModule').WarehouseService;
           },
-          inject: ['MODULE_REF']
+          inject: ['MODULE_REF'],
         },
         {
           provide: 'MARKET_CONTEXT_OPTIONS',
@@ -378,9 +377,9 @@ export class PimModule {
             enabledRegions: ['south-africa', 'africa', 'europe'],
             regionCurrencies: {
               'south-africa': 'ZAR',
-              'africa': 'USD',
-              'europe': 'EUR',
-              'global': 'USD'
+              africa: 'USD',
+              europe: 'EUR',
+              global: 'USD',
             },
             regionalFeatures: {
               'south-africa': {
@@ -388,28 +387,28 @@ export class PimModule {
                 networkAwareComponents: true,
                 multiWarehouseSupport: true,
                 marketplaceIntegration: true,
-                vatRateManagement: true
+                vatRateManagement: true,
               },
-              'africa': {
+              africa: {
                 loadSheddingResilience: true,
                 networkAwareComponents: true,
                 multiWarehouseSupport: true,
                 marketplaceIntegration: true,
                 africanTaxFramework: true,
                 multiCurrencySupport: true,
-                crossBorderTrading: true
+                crossBorderTrading: true,
               },
-              'europe': {
+              europe: {
                 loadSheddingResilience: false,
                 networkAwareComponents: false,
                 multiWarehouseSupport: true,
                 euVatCompliance: true,
                 marketplaceIntegration: true,
-                multiCurrencySupport: true
-              }
-            }
-          }
-        }
+                multiCurrencySupport: true,
+              },
+            },
+          },
+        },
       ],
       exports: [
         ProductService,
@@ -433,7 +432,7 @@ export class PimModule {
         MarketplaceSyncService,
         MarketplaceValidationService,
         TakealotConnectorService,
-        
+
         // Bulk operations services
         BulkOperationsService,
         ProductBulkOperationsService,
@@ -441,24 +440,22 @@ export class PimModule {
         AttributeTemplateBulkOperationsService,
         LoadSheddingService,
         ReportExporterService,
-        
+
         // Phase 2: African Expansion exports
         RegionalWarehouseService,
         MultiCurrencyService,
         AfricanTaxFrameworkService,
         CrossBorderTradeService,
         MobileFirstDetectionService,
-        
+
         // Phase 3: Platform Enhancements exports
         ComplianceFrameworkService,
         RegionalConfigurationService,
         RegionalProductEnhancerService,
         DataProtectionService,
-        
+
         // Advanced B2B Support exports
-        ...(moduleOptions.enableAdvancedB2BSupport ? [
-          B2BService
-        ] : []),
+        ...(moduleOptions.enableAdvancedB2BSupport ? [B2BService] : []),
       ],
     };
   }

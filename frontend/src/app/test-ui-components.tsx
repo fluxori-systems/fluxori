@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+
 import { Text, Group, Stack, Button } from '@/lib/ui/components';
 
 // A test component to verify our UI components work

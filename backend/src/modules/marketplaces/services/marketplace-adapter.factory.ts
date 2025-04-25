@@ -1,9 +1,9 @@
-import { Injectable, Logger } from "@nestjs/common";
+import { Injectable, Logger } from '@nestjs/common';
 
-import { IMarketplaceAdapter } from "../interfaces/marketplace-adapter.interface";
-import { MarketplaceCredentials } from "../interfaces/types";
-import { ConnectionStatus } from "../models/marketplace-credentials.schema";
-import { MarketplaceCredentialsRepository } from "../repositories/marketplace-credentials.repository";
+import { IMarketplaceAdapter } from '../interfaces/marketplace-adapter.interface';
+import { MarketplaceCredentials } from '../interfaces/types';
+import { ConnectionStatus } from '../models/marketplace-credentials.schema';
+import { MarketplaceCredentialsRepository } from '../repositories/marketplace-credentials.repository';
 
 /**
  * Factory service for managing marketplace adapters

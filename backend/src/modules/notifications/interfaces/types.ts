@@ -3,35 +3,35 @@
  */
 
 export enum NotificationType {
-  ORDER = "order",
-  INVENTORY = "inventory",
-  MARKETPLACE = "marketplace",
-  SYSTEM = "system",
-  AI_INSIGHT = "ai_insight",
-  BUYBOX = "buybox",
-  PRICING = "pricing",
-  USER = "user",
+  ORDER = 'order',
+  INVENTORY = 'inventory',
+  MARKETPLACE = 'marketplace',
+  SYSTEM = 'system',
+  AI_INSIGHT = 'ai_insight',
+  BUYBOX = 'buybox',
+  PRICING = 'pricing',
+  USER = 'user',
 }
 
 export enum NotificationPriority {
-  LOW = "low",
-  MEDIUM = "medium",
-  HIGH = "high",
-  CRITICAL = "critical",
+  LOW = 'low',
+  MEDIUM = 'medium',
+  HIGH = 'high',
+  CRITICAL = 'critical',
 }
 
 export enum NotificationStatus {
-  UNREAD = "unread",
-  READ = "read",
-  ARCHIVED = "archived",
+  UNREAD = 'unread',
+  READ = 'read',
+  ARCHIVED = 'archived',
 }
 
 export enum DeliveryChannel {
-  IN_APP = "in_app",
-  EMAIL = "email",
-  SMS = "sms",
-  PUSH = "push",
-  WEBHOOK = "webhook",
+  IN_APP = 'in_app',
+  EMAIL = 'email',
+  SMS = 'sms',
+  PUSH = 'push',
+  WEBHOOK = 'webhook',
 }
 
 export interface INotification {

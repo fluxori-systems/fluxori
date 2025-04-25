@@ -1,7 +1,19 @@
-import { Injectable, Inject, Optional } from "@nestjs/common";
-import { ConfigService } from "@nestjs/config";
+import { Injectable, Inject, Optional } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 
 // Import interfaces
+
+// Import constants
+import {
+  TRACE_ATTRIBUTES,
+  METRIC_NAMES,
+  SA_PERFORMANCE_THRESHOLDS,
+} from '../constants/observability.constants';
+import { OBSERVABILITY_TOKENS } from '../constants/observability.tokens';
+import {
+  DEFAULT_OBSERVABILITY_OPTIONS,
+  ObservabilityModuleOptions,
+} from '../interfaces/observability-options.interface';
 import {
   Span,
   LogContext,
@@ -17,20 +29,8 @@ import {
   IEnhancedLoggerService,
   IMetricsService,
   ITracingService,
-  IHealthService
-} from "../interfaces/observability.interfaces";
-
-// Import constants
-import {
-  TRACE_ATTRIBUTES,
-  METRIC_NAMES,
-  SA_PERFORMANCE_THRESHOLDS,
-} from "../constants/observability.constants";
-import { OBSERVABILITY_TOKENS } from "../constants/observability.tokens";
-import {
-  DEFAULT_OBSERVABILITY_OPTIONS,
-  ObservabilityModuleOptions,
-} from "../interfaces/observability-options.interface";
+  IHealthService,
+} from '../interfaces/observability.interfaces';
 
 /**
  * Main service that combines all observability aspects (logging, tracing, metrics, health)
@@ -46,10 +46,14 @@ export class ObservabilityService implements IObservabilityService {
 
   constructor(
     private readonly configService: ConfigService,
-    @Inject(OBSERVABILITY_TOKENS.LOGGER_SERVICE) private readonly logger: IEnhancedLoggerService,
-    @Inject(OBSERVABILITY_TOKENS.TRACING_SERVICE) private readonly tracer: ITracingService,
-    @Inject(OBSERVABILITY_TOKENS.METRICS_SERVICE) private readonly metrics: IMetricsService,
-    @Inject(OBSERVABILITY_TOKENS.HEALTH_SERVICE) private readonly healthService: IHealthService,
+    @Inject(OBSERVABILITY_TOKENS.LOGGER_SERVICE)
+    private readonly logger: IEnhancedLoggerService,
+    @Inject(OBSERVABILITY_TOKENS.TRACING_SERVICE)
+    private readonly tracer: ITracingService,
+    @Inject(OBSERVABILITY_TOKENS.METRICS_SERVICE)
+    private readonly metrics: IMetricsService,
+    @Inject(OBSERVABILITY_TOKENS.HEALTH_SERVICE)
+    private readonly healthService: IHealthService,
     @Optional()
     @Inject(OBSERVABILITY_TOKENS.OBSERVABILITY_OPTIONS)
     private readonly options?: ObservabilityModuleOptions,
@@ -57,16 +61,16 @@ export class ObservabilityService implements IObservabilityService {
     // Apply options with defaults
     const mergedOptions = { ...DEFAULT_OBSERVABILITY_OPTIONS, ...options };
 
-    this.appName = mergedOptions.appName || "fluxori-api";
+    this.appName = mergedOptions.appName || 'fluxori-api';
     this.environment =
-      mergedOptions.environment || process.env.NODE_ENV || "development";
+      mergedOptions.environment || process.env.NODE_ENV || 'development';
     this.region =
-      mergedOptions.region || process.env.GCP_REGION || "africa-south1";
+      mergedOptions.region || process.env.GCP_REGION || 'africa-south1';
 
     if (this.logger?.log) {
       this.logger.log(
-        "Observability service initialized",
-        "ObservabilityService",
+        'Observability service initialized',
+        'ObservabilityService',
       );
     }
   }
@@ -321,7 +325,7 @@ export class ObservabilityService implements IObservabilityService {
       durationMs > SA_PERFORMANCE_THRESHOLDS.HTTP_ACCEPTABLE_RESPONSE_TIME_MS
     ) {
       this.warn(`Slow HTTP request: ${method} ${path} took ${durationMs}ms`, {
-        service: "HttpMetrics",
+        service: 'HttpMetrics',
         request: { method, path, statusCode, durationMs },
         userId,
         organizationId,
@@ -358,7 +362,7 @@ export class ObservabilityService implements IObservabilityService {
       this.warn(
         `Slow DB operation: ${operation} on ${collection} took ${durationMs}ms`,
         {
-          service: "DatabaseMetrics",
+          service: 'DatabaseMetrics',
           database: { operation, collection, durationMs },
         },
       );
@@ -400,13 +404,13 @@ export class ObservabilityService implements IObservabilityService {
     this.incrementCounter(METRIC_NAMES.AI_TOKEN_USAGE, inputTokens, {
       model,
       operation,
-      type: "input",
+      type: 'input',
     });
 
     this.incrementCounter(METRIC_NAMES.AI_TOKEN_USAGE, outputTokens, {
       model,
       operation,
-      type: "output",
+      type: 'output',
     });
 
     // Track request duration
@@ -429,7 +433,7 @@ export class ObservabilityService implements IObservabilityService {
       this.warn(
         `Slow AI request: ${operation} with ${model} took ${durationMs}ms`,
         {
-          service: "AIMetrics",
+          service: 'AIMetrics',
           ai: { model, operation, durationMs, inputTokens, outputTokens },
         },
       );
@@ -447,7 +451,7 @@ export class ObservabilityService implements IObservabilityService {
   ): void {
     this.incrementCounter(METRIC_NAMES.FEATURE_FLAG_EVALUATION, 1, {
       flag,
-      result: enabled ? "enabled" : "disabled",
+      result: enabled ? 'enabled' : 'disabled',
     });
 
     if (enabled) {
@@ -457,9 +461,9 @@ export class ObservabilityService implements IObservabilityService {
     }
 
     this.debug(
-      `Feature flag ${flag} evaluated: ${enabled ? "enabled" : "disabled"}`,
+      `Feature flag ${flag} evaluated: ${enabled ? 'enabled' : 'disabled'}`,
       {
-        service: "FeatureFlagMetrics",
+        service: 'FeatureFlagMetrics',
         featureFlag: { flag, enabled },
         userId,
         organizationId,
@@ -473,15 +477,15 @@ export class ObservabilityService implements IObservabilityService {
   shouldMonitorForSA(path: string): boolean {
     // List of paths to specifically monitor for South African performance
     const saMonitoredPaths = [
-      "/api/orders",
-      "/api/marketplace",
-      "/api/inventory",
-      "/api/auth",
-      "/api/ai-insights",
+      '/api/orders',
+      '/api/marketplace',
+      '/api/inventory',
+      '/api/auth',
+      '/api/ai-insights',
     ];
 
     return (
-      this.region === "africa-south1" ||
+      this.region === 'africa-south1' ||
       saMonitoredPaths.some((monitoredPath) => path.startsWith(monitoredPath))
     );
   }

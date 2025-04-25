@@ -1,6 +1,8 @@
 'use client';
 
 import { useEffect, useState, useMemo } from 'react';
+
+import { useConnectionService } from '../services/connection-service.interface';
 import { 
   ConnectionQualityResult, 
   SADeviceProfile, 
@@ -12,7 +14,6 @@ import {
   SA_CONNECTION_THRESHOLDS,
   SA_REGIONAL_CONSTANTS
 } from '../types/sa-market-types';
-import { useConnectionService } from '../services/connection-service.interface';
 
 /**
  * Device detection logic to identify common South African devices

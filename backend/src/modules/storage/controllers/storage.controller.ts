@@ -1,6 +1,6 @@
 /**
  * Storage Controller
- * 
+ *
  * Provides RESTful endpoints for general storage operations
  * Includes optimizations for South African market with network-aware parameters
  */
@@ -19,17 +19,25 @@ import {
   Inject,
   Logger,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 
-import { StorageService, STORAGE_SERVICE } from '../../../common/storage/storage.interface';
+import { LoggingInterceptor } from '../../../common/observability/interceptors/logging.interceptor';
+import { TracingInterceptor } from '../../../common/observability/interceptors/tracing.interceptor';
+import {
+  StorageService,
+  STORAGE_SERVICE,
+} from '../../../common/storage/storage.interface';
+import { User } from '../../../types/google-cloud.types';
+import { GetUser } from '../../auth/decorators/get-user.decorator';
 import { FirebaseAuthGuard } from '../../auth/guards/firebase-auth.guard';
 import { SignedUrlRequestDto } from '../dto/signed-url-request.dto';
 import { SignedUrlResponseDto } from '../dto/signed-url-response.dto';
-import { GetUser } from '../../auth/decorators/get-user.decorator';
-import { LoggingInterceptor } from '../../../common/observability/interceptors/logging.interceptor';
-import { TracingInterceptor } from '../../../common/observability/interceptors/tracing.interceptor';
-import { User } from '../../../types/google-cloud.types';
 
 @ApiTags('storage')
 @Controller('storage')
@@ -50,16 +58,24 @@ export class StorageController {
    */
   @Post('signed-upload-url')
   @ApiOperation({ summary: 'Generate a signed URL for direct file upload' })
-  @ApiResponse({ status: 201, description: 'Signed URL created', type: SignedUrlResponseDto })
+  @ApiResponse({
+    status: 201,
+    description: 'Signed URL created',
+    type: SignedUrlResponseDto,
+  })
   async generateSignedUploadUrl(
     @Body() dto: SignedUrlRequestDto,
     @GetUser() user: User,
     @Req() req: any,
   ): Promise<SignedUrlResponseDto> {
     // Validate file size if provided
-    const maxSizeBytes = this.configService.get<number>('MAX_FILE_SIZE_BYTES') || 100 * 1024 * 1024; // 100MB default
+    const maxSizeBytes =
+      this.configService.get<number>('MAX_FILE_SIZE_BYTES') ||
+      100 * 1024 * 1024; // 100MB default
     if (dto.fileSize && dto.fileSize > maxSizeBytes) {
-      throw new BadRequestException(`File size exceeds maximum allowed size of ${maxSizeBytes / (1024 * 1024)}MB`);
+      throw new BadRequestException(
+        `File size exceeds maximum allowed size of ${maxSizeBytes / (1024 * 1024)}MB`,
+      );
     }
 
     // Add user and organization metadata
@@ -73,7 +89,7 @@ export class StorageController {
     // This allows client-side optimizations based on network conditions
     const connectionQuality = req.headers['x-connection-quality'] || 'unknown';
     const connectionType = req.headers['x-connection-type'] || 'unknown';
-    
+
     // Add these to metadata for analytics
     metadata.connectionQuality = connectionQuality as string;
     metadata.connectionType = connectionType as string;
@@ -89,8 +105,13 @@ export class StorageController {
 
       return result;
     } catch (error) {
-      this.logger.error(`Failed to generate signed URL: ${error.message}`, error.stack);
-      throw new BadRequestException(`Failed to generate signed URL: ${error.message}`);
+      this.logger.error(
+        `Failed to generate signed URL: ${error.message}`,
+        error.stack,
+      );
+      throw new BadRequestException(
+        `Failed to generate signed URL: ${error.message}`,
+      );
     }
   }
 
@@ -106,19 +127,25 @@ export class StorageController {
   ): Promise<{ url: string; expiresAt: Date }> {
     try {
       // Check if file exists
-      const bucket = this.configService.get<string>('GCS_BUCKET_NAME') || 'fluxori-uploads';
-      
+      const bucket =
+        this.configService.get<string>('GCS_BUCKET_NAME') || 'fluxori-uploads';
+
       // Generate signed URL with default expiration time
       const url = await this.storageService.getSignedDownloadUrl(filePath);
-      
+
       // Calculate expiration time (default is usually 1 hour)
       const expiresAt = new Date();
       expiresAt.setHours(expiresAt.getHours() + 1);
-      
+
       return { url, expiresAt };
     } catch (error) {
-      this.logger.error(`Error getting signed download URL: ${error.message}`, error.stack);
-      throw new NotFoundException(`File not found or access denied: ${error.message}`);
+      this.logger.error(
+        `Error getting signed download URL: ${error.message}`,
+        error.stack,
+      );
+      throw new NotFoundException(
+        `File not found or access denied: ${error.message}`,
+      );
     }
   }
 

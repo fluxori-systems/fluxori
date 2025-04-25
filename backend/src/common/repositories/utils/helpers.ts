@@ -3,7 +3,12 @@
  * Common utilities for working with repositories
  */
 
-import { QueryFilter, QueryOptions, SortDirection, RepositoryOptions } from '../types';
+import {
+  QueryFilter,
+  QueryOptions,
+  SortDirection,
+  RepositoryOptions,
+} from '../types';
 
 /**
  * Creates a query filter for a simple equality condition
@@ -12,7 +17,7 @@ export function equalTo<T>(field: keyof T, value: any): QueryFilter<T> {
   return {
     field: field as string,
     operator: '==',
-    value
+    value,
   };
 }
 
@@ -23,7 +28,7 @@ export function greaterThan<T>(field: keyof T, value: any): QueryFilter<T> {
   return {
     field: field as string,
     operator: '>',
-    value
+    value,
   };
 }
 
@@ -34,7 +39,7 @@ export function lessThan<T>(field: keyof T, value: any): QueryFilter<T> {
   return {
     field: field as string,
     operator: '<',
-    value
+    value,
   };
 }
 
@@ -42,16 +47,16 @@ export function lessThan<T>(field: keyof T, value: any): QueryFilter<T> {
  * Creates a query options object with standard pagination
  */
 export function paginatedQuery<T>(
-  page: number = 1, 
+  page: number = 1,
   pageSize: number = 20,
   orderBy: keyof T | string = 'createdAt',
-  direction: SortDirection = 'desc'
+  direction: SortDirection = 'desc',
 ): QueryOptions<T> {
   return {
     limit: pageSize,
     offset: (page - 1) * pageSize,
     orderBy: orderBy as string,
-    direction
+    direction,
   };
 }
 
@@ -60,15 +65,15 @@ export function paginatedQuery<T>(
  */
 export function organizationFilters<T>(
   organizationId: string,
-  additionalFilters: QueryFilter<T>[] = []
+  additionalFilters: QueryFilter<T>[] = [],
 ): QueryFilter<T>[] {
   return [
     {
       field: 'organizationId',
       operator: '==',
-      value: organizationId
+      value: organizationId,
     },
-    ...additionalFilters
+    ...additionalFilters,
   ];
 }
 
@@ -77,16 +82,16 @@ export function organizationFilters<T>(
  */
 export function deletedStateFilters<T>(
   includeDeleted: boolean = false,
-  additionalFilters: QueryFilter<T>[] = []
+  additionalFilters: QueryFilter<T>[] = [],
 ): QueryFilter<T>[] {
   if (!includeDeleted) {
     return [
       {
         field: 'deleted',
         operator: '==',
-        value: false
+        value: false,
       },
-      ...additionalFilters
+      ...additionalFilters,
     ];
   }
   return additionalFilters;
@@ -100,18 +105,18 @@ export const STANDARD_REPOSITORY_OPTIONS: Partial<RepositoryOptions> = {
   cacheTTLMs: 300000, // 5 minutes
   useSoftDeletes: true,
   autoTimestamps: true,
-  validateOnWrite: true
+  validateOnWrite: true,
 };
 
 /**
  * Create repository options with custom settings
  */
 export function createRepositoryOptions(
-  customOptions: Partial<RepositoryOptions> = {}
+  customOptions: Partial<RepositoryOptions> = {},
 ): RepositoryOptions {
   return {
     ...STANDARD_REPOSITORY_OPTIONS,
     ...customOptions,
-    collectionName: customOptions.collectionName || 'NO_COLLECTION_SPECIFIED'
+    collectionName: customOptions.collectionName || 'NO_COLLECTION_SPECIFIED',
   } as RepositoryOptions;
 }

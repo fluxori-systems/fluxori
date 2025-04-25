@@ -1,6 +1,10 @@
 'use client';
 
 import React, { useState } from 'react';
+
+import { ConnectionQualitySimulator } from '../../lib/motion/components/ConnectionQualitySimulator';
+import { SouthAfricanOptimizedContainer } from '../../lib/motion/components/SouthAfricanOptimizedContainer';
+import { Card, CardSection, Text, Button } from '../../lib/ui';
 import { 
   DashboardLayout, 
   DashboardSection, 
@@ -8,9 +12,6 @@ import {
   MetricCard,
   ChartCard
 } from '../../lib/ui/components/dashboard';
-import { Card, CardSection, Text, Button } from '../../lib/ui';
-import { SouthAfricanOptimizedContainer } from '../../lib/motion/components/SouthAfricanOptimizedContainer';
-import { ConnectionQualitySimulator } from '../../lib/motion/components/ConnectionQualitySimulator';
 
 export default function DashboardShowcasePage() {
   const [showConnectionControls, setShowConnectionControls] = useState(false);

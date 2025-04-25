@@ -1,23 +1,24 @@
 /**
  * Connector Controller
- * 
+ *
  * This controller provides endpoints for managing API connectors,
  * including testing connections, retrieving connector metadata,
  * and performing connector-specific operations.
  */
 
-import { 
-  Controller, 
-  Get, 
-  Post, 
-  Body, 
-  Param, 
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
   UseGuards,
-  Logger
+  Logger,
 } from '@nestjs/common';
+
 import { FirebaseAuthGuard } from '../../../common/guards/firebase-auth.guard';
-import { ConnectorFactoryService } from '../services/connector-factory.service';
 import { ConnectorCredentials, CredentialType } from '../interfaces/types';
+import { ConnectorFactoryService } from '../services/connector-factory.service';
 
 /**
  * Controller for connector-related operations
@@ -35,7 +36,7 @@ export class ConnectorController {
   @Get()
   getAvailableConnectors() {
     return {
-      connectors: this.connectorFactory.getAvailableConnectors()
+      connectors: this.connectorFactory.getAvailableConnectors(),
     };
   }
 
@@ -45,15 +46,15 @@ export class ConnectorController {
   @Post('test')
   async testConnection(@Body() credentials: ConnectorCredentials) {
     const connector = await this.connectorFactory.createConnector(
-      credentials.type.toString(), 
-      credentials
+      credentials.type.toString(),
+      credentials,
     );
-    
+
     if (!connector) {
       this.logger.error(`Connector type ${credentials.type} not found`);
       return { success: false, error: 'Connector type not found' };
     }
-    
+
     try {
       const result = await connector.testConnection();
       return { success: true, status: result };
@@ -62,7 +63,7 @@ export class ConnectorController {
       return {
         success: false,
         error: error.message,
-        details: error.details || error
+        details: error.details || error,
       };
     }
   }
@@ -84,19 +85,21 @@ export class ConnectorController {
     // For now, we'll create a placeholder to avoid TypeScript errors
     const credentials: ConnectorCredentials = {
       organizationId: 'test',
-      type: CredentialType.API_KEY
+      type: CredentialType.API_KEY,
     };
-    
+
     const connector = await this.connectorFactory.createConnector(
       credentials.type.toString(),
-      credentials
+      credentials,
     );
-    
+
     if (!connector) {
-      this.logger.error(`Failed to create connector of type ${credentials.type}`);
+      this.logger.error(
+        `Failed to create connector of type ${credentials.type}`,
+      );
       throw new Error(`Failed to create connector of type ${credentials.type}`);
     }
-    
+
     return connector;
   }
 }

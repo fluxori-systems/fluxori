@@ -1,16 +1,17 @@
 /**
  * Connector Credentials Repository
- * 
+ *
  * This repository manages storage, retrieval, and validation of API credentials
  * for various connectors. It uses the FirestoreBaseRepository pattern for
  * consistent data access throughout the application.
  */
 
 import { Injectable, Logger } from '@nestjs/common';
+
 import { FirestoreBaseRepository } from '../../../common/repositories/firestore-base.repository';
 import { FirestoreConfigService } from '../../../config/firestore.config';
-import { ConnectorCredentialEntity } from '../models/connector-credential.schema';
 import { ConnectionStatus, CredentialType } from '../interfaces/types';
+import { ConnectorCredentialEntity } from '../models/connector-credential.schema';
 
 /**
  * Repository for managing connector credentials
@@ -25,7 +26,12 @@ export class ConnectorCredentialsRepository extends FirestoreBaseRepository<Conn
       useVersioning: true,
       enableCache: true,
       cacheTTLMs: 5 * 60 * 1000, // 5 minutes
-      requiredFields: ['connectorId', 'organizationId', 'credentials', 'isActive']
+      requiredFields: [
+        'connectorId',
+        'organizationId',
+        'credentials',
+        'isActive',
+      ],
     });
   }
 
@@ -37,14 +43,14 @@ export class ConnectorCredentialsRepository extends FirestoreBaseRepository<Conn
    */
   async findByConnectorAndOrganization(
     connectorId: string,
-    organizationId: string
+    organizationId: string,
   ): Promise<ConnectorCredentialEntity | null> {
     const results = await this.find({
       advancedFilters: [
         { field: 'connectorId', operator: '==', value: connectorId },
         { field: 'organizationId', operator: '==', value: organizationId },
-        { field: 'isActive', operator: '==', value: true }
-      ]
+        { field: 'isActive', operator: '==', value: true },
+      ],
     });
 
     return results.length > 0 ? results[0] : null;
@@ -56,13 +62,13 @@ export class ConnectorCredentialsRepository extends FirestoreBaseRepository<Conn
    * @returns Array of credential entities
    */
   async findByOrganization(
-    organizationId: string
+    organizationId: string,
   ): Promise<ConnectorCredentialEntity[]> {
     return this.find({
       advancedFilters: [
         { field: 'organizationId', operator: '==', value: organizationId },
-        { field: 'isActive', operator: '==', value: true }
-      ]
+        { field: 'isActive', operator: '==', value: true },
+      ],
     });
   }
 
@@ -72,13 +78,13 @@ export class ConnectorCredentialsRepository extends FirestoreBaseRepository<Conn
    * @returns Array of credential entities
    */
   async findByConnector(
-    connectorId: string
+    connectorId: string,
   ): Promise<ConnectorCredentialEntity[]> {
     return this.find({
       advancedFilters: [
         { field: 'connectorId', operator: '==', value: connectorId },
-        { field: 'isActive', operator: '==', value: true }
-      ]
+        { field: 'isActive', operator: '==', value: true },
+      ],
     });
   }
 
@@ -94,13 +100,13 @@ export class ConnectorCredentialsRepository extends FirestoreBaseRepository<Conn
     id: string,
     connected: boolean,
     message?: string,
-    details?: any
+    details?: any,
   ): Promise<ConnectorCredentialEntity> {
     const lastConnectionStatus: ConnectionStatus = {
       connected,
       message,
       lastChecked: new Date(),
-      details
+      details,
     };
 
     return this.update(id, { lastConnectionStatus });
@@ -118,7 +124,7 @@ export class ConnectorCredentialsRepository extends FirestoreBaseRepository<Conn
     id: string,
     accessToken: string,
     refreshToken?: string,
-    tokenExpiresAt?: Date
+    tokenExpiresAt?: Date,
   ): Promise<ConnectorCredentialEntity> {
     const updates: Partial<ConnectorCredentialEntity> = { accessToken };
 
@@ -139,7 +145,7 @@ export class ConnectorCredentialsRepository extends FirestoreBaseRepository<Conn
    * @returns Array of credential entities needing refresh
    */
   async findCredentialsNeedingRefresh(
-    bufferMinutes = 10
+    bufferMinutes = 10,
   ): Promise<ConnectorCredentialEntity[]> {
     // Calculate the time for tokens about to expire
     const bufferTime = new Date();
@@ -148,10 +154,14 @@ export class ConnectorCredentialsRepository extends FirestoreBaseRepository<Conn
     // Find credentials that are OAuth2 type, active, and need refresh
     return this.find({
       advancedFilters: [
-        { field: 'credentials.type', operator: '==', value: CredentialType.OAUTH2 },
+        {
+          field: 'credentials.type',
+          operator: '==',
+          value: CredentialType.OAUTH2,
+        },
         { field: 'isActive', operator: '==', value: true },
-        { field: 'tokenExpiresAt', operator: '<', value: bufferTime }
-      ]
+        { field: 'tokenExpiresAt', operator: '<', value: bufferTime },
+      ],
     });
   }
 
@@ -161,12 +171,12 @@ export class ConnectorCredentialsRepository extends FirestoreBaseRepository<Conn
    * @returns Created credential entity
    */
   async createCredentials(
-    data: Omit<ConnectorCredentialEntity, 'id' | 'createdAt' | 'updatedAt'>
+    data: Omit<ConnectorCredentialEntity, 'id' | 'createdAt' | 'updatedAt'>,
   ): Promise<ConnectorCredentialEntity> {
     // Check if credentials already exist
     const existing = await this.findByConnectorAndOrganization(
       data.connectorId,
-      data.organizationId
+      data.organizationId,
     );
 
     if (existing) {

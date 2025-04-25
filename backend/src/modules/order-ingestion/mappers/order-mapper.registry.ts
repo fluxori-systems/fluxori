@@ -1,9 +1,9 @@
-import { Injectable, Logger } from "@nestjs/common";
+import { Injectable, Logger } from '@nestjs/common';
 
 import {
   IOrderMapper,
   IOrderMapperRegistry,
-} from "../interfaces/order-mapper.interface";
+} from '../interfaces/order-mapper.interface';
 
 @Injectable()
 export class OrderMapperRegistry implements IOrderMapperRegistry {

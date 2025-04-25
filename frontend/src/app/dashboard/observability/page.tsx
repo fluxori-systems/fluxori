@@ -1,8 +1,8 @@
 'use client';
 
 import { ObservabilityDashboard } from '../../../components/observability';
-import { ErrorBoundary } from '../../../components/observability/ErrorBoundary';
 import { ApiInterceptor } from '../../../components/observability/ApiInterceptor';
+import { ErrorBoundary } from '../../../components/observability/ErrorBoundary';
 
 export default function ObservabilityPage() {
   return (

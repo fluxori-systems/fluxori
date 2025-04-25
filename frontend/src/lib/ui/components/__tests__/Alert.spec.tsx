@@ -3,10 +3,12 @@ import '@testing-library/jest-dom';
 'use client';
 
 import React from 'react';
+
 import { vi, describe, test, expect } from 'vitest';
+
+import { setupNetworkConditions } from '../../../../testing/utils/networkTesting';
 import { renderWithProviders, screen, fireEvent } from '../../../../testing/utils/render';
 import { Alert } from '../Alert';
-import { setupNetworkConditions } from '../../../../testing/utils/networkTesting';
 
 describe('Alert Component', () => {
   test('renders with default props', () => {

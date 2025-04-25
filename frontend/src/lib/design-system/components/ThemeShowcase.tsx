@@ -1,9 +1,12 @@
 'use client';
 
-import { useTheme } from '../theme/ThemeContext';
-import { useDesignTokens } from '../hooks';
-import { Box, Paper, Title, Text, Stack, Group, Grid, Button } from '@mantine/core';
 import { useState } from 'react';
+
+import { Box, Paper, Title, Text, Stack, Group, Grid, Button } from '@mantine/core';
+
+import { useDesignTokens } from '../hooks';
+import { useTheme } from '../theme/ThemeContext';
+
 
 /**
  * Component to showcase the design system tokens

@@ -1,11 +1,13 @@
 'use client';
 
 import React, { useEffect, useState, useRef } from 'react';
+
 import { gsap } from 'gsap';
+
 import { useMotion } from '../context/MotionContext';
-import { aiAnimations, complexityPresets } from '../utils/motion-tokens';
-import { useReducedMotion } from '../hooks/useReducedMotion';
 import { useConnectionQuality } from '../hooks/useConnectionQuality';
+import { useReducedMotion } from '../hooks/useReducedMotion';
+import { aiAnimations, complexityPresets } from '../utils/motion-tokens';
 
 export interface StreamingTextProps {
   /** Text content to stream */

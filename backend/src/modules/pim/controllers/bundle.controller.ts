@@ -12,14 +12,20 @@ import {
   BadRequestException,
   NotFoundException,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags, ApiQuery } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+  ApiQuery,
+} from '@nestjs/swagger';
 
-import { BundleService } from '../services/bundle.service';
-import { ProductService } from '../services/product.service';
-import { FirebaseAuthGuard } from '../../auth/guards/firebase-auth.guard';
-import { GetUser } from '../../auth/decorators/get-user.decorator';
 import { LoggingInterceptor } from '../../../common/observability/interceptors/logging.interceptor';
 import { TracingInterceptor } from '../../../common/observability/interceptors/tracing.interceptor';
+import { GetUser } from '../../auth/decorators/get-user.decorator';
+import { FirebaseAuthGuard } from '../../auth/guards/firebase-auth.guard';
+import { BundleService } from '../services/bundle.service';
+import { ProductService } from '../services/product.service';
 
 /**
  * DTO for creating a product bundle
@@ -68,7 +74,11 @@ class CreateBundleDto {
   /**
    * Pricing strategy for the bundle
    */
-  pricingStrategy: 'FIXED_PRICE' | 'DISCOUNT_PERCENTAGE' | 'COMPONENT_SUM' | 'CUSTOM_FORMULA';
+  pricingStrategy:
+    | 'FIXED_PRICE'
+    | 'DISCOUNT_PERCENTAGE'
+    | 'COMPONENT_SUM'
+    | 'CUSTOM_FORMULA';
 
   /**
    * Price or discount value (depends on strategy)
@@ -147,7 +157,11 @@ class UpdateBundleDto {
   /**
    * Pricing strategy for the bundle
    */
-  pricingStrategy?: 'FIXED_PRICE' | 'DISCOUNT_PERCENTAGE' | 'COMPONENT_SUM' | 'CUSTOM_FORMULA';
+  pricingStrategy?:
+    | 'FIXED_PRICE'
+    | 'DISCOUNT_PERCENTAGE'
+    | 'COMPONENT_SUM'
+    | 'CUSTOM_FORMULA';
 
   /**
    * Price or discount value (depends on strategy)
@@ -253,32 +267,51 @@ export class BundleController {
     try {
       // Validate components
       if (!dto.components || dto.components.length === 0) {
-        throw new BadRequestException('Bundle must have at least one component');
+        throw new BadRequestException(
+          'Bundle must have at least one component',
+        );
       }
-      
+
       // Validate pricing strategy
-      const validStrategies = ['FIXED_PRICE', 'DISCOUNT_PERCENTAGE', 'COMPONENT_SUM', 'CUSTOM_FORMULA'];
+      const validStrategies = [
+        'FIXED_PRICE',
+        'DISCOUNT_PERCENTAGE',
+        'COMPONENT_SUM',
+        'CUSTOM_FORMULA',
+      ];
       if (!validStrategies.includes(dto.pricingStrategy)) {
-        throw new BadRequestException(`Invalid pricing strategy. Must be one of: ${validStrategies.join(', ')}`);
+        throw new BadRequestException(
+          `Invalid pricing strategy. Must be one of: ${validStrategies.join(', ')}`,
+        );
       }
-      
+
       // Validate each component exists
       for (const component of dto.components) {
-        const product = await this.productService.findById(component.productId, user.organizationId);
+        const product = await this.productService.findById(
+          component.productId,
+          user.organizationId,
+        );
         if (!product) {
-          throw new BadRequestException(`Component product not found: ${component.productId}`);
+          throw new BadRequestException(
+            `Component product not found: ${component.productId}`,
+          );
         }
       }
-      
+
       // Create bundle
-      const bundle = await this.bundleService.createBundle(dto, user.organizationId);
-      
+      const bundle = await this.bundleService.createBundle(
+        dto,
+        user.organizationId,
+      );
+
       return bundle;
     } catch (error) {
       if (error instanceof BadRequestException) {
         throw error;
       }
-      throw new BadRequestException(`Failed to create bundle: ${error.message}`);
+      throw new BadRequestException(
+        `Failed to create bundle: ${error.message}`,
+      );
     }
   }
 
@@ -288,16 +321,16 @@ export class BundleController {
   @Get(':id')
   @ApiOperation({ summary: 'Get a product bundle by ID' })
   @ApiResponse({ status: 200, description: 'Bundle details' })
-  async getBundle(
-    @Param('id') id: string,
-    @GetUser() user: any,
-  ): Promise<any> {
+  async getBundle(@Param('id') id: string, @GetUser() user: any): Promise<any> {
     try {
-      const bundle = await this.bundleService.getBundleById(id, user.organizationId);
+      const bundle = await this.bundleService.getBundleById(
+        id,
+        user.organizationId,
+      );
       if (!bundle) {
         throw new NotFoundException(`Bundle not found with ID: ${id}`);
       }
-      
+
       return bundle;
     } catch (error) {
       if (error instanceof NotFoundException) {
@@ -327,7 +360,7 @@ export class BundleController {
         user.organizationId,
         { limit, offset, isActive: isActive !== undefined ? isActive : true },
       );
-      
+
       return bundles;
     } catch (error) {
       throw new BadRequestException(`Failed to get bundles: ${error.message}`);
@@ -347,43 +380,69 @@ export class BundleController {
   ): Promise<any> {
     try {
       // Check bundle exists
-      const bundle = await this.bundleService.getBundleById(id, user.organizationId);
+      const bundle = await this.bundleService.getBundleById(
+        id,
+        user.organizationId,
+      );
       if (!bundle) {
         throw new NotFoundException(`Bundle not found with ID: ${id}`);
       }
-      
+
       // Validate components if provided
       if (dto.components) {
         if (dto.components.length === 0) {
-          throw new BadRequestException('Bundle must have at least one component');
+          throw new BadRequestException(
+            'Bundle must have at least one component',
+          );
         }
-        
+
         // Validate each component exists
         for (const component of dto.components) {
-          const product = await this.productService.findById(component.productId, user.organizationId);
+          const product = await this.productService.findById(
+            component.productId,
+            user.organizationId,
+          );
           if (!product) {
-            throw new BadRequestException(`Component product not found: ${component.productId}`);
+            throw new BadRequestException(
+              `Component product not found: ${component.productId}`,
+            );
           }
         }
       }
-      
+
       // Validate pricing strategy if provided
       if (dto.pricingStrategy) {
-        const validStrategies = ['FIXED_PRICE', 'DISCOUNT_PERCENTAGE', 'COMPONENT_SUM', 'CUSTOM_FORMULA'];
+        const validStrategies = [
+          'FIXED_PRICE',
+          'DISCOUNT_PERCENTAGE',
+          'COMPONENT_SUM',
+          'CUSTOM_FORMULA',
+        ];
         if (!validStrategies.includes(dto.pricingStrategy)) {
-          throw new BadRequestException(`Invalid pricing strategy. Must be one of: ${validStrategies.join(', ')}`);
+          throw new BadRequestException(
+            `Invalid pricing strategy. Must be one of: ${validStrategies.join(', ')}`,
+          );
         }
       }
-      
+
       // Update bundle
-      const updatedBundle = await this.bundleService.updateBundle(id, dto, user.organizationId);
-      
+      const updatedBundle = await this.bundleService.updateBundle(
+        id,
+        dto,
+        user.organizationId,
+      );
+
       return updatedBundle;
     } catch (error) {
-      if (error instanceof NotFoundException || error instanceof BadRequestException) {
+      if (
+        error instanceof NotFoundException ||
+        error instanceof BadRequestException
+      ) {
         throw error;
       }
-      throw new BadRequestException(`Failed to update bundle: ${error.message}`);
+      throw new BadRequestException(
+        `Failed to update bundle: ${error.message}`,
+      );
     }
   }
 
@@ -399,20 +458,25 @@ export class BundleController {
   ): Promise<any> {
     try {
       // Check bundle exists
-      const bundle = await this.bundleService.getBundleById(id, user.organizationId);
+      const bundle = await this.bundleService.getBundleById(
+        id,
+        user.organizationId,
+      );
       if (!bundle) {
         throw new NotFoundException(`Bundle not found with ID: ${id}`);
       }
-      
+
       // Delete bundle
       await this.bundleService.deleteBundle(id, user.organizationId);
-      
+
       return { success: true, message: 'Bundle deleted successfully' };
     } catch (error) {
       if (error instanceof NotFoundException) {
         throw error;
       }
-      throw new BadRequestException(`Failed to delete bundle: ${error.message}`);
+      throw new BadRequestException(
+        `Failed to delete bundle: ${error.message}`,
+      );
     }
   }
 
@@ -429,26 +493,43 @@ export class BundleController {
   ): Promise<any> {
     try {
       // Check bundle exists
-      const bundle = await this.bundleService.getBundleById(id, user.organizationId);
+      const bundle = await this.bundleService.getBundleById(
+        id,
+        user.organizationId,
+      );
       if (!bundle) {
         throw new NotFoundException(`Bundle not found with ID: ${id}`);
       }
-      
+
       // Check component product exists
-      const product = await this.productService.findById(dto.productId, user.organizationId);
+      const product = await this.productService.findById(
+        dto.productId,
+        user.organizationId,
+      );
       if (!product) {
-        throw new BadRequestException(`Component product not found: ${dto.productId}`);
+        throw new BadRequestException(
+          `Component product not found: ${dto.productId}`,
+        );
       }
-      
+
       // Add component
-      const updatedBundle = await this.bundleService.addComponent(id, dto, user.organizationId);
-      
+      const updatedBundle = await this.bundleService.addComponent(
+        id,
+        dto,
+        user.organizationId,
+      );
+
       return updatedBundle;
     } catch (error) {
-      if (error instanceof NotFoundException || error instanceof BadRequestException) {
+      if (
+        error instanceof NotFoundException ||
+        error instanceof BadRequestException
+      ) {
         throw error;
       }
-      throw new BadRequestException(`Failed to add component: ${error.message}`);
+      throw new BadRequestException(
+        `Failed to add component: ${error.message}`,
+      );
     }
   }
 
@@ -466,17 +547,24 @@ export class BundleController {
   ): Promise<any> {
     try {
       // Check bundle exists
-      const bundle = await this.bundleService.getBundleById(id, user.organizationId);
+      const bundle = await this.bundleService.getBundleById(
+        id,
+        user.organizationId,
+      );
       if (!bundle) {
         throw new NotFoundException(`Bundle not found with ID: ${id}`);
       }
-      
+
       // Check component exists in bundle
-      const componentExists = bundle.components?.some(c => c.productId === productId);
+      const componentExists = bundle.components?.some(
+        (c) => c.productId === productId,
+      );
       if (!componentExists) {
-        throw new NotFoundException(`Component with product ID ${productId} not found in bundle`);
+        throw new NotFoundException(
+          `Component with product ID ${productId} not found in bundle`,
+        );
       }
-      
+
       // Update component
       const updatedBundle = await this.bundleService.updateComponent(
         id,
@@ -484,13 +572,18 @@ export class BundleController {
         dto,
         user.organizationId,
       );
-      
+
       return updatedBundle;
     } catch (error) {
-      if (error instanceof NotFoundException || error instanceof BadRequestException) {
+      if (
+        error instanceof NotFoundException ||
+        error instanceof BadRequestException
+      ) {
         throw error;
       }
-      throw new BadRequestException(`Failed to update component: ${error.message}`);
+      throw new BadRequestException(
+        `Failed to update component: ${error.message}`,
+      );
     }
   }
 
@@ -507,26 +600,39 @@ export class BundleController {
   ): Promise<any> {
     try {
       // Check bundle exists
-      const bundle = await this.bundleService.getBundleById(id, user.organizationId);
+      const bundle = await this.bundleService.getBundleById(
+        id,
+        user.organizationId,
+      );
       if (!bundle) {
         throw new NotFoundException(`Bundle not found with ID: ${id}`);
       }
-      
+
       // Check component exists in bundle
-      const componentExists = bundle.components?.some(c => c.productId === productId);
+      const componentExists = bundle.components?.some(
+        (c) => c.productId === productId,
+      );
       if (!componentExists) {
-        throw new NotFoundException(`Component with product ID ${productId} not found in bundle`);
+        throw new NotFoundException(
+          `Component with product ID ${productId} not found in bundle`,
+        );
       }
-      
+
       // Remove component
-      const updatedBundle = await this.bundleService.removeComponent(id, productId, user.organizationId);
-      
+      const updatedBundle = await this.bundleService.removeComponent(
+        id,
+        productId,
+        user.organizationId,
+      );
+
       return updatedBundle;
     } catch (error) {
       if (error instanceof NotFoundException) {
         throw error;
       }
-      throw new BadRequestException(`Failed to remove component: ${error.message}`);
+      throw new BadRequestException(
+        `Failed to remove component: ${error.message}`,
+      );
     }
   }
 
@@ -542,14 +648,20 @@ export class BundleController {
   ): Promise<any> {
     try {
       // Check bundle exists
-      const bundle = await this.bundleService.getBundleById(id, user.organizationId);
+      const bundle = await this.bundleService.getBundleById(
+        id,
+        user.organizationId,
+      );
       if (!bundle) {
         throw new NotFoundException(`Bundle not found with ID: ${id}`);
       }
-      
+
       // Calculate price
-      const price = await this.bundleService.calculateBundlePrice(id, user.organizationId);
-      
+      const price = await this.bundleService.calculateBundlePrice(
+        id,
+        user.organizationId,
+      );
+
       return {
         bundleId: id,
         price: price.final,
@@ -563,7 +675,9 @@ export class BundleController {
       if (error instanceof NotFoundException) {
         throw error;
       }
-      throw new BadRequestException(`Failed to calculate bundle price: ${error.message}`);
+      throw new BadRequestException(
+        `Failed to calculate bundle price: ${error.message}`,
+      );
     }
   }
 }

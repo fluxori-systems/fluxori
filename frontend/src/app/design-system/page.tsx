@@ -1,11 +1,12 @@
 'use client';
 
-import { Tabs } from '@mantine/core';
 import { useState } from 'react';
 
+import { Tabs } from '@mantine/core';
+
 // Import design system components
-import { ThemeShowcase, DesignSystemDocs } from '@/lib/design-system/components';
 import { ThemeProvider } from '@/lib/design-system';
+import { ThemeShowcase, DesignSystemDocs } from '@/lib/design-system/components';
 
 /**
  * Design System showcase page

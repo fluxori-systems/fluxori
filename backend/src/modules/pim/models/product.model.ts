@@ -1,18 +1,18 @@
 /**
  * Product Model
- * 
+ *
  * Core model for products in the PIM module
  */
 
 import { TenantEntity } from '../../../types/google-cloud.types';
-import { 
-  ProductStatus, 
-  ProductType, 
-  PriceInfo, 
+import {
+  ProductStatus,
+  ProductType,
+  PriceInfo,
   ProductAttribute,
   MarketplaceMapping,
   CategoryReference,
-  ComplianceInfo
+  ComplianceInfo,
 } from '../interfaces/types';
 
 /**
@@ -23,52 +23,52 @@ export interface Product extends TenantEntity {
    * Stock Keeping Unit - unique product identifier
    */
   sku: string;
-  
+
   /**
    * Product name
    */
   name: string;
-  
+
   /**
    * Product description
    */
   description: string;
-  
+
   /**
    * Short description for listings
    */
   shortDescription?: string;
-  
+
   /**
    * Product status
    */
   status: ProductStatus;
-  
+
   /**
    * Product type
    */
   type: ProductType;
-  
+
   /**
    * Array of category references
    */
   categories: CategoryReference[];
-  
+
   /**
    * Product pricing information
    */
   pricing: PriceInfo;
-  
+
   /**
    * Weight in kilograms
    */
   weight?: number;
-  
+
   /**
    * Dimensions in cm [length, width, height]
    */
   dimensions?: [number, number, number];
-  
+
   /**
    * Main product images
    */
@@ -77,32 +77,35 @@ export interface Product extends TenantEntity {
      * Main product image URL
      */
     main?: string;
-    
+
     /**
      * Additional gallery images
      */
     gallery?: string[];
-    
+
     /**
      * Image metadata (keyed by image URL)
      */
-    metadata?: Record<string, {
-      alt?: string;
-      title?: string;
-      sortOrder?: number;
-    }>;
+    metadata?: Record<
+      string,
+      {
+        alt?: string;
+        title?: string;
+        sortOrder?: number;
+      }
+    >;
   };
-  
+
   /**
    * Product attributes (custom fields)
    */
   attributes: ProductAttribute[];
-  
+
   /**
    * If product is a variant, reference to parent product ID
    */
   parentId?: string;
-  
+
   /**
    * For bundle products, list of component products
    */
@@ -112,12 +115,12 @@ export interface Product extends TenantEntity {
     quantity: number;
     isRequired: boolean;
   }>;
-  
+
   /**
    * Reference to bundle ID if this product represents a bundle
    */
   bundleId?: string;
-  
+
   /**
    * SEO information
    */
@@ -127,12 +130,12 @@ export interface Product extends TenantEntity {
     metaKeywords?: string[];
     urlKey?: string;
   };
-  
+
   /**
    * Marketplace mappings
    */
   marketplaceMappings?: MarketplaceMapping[];
-  
+
   /**
    * Stock information
    */
@@ -141,33 +144,33 @@ export interface Product extends TenantEntity {
      * Whether the product is in stock
      */
     inStock: boolean;
-    
+
     /**
      * Available quantity
      */
     quantity: number;
-    
+
     /**
      * Warehouse stock levels (for multi-warehouse)
      */
     warehouseStock?: Record<string, number>;
-    
+
     /**
      * Low stock threshold
      */
     lowStockThreshold?: number;
-    
+
     /**
      * Whether to manage stock
      */
     manageStock: boolean;
   };
-  
+
   /**
    * Regional compliance information
    */
   compliance?: ComplianceInfo;
-  
+
   /**
    * Region-specific data
    */
@@ -180,23 +183,23 @@ export interface Product extends TenantEntity {
        * Whether product is ICASA approved
        */
       icasaApproved?: boolean;
-      
+
       /**
        * Whether product has SABS approval
        */
       sabsApproved?: boolean;
-      
+
       /**
        * Whether product has NRCS approval
        */
       nrcsApproved?: boolean;
-      
+
       /**
        * Whether product is subject to load shedding restrictions
        */
       loadSheddingCritical?: boolean;
     };
-    
+
     /**
      * Europe specific data
      */
@@ -205,44 +208,44 @@ export interface Product extends TenantEntity {
        * Whether product has CE marking
        */
       ceMarking?: boolean;
-      
+
       /**
        * Whether product complies with GDPR
        */
       gdprCompliant?: boolean;
     };
   };
-  
+
   /**
    * Tags for grouping and filtering
    */
   tags?: string[];
-  
+
   /**
    * Last sync timestamp
    */
   lastSyncedAt?: Date;
-  
+
   /**
    * Date when product was published
    */
   publishedAt?: Date;
-  
+
   /**
    * URL to product on frontend
    */
   url?: string;
-  
+
   /**
    * Whether product is featured
    */
   featured?: boolean;
-  
+
   /**
    * Date when product becomes available
    */
   availableFrom?: Date;
-  
+
   /**
    * Date when product is no longer available
    */
@@ -252,7 +255,10 @@ export interface Product extends TenantEntity {
 /**
  * Product creation DTO
  */
-export type CreateProductDto = Omit<Product, 'id' | 'createdAt' | 'updatedAt' | 'isDeleted' | 'deletedAt' | 'version'>;
+export type CreateProductDto = Omit<
+  Product,
+  'id' | 'createdAt' | 'updatedAt' | 'isDeleted' | 'deletedAt' | 'version'
+>;
 
 /**
  * Product update DTO

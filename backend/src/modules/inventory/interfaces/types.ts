@@ -1,18 +1,18 @@
 /**
  * Types for the Inventory module
  */
-import { FirestoreEntity } from "../../../types/google-cloud.types";
+import { FirestoreEntity } from '../../../types/google-cloud.types';
 
 /**
  * Product status enum
  */
 export enum ProductStatus {
-  ACTIVE = "active",
-  INACTIVE = "inactive",
-  DRAFT = "draft",
-  ARCHIVED = "archived",
-  OUT_OF_STOCK = "out_of_stock",
-  DISCONTINUED = "discontinued",
+  ACTIVE = 'active',
+  INACTIVE = 'inactive',
+  DRAFT = 'draft',
+  ARCHIVED = 'archived',
+  OUT_OF_STOCK = 'out_of_stock',
+  DISCONTINUED = 'discontinued',
 }
 
 /**
@@ -92,42 +92,42 @@ export interface ProductSupplier {
  * Stock movement type enum
  */
 export enum StockMovementType {
-  STOCK_RECEIPT = "stock_receipt",
-  SALE = "sale",
-  RETURN = "return",
-  ADJUSTMENT = "adjustment",
-  TRANSFER = "transfer",
-  STOCK_TAKE = "stock_take",
+  STOCK_RECEIPT = 'stock_receipt',
+  SALE = 'sale',
+  RETURN = 'return',
+  ADJUSTMENT = 'adjustment',
+  TRANSFER = 'transfer',
+  STOCK_TAKE = 'stock_take',
 }
 
 /**
  * Stock movement reason enum
  */
 export enum StockMovementReason {
-  PURCHASE_ORDER = "purchase_order",
-  CUSTOMER_ORDER = "customer_order",
-  CUSTOMER_RETURN = "customer_return",
-  DAMAGED = "damaged",
-  LOST = "lost",
-  FOUND = "found",
-  INTERNAL_TRANSFER = "internal_transfer",
-  INVENTORY_COUNT = "inventory_count",
-  VENDOR_RETURN = "vendor_return",
-  WRITE_OFF = "write_off",
-  CORRECTION = "correction",
-  OTHER = "other",
-  SYSTEM_UPDATE = "system_update",
+  PURCHASE_ORDER = 'purchase_order',
+  CUSTOMER_ORDER = 'customer_order',
+  CUSTOMER_RETURN = 'customer_return',
+  DAMAGED = 'damaged',
+  LOST = 'lost',
+  FOUND = 'found',
+  INTERNAL_TRANSFER = 'internal_transfer',
+  INVENTORY_COUNT = 'inventory_count',
+  VENDOR_RETURN = 'vendor_return',
+  WRITE_OFF = 'write_off',
+  CORRECTION = 'correction',
+  OTHER = 'other',
+  SYSTEM_UPDATE = 'system_update',
 }
 
 /**
  * Warehouse type enum
  */
 export enum WarehouseType {
-  OWNED = "owned",
-  THIRD_PARTY = "third_party",
-  FULFILLMENT_CENTER = "fulfillment_center",
-  STORE = "store",
-  DROPSHIP = "dropship",
+  OWNED = 'owned',
+  THIRD_PARTY = 'third_party',
+  FULFILLMENT_CENTER = 'fulfillment_center',
+  STORE = 'store',
+  DROPSHIP = 'dropship',
 }
 
 /**

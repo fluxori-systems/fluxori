@@ -1,6 +1,7 @@
 'use client';
 
 import { MotionMode } from './motion-types';
+
 import type { ConnectionQuality } from './sa-market-types';
 
 /**

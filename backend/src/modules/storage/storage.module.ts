@@ -1,8 +1,9 @@
 import { Module } from '@nestjs/common';
-import { StorageController } from './controllers/storage.controller';
+
 import { PimStorageController } from './controllers/pim-storage.controller';
-import { STORAGE_SERVICE } from '../../common/storage/storage.interface';
+import { StorageController } from './controllers/storage.controller';
 import { GoogleCloudStorageService } from '../../common/storage/google-cloud-storage.service';
+import { STORAGE_SERVICE } from '../../common/storage/storage.interface';
 
 @Module({
   controllers: [StorageController, PimStorageController],

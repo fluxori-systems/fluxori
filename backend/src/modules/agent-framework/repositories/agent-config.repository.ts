@@ -1,10 +1,10 @@
-import { Injectable, Logger, OnModuleInit } from "@nestjs/common";
+import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 
-import { FirestoreConfigService } from "src/config/firestore.config";
+import { FirestoreConfigService } from 'src/config/firestore.config';
 
-import { FirestoreBaseRepository } from "src/common/repositories";
+import { FirestoreBaseRepository } from 'src/common/repositories';
 
-import { AgentConfig } from "../interfaces/types";
+import { AgentConfig } from '../interfaces/types';
 
 /**
  * Repository for managing agent configurations
@@ -17,14 +17,14 @@ export class AgentConfigRepository
   protected readonly logger = new Logger(AgentConfigRepository.name);
 
   constructor(firestoreConfigService: FirestoreConfigService) {
-    super(firestoreConfigService, "agent_configs");
+    super(firestoreConfigService, 'agent_configs');
   }
 
   /**
    * Initialize the repository when module loads
    */
   onModuleInit(): void {
-    this.logger.log("AgentConfigRepository initialized");
+    this.logger.log('AgentConfigRepository initialized');
   }
 
   /**
@@ -35,8 +35,8 @@ export class AgentConfigRepository
   async findByOrganization(organizationId: string): Promise<AgentConfig[]> {
     return this.find({
       advancedFilters: [
-        { field: "organizationId", operator: "==", value: organizationId },
-        { field: "isEnabled", operator: "==", value: true },
+        { field: 'organizationId', operator: '==', value: organizationId },
+        { field: 'isEnabled', operator: '==', value: true },
       ],
     });
   }
@@ -55,8 +55,8 @@ export class AgentConfigRepository
     // a more sophisticated query that checks array membership
     const configs = await this.find({
       advancedFilters: [
-        { field: "organizationId", operator: "==", value: organizationId },
-        { field: "isEnabled", operator: "==", value: true },
+        { field: 'organizationId', operator: '==', value: organizationId },
+        { field: 'isEnabled', operator: '==', value: true },
       ],
     });
 
@@ -77,9 +77,9 @@ export class AgentConfigRepository
   ): Promise<AgentConfig | null> {
     const results = await this.find({
       advancedFilters: [
-        { field: "organizationId", operator: "==", value: organizationId },
-        { field: "name", operator: "==", value: name },
-        { field: "isEnabled", operator: "==", value: true },
+        { field: 'organizationId', operator: '==', value: organizationId },
+        { field: 'name', operator: '==', value: name },
+        { field: 'isEnabled', operator: '==', value: true },
       ],
     });
 
@@ -133,7 +133,7 @@ export class AgentConfigRepository
    */
   async updateParameters(
     id: string,
-    parameters: AgentConfig["parameters"],
+    parameters: AgentConfig['parameters'],
   ): Promise<AgentConfig | null> {
     return this.update(id, { parameters });
   }

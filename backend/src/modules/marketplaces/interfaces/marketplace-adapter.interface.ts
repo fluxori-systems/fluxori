@@ -12,7 +12,7 @@ import {
   OperationResult,
   ProductFilterOptions,
   OrderFilterOptions,
-} from "./types";
+} from './types';
 
 /**
  * Interface defining common functionality for all marketplace adapters.

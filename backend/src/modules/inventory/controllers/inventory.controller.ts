@@ -11,34 +11,34 @@ import {
   BadRequestException,
   NotFoundException,
   UseGuards,
-} from "@nestjs/common";
+} from '@nestjs/common';
 
 import {
   FirebaseAuthGuard,
   GetUser,
   DecodedFirebaseToken,
   AuthUtils,
-} from "src/common/auth";
+} from 'src/common/auth';
 
 import {
   ProductStatus,
   StockMovementType,
   StockMovementReason,
-} from "../interfaces/types";
-import { Product } from "../models/product.schema";
-import { StockLevel } from "../models/stock-level.schema";
-import { StockMovement } from "../models/stock-movement.schema";
+} from '../interfaces/types';
+import { Product } from '../models/product.schema';
+import { StockLevel } from '../models/stock-level.schema';
+import { StockMovement } from '../models/stock-movement.schema';
 import {
   InventoryService,
   CreateProductDto,
   UpdateProductDto,
   UpdateStockDto,
-} from "../services/inventory.service";
+} from '../services/inventory.service';
 
 /**
  * Controller for inventory operations
  */
-@Controller("api/inventory")
+@Controller('api/inventory')
 @UseGuards(FirebaseAuthGuard)
 export class InventoryController {
   private readonly logger = new Logger(InventoryController.name);
@@ -51,7 +51,7 @@ export class InventoryController {
    * @param user Authenticated user
    * @returns Created product
    */
-  @Post("products")
+  @Post('products')
   async createProduct(
     @Body() createProductDto: CreateProductDto,
     @GetUser() user: DecodedFirebaseToken,
@@ -63,7 +63,7 @@ export class InventoryController {
     // Ensure the user is in the correct organization
     if (!AuthUtils.isInOrganization(user, createProductDto.organizationId)) {
       throw new BadRequestException(
-        "You can only create products for your organization",
+        'You can only create products for your organization',
       );
     }
 
@@ -76,8 +76,8 @@ export class InventoryController {
    * @param id Product ID
    * @returns Product
    */
-  @Get("products/:id")
-  async getProductById(@Param("id") id: string): Promise<Product> {
+  @Get('products/:id')
+  async getProductById(@Param('id') id: string): Promise<Product> {
     const product = await this.inventoryService.getProductById(id);
     if (!product) {
       throw new NotFoundException(`Product with ID ${id} not found`);
@@ -91,17 +91,22 @@ export class InventoryController {
    * @param sku Product SKU
    * @returns Product
    */
-  @Get("products/sku/:organizationId/:sku")
+  @Get('products/sku/:organizationId/:sku')
   async getProductBySku(
-    @Param("organizationId") organizationId: string,
-    @Param("sku") sku: string,
+    @Param('organizationId') organizationId: string,
+    @Param('sku') sku: string,
   ): Promise<Product> {
-    const product = await this.inventoryService.getProductBySku(organizationId, sku);
+    const product = await this.inventoryService.getProductBySku(
+      organizationId,
+      sku,
+    );
     if (!product) {
-      throw new NotFoundException(`Product with SKU ${sku} not found in organization ${organizationId}`);
+      throw new NotFoundException(
+        `Product with SKU ${sku} not found in organization ${organizationId}`,
+      );
     }
-    
-    // Ensure we have all required Product fields  
+
+    // Ensure we have all required Product fields
     return {
       ...product,
       hasVariants: (product as any).hasVariants ?? false,
@@ -117,11 +122,11 @@ export class InventoryController {
    * @param offset Pagination offset
    * @returns Array of products
    */
-  @Get("products/organization/:organizationId")
+  @Get('products/organization/:organizationId')
   async getProducts(
-    @Param("organizationId") organizationId: string,
-    @Query("limit") limit?: string,
-    @Query("offset") offset?: string,
+    @Param('organizationId') organizationId: string,
+    @Query('limit') limit?: string,
+    @Query('offset') offset?: string,
   ): Promise<Product[]> {
     const limitNum = limit ? parseInt(limit, 10) : undefined;
     const offsetNum = offset ? parseInt(offset, 10) : undefined;
@@ -139,14 +144,17 @@ export class InventoryController {
    * @param updateProductDto Update data
    * @returns Updated product
    */
-  @Put("products/:id")
+  @Put('products/:id')
   async updateProduct(
-    @Param("id") id: string,
+    @Param('id') id: string,
     @Body() updateProductDto: UpdateProductDto,
   ): Promise<Product> {
-    const product = await this.inventoryService.updateProduct(id, updateProductDto);
-    
-    // Ensure we have all required Product fields  
+    const product = await this.inventoryService.updateProduct(
+      id,
+      updateProductDto,
+    );
+
+    // Ensure we have all required Product fields
     return {
       ...product,
       hasVariants: (product as any).hasVariants ?? false,
@@ -160,8 +168,8 @@ export class InventoryController {
    * @param id Product ID
    * @returns Success indicator
    */
-  @Delete("products/:id")
-  async deleteProduct(@Param("id") id: string): Promise<{ success: boolean }> {
+  @Delete('products/:id')
+  async deleteProduct(@Param('id') id: string): Promise<{ success: boolean }> {
     const success = await this.inventoryService.deleteProduct(id);
     return { success };
   }
@@ -172,13 +180,13 @@ export class InventoryController {
    * @param searchText Search text
    * @returns Array of matching products
    */
-  @Get("products/search/:organizationId")
+  @Get('products/search/:organizationId')
   async searchProducts(
-    @Param("organizationId") organizationId: string,
-    @Query("q") searchText: string,
+    @Param('organizationId') organizationId: string,
+    @Query('q') searchText: string,
   ): Promise<Product[]> {
     if (!searchText) {
-      throw new BadRequestException("Search text is required");
+      throw new BadRequestException('Search text is required');
     }
 
     return this.inventoryService.searchProducts(organizationId, searchText);
@@ -201,21 +209,21 @@ export class InventoryController {
    * @param offset Pagination offset
    * @returns Array of filtered products
    */
-  @Get("products/filter/:organizationId")
+  @Get('products/filter/:organizationId')
   async findProductsWithFilters(
-    @Param("organizationId") organizationId: string,
-    @Query("status") status?: ProductStatus,
-    @Query("categoryId") categoryId?: string,
-    @Query("brandId") brandId?: string,
-    @Query("priceMin") priceMin?: string,
-    @Query("priceMax") priceMax?: string,
-    @Query("stockMin") stockMin?: string,
-    @Query("stockMax") stockMax?: string,
-    @Query("hasVariants") hasVariants?: string,
-    @Query("tags") tags?: string,
-    @Query("searchText") searchText?: string,
-    @Query("limit") limit?: string,
-    @Query("offset") offset?: string,
+    @Param('organizationId') organizationId: string,
+    @Query('status') status?: ProductStatus,
+    @Query('categoryId') categoryId?: string,
+    @Query('brandId') brandId?: string,
+    @Query('priceMin') priceMin?: string,
+    @Query('priceMax') priceMax?: string,
+    @Query('stockMin') stockMin?: string,
+    @Query('stockMax') stockMax?: string,
+    @Query('hasVariants') hasVariants?: string,
+    @Query('tags') tags?: string,
+    @Query('searchText') searchText?: string,
+    @Query('limit') limit?: string,
+    @Query('offset') offset?: string,
   ): Promise<Product[]> {
     // Parse numeric parameters
     const priceMinNum = priceMin ? parseFloat(priceMin) : undefined;
@@ -228,12 +236,12 @@ export class InventoryController {
     // Parse boolean parameters
     const hasVariantsVal =
       hasVariants !== undefined
-        ? hasVariants.toLowerCase() === "true"
+        ? hasVariants.toLowerCase() === 'true'
         : undefined;
 
     // Parse tags
     const tagsArray = tags
-      ? tags.split(",").map((tag) => tag.trim())
+      ? tags.split(',').map((tag) => tag.trim())
       : undefined;
 
     return this.inventoryService.findProductsWithFilters({
@@ -258,9 +266,9 @@ export class InventoryController {
    * @param organizationId Organization ID
    * @returns Array of products with low stock
    */
-  @Get("products/low-stock/:organizationId")
+  @Get('products/low-stock/:organizationId')
   async getLowStockProducts(
-    @Param("organizationId") organizationId: string,
+    @Param('organizationId') organizationId: string,
   ): Promise<Product[]> {
     return this.inventoryService.getLowStockProducts(organizationId);
   }
@@ -270,9 +278,9 @@ export class InventoryController {
    * @param productId Product ID
    * @returns Array of stock levels
    */
-  @Get("stock/:productId")
+  @Get('stock/:productId')
   async getProductStock(
-    @Param("productId") productId: string,
+    @Param('productId') productId: string,
   ): Promise<StockLevel[]> {
     return this.inventoryService.getProductStockLevels(productId);
   }
@@ -283,10 +291,10 @@ export class InventoryController {
    * @param warehouseId Warehouse ID
    * @returns Stock level
    */
-  @Get("stock/:productId/warehouse/:warehouseId")
+  @Get('stock/:productId/warehouse/:warehouseId')
   async getProductStockInWarehouse(
-    @Param("productId") productId: string,
-    @Param("warehouseId") warehouseId: string,
+    @Param('productId') productId: string,
+    @Param('warehouseId') warehouseId: string,
   ): Promise<StockLevel> {
     return this.inventoryService.getProductStockInWarehouse(
       productId,
@@ -300,13 +308,16 @@ export class InventoryController {
    * @param updateStockDto Stock update data
    * @returns Updated product
    */
-  @Post("stock/:productId")
+  @Post('stock/:productId')
   async updateStock(
-    @Param("productId") productId: string,
+    @Param('productId') productId: string,
     @Body() updateStockDto: UpdateStockDto,
   ): Promise<Product> {
     // Call the internal method directly to avoid the overloaded interface method
-    const result = await this.inventoryService.updateStockInternal(productId, updateStockDto);
+    const result = await this.inventoryService.updateStockInternal(
+      productId,
+      updateStockDto,
+    );
     return result;
   }
 
@@ -316,10 +327,10 @@ export class InventoryController {
    * @param limit Maximum number to return
    * @returns Array of stock movements
    */
-  @Get("movements/:productId")
+  @Get('movements/:productId')
   async getProductStockMovements(
-    @Param("productId") productId: string,
-    @Query("limit") limit?: string,
+    @Param('productId') productId: string,
+    @Query('limit') limit?: string,
   ): Promise<StockMovement[]> {
     const limitNum = limit ? parseInt(limit, 10) : 100;
 
@@ -342,20 +353,20 @@ export class InventoryController {
    * @param offset Pagination offset
    * @returns Array of filtered stock levels
    */
-  @Get("stock/filter/:organizationId")
+  @Get('stock/filter/:organizationId')
   async findStockLevelsWithFilters(
-    @Param("organizationId") organizationId: string,
-    @Query("productId") productId?: string,
-    @Query("warehouseId") warehouseId?: string,
-    @Query("locationId") locationId?: string,
-    @Query("status") status?: string,
-    @Query("minQuantity") minQuantity?: string,
-    @Query("maxQuantity") maxQuantity?: string,
-    @Query("lowStock") lowStock?: string,
-    @Query("lastUpdatedAfter") lastUpdatedAfter?: string,
-    @Query("lastUpdatedBefore") lastUpdatedBefore?: string,
-    @Query("limit") limit?: string,
-    @Query("offset") offset?: string,
+    @Param('organizationId') organizationId: string,
+    @Query('productId') productId?: string,
+    @Query('warehouseId') warehouseId?: string,
+    @Query('locationId') locationId?: string,
+    @Query('status') status?: string,
+    @Query('minQuantity') minQuantity?: string,
+    @Query('maxQuantity') maxQuantity?: string,
+    @Query('lowStock') lowStock?: string,
+    @Query('lastUpdatedAfter') lastUpdatedAfter?: string,
+    @Query('lastUpdatedBefore') lastUpdatedBefore?: string,
+    @Query('limit') limit?: string,
+    @Query('offset') offset?: string,
   ): Promise<StockLevel[]> {
     // Parse numeric parameters
     const minQuantityNum = minQuantity ? parseInt(minQuantity, 10) : undefined;
@@ -365,7 +376,7 @@ export class InventoryController {
 
     // Parse boolean parameters
     const lowStockVal =
-      lowStock !== undefined ? lowStock.toLowerCase() === "true" : undefined;
+      lowStock !== undefined ? lowStock.toLowerCase() === 'true' : undefined;
 
     // Parse date parameters
     const lastUpdatedAfterDate = lastUpdatedAfter
@@ -407,20 +418,20 @@ export class InventoryController {
    * @param offset Pagination offset
    * @returns Array of filtered stock movements
    */
-  @Get("movements/filter/:organizationId")
+  @Get('movements/filter/:organizationId')
   async findStockMovementsWithFilters(
-    @Param("organizationId") organizationId: string,
-    @Query("productId") productId?: string,
-    @Query("warehouseId") warehouseId?: string,
-    @Query("movementType") movementType?: StockMovementType,
-    @Query("movementReason") movementReason?: StockMovementReason,
-    @Query("userId") userId?: string,
-    @Query("fromDate") fromDate?: string,
-    @Query("toDate") toDate?: string,
-    @Query("referenceNumber") referenceNumber?: string,
-    @Query("referenceType") referenceType?: string,
-    @Query("limit") limit?: string,
-    @Query("offset") offset?: string,
+    @Param('organizationId') organizationId: string,
+    @Query('productId') productId?: string,
+    @Query('warehouseId') warehouseId?: string,
+    @Query('movementType') movementType?: StockMovementType,
+    @Query('movementReason') movementReason?: StockMovementReason,
+    @Query('userId') userId?: string,
+    @Query('fromDate') fromDate?: string,
+    @Query('toDate') toDate?: string,
+    @Query('referenceNumber') referenceNumber?: string,
+    @Query('referenceType') referenceType?: string,
+    @Query('limit') limit?: string,
+    @Query('offset') offset?: string,
   ): Promise<StockMovement[]> {
     // Parse numeric parameters
     const limitNum = limit ? parseInt(limit, 10) : undefined;

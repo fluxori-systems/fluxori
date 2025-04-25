@@ -1,4 +1,4 @@
-import { Injectable, Logger, NotFoundException } from "@nestjs/common";
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 
 import {
   InsightStatus,
@@ -7,9 +7,9 @@ import {
   CreateInsightDto,
   UpdateInsightDto,
   QueryInsightsDto,
-} from "../interfaces/types";
-import { Insight } from "../models/insight.schema";
-import { InsightRepository } from "../repositories/insight.repository";
+} from '../interfaces/types';
+import { Insight } from '../models/insight.schema';
+import { InsightRepository } from '../repositories/insight.repository';
 
 /**
  * Service for Insight operations
@@ -86,7 +86,7 @@ export class InsightService {
     this.logger.log(`Updating insight ${id} status to: ${updateDto.status}`);
 
     if (!updateDto.status) {
-      throw new Error("Status is required for insight update");
+      throw new Error('Status is required for insight update');
     }
 
     const updated = await this.insightRepository.updateStatus(
@@ -153,7 +153,7 @@ export class InsightService {
       await this.insightRepository.delete(id);
       return true;
     } catch (error) {
-      if (error.message?.includes("not found")) {
+      if (error.message?.includes('not found')) {
         throw new NotFoundException(`Insight with ID ${id} not found`);
       }
       throw error;

@@ -11,9 +11,9 @@
 
 import { gsap } from 'gsap';
 // Import core plugins (available in both regular and Business licenses)
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
 import { Draggable } from 'gsap/Draggable';
+import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 // Import business license plugins (these would be available with a Business account)
 // For demonstration purposes - uncommenting these would require a valid business license

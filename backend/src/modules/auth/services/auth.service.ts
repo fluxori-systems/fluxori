@@ -5,13 +5,13 @@ import {
   ConflictException,
   InternalServerErrorException,
   NotFoundException,
-} from "@nestjs/common";
+} from '@nestjs/common';
 
-import { FirebaseAuthService } from "./firebase-auth.service";
-import { UserRepository } from "../../users/repositories/user.repository";
-import { User, UserRole } from "../../users/schemas/user.schema";
-import { LoginDto } from "../dtos/login.dto";
-import { RegisterDto } from "../dtos/register.dto";
+import { FirebaseAuthService } from './firebase-auth.service';
+import { UserRepository } from '../../users/repositories/user.repository';
+import { User, UserRole } from '../../users/schemas/user.schema';
+import { LoginDto } from '../dtos/login.dto';
+import { RegisterDto } from '../dtos/register.dto';
 
 /**
  * Auth service for handling user authentication via Firebase Auth
@@ -38,11 +38,11 @@ export class AuthService {
       // Check if user exists in our database
       const user = await this.userRepository.findByEmail(email);
       if (!user) {
-        throw new UnauthorizedException("Invalid credentials");
+        throw new UnauthorizedException('Invalid credentials');
       }
 
       if (!user.isActive) {
-        throw new UnauthorizedException("User account is inactive");
+        throw new UnauthorizedException('User account is inactive');
       }
 
       // Verify with Firebase Auth (this will throw if credentials are invalid)
@@ -50,7 +50,7 @@ export class AuthService {
         await this.firebaseAuth.getUserByEmail(email);
         // We don't verify password here as Firebase handles that during login
       } catch (error) {
-        throw new UnauthorizedException("Invalid credentials");
+        throw new UnauthorizedException('Invalid credentials');
       }
 
       // Update last login time
@@ -63,7 +63,7 @@ export class AuthService {
       }
 
       this.logger.error(`Authentication failed: ${error.message}`, error.stack);
-      throw new UnauthorizedException("Authentication failed");
+      throw new UnauthorizedException('Authentication failed');
     }
   }
 
@@ -97,7 +97,7 @@ export class AuthService {
       if (error instanceof UnauthorizedException) {
         throw error;
       }
-      throw new InternalServerErrorException("Login failed");
+      throw new InternalServerErrorException('Login failed');
     }
   }
 
@@ -115,7 +115,7 @@ export class AuthService {
       // Check if user already exists in our database
       const existingUser = await this.userRepository.findByEmail(email);
       if (existingUser) {
-        throw new ConflictException("User with this email already exists");
+        throw new ConflictException('User with this email already exists');
       }
 
       // Create user in Firebase Auth
@@ -161,7 +161,7 @@ export class AuthService {
       if (error instanceof ConflictException) {
         throw error;
       }
-      throw new InternalServerErrorException("Registration failed");
+      throw new InternalServerErrorException('Registration failed');
     }
   }
 
@@ -174,7 +174,7 @@ export class AuthService {
     try {
       const user = await this.userRepository.findById(userId);
       if (!user) {
-        throw new NotFoundException("User not found");
+        throw new NotFoundException('User not found');
       }
 
       return user;
@@ -186,7 +186,7 @@ export class AuthService {
       if (error instanceof NotFoundException) {
         throw error;
       }
-      throw new InternalServerErrorException("Failed to retrieve user profile");
+      throw new InternalServerErrorException('Failed to retrieve user profile');
     }
   }
 
@@ -214,7 +214,7 @@ export class AuthService {
       if (error instanceof NotFoundException) {
         throw error;
       }
-      throw new InternalServerErrorException("Failed to update user status");
+      throw new InternalServerErrorException('Failed to update user status');
     }
   }
 }

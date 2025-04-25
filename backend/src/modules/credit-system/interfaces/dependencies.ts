@@ -1,11 +1,15 @@
 /**
  * Dependencies interfaces for Credit System module
- * 
+ *
  * This file defines the interfaces for dependencies required by the Credit System module
  * from other modules. This approach ensures proper dependency management and loose coupling.
  */
 
-import { AgentResponse, ModelAdapter, ModelRegistryEntry } from "../../agent-framework";
+import {
+  AgentResponse,
+  ModelAdapter,
+  ModelRegistryEntry,
+} from '../../agent-framework';
 
 // Define the ChatMessage interface inline since it's not exported by the agent-framework
 interface ChatMessage {
@@ -17,7 +21,7 @@ interface ChatMessage {
     arguments: Record<string, any>;
   };
 }
-import { FeatureFlagService } from "../../feature-flags";
+import { FeatureFlagService } from '../../feature-flags';
 
 /**
  * Agent Framework dependencies required by the Credit System

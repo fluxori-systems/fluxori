@@ -1,23 +1,24 @@
 'use client';
 
 import React, { forwardRef, useRef, useEffect } from 'react';
-import { Text as MantineText } from '@mantine/core';
-import { useMantineTheme } from '@mantine/core';
-import { getColor, getFontSize, getSpacing } from '../../design-system/utils/tokens';
+
+import { Text as MantineText , useMantineTheme } from '@mantine/core';
+
+import { typography } from '../../design-system/tokens/typography';
 import { getColorFromMantine } from '../../design-system/utils/mantine-theme-adapter';
 import { useTokenTracking } from '../../design-system/utils/token-analysis';
-import { BaseComponentProps, AnimatableComponentProps, Intent, Size } from '../types';
-import { typography } from '../../design-system/tokens/typography';
-
-// Import from shared modules to avoid circular dependencies
-import { useCombinedRefs } from '../../shared/utils/ref-utils';
-import { useComponentAnimation } from '../hooks/useComponentAnimation';
-import { useConnectionQuality, useNetworkAware } from '../hooks/useConnection';
+import { getColor, getFontSize, getSpacing } from '../../design-system/utils/tokens';
+import { SouthAfricanMarketOptimizer, SAOptimizer } from '../../shared/components/SouthAfricanMarketOptimizer';
 import { 
   useSouthAfricanMarketOptimizations, 
   SANetworkProfile 
 } from '../../shared/hooks/useSouthAfricanMarketOptimizations';
-import { SouthAfricanMarketOptimizer, SAOptimizer } from '../../shared/components/SouthAfricanMarketOptimizer';
+import { useCombinedRefs } from '../../shared/utils/ref-utils';
+import { useComponentAnimation } from '../hooks/useComponentAnimation';
+import { useConnectionQuality, useNetworkAware } from '../hooks/useConnection';
+import { BaseComponentProps, AnimatableComponentProps, Intent, Size } from '../types';
+
+// Import from shared modules to avoid circular dependencies
 // Define font weight type
 type FontWeight = 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900;
 

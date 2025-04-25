@@ -1,10 +1,11 @@
 'use client';
 
 import React from 'react';
+
 import { Card } from '../Card';
-import { Text } from '../Text';
 import { Group } from '../Group';
 import { Stack } from '../Stack';
+import { Text } from '../Text';
 import { AgentStateIndicator } from './AgentStateIndicator';
 import { AgentToolUsage as AgentToolUsageType } from './types';
 

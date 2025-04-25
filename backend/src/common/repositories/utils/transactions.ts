@@ -3,20 +3,14 @@
  * Provides utilities for managing transactions in repositories
  */
 
-import { 
-  Logger 
-} from '@nestjs/common';
+import { Logger } from '@nestjs/common';
 
-import { 
-  Firestore, 
-  Transaction, 
-  WriteBatch
-} from '@google-cloud/firestore';
+import { Firestore, Transaction, WriteBatch } from '@google-cloud/firestore';
 
-import { 
+import {
   TransactionContext,
   TransactionExecutionOptions,
-  FirestoreBatchWriteResult
+  FirestoreBatchWriteResult,
 } from '../../../types/google-cloud.types';
 
 /**
@@ -40,7 +34,7 @@ export const DEFAULT_TRANSACTION_OPTIONS: TransactionExecutionOptions = {
   maxAttempts: 5,
   readOnly: false,
   retryDelayMs: 200,
-  timeoutMs: 30000
+  timeoutMs: 30000,
 };
 
 /**
@@ -53,81 +47,84 @@ export const DEFAULT_TRANSACTION_OPTIONS: TransactionExecutionOptions = {
 export async function executeTransaction<T>(
   firestore: Firestore,
   executionFunction: (txContext: TransactionContext) => Promise<T>,
-  options: Partial<TransactionExecutionOptions> = {}
+  options: Partial<TransactionExecutionOptions> = {},
 ): Promise<T> {
   const mergedOptions = { ...DEFAULT_TRANSACTION_OPTIONS, ...options };
   const logger = new Logger('Transaction');
-  
+
   let attempts = 0;
-  
+
   // Store the last error
   let lastError: Error | null = null;
-  
+
   // Function to delay between retries with exponential backoff
-  const delay = (ms: number): Promise<void> => new Promise(resolve => setTimeout(resolve, ms));
+  const delay = (ms: number): Promise<void> =>
+    new Promise((resolve) => setTimeout(resolve, ms));
   const calculateBackoff = (attempt: number): number => {
     return mergedOptions.retryDelayMs! * Math.pow(2, attempt);
   };
-  
+
   while (attempts < mergedOptions.maxAttempts!) {
     attempts++;
-    
+
     try {
       // Create transaction
       let result: T;
-      
+
       if (mergedOptions.readOnly) {
         // Read-only transaction
-        result = await firestore.runTransaction(async (transaction) => {
-          const txContext: TransactionContext = {
-            transaction,
-            options: mergedOptions
-          };
-          
-          return executionFunction(txContext);
-        }, { readOnly: true });
+        result = await firestore.runTransaction(
+          async (transaction) => {
+            const txContext: TransactionContext = {
+              transaction,
+              options: mergedOptions,
+            };
+
+            return executionFunction(txContext);
+          },
+          { readOnly: true },
+        );
       } else {
         // Read-write transaction
         result = await firestore.runTransaction(async (transaction) => {
           const txContext: TransactionContext = {
             transaction,
-            options: mergedOptions
+            options: mergedOptions,
           };
-          
+
           return executionFunction(txContext);
         });
       }
-      
+
       // If we got here, the transaction succeeded
       return result;
-      
     } catch (error) {
       lastError = error as Error;
-      
+
       // Log the error
       logger.debug(
-        `Transaction attempt ${attempts}/${mergedOptions.maxAttempts} failed: ${error.message}`
+        `Transaction attempt ${attempts}/${mergedOptions.maxAttempts} failed: ${error.message}`,
       );
-      
+
       // Exit early if we've reached max attempts
       if (attempts >= mergedOptions.maxAttempts!) {
         break;
       }
-      
+
       // Calculate backoff with jitter
       const backoff = calculateBackoff(attempts) * (0.5 + Math.random() * 0.5);
-      
+
       // Wait before trying again
       await delay(backoff);
     }
   }
-  
+
   // If we got here, all transaction attempts failed
   logger.error(
     `Transaction failed after ${attempts} attempts: ${lastError?.message}`,
-    lastError?.stack
+    lastError?.stack,
   );
-  
+
   throw lastError || new Error('Transaction failed');
 }
 
@@ -139,29 +136,29 @@ export async function executeTransaction<T>(
  */
 export async function executeBatch(
   firestore: Firestore,
-  operations: (batch: WriteBatch) => void
+  operations: (batch: WriteBatch) => void,
 ): Promise<FirestoreBatchWriteResult> {
   const batch = firestore.batch();
-  
+
   // Execute the operations to populate the batch
   operations(batch);
-  
+
   try {
     // Commit the batch
     await batch.commit();
-    
+
     return {
       status: 'success',
       successCount: 1,
       errorCount: 0,
-      writtenCount: 1
+      writtenCount: 1,
     };
   } catch (error) {
     return {
       status: 'error',
       successCount: 0,
       errorCount: 1,
-      errors: [{ index: 0, error: error as Error }]
+      errors: [{ index: 0, error: error as Error }],
     };
   }
 }

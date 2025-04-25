@@ -1,10 +1,10 @@
-import { Injectable, Logger } from "@nestjs/common";
+import { Injectable, Logger } from '@nestjs/common';
 
-import { v4 as uuidv4 } from "uuid";
+import { v4 as uuidv4 } from 'uuid';
 
-import { FeatureFlagService } from "src/modules/feature-flags";
+import { FeatureFlagService } from 'src/modules/feature-flags';
 
-import { ModelAdapterFactory } from "./model-adapter.factory";
+import { ModelAdapterFactory } from './model-adapter.factory';
 import {
   AgentConfig,
   AgentConversation,
@@ -17,10 +17,10 @@ import {
   CreateConversationRequest,
   SendMessageRequest,
   ConversationResponse,
-} from "../interfaces/types";
-import { AgentConfigRepository } from "../repositories/agent-config.repository";
-import { AgentConversationRepository } from "../repositories/agent-conversation.repository";
-import { ModelRegistryRepository } from "../repositories/model-registry.repository";
+} from '../interfaces/types';
+import { AgentConfigRepository } from '../repositories/agent-config.repository';
+import { AgentConversationRepository } from '../repositories/agent-conversation.repository';
+import { ModelRegistryRepository } from '../repositories/model-registry.repository';
 
 /**
  * Service for agent operations
@@ -72,7 +72,7 @@ export class AgentService {
       const messages: ConversationMessage[] = [
         {
           id: uuidv4(),
-          role: "system",
+          role: 'system',
           content: agentConfig.systemPrompt,
           timestamp: new Date(),
         },
@@ -82,7 +82,7 @@ export class AgentService {
       if (request.initialMessage) {
         messages.push({
           id: uuidv4(),
-          role: "user",
+          role: 'user',
           content: request.initialMessage,
           timestamp: new Date(),
         });
@@ -92,7 +92,7 @@ export class AgentService {
       const conversation = await this.conversationRepository.create({
         organizationId: request.organizationId,
         userId: request.userId,
-        title: request.title || "New Conversation",
+        title: request.title || 'New Conversation',
         messages,
         agentConfigId: request.agentConfigId,
         tokensUsed: 0,
@@ -135,7 +135,7 @@ export class AgentService {
 
       // Verify user has access to the conversation
       if (conversation.userId !== request.userId) {
-        throw new Error("User does not have access to this conversation");
+        throw new Error('User does not have access to this conversation');
       }
 
       // Get the agent configuration
@@ -160,8 +160,8 @@ export class AgentService {
           content: `Agent '${agentConfig.name}' is no longer available for your organization.`,
           tokenUsage: { input: 0, output: 0, total: 0 },
           modelInfo: {
-            provider: "none",
-            model: "none",
+            provider: 'none',
+            model: 'none',
             complexity: ModelComplexity.SIMPLE,
           },
           processingTime: 0,
@@ -172,7 +172,7 @@ export class AgentService {
       // Add user message to conversation
       const userMessage: ConversationMessage = {
         id: uuidv4(),
-        role: "user",
+        role: 'user',
         content: request.message,
         timestamp: new Date(),
         metadata: request.attachments
@@ -212,7 +212,7 @@ export class AgentService {
 
       // Verify user has access to the conversation
       if (conversation.userId !== userId) {
-        throw new Error("User does not have access to this conversation");
+        throw new Error('User does not have access to this conversation');
       }
 
       return {
@@ -355,7 +355,7 @@ export class AgentService {
       const messages = conversation.messages.map((msg) => ({
         role: msg.role,
         content: msg.content,
-        name: msg.role === "function" ? msg.id : undefined,
+        name: msg.role === 'function' ? msg.id : undefined,
         functionCall: msg.functionCall,
       }));
 
@@ -390,7 +390,7 @@ export class AgentService {
       // Create the assistant message
       const assistantMessage: ConversationMessage = {
         id: uuidv4(),
-        role: "assistant",
+        role: 'assistant',
         content: response.content,
         timestamp: new Date(),
         functionCall: response.functionCall,
@@ -517,7 +517,7 @@ export class AgentService {
     organizationId: string,
   ): Promise<boolean> {
     // Create a standardized feature flag key from the agent name
-    const flagKey = `agent-${agentName.toLowerCase().replace(/\s+/g, "-")}`;
+    const flagKey = `agent-${agentName.toLowerCase().replace(/\s+/g, '-')}`;
 
     try {
       // Check if the feature flag exists and is enabled for this organization
@@ -533,5 +533,4 @@ export class AgentService {
       return true;
     }
   }
-
 }

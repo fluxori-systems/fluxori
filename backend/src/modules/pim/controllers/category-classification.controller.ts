@@ -9,15 +9,20 @@ import {
   Param,
   Query,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 
-import { ProductAiService } from '../services/product-ai.service';
-import { ProductService } from '../services/product.service';
-import { CategoryService } from '../services/category.service';
-import { FirebaseAuthGuard } from '../../auth/guards/firebase-auth.guard';
-import { GetUser } from '../../auth/decorators/get-user.decorator';
 import { LoggingInterceptor } from '../../../common/observability/interceptors/logging.interceptor';
 import { TracingInterceptor } from '../../../common/observability/interceptors/tracing.interceptor';
+import { GetUser } from '../../auth/decorators/get-user.decorator';
+import { FirebaseAuthGuard } from '../../auth/guards/firebase-auth.guard';
+import { CategoryService } from '../services/category.service';
+import { ProductAiService } from '../services/product-ai.service';
+import { ProductService } from '../services/product.service';
 
 /**
  * DTO for product classification
@@ -99,14 +104,19 @@ export class CategoryClassificationController {
   ): Promise<any> {
     try {
       let productData: any;
-      
+
       // If productId is provided, fetch product data
       if (dto.productId) {
-        const product = await this.productService.findById(dto.productId, user.organizationId);
+        const product = await this.productService.findById(
+          dto.productId,
+          user.organizationId,
+        );
         if (!product) {
-          throw new BadRequestException(`Product not found with ID: ${dto.productId}`);
+          throw new BadRequestException(
+            `Product not found with ID: ${dto.productId}`,
+          );
         }
-        
+
         // Format product data for AI service
         productData = {
           name: product.name,
@@ -118,16 +128,18 @@ export class CategoryClassificationController {
         // Use provided product data
         productData = dto.productData;
       } else {
-        throw new BadRequestException('Either productId or productData must be provided');
+        throw new BadRequestException(
+          'Either productId or productData must be provided',
+        );
       }
-      
+
       // Classify product
       const classificationResult = await this.productAiService.classifyProduct(
         productData,
         user.organizationId,
         user.uid,
       );
-      
+
       // If product ID is provided, enhance results with available categories
       if (dto.productId && classificationResult.success) {
         // Convert category paths to actual category IDs where possible
@@ -135,19 +147,21 @@ export class CategoryClassificationController {
           classificationResult.categories,
           user.organizationId,
         );
-        
+
         return {
           ...classificationResult,
           categories: enhancedCategories,
         };
       }
-      
+
       return classificationResult;
     } catch (error) {
       if (error instanceof BadRequestException) {
         throw error;
       }
-      throw new BadRequestException(`Failed to classify product: ${error.message}`);
+      throw new BadRequestException(
+        `Failed to classify product: ${error.message}`,
+      );
     }
   }
 
@@ -156,27 +170,40 @@ export class CategoryClassificationController {
    */
   @Post('apply-classification')
   @ApiOperation({ summary: 'Apply classification results to a product' })
-  @ApiResponse({ status: 200, description: 'Classification applied successfully' })
+  @ApiResponse({
+    status: 200,
+    description: 'Classification applied successfully',
+  })
   async applyClassification(
     @Body() dto: ApplyClassificationDto,
     @GetUser() user: any,
   ): Promise<any> {
     try {
       // Verify product exists
-      const product = await this.productService.findById(dto.productId, user.organizationId);
+      const product = await this.productService.findById(
+        dto.productId,
+        user.organizationId,
+      );
       if (!product) {
-        throw new BadRequestException(`Product not found with ID: ${dto.productId}`);
+        throw new BadRequestException(
+          `Product not found with ID: ${dto.productId}`,
+        );
       }
-      
+
       // Verify category exists
-      const category = await this.categoryService.findById(dto.categoryId, user.organizationId);
+      const category = await this.categoryService.findById(
+        dto.categoryId,
+        user.organizationId,
+      );
       if (!category) {
-        throw new BadRequestException(`Category not found with ID: ${dto.categoryId}`);
+        throw new BadRequestException(
+          `Category not found with ID: ${dto.categoryId}`,
+        );
       }
-      
+
       // Update product with category
       const updates: any = { categoryId: dto.categoryId };
-      
+
       // Add attributes if provided
       if (dto.attributes) {
         updates.attributes = {
@@ -184,14 +211,14 @@ export class CategoryClassificationController {
           ...dto.attributes,
         };
       }
-      
+
       // Update product
       const updatedProduct = await this.productService.update(
         dto.productId,
         updates,
         user.organizationId,
       );
-      
+
       return {
         success: true,
         product: updatedProduct,
@@ -200,7 +227,9 @@ export class CategoryClassificationController {
       if (error instanceof BadRequestException) {
         throw error;
       }
-      throw new BadRequestException(`Failed to apply classification: ${error.message}`);
+      throw new BadRequestException(
+        `Failed to apply classification: ${error.message}`,
+      );
     }
   }
 
@@ -209,7 +238,10 @@ export class CategoryClassificationController {
    */
   @Post('bulk-classify')
   @ApiOperation({ summary: 'Bulk classify products' })
-  @ApiResponse({ status: 202, description: 'Bulk classification job submitted' })
+  @ApiResponse({
+    status: 202,
+    description: 'Bulk classification job submitted',
+  })
   async bulkClassifyProducts(
     @Body() dto: BulkClassifyProductsDto,
     @GetUser() user: any,
@@ -218,14 +250,16 @@ export class CategoryClassificationController {
       if (!dto.productIds || dto.productIds.length === 0) {
         throw new BadRequestException('Product IDs are required');
       }
-      
+
       if (dto.productIds.length > 50) {
-        throw new BadRequestException('Maximum 50 products can be classified in a single batch');
+        throw new BadRequestException(
+          'Maximum 50 products can be classified in a single batch',
+        );
       }
-      
+
       // Create a job ID
       const jobId = `bulk-classify-${Date.now()}`;
-      
+
       // Start async processing (in a real impl, this would be a background job)
       // For now, we'll just return a job ID
       return {
@@ -233,13 +267,17 @@ export class CategoryClassificationController {
         jobId,
         message: `Started classification of ${dto.productIds.length} products`,
         status: 'PROCESSING',
-        estimatedCompletionTime: new Date(Date.now() + 60000 * Math.ceil(dto.productIds.length / 5)),
+        estimatedCompletionTime: new Date(
+          Date.now() + 60000 * Math.ceil(dto.productIds.length / 5),
+        ),
       };
     } catch (error) {
       if (error instanceof BadRequestException) {
         throw error;
       }
-      throw new BadRequestException(`Failed to start bulk classification: ${error.message}`);
+      throw new BadRequestException(
+        `Failed to start bulk classification: ${error.message}`,
+      );
     }
   }
 
@@ -273,27 +311,34 @@ export class CategoryClassificationController {
   private async enhanceWithCategoryIds(
     categories: Array<{ path: string; confidence: number }>,
     organizationId: string,
-  ): Promise<Array<{ path: string; confidence: number; categoryId?: string; exists: boolean }>> {
+  ): Promise<
+    Array<{
+      path: string;
+      confidence: number;
+      categoryId?: string;
+      exists: boolean;
+    }>
+  > {
     // Get all available categories
-    const allCategories = await this.categoryService.findAll({ 
+    const allCategories = await this.categoryService.findAll({
       organizationId,
       includeHierarchy: true,
     });
-    
+
     // Map of category path -> category ID
     const categoryPathMap = new Map<string, string>();
-    
+
     // Build path map
     for (const category of allCategories) {
       const path = this.buildCategoryPath(category, allCategories);
       categoryPathMap.set(path.toLowerCase(), category.id);
     }
-    
+
     // Match category paths to IDs
-    return categories.map(category => {
+    return categories.map((category) => {
       const normalizedPath = category.path.toLowerCase();
       const categoryId = categoryPathMap.get(normalizedPath);
-      
+
       return {
         ...category,
         categoryId,
@@ -305,21 +350,20 @@ export class CategoryClassificationController {
   /**
    * Build a full category path for a category
    */
-  private buildCategoryPath(
-    category: any,
-    allCategories: any[],
-  ): string {
+  private buildCategoryPath(category: any, allCategories: any[]): string {
     const pathParts = [category.name];
-    
+
     let currentCategory = category;
     while (currentCategory.parentId) {
-      const parent = allCategories.find(c => c.id === currentCategory.parentId);
+      const parent = allCategories.find(
+        (c) => c.id === currentCategory.parentId,
+      );
       if (!parent) break;
-      
+
       pathParts.unshift(parent.name);
       currentCategory = parent;
     }
-    
+
     return pathParts.join(' > ');
   }
 }

@@ -1,8 +1,8 @@
 /**
  * Warehouse Schema
  */
-import { FirestoreEntity } from "../../../types/google-cloud.types";
-import { WarehouseType } from "../interfaces/types";
+import { FirestoreEntity } from '../../../types/google-cloud.types';
+import { WarehouseType } from '../interfaces/types';
 
 /**
  * Warehouse entity for Firestore

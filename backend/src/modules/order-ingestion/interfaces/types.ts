@@ -126,7 +126,7 @@ export interface Order {
   /**
    * Status of the last Xero push attempt
    */
-  xeroPushStatus?: "success" | "failed";
+  xeroPushStatus?: 'success' | 'failed';
 
   /**
    * Error message from the last Xero push attempt

@@ -1,10 +1,11 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { ProductCategory } from '../../../types/product/product.types';
-import { api } from '../../../api/apiClient';
-import CategoryTreeView from './CategoryTreeView';
+
 import CategoryForm from './CategoryForm';
+import CategoryTreeView from './CategoryTreeView';
+import { api } from '../../../api/apiClient';
+import { ProductCategory } from '../../../types/product/product.types';
 
 export default function CategoryManagement() {
   const [selectedCategory, setSelectedCategory] = useState<ProductCategory | null>(null);

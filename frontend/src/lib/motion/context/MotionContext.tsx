@@ -1,18 +1,19 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { MotionMode } from '../../shared/types/motion-types';
+
 import { ServiceProvider } from '../../shared/providers/service-provider';
+import { 
+  registerAnimationService, 
+  registerConnectionService 
+} from '../../shared/services/service-registry';
+import { MotionMode } from '../../shared/types/motion-types';
 import { 
   defaultAnimationService 
 } from '../services/animation-service.impl';
 import { 
   defaultConnectionService 
 } from '../services/connection-service.impl';
-import { 
-  registerAnimationService, 
-  registerConnectionService 
-} from '../../shared/services/service-registry';
 
 // Register default service implementations
 registerAnimationService(defaultAnimationService);

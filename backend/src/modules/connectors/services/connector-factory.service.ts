@@ -1,17 +1,21 @@
 /**
  * Connector Factory Service
- * 
+ *
  * This service is responsible for creating, caching, and managing connector instances.
  * It serves as the primary entry point for obtaining connector instances throughout the application.
  */
 
 import { Injectable, Logger, OnModuleDestroy } from '@nestjs/common';
-import { IConnector, IMarketplaceConnector } from '../interfaces/connector.interface';
-import { 
-  ConnectorCredentials, 
-  MarketplaceProduct, 
-  MarketplaceOrder, 
-  OrderAcknowledgment 
+
+import {
+  IConnector,
+  IMarketplaceConnector,
+} from '../interfaces/connector.interface';
+import {
+  ConnectorCredentials,
+  MarketplaceProduct,
+  MarketplaceOrder,
+  OrderAcknowledgment,
 } from '../interfaces/types';
 import { ConnectorCredentialsRepository } from '../repositories/connector-credentials.repository';
 
@@ -22,9 +26,14 @@ import { ConnectorCredentialsRepository } from '../repositories/connector-creden
 export class ConnectorFactoryService implements OnModuleDestroy {
   private readonly logger = new Logger(ConnectorFactoryService.name);
   private readonly connectors = new Map<string, IConnector>();
-  private readonly connectorClasses = new Map<string, new (...args: any[]) => IConnector>();
+  private readonly connectorClasses = new Map<
+    string,
+    new (...args: any[]) => IConnector
+  >();
 
-  constructor(private readonly credentialsRepository: ConnectorCredentialsRepository) {}
+  constructor(
+    private readonly credentialsRepository: ConnectorCredentialsRepository,
+  ) {}
 
   /**
    * Register a connector class with the factory
@@ -33,7 +42,7 @@ export class ConnectorFactoryService implements OnModuleDestroy {
    */
   registerConnector<T extends IConnector>(
     id: string,
-    connectorClass: new (...args: any[]) => T
+    connectorClass: new (...args: any[]) => T,
   ): void {
     this.logger.log(`Registering connector: ${id}`);
     this.connectorClasses.set(id, connectorClass);
@@ -47,42 +56,43 @@ export class ConnectorFactoryService implements OnModuleDestroy {
    */
   async getConnector<T extends IConnector>(
     connectorId: string,
-    organizationId: string
+    organizationId: string,
   ): Promise<T> {
     const cacheKey = `${connectorId}:${organizationId}`;
-    
+
     // Check for existing initialized instance
     if (this.connectors.has(cacheKey)) {
       return this.connectors.get(cacheKey) as T;
     }
-    
+
     // Get connector class
     const ConnectorClass = this.connectorClasses.get(connectorId);
     if (!ConnectorClass) {
       throw new Error(`No connector registered with ID: ${connectorId}`);
     }
-    
+
     // Get credentials from repository
-    const credentials = await this.credentialsRepository.findByConnectorAndOrganization(
-      connectorId,
-      organizationId
-    );
-    
+    const credentials =
+      await this.credentialsRepository.findByConnectorAndOrganization(
+        connectorId,
+        organizationId,
+      );
+
     if (!credentials) {
       throw new Error(
-        `No credentials found for connector ${connectorId} and organization ${organizationId}`
+        `No credentials found for connector ${connectorId} and organization ${organizationId}`,
       );
     }
-    
+
     // Create instance
     const connector = new ConnectorClass() as T;
-    
+
     // Initialize connector
     await connector.initialize(credentials.credentials);
-    
+
     // Cache the initialized connector
     this.connectors.set(cacheKey, connector);
-    
+
     return connector;
   }
 
@@ -94,8 +104,14 @@ export class ConnectorFactoryService implements OnModuleDestroy {
    */
   async getMarketplaceConnector(
     connectorId: string,
-    organizationId: string
-  ): Promise<IMarketplaceConnector<MarketplaceProduct, MarketplaceOrder, OrderAcknowledgment>> {
+    organizationId: string,
+  ): Promise<
+    IMarketplaceConnector<
+      MarketplaceProduct,
+      MarketplaceOrder,
+      OrderAcknowledgment
+    >
+  > {
     return this.getConnector(connectorId, organizationId);
   }
 
@@ -108,20 +124,20 @@ export class ConnectorFactoryService implements OnModuleDestroy {
    */
   async createConnector<T extends IConnector>(
     connectorId: string,
-    credentials: ConnectorCredentials
+    credentials: ConnectorCredentials,
   ): Promise<T> {
     // Get connector class
     const ConnectorClass = this.connectorClasses.get(connectorId);
     if (!ConnectorClass) {
       throw new Error(`No connector registered with ID: ${connectorId}`);
     }
-    
+
     // Create instance
     const connector = new ConnectorClass() as T;
-    
+
     // Initialize connector
     await connector.initialize(credentials);
-    
+
     return connector;
   }
 
@@ -131,28 +147,25 @@ export class ConnectorFactoryService implements OnModuleDestroy {
    * @param credentials Credentials to test
    * @returns Connection status
    */
-  async testConnection(
-    connectorId: string,
-    credentials: ConnectorCredentials
-  ) {
+  async testConnection(connectorId: string, credentials: ConnectorCredentials) {
     try {
       const connector = await this.createConnector(connectorId, credentials);
       const status = await connector.testConnection();
-      
+
       // Clean up the test connector
       await connector.close();
-      
+
       return status;
     } catch (error) {
       this.logger.error(
         `Error testing connection for ${connectorId}: ${error.message}`,
-        error.stack
+        error.stack,
       );
-      
+
       return {
         connected: false,
         message: `Connection test failed: ${error.message}`,
-        lastChecked: new Date()
+        lastChecked: new Date(),
       };
     }
   }
@@ -179,7 +192,7 @@ export class ConnectorFactoryService implements OnModuleDestroy {
    */
   async getConnectorsHealth() {
     const health: Record<string, any> = {};
-    
+
     for (const [key, connector] of this.connectors.entries()) {
       try {
         const status = await connector.getHealthStatus();
@@ -188,11 +201,11 @@ export class ConnectorFactoryService implements OnModuleDestroy {
         health[key] = {
           connected: false,
           message: `Error getting health: ${error.message}`,
-          lastChecked: new Date()
+          lastChecked: new Date(),
         };
       }
     }
-    
+
     return health;
   }
 
@@ -201,7 +214,7 @@ export class ConnectorFactoryService implements OnModuleDestroy {
    */
   async onModuleDestroy() {
     this.logger.log('Cleaning up connector instances');
-    
+
     for (const [key, connector] of this.connectors.entries()) {
       try {
         await connector.close();
@@ -210,7 +223,7 @@ export class ConnectorFactoryService implements OnModuleDestroy {
         this.logger.error(`Error closing connector ${key}: ${error.message}`);
       }
     }
-    
+
     this.connectors.clear();
   }
 }

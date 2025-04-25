@@ -1,12 +1,12 @@
-import { Injectable, Logger, NotFoundException } from "@nestjs/common";
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 
 import {
   DocumentType,
   DocumentStatus,
   ChunkingOptions,
-} from "../interfaces/types";
-import { Document } from "../models/document.schema";
-import { DocumentRepository } from "../repositories/document.repository";
+} from '../interfaces/types';
+import { Document } from '../models/document.schema';
+import { DocumentRepository } from '../repositories/document.repository';
 
 /**
  * DTO for creating a new document
@@ -210,7 +210,7 @@ export class DocumentService {
       await this.documentRepository.delete(id);
       return true;
     } catch (error) {
-      if (error.message?.includes("not found")) {
+      if (error.message?.includes('not found')) {
         throw new NotFoundException(`Document with ID ${id} not found`);
       }
       throw error;

@@ -1,10 +1,15 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { FirestoreConfigService } from '../../../config/firestore.config';
-import { FirestoreBaseRepository } from '../../../common/repositories/firestore-base.repository';
-import { ProductReview, ProductReviewStatus } from '../models/product-review.model';
+
 import { v4 as uuidv4 } from 'uuid';
+
 import { FirestoreAdvancedFilter } from '../../../common/repositories/base';
+import { FirestoreBaseRepository } from '../../../common/repositories/firestore-base.repository';
+import { FirestoreConfigService } from '../../../config/firestore.config';
 import { TransactionContext } from '../../../types/google-cloud.types';
+import {
+  ProductReview,
+  ProductReviewStatus,
+} from '../models/product-review.model';
 
 /**
  * Enhanced model to ensure ProductReview matches FirestoreEntity requirements
@@ -23,7 +28,7 @@ export interface ProductReviewEntity extends ProductReview {
 @Injectable()
 export class ProductReviewRepository extends FirestoreBaseRepository<ProductReviewEntity> {
   protected readonly logger = new Logger(ProductReviewRepository.name);
-  
+
   constructor(firestoreConfigService: FirestoreConfigService) {
     super(firestoreConfigService, 'product-reviews', {
       enableCache: true,
@@ -32,14 +37,19 @@ export class ProductReviewRepository extends FirestoreBaseRepository<ProductRevi
       useVersioning: true,
     });
   }
-  
+
   /**
    * Create a new product review
    * @param review Review data
    */
-  async create(review: Omit<ProductReviewEntity, 'id' | 'createdAt' | 'updatedAt'>): Promise<ProductReviewEntity> {
+  async create(
+    review: Omit<ProductReviewEntity, 'id' | 'createdAt' | 'updatedAt'>,
+  ): Promise<ProductReviewEntity> {
     try {
-      const newReview: Omit<ProductReviewEntity, 'id' | 'createdAt' | 'updatedAt'> = {
+      const newReview: Omit<
+        ProductReviewEntity,
+        'id' | 'createdAt' | 'updatedAt'
+      > = {
         ...review,
         // By default, reviews are in PENDING status unless explicitly set
         status: review.status || ProductReviewStatus.PENDING,
@@ -48,14 +58,17 @@ export class ProductReviewRepository extends FirestoreBaseRepository<ProductRevi
         notHelpfulCount: review.notHelpfulCount ?? 0,
         reportCount: review.reportCount ?? 0,
       };
-      
+
       return await super.create(newReview);
     } catch (error) {
-      this.logger.error(`Error creating product review: ${error.message}`, error.stack);
+      this.logger.error(
+        `Error creating product review: ${error.message}`,
+        error.stack,
+      );
       throw error;
     }
   }
-  
+
   /**
    * Update a product review
    * @param id Review ID
@@ -63,12 +76,14 @@ export class ProductReviewRepository extends FirestoreBaseRepository<ProductRevi
    */
   async update(
     id: string,
-    data: Partial<Omit<ProductReviewEntity, 'id' | 'createdAt' | 'updatedAt'>>
+    data: Partial<Omit<ProductReviewEntity, 'id' | 'createdAt' | 'updatedAt'>>,
   ): Promise<ProductReviewEntity> {
     try {
       // Set updated date
-      const updateData: Partial<Omit<ProductReviewEntity, 'id' | 'createdAt' | 'updatedAt'>> = { ...data };
-      
+      const updateData: Partial<
+        Omit<ProductReviewEntity, 'id' | 'createdAt' | 'updatedAt'>
+      > = { ...data };
+
       // If status is changing to APPROVED, set published date
       if (data.status === ProductReviewStatus.APPROVED) {
         const review = await this.findById(id);
@@ -76,14 +91,17 @@ export class ProductReviewRepository extends FirestoreBaseRepository<ProductRevi
           updateData.publishedDate = new Date();
         }
       }
-      
+
       return await super.update(id, updateData);
     } catch (error) {
-      this.logger.error(`Error updating product review: ${error.message}`, error.stack);
+      this.logger.error(
+        `Error updating product review: ${error.message}`,
+        error.stack,
+      );
       throw error;
     }
   }
-  
+
   /**
    * Find reviews by product ID
    * @param productId Product ID
@@ -106,22 +124,26 @@ export class ProductReviewRepository extends FirestoreBaseRepository<ProductRevi
         sortField: 'submittedDate',
         sortDirection: 'desc' as 'asc' | 'desc',
       };
-      
+
       const { status, limit, offset, sortField, sortDirection } = {
         ...defaultOptions,
         ...options,
       };
-      
+
       // Construct advanced filters array
       const advancedFilters: FirestoreAdvancedFilter<ProductReviewEntity>[] = [
         { field: 'productId', operator: '==', value: productId },
       ];
-      
+
       // Add status filter if provided
       if (status) {
-        advancedFilters.push({ field: 'status', operator: '==', value: status });
+        advancedFilters.push({
+          field: 'status',
+          operator: '==',
+          value: status,
+        });
       }
-      
+
       return await this.find({
         advancedFilters,
         queryOptions: {
@@ -132,11 +154,14 @@ export class ProductReviewRepository extends FirestoreBaseRepository<ProductRevi
         },
       });
     } catch (error) {
-      this.logger.error(`Error finding reviews by product ID: ${error.message}`, error.stack);
+      this.logger.error(
+        `Error finding reviews by product ID: ${error.message}`,
+        error.stack,
+      );
       throw error;
     }
   }
-  
+
   /**
    * Find reviews by organization ID
    * @param organizationId Organization ID
@@ -159,21 +184,25 @@ export class ProductReviewRepository extends FirestoreBaseRepository<ProductRevi
         sortField: 'submittedDate',
         sortDirection: 'desc' as 'asc' | 'desc',
       };
-      
+
       const { status, limit, offset, sortField, sortDirection } = {
         ...defaultOptions,
         ...options,
       };
-      
+
       // Construct filters
       const advancedFilters: FirestoreAdvancedFilter<ProductReviewEntity>[] = [
         { field: 'organizationId', operator: '==', value: organizationId },
       ];
-      
+
       if (status) {
-        advancedFilters.push({ field: 'status', operator: '==', value: status });
+        advancedFilters.push({
+          field: 'status',
+          operator: '==',
+          value: status,
+        });
       }
-      
+
       return await this.find({
         advancedFilters,
         queryOptions: {
@@ -184,17 +213,23 @@ export class ProductReviewRepository extends FirestoreBaseRepository<ProductRevi
         },
       });
     } catch (error) {
-      this.logger.error(`Error finding reviews by organization ID: ${error.message}`, error.stack);
+      this.logger.error(
+        `Error finding reviews by organization ID: ${error.message}`,
+        error.stack,
+      );
       throw error;
     }
   }
-  
+
   /**
    * Find pending reviews by organization ID
    * @param organizationId Organization ID
    * @param limit Max number of reviews to return
    */
-  async findPendingReviews(organizationId: string, limit: number = 50): Promise<ProductReviewEntity[]> {
+  async findPendingReviews(
+    organizationId: string,
+    limit: number = 50,
+  ): Promise<ProductReviewEntity[]> {
     return this.findByOrganizationId(organizationId, {
       status: ProductReviewStatus.PENDING,
       limit,
@@ -202,7 +237,7 @@ export class ProductReviewRepository extends FirestoreBaseRepository<ProductRevi
       sortDirection: 'asc',
     });
   }
-  
+
   /**
    * Find approved reviews by multiple product IDs
    * @param productIds Array of product IDs
@@ -216,13 +251,17 @@ export class ProductReviewRepository extends FirestoreBaseRepository<ProductRevi
       if (!productIds.length) {
         return {};
       }
-      
+
       // Construct advanced filters
       const advancedFilters: FirestoreAdvancedFilter<ProductReviewEntity>[] = [
         { field: 'productId', operator: 'in', value: productIds },
-        { field: 'status', operator: '==', value: ProductReviewStatus.APPROVED },
+        {
+          field: 'status',
+          operator: '==',
+          value: ProductReviewStatus.APPROVED,
+        },
       ];
-      
+
       const reviews = await this.find({
         advancedFilters,
         queryOptions: {
@@ -231,31 +270,37 @@ export class ProductReviewRepository extends FirestoreBaseRepository<ProductRevi
           direction: 'desc',
         },
       });
-      
+
       // Group reviews by product ID
       const reviewsByProduct: Record<string, ProductReviewEntity[]> = {};
-      
+
       // Initialize with empty arrays for all product IDs
-      productIds.forEach(id => {
+      productIds.forEach((id) => {
         reviewsByProduct[id] = [];
       });
-      
+
       // Group reviews by product ID
-      reviews.forEach(review => {
+      reviews.forEach((review) => {
         const productId = review.productId;
-        
-        if (reviewsByProduct[productId] && reviewsByProduct[productId].length < limit) {
+
+        if (
+          reviewsByProduct[productId] &&
+          reviewsByProduct[productId].length < limit
+        ) {
           reviewsByProduct[productId].push(review);
         }
       });
-      
+
       return reviewsByProduct;
     } catch (error) {
-      this.logger.error(`Error finding reviews by product IDs: ${error.message}`, error.stack);
+      this.logger.error(
+        `Error finding reviews by product IDs: ${error.message}`,
+        error.stack,
+      );
       throw error;
     }
   }
-  
+
   /**
    * Update review helpfulness counts
    * @param reviewId Review ID
@@ -266,11 +311,11 @@ export class ProductReviewRepository extends FirestoreBaseRepository<ProductRevi
       await this.runTransaction(async (transaction) => {
         // Get current review
         const review = await this.findById(reviewId, { transaction });
-        
+
         if (!review) {
           throw new Error(`Review with ID ${reviewId} not found`);
         }
-        
+
         // Update appropriate counter
         if (helpful) {
           await this.update(reviewId, {
@@ -283,11 +328,14 @@ export class ProductReviewRepository extends FirestoreBaseRepository<ProductRevi
         }
       });
     } catch (error) {
-      this.logger.error(`Error updating helpfulness count: ${error.message}`, error.stack);
+      this.logger.error(
+        `Error updating helpfulness count: ${error.message}`,
+        error.stack,
+      );
       throw error;
     }
   }
-  
+
   /**
    * Increment the report count for a review
    * @param reviewId Review ID
@@ -297,32 +345,36 @@ export class ProductReviewRepository extends FirestoreBaseRepository<ProductRevi
       await this.runTransaction(async (transaction) => {
         // Get current review
         const review = await this.findById(reviewId, { transaction });
-        
+
         if (!review) {
           throw new Error(`Review with ID ${reviewId} not found`);
         }
-        
+
         // Increment report count
         const newReportCount = (review.reportCount || 0) + 1;
-        
+
         // Auto-flag if report count exceeds threshold
         const autoFlagThreshold = 5; // This could be configurable
-        const newStatus = newReportCount >= autoFlagThreshold && 
+        const newStatus =
+          newReportCount >= autoFlagThreshold &&
           review.status === ProductReviewStatus.APPROVED
-          ? ProductReviewStatus.FLAGGED
-          : review.status;
-        
+            ? ProductReviewStatus.FLAGGED
+            : review.status;
+
         await this.update(reviewId, {
           reportCount: newReportCount,
           status: newStatus,
         });
       });
     } catch (error) {
-      this.logger.error(`Error incrementing report count: ${error.message}`, error.stack);
+      this.logger.error(
+        `Error incrementing report count: ${error.message}`,
+        error.stack,
+      );
       throw error;
     }
   }
-  
+
   /**
    * Calculate review statistics for a product
    * @param productId Product ID
@@ -339,7 +391,7 @@ export class ProductReviewRepository extends FirestoreBaseRepository<ProductRevi
         status: ProductReviewStatus.APPROVED,
         limit: 1000, // High limit to get all reviews
       });
-      
+
       // Initialize statistics
       let totalRating = 0;
       const ratingDistribution: Record<number, number> = {
@@ -349,15 +401,16 @@ export class ProductReviewRepository extends FirestoreBaseRepository<ProductRevi
         4: 0,
         5: 0,
       };
-      
+
       let recommendedCount = 0;
       let recommendedTotal = 0;
-      
+
       // Calculate statistics
       for (const review of reviews) {
         totalRating += review.rating;
-        ratingDistribution[review.rating] = (ratingDistribution[review.rating] || 0) + 1;
-        
+        ratingDistribution[review.rating] =
+          (ratingDistribution[review.rating] || 0) + 1;
+
         if (review.recommended !== undefined) {
           recommendedTotal++;
           if (review.recommended) {
@@ -365,14 +418,13 @@ export class ProductReviewRepository extends FirestoreBaseRepository<ProductRevi
           }
         }
       }
-      
+
       // Calculate averages
       const totalReviews = reviews.length;
       const averageRating = totalReviews > 0 ? totalRating / totalReviews : 0;
-      const recommendedPercentage = recommendedTotal > 0 
-        ? (recommendedCount / recommendedTotal) * 100 
-        : 0;
-      
+      const recommendedPercentage =
+        recommendedTotal > 0 ? (recommendedCount / recommendedTotal) * 100 : 0;
+
       return {
         averageRating,
         totalReviews,
@@ -380,11 +432,14 @@ export class ProductReviewRepository extends FirestoreBaseRepository<ProductRevi
         recommendedPercentage,
       };
     } catch (error) {
-      this.logger.error(`Error calculating review statistics: ${error.message}`, error.stack);
+      this.logger.error(
+        `Error calculating review statistics: ${error.message}`,
+        error.stack,
+      );
       throw error;
     }
   }
-  
+
   /**
    * Find reviews that need AI sentiment analysis
    * @param organizationId Organization ID
@@ -397,10 +452,14 @@ export class ProductReviewRepository extends FirestoreBaseRepository<ProductRevi
     try {
       const advancedFilters: FirestoreAdvancedFilter<ProductReviewEntity>[] = [
         { field: 'organizationId', operator: '==', value: organizationId },
-        { field: 'status', operator: '==', value: ProductReviewStatus.APPROVED },
+        {
+          field: 'status',
+          operator: '==',
+          value: ProductReviewStatus.APPROVED,
+        },
         { field: 'sentiment', operator: '==', value: null },
       ];
-      
+
       return this.find({
         advancedFilters,
         queryOptions: {
@@ -410,17 +469,20 @@ export class ProductReviewRepository extends FirestoreBaseRepository<ProductRevi
         },
       });
     } catch (error) {
-      this.logger.error(`Error finding reviews for sentiment analysis: ${error.message}`, error.stack);
+      this.logger.error(
+        `Error finding reviews for sentiment analysis: ${error.message}`,
+        error.stack,
+      );
       throw error;
     }
   }
-  
+
   /**
    * Count reviews by status for an organization
    * @param organizationId Organization ID
    */
   async countReviewsByStatus(
-    organizationId: string
+    organizationId: string,
   ): Promise<Record<ProductReviewStatus, number>> {
     try {
       // Initialize counts for all statuses
@@ -431,27 +493,36 @@ export class ProductReviewRepository extends FirestoreBaseRepository<ProductRevi
         [ProductReviewStatus.FLAGGED]: 0,
         [ProductReviewStatus.FEATURED]: 0,
       };
-      
+
       // Query for counts by status
-      const promises = Object.values(ProductReviewStatus).map(async (status) => {
-        const count = await this.count({
-          advancedFilters: [
-            { field: 'organizationId', operator: '==', value: organizationId },
-            { field: 'status', operator: '==', value: status },
-          ],
-        });
-        statusCounts[status] = count;
-      });
-      
+      const promises = Object.values(ProductReviewStatus).map(
+        async (status) => {
+          const count = await this.count({
+            advancedFilters: [
+              {
+                field: 'organizationId',
+                operator: '==',
+                value: organizationId,
+              },
+              { field: 'status', operator: '==', value: status },
+            ],
+          });
+          statusCounts[status] = count;
+        },
+      );
+
       await Promise.all(promises);
-      
+
       return statusCounts;
     } catch (error) {
-      this.logger.error(`Error counting reviews by status: ${error.message}`, error.stack);
+      this.logger.error(
+        `Error counting reviews by status: ${error.message}`,
+        error.stack,
+      );
       throw error;
     }
   }
-  
+
   /**
    * Search reviews by text content
    * @param organizationId Organization ID
@@ -470,27 +541,31 @@ export class ProductReviewRepository extends FirestoreBaseRepository<ProductRevi
     try {
       // Note: This is a simplified implementation that searches in title and content
       // In a real-world scenario, you would use a dedicated search service like Elasticsearch
-      
+
       const defaultOptions = {
         limit: 50,
         offset: 0,
       };
-      
+
       const { status, limit, offset } = {
         ...defaultOptions,
         ...options,
       };
-      
+
       // Construct advanced filters
       const advancedFilters: FirestoreAdvancedFilter<ProductReviewEntity>[] = [
         { field: 'organizationId', operator: '==', value: organizationId },
       ];
-      
+
       // Add status filter if provided
       if (status) {
-        advancedFilters.push({ field: 'status', operator: '==', value: status });
+        advancedFilters.push({
+          field: 'status',
+          operator: '==',
+          value: status,
+        });
       }
-      
+
       // First get all reviews matching the organization and status
       const reviews = await this.find({
         advancedFilters,
@@ -500,18 +575,25 @@ export class ProductReviewRepository extends FirestoreBaseRepository<ProductRevi
           direction: 'desc',
         },
       });
-      
+
       // Then filter by text content client-side
       const filteredReviews = reviews.filter((review) => {
-        const titleMatch = review.title?.toLowerCase().includes(searchText.toLowerCase());
-        const contentMatch = review.content?.toLowerCase().includes(searchText.toLowerCase());
+        const titleMatch = review.title
+          ?.toLowerCase()
+          .includes(searchText.toLowerCase());
+        const contentMatch = review.content
+          ?.toLowerCase()
+          .includes(searchText.toLowerCase());
         return titleMatch || contentMatch;
       });
-      
+
       // Apply pagination
       return filteredReviews.slice(offset, offset + limit);
     } catch (error) {
-      this.logger.error(`Error searching reviews: ${error.message}`, error.stack);
+      this.logger.error(
+        `Error searching reviews: ${error.message}`,
+        error.stack,
+      );
       throw error;
     }
   }

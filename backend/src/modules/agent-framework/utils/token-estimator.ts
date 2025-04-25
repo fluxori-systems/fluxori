@@ -1,6 +1,6 @@
-import { Injectable, Logger } from "@nestjs/common";
+import { Injectable, Logger } from '@nestjs/common';
 
-import { ChatMessage } from "../interfaces/model-adapter.interface";
+import { ChatMessage } from '../interfaces/model-adapter.interface';
 
 /**
  * Utility service for estimating token usage
@@ -27,7 +27,7 @@ export class TokenEstimator {
    */
   estimateTokensForString(
     text: string,
-    languageType: keyof typeof this.avgTokensPerChar = "default",
+    languageType: keyof typeof this.avgTokensPerChar = 'default',
   ): number {
     if (!text) return 0;
 
@@ -69,7 +69,7 @@ export class TokenEstimator {
     }
 
     // Check for common indentation patterns
-    const lines = text.split("\n");
+    const lines = text.split('\n');
     if (lines.length > 5) {
       let indentedLines = 0;
       for (const line of lines) {
@@ -91,21 +91,21 @@ export class TokenEstimator {
    * @returns The detected language type
    */
   private detectLanguageType(text: string): keyof typeof this.avgTokensPerChar {
-    if (this.isLikelyCode(text)) return "code";
+    if (this.isLikelyCode(text)) return 'code';
 
     // Check for CJK characters (Chinese, Japanese, Korean)
     const cjkPattern = /[\u4E00-\u9FFF\u3040-\u309F\u30A0-\u30FF\uAC00-\uD7AF]/;
-    if (cjkPattern.test(text)) return "cjk";
+    if (cjkPattern.test(text)) return 'cjk';
 
     // Check for Cyrillic characters
     const cyrillicPattern = /[\u0400-\u04FF]/;
-    if (cyrillicPattern.test(text)) return "cyrillic";
+    if (cyrillicPattern.test(text)) return 'cyrillic';
 
     // Check for Arabic characters
     const arabicPattern = /[\u0600-\u06FF]/;
-    if (arabicPattern.test(text)) return "arabic";
+    if (arabicPattern.test(text)) return 'arabic';
 
-    return "default";
+    return 'default';
   }
 
   /**
@@ -134,8 +134,8 @@ export class TokenEstimator {
       tokens += this.estimateTokensForString(message.functionCall.name);
 
       // Function arguments
-      let argsString = "";
-      if (typeof message.functionCall.arguments === "string") {
+      let argsString = '';
+      if (typeof message.functionCall.arguments === 'string') {
         argsString = message.functionCall.arguments;
       } else {
         try {
@@ -147,7 +147,7 @@ export class TokenEstimator {
         }
       }
 
-      tokens += this.estimateTokensForString(argsString, "code");
+      tokens += this.estimateTokensForString(argsString, 'code');
     }
 
     return tokens;
@@ -194,7 +194,7 @@ export class TokenEstimator {
       // Function parameters
       try {
         const paramsString = JSON.stringify(fn.parameters);
-        tokens += this.estimateTokensForString(paramsString, "code");
+        tokens += this.estimateTokensForString(paramsString, 'code');
       } catch (error) {
         this.logger.warn(
           `Could not serialize function parameters: ${error.message}`,

@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
+
+import { format, subHours } from 'date-fns';
+
 import { HealthStatusCard } from './HealthStatusCard';
 import { MetricsChart } from './MetricsChart';
 import { TraceViewer } from './TraceViewer';
 import { observabilityApi } from '../../api/observability.api';
 import { SystemHealthInfo, Trace } from '../../types/observability.types';
-import { format, subHours } from 'date-fns';
 
 interface ObservabilityDashboardProps {
   title?: string;

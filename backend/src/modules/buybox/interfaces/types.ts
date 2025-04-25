@@ -1,27 +1,27 @@
 /**
  * Types for the BuyBox module
  */
-import { FirestoreEntity } from "../../../types/google-cloud.types";
+import { FirestoreEntity } from '../../../types/google-cloud.types';
 
 /**
  * BuyBox price source type
  */
 export enum PriceSourceType {
-  MARKETPLACE = "marketplace",
-  MANUAL = "manual",
-  API = "api",
-  SCRAPER = "scraper",
+  MARKETPLACE = 'marketplace',
+  MANUAL = 'manual',
+  API = 'api',
+  SCRAPER = 'scraper',
 }
 
 /**
  * BuyBox status
  */
 export enum BuyBoxStatus {
-  WON = "won",
-  LOST = "lost",
-  TIED = "tied",
-  UNKNOWN = "unknown",
-  NOT_APPLICABLE = "not_applicable",
+  WON = 'won',
+  LOST = 'lost',
+  TIED = 'tied',
+  UNKNOWN = 'unknown',
+  NOT_APPLICABLE = 'not_applicable',
 }
 
 /**
@@ -45,23 +45,23 @@ export interface CompetitorPrice {
  * Pricing rule operation type
  */
 export enum PricingRuleOperation {
-  MATCH = "match",
-  BEAT_BY = "beat_by",
-  MATCH_SHIPPING = "match_shipping",
-  FIXED_PRICE = "fixed_price",
-  PERCENTAGE_MARGIN = "percentage_margin",
-  PERCENTAGE_DISCOUNT = "percentage_discount",
-  FLOOR_CEILING = "floor_ceiling",
+  MATCH = 'match',
+  BEAT_BY = 'beat_by',
+  MATCH_SHIPPING = 'match_shipping',
+  FIXED_PRICE = 'fixed_price',
+  PERCENTAGE_MARGIN = 'percentage_margin',
+  PERCENTAGE_DISCOUNT = 'percentage_discount',
+  FLOOR_CEILING = 'floor_ceiling',
 }
 
 /**
  * Pricing rule execution status
  */
 export enum PricingRuleExecutionStatus {
-  PENDING = "pending",
-  EXECUTED = "executed",
-  SKIPPED = "skipped",
-  FAILED = "failed",
+  PENDING = 'pending',
+  EXECUTED = 'executed',
+  SKIPPED = 'skipped',
+  FAILED = 'failed',
 }
 
 /**

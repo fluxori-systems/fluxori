@@ -1,9 +1,9 @@
-import { Injectable, Logger } from "@nestjs/common";
+import { Injectable, Logger } from '@nestjs/common';
 
-import { FirestoreBaseRepository } from "../../../common/repositories/firestore-base.repository";
-import { FirestoreConfigService } from "../../../config/firestore.config";
-import { PricingRuleOperation } from "../interfaces/types";
-import { RepricingRule } from "../models/repricing-rule.schema";
+import { FirestoreBaseRepository } from '../../../common/repositories/firestore-base.repository';
+import { FirestoreConfigService } from '../../../config/firestore.config';
+import { PricingRuleOperation } from '../interfaces/types';
+import { RepricingRule } from '../models/repricing-rule.schema';
 
 /**
  * Repository for Repricing Rule entities
@@ -11,15 +11,15 @@ import { RepricingRule } from "../models/repricing-rule.schema";
 @Injectable()
 export class RepricingRuleRepository extends FirestoreBaseRepository<RepricingRule> {
   // Collection name in Firestore
-  protected readonly collectionName = "repricing_rules";
+  protected readonly collectionName = 'repricing_rules';
 
   constructor(firestoreConfigService: FirestoreConfigService) {
-    super(firestoreConfigService, "repricing_rules", {
+    super(firestoreConfigService, 'repricing_rules', {
       useSoftDeletes: true,
       useVersioning: true,
       enableCache: true,
       cacheTTLMs: 10 * 60 * 1000, // 10 minutes
-      requiredFields: ["organizationId", "name", "operation", "value"],
+      requiredFields: ['organizationId', 'name', 'operation', 'value'],
     });
   }
 
@@ -32,8 +32,8 @@ export class RepricingRuleRepository extends FirestoreBaseRepository<RepricingRu
     return this.find({
       filter: { organizationId } as Partial<RepricingRule>,
       queryOptions: {
-        orderBy: "priority",
-        direction: "asc",
+        orderBy: 'priority',
+        direction: 'asc',
       },
     });
   }
@@ -50,8 +50,8 @@ export class RepricingRuleRepository extends FirestoreBaseRepository<RepricingRu
         isActive: true,
       } as Partial<RepricingRule>,
       queryOptions: {
-        orderBy: "priority",
-        direction: "asc",
+        orderBy: 'priority',
+        direction: 'asc',
       },
     });
   }
@@ -103,8 +103,8 @@ export class RepricingRuleRepository extends FirestoreBaseRepository<RepricingRu
         operation,
       } as Partial<RepricingRule>,
       queryOptions: {
-        orderBy: "priority",
-        direction: "asc",
+        orderBy: 'priority',
+        direction: 'asc',
       },
     });
   }

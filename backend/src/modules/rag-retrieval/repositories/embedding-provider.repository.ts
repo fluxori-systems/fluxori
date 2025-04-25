@@ -1,12 +1,12 @@
-import { Injectable, Logger } from "@nestjs/common";
+import { Injectable, Logger } from '@nestjs/common';
 
 import {
   FirestoreBaseRepository,
   FirestoreAdvancedFilter,
-} from "../../../common/repositories";
-import { FirestoreConfigService } from "../../../config/firestore.config";
-import { EmbeddingProviderType } from "../interfaces/types";
-import { EmbeddingProvider } from "../models/embedding-provider.schema";
+} from '../../../common/repositories';
+import { FirestoreConfigService } from '../../../config/firestore.config';
+import { EmbeddingProviderType } from '../interfaces/types';
+import { EmbeddingProvider } from '../models/embedding-provider.schema';
 
 /**
  * Repository for Embedding Provider entities
@@ -14,15 +14,15 @@ import { EmbeddingProvider } from "../models/embedding-provider.schema";
 @Injectable()
 export class EmbeddingProviderRepository extends FirestoreBaseRepository<EmbeddingProvider> {
   // Collection name in Firestore
-  protected readonly collectionName = "embedding_providers";
+  protected readonly collectionName = 'embedding_providers';
 
   constructor(firestoreConfigService: FirestoreConfigService) {
-    super(firestoreConfigService, "embedding_providers", {
+    super(firestoreConfigService, 'embedding_providers', {
       useSoftDeletes: true,
       useVersioning: true,
       enableCache: true,
       cacheTTLMs: 10 * 60 * 1000, // 10 minutes
-      requiredFields: ["organizationId", "name", "type", "modelName"],
+      requiredFields: ['organizationId', 'name', 'type', 'modelName'],
     });
   }
 
@@ -36,7 +36,7 @@ export class EmbeddingProviderRepository extends FirestoreBaseRepository<Embeddi
   ): Promise<EmbeddingProvider[]> {
     return this.find({
       advancedFilters: [
-        { field: "organizationId", operator: "==", value: organizationId },
+        { field: 'organizationId', operator: '==', value: organizationId },
       ],
     });
   }
@@ -51,9 +51,9 @@ export class EmbeddingProviderRepository extends FirestoreBaseRepository<Embeddi
   ): Promise<EmbeddingProvider | null> {
     const providers = await this.find({
       advancedFilters: [
-        { field: "organizationId", operator: "==", value: organizationId },
-        { field: "isDefault", operator: "==", value: true },
-        { field: "isEnabled", operator: "==", value: true },
+        { field: 'organizationId', operator: '==', value: organizationId },
+        { field: 'isDefault', operator: '==', value: true },
+        { field: 'isEnabled', operator: '==', value: true },
       ],
     });
 
@@ -67,7 +67,7 @@ export class EmbeddingProviderRepository extends FirestoreBaseRepository<Embeddi
    */
   async findByType(type: EmbeddingProviderType): Promise<EmbeddingProvider[]> {
     return this.find({
-      advancedFilters: [{ field: "type", operator: "==", value: type }],
+      advancedFilters: [{ field: 'type', operator: '==', value: type }],
     });
   }
 

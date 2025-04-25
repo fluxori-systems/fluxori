@@ -1,6 +1,7 @@
 'use client';
 
 import React, { ReactNode } from 'react';
+
 import { ServiceProvider } from './service-provider';
 import { 
   IAnimationService, 

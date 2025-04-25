@@ -1,36 +1,36 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 // Properly typed Jest mocks for agent service tests
 
-import { Test, TestingModule } from "@nestjs/testing";
+import { Test, TestingModule } from '@nestjs/testing';
 
-import { FirestoreConfigService } from "../../../config/firestore.config";
-import { VertexAIModelAdapter } from "../adapters/vertex-ai.adapter";
+import { FirestoreConfigService } from '../../../config/firestore.config';
+import { VertexAIModelAdapter } from '../adapters/vertex-ai.adapter';
 import {
   ModelComplexity,
   AgentConfig,
   ModelRegistryEntry,
   AgentConversation,
-} from "../interfaces/types";
-import { AgentConfigRepository } from "../repositories/agent-config.repository";
-import { AgentConversationRepository } from "../repositories/agent-conversation.repository";
-import { ModelRegistryRepository } from "../repositories/model-registry.repository";
-import { AgentService } from "../services/agent.service";
-import { ModelAdapterFactory } from "../services/model-adapter.factory";
-import { TokenEstimator } from "../utils/token-estimator";
+} from '../interfaces/types';
+import { AgentConfigRepository } from '../repositories/agent-config.repository';
+import { AgentConversationRepository } from '../repositories/agent-conversation.repository';
+import { ModelRegistryRepository } from '../repositories/model-registry.repository';
+import { AgentService } from '../services/agent.service';
+import { ModelAdapterFactory } from '../services/model-adapter.factory';
+import { TokenEstimator } from '../utils/token-estimator';
 
 // Type-safe mocks using proper typing for Jest
-jest.mock("../../../config/firestore.config");
-jest.mock("../repositories/model-registry.repository");
-jest.mock("../repositories/agent-config.repository");
-jest.mock("../repositories/agent-conversation.repository");
-jest.mock("../adapters/vertex-ai.adapter");
+jest.mock('../../../config/firestore.config');
+jest.mock('../repositories/model-registry.repository');
+jest.mock('../repositories/agent-config.repository');
+jest.mock('../repositories/agent-conversation.repository');
+jest.mock('../adapters/vertex-ai.adapter');
 
 // Properly typed mocks for repositories
 type MockType<T> = {
   [P in keyof T]?: jest.Mock<unknown>;
 };
 
-describe("AgentService", () => {
+describe('AgentService', () => {
   let service: AgentService;
   let modelRegistryRepository: ModelRegistryRepository;
   let agentConfigRepository: AgentConfigRepository;
@@ -64,19 +64,19 @@ describe("AgentService", () => {
     adapterFactory = module.get<ModelAdapterFactory>(ModelAdapterFactory);
   });
 
-  it("should be defined", () => {
+  it('should be defined', () => {
     expect(service).toBeDefined();
   });
 
-  describe("createConversation", () => {
-    it("should create a new conversation", async () => {
+  describe('createConversation', () => {
+    it('should create a new conversation', async () => {
       // Mock data
       const agentConfig: AgentConfig = {
-        id: "config-123",
-        organizationId: "org-123",
-        name: "Test Agent",
-        systemPrompt: "You are a helpful assistant",
-        defaultModel: "gemini-pro",
+        id: 'config-123',
+        organizationId: 'org-123',
+        name: 'Test Agent',
+        systemPrompt: 'You are a helpful assistant',
+        defaultModel: 'gemini-pro',
         parameters: {
           temperature: 0.7,
           maxOutputTokens: 1000,
@@ -87,19 +87,19 @@ describe("AgentService", () => {
       };
 
       const conversation: AgentConversation = {
-        id: "conv-123",
-        organizationId: "org-123",
-        userId: "user-123",
-        title: "New Conversation",
+        id: 'conv-123',
+        organizationId: 'org-123',
+        userId: 'user-123',
+        title: 'New Conversation',
         messages: [
           {
-            id: "msg-1",
-            role: "system",
-            content: "You are a helpful assistant",
+            id: 'msg-1',
+            role: 'system',
+            content: 'You are a helpful assistant',
             timestamp: new Date(),
           },
         ],
-        agentConfigId: "config-123",
+        agentConfigId: 'config-123',
         tokensUsed: 0,
         cost: 0,
         lastActivityAt: new Date(),
@@ -111,40 +111,40 @@ describe("AgentService", () => {
 
       // Properly typed mocks
       jest
-        .spyOn(agentConfigRepository, "findById")
+        .spyOn(agentConfigRepository, 'findById')
         .mockResolvedValue(agentConfig);
       jest
-        .spyOn(conversationRepository, "create")
+        .spyOn(conversationRepository, 'create')
         .mockResolvedValue(conversation);
 
       // Execute
       const result = await service.createConversation({
-        organizationId: "org-123",
-        userId: "user-123",
-        agentConfigId: "config-123",
+        organizationId: 'org-123',
+        userId: 'user-123',
+        agentConfigId: 'config-123',
       });
 
       // Assert
       expect(result).toEqual(conversation);
-      expect(agentConfigRepository.findById).toHaveBeenCalledWith("config-123");
+      expect(agentConfigRepository.findById).toHaveBeenCalledWith('config-123');
       expect(conversationRepository.create).toHaveBeenCalled();
     });
   });
 
-  describe("getBestModelForTask", () => {
-    it("should find the best model for a task", async () => {
+  describe('getBestModelForTask', () => {
+    it('should find the best model for a task', async () => {
       // Mock data
       const model: ModelRegistryEntry = {
-        id: "model-123",
-        provider: "vertex-ai",
-        model: "gemini-pro",
-        displayName: "Gemini Pro",
-        description: "Advanced LLM",
+        id: 'model-123',
+        provider: 'vertex-ai',
+        model: 'gemini-pro',
+        displayName: 'Gemini Pro',
+        description: 'Advanced LLM',
         maxInputTokens: 30000,
         maxOutputTokens: 2048,
         costPer1kInputTokens: 0.0001,
         costPer1kOutputTokens: 0.0002,
-        capabilities: ["text", "chat", "function_calling"],
+        capabilities: ['text', 'chat', 'function_calling'],
         complexity: ModelComplexity.STANDARD,
         isEnabled: true,
         order: 1,
@@ -154,15 +154,15 @@ describe("AgentService", () => {
 
       // Properly typed mock
       jest
-        .spyOn(modelRegistryRepository, "findBestModelForTask")
+        .spyOn(modelRegistryRepository, 'findBestModelForTask')
         .mockResolvedValue(model);
 
       // Execute
       const result = await service.getBestModelForTask(
-        "org-123",
+        'org-123',
         ModelComplexity.STANDARD,
-        "vertex-ai",
-        ["text", "chat"],
+        'vertex-ai',
+        ['text', 'chat'],
       );
 
       // Assert
@@ -170,8 +170,8 @@ describe("AgentService", () => {
       expect(modelRegistryRepository.findBestModelForTask).toHaveBeenCalledWith(
         {
           complexity: ModelComplexity.STANDARD,
-          preferredProvider: "vertex-ai",
-          requiredCapabilities: ["text", "chat"],
+          preferredProvider: 'vertex-ai',
+          requiredCapabilities: ['text', 'chat'],
         },
       );
     });

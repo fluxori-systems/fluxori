@@ -10,7 +10,7 @@ import {
   HttpException,
   Logger,
   Req,
-} from "@nestjs/common";
+} from '@nestjs/common';
 import {
   ApiTags,
   ApiOperation,
@@ -18,32 +18,32 @@ import {
   ApiParam,
   ApiQuery,
   ApiBody,
-} from "@nestjs/swagger";
+} from '@nestjs/swagger';
 
-import { Request as ExpressRequest } from "express";
+import { Request as ExpressRequest } from 'express';
 
 import {
   FirebaseAuthGuard,
   GetUser,
   DecodedFirebaseToken,
   AuthUtils,
-} from "src/common/auth";
+} from 'src/common/auth';
 
-import { MarketplaceAdapterFactory } from "../services/marketplace-adapter.factory";
+import { MarketplaceAdapterFactory } from '../services/marketplace-adapter.factory';
 
 // Define the AuthenticatedRequest type for this controller
 interface AuthenticatedRequest extends ExpressRequest {
   user: DecodedFirebaseToken;
 }
-import { MarketplaceCredentialsRepository } from "../repositories/marketplace-credentials.repository";
-import { MarketplaceSyncService } from "../services/marketplace-sync.service";
-import { MarketplaceCredentials } from "../interfaces/types";
+import { MarketplaceCredentialsRepository } from '../repositories/marketplace-credentials.repository';
+import { MarketplaceSyncService } from '../services/marketplace-sync.service';
+import { MarketplaceCredentials } from '../interfaces/types';
 
 /**
  * Controller for marketplace operations
  */
-@ApiTags("marketplaces")
-@Controller("marketplaces")
+@ApiTags('marketplaces')
+@Controller('marketplaces')
 @UseGuards(FirebaseAuthGuard)
 export class MarketplaceController {
   private readonly logger = new Logger(MarketplaceController.name);
@@ -58,10 +58,10 @@ export class MarketplaceController {
    * Get all available marketplaces
    */
   @Get()
-  @ApiOperation({ summary: "Get all available marketplaces" })
+  @ApiOperation({ summary: 'Get all available marketplaces' })
   @ApiResponse({
     status: HttpStatus.OK,
-    description: "List of available marketplaces",
+    description: 'List of available marketplaces',
   })
   async getMarketplaces() {
     const adapters = this.adapterFactory.getAllAdapters();
@@ -77,21 +77,21 @@ export class MarketplaceController {
   /**
    * Get all marketplace connections for the authenticated organization
    */
-  @Get("connections")
+  @Get('connections')
   @ApiOperation({
     summary:
-      "Get all marketplace connections for the authenticated organization",
+      'Get all marketplace connections for the authenticated organization',
   })
   @ApiResponse({
     status: HttpStatus.OK,
-    description: "List of marketplace connections",
+    description: 'List of marketplace connections',
   })
   async getConnections(@GetUser() user: DecodedFirebaseToken) {
     const organizationId = user.organizationId;
 
     if (!organizationId) {
       throw new HttpException(
-        "Organization ID not found in auth token",
+        'Organization ID not found in auth token',
         HttpStatus.BAD_REQUEST,
       );
     }
@@ -112,7 +112,7 @@ export class MarketplaceController {
         marketplaceName: adapter?.marketplaceName || credential.marketplaceId,
         status: credential.lastConnectionStatus || {
           connected: false,
-          message: "Connection status unknown",
+          message: 'Connection status unknown',
           timestamp: new Date(),
         },
         createdAt: credential.createdAt,
@@ -126,27 +126,27 @@ export class MarketplaceController {
   /**
    * Create or update a marketplace connection
    */
-  @Post("connections/:marketplaceId")
-  @ApiOperation({ summary: "Create or update a marketplace connection" })
+  @Post('connections/:marketplaceId')
+  @ApiOperation({ summary: 'Create or update a marketplace connection' })
   @ApiParam({
-    name: "marketplaceId",
-    description: "ID of the marketplace to connect to",
+    name: 'marketplaceId',
+    description: 'ID of the marketplace to connect to',
   })
-  @ApiBody({ description: "Marketplace credentials" })
+  @ApiBody({ description: 'Marketplace credentials' })
   @ApiResponse({
     status: HttpStatus.CREATED,
-    description: "Connection created or updated successfully",
+    description: 'Connection created or updated successfully',
   })
   async createConnection(
     @Req() req: AuthenticatedRequest,
-    @Param("marketplaceId") marketplaceId: string,
+    @Param('marketplaceId') marketplaceId: string,
     @Body() credentials: Record<string, any>,
   ) {
     const organizationId = req.user.organizationId;
 
     if (!organizationId) {
       throw new HttpException(
-        "Organization ID not found in auth token",
+        'Organization ID not found in auth token',
         HttpStatus.BAD_REQUEST,
       );
     }
@@ -195,7 +195,7 @@ export class MarketplaceController {
 
       return {
         success: true,
-        message: "Marketplace connection established successfully",
+        message: 'Marketplace connection established successfully',
         connectionId: savedCredential.id,
         status: connectionStatus,
       };
@@ -215,26 +215,26 @@ export class MarketplaceController {
   /**
    * Test a marketplace connection
    */
-  @Post("connections/:marketplaceId/test")
-  @ApiOperation({ summary: "Test a marketplace connection" })
+  @Post('connections/:marketplaceId/test')
+  @ApiOperation({ summary: 'Test a marketplace connection' })
   @ApiParam({
-    name: "marketplaceId",
-    description: "ID of the marketplace to test",
+    name: 'marketplaceId',
+    description: 'ID of the marketplace to test',
   })
   @ApiResponse({
     status: HttpStatus.OK,
-    description: "Connection test result",
+    description: 'Connection test result',
   })
   async testConnection(
     @Req() req: AuthenticatedRequest,
-    @Param("marketplaceId") marketplaceId: string,
+    @Param('marketplaceId') marketplaceId: string,
     @Body() credentials?: Record<string, any>,
   ) {
     const organizationId = req.user.organizationId;
 
     if (!organizationId) {
       throw new HttpException(
-        "Organization ID not found in auth token",
+        'Organization ID not found in auth token',
         HttpStatus.BAD_REQUEST,
       );
     }
@@ -269,24 +269,24 @@ export class MarketplaceController {
   /**
    * Sync product inventory to all connected marketplaces
    */
-  @Post("sync/product/:productId/inventory")
+  @Post('sync/product/:productId/inventory')
   @ApiOperation({
-    summary: "Sync product inventory to all connected marketplaces",
+    summary: 'Sync product inventory to all connected marketplaces',
   })
-  @ApiParam({ name: "productId", description: "ID of the product to sync" })
+  @ApiParam({ name: 'productId', description: 'ID of the product to sync' })
   @ApiResponse({
     status: HttpStatus.OK,
-    description: "Sync result",
+    description: 'Sync result',
   })
   async syncProductInventory(
     @Req() req: AuthenticatedRequest,
-    @Param("productId") productId: string,
+    @Param('productId') productId: string,
   ) {
     const organizationId = req.user.organizationId;
 
     if (!organizationId) {
       throw new HttpException(
-        "Organization ID not found in auth token",
+        'Organization ID not found in auth token',
         HttpStatus.BAD_REQUEST,
       );
     }
@@ -297,22 +297,22 @@ export class MarketplaceController {
   /**
    * Sync product price to all connected marketplaces
    */
-  @Post("sync/product/:productId/price")
-  @ApiOperation({ summary: "Sync product price to all connected marketplaces" })
-  @ApiParam({ name: "productId", description: "ID of the product to sync" })
+  @Post('sync/product/:productId/price')
+  @ApiOperation({ summary: 'Sync product price to all connected marketplaces' })
+  @ApiParam({ name: 'productId', description: 'ID of the product to sync' })
   @ApiResponse({
     status: HttpStatus.OK,
-    description: "Sync result",
+    description: 'Sync result',
   })
   async syncProductPrice(
     @Req() req: AuthenticatedRequest,
-    @Param("productId") productId: string,
+    @Param('productId') productId: string,
   ) {
     const organizationId = req.user.organizationId;
 
     if (!organizationId) {
       throw new HttpException(
-        "Organization ID not found in auth token",
+        'Organization ID not found in auth token',
         HttpStatus.BAD_REQUEST,
       );
     }
@@ -323,35 +323,35 @@ export class MarketplaceController {
   /**
    * Get products from a marketplace
    */
-  @Get(":marketplaceId/products")
-  @ApiOperation({ summary: "Get products from a marketplace" })
-  @ApiParam({ name: "marketplaceId", description: "ID of the marketplace" })
+  @Get(':marketplaceId/products')
+  @ApiOperation({ summary: 'Get products from a marketplace' })
+  @ApiParam({ name: 'marketplaceId', description: 'ID of the marketplace' })
   @ApiQuery({
-    name: "page",
+    name: 'page',
     required: false,
-    description: "Page number (0-based)",
+    description: 'Page number (0-based)',
   })
   @ApiQuery({
-    name: "pageSize",
+    name: 'pageSize',
     required: false,
-    description: "Number of items per page",
+    description: 'Number of items per page',
   })
   @ApiResponse({
     status: HttpStatus.OK,
-    description: "List of products from the marketplace",
+    description: 'List of products from the marketplace',
   })
   async getMarketplaceProducts(
     @Req() req: AuthenticatedRequest,
-    @Param("marketplaceId") marketplaceId: string,
-    @Query("page") page = 0,
-    @Query("pageSize") pageSize = 20,
+    @Param('marketplaceId') marketplaceId: string,
+    @Query('page') page = 0,
+    @Query('pageSize') pageSize = 20,
     @Query() filters: Record<string, any> = {},
   ) {
     const organizationId = req.user.organizationId;
 
     if (!organizationId) {
       throw new HttpException(
-        "Organization ID not found in auth token",
+        'Organization ID not found in auth token',
         HttpStatus.BAD_REQUEST,
       );
     }
@@ -366,9 +366,9 @@ export class MarketplaceController {
       const { page: _, pageSize: __, ...productFilters } = filters;
 
       // Convert page and pageSize to numbers if they are strings
-      const pageNum = typeof page === "string" ? parseInt(page, 10) : page;
+      const pageNum = typeof page === 'string' ? parseInt(page, 10) : page;
       const pageSizeNum =
-        typeof pageSize === "string" ? parseInt(pageSize, 10) : pageSize;
+        typeof pageSize === 'string' ? parseInt(pageSize, 10) : pageSize;
 
       const response = await adapter.getProducts(
         pageNum,
@@ -393,27 +393,27 @@ export class MarketplaceController {
   /**
    * Import a product from a marketplace
    */
-  @Post("import/:marketplaceId/product/:productId")
-  @ApiOperation({ summary: "Import a product from a marketplace" })
-  @ApiParam({ name: "marketplaceId", description: "ID of the marketplace" })
+  @Post('import/:marketplaceId/product/:productId')
+  @ApiOperation({ summary: 'Import a product from a marketplace' })
+  @ApiParam({ name: 'marketplaceId', description: 'ID of the marketplace' })
   @ApiParam({
-    name: "productId",
-    description: "ID of the product in the marketplace",
+    name: 'productId',
+    description: 'ID of the product in the marketplace',
   })
   @ApiResponse({
     status: HttpStatus.OK,
-    description: "Import result",
+    description: 'Import result',
   })
   async importProduct(
     @Req() req: AuthenticatedRequest,
-    @Param("marketplaceId") marketplaceId: string,
-    @Param("productId") productId: string,
+    @Param('marketplaceId') marketplaceId: string,
+    @Param('productId') productId: string,
   ) {
     const organizationId = req.user.organizationId;
 
     if (!organizationId) {
       throw new HttpException(
-        "Organization ID not found in auth token",
+        'Organization ID not found in auth token',
         HttpStatus.BAD_REQUEST,
       );
     }

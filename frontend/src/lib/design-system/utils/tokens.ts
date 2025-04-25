@@ -3,6 +3,7 @@
  * Provides helpers for responsive usage and token access
  */
 
+import { lightTheme, darkTheme } from '../tokens';
 import { 
   DesignTokens, 
   ColorMode, 
@@ -11,7 +12,6 @@ import {
   RadiusScale,
   ShadowScale
 } from '../types/tokens';
-import { lightTheme, darkTheme } from '../tokens';
 
 /**
  * Get a specific token value from the theme

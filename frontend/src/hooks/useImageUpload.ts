@@ -4,6 +4,7 @@
  * Network-aware image upload with South African optimizations
  */
 import { useState, useCallback } from 'react';
+
 import { useNetworkStatus } from './useNetworkStatus';
 
 interface UploadOptions {

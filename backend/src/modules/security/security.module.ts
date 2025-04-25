@@ -1,25 +1,25 @@
 import { DynamicModule, Module, Provider } from '@nestjs/common';
 import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 
-import { SecurityService } from './services/security.service';
-import { CredentialManagerService } from './services/credential-manager.service';
-import { SecurityInterceptor } from './interceptors/security.interceptor';
-import { VpcServiceControlsService } from './services/vpc-service-controls.service';
-import { SecurityAuditService } from './services/security-audit.service';
-import { RateLimitGuard } from './guards/rate-limit.guard';
-import { CloudArmorService } from './services/cloud-armor.service';
-import { SecurityMetricsService } from './services/security-metrics.service';
-import { FileScannerService } from './services/file-scanner.service';
-import { DlpService } from './services/dlp.service';
 import { SecurityController } from './controllers/security.controller';
 import { CredentialController } from './controllers/credential.controller';
 import { SecurityAuditController } from './controllers/security-audit.controller';
+import { RateLimitGuard } from './guards/rate-limit.guard';
 import { SecurityHealthIndicator } from './health/security-health.indicator';
+import { SecurityInterceptor } from './interceptors/security.interceptor';
 import { SecurityModuleOptions } from './interfaces/security.interfaces';
+import { CloudArmorService } from './services/cloud-armor.service';
+import { CredentialManagerService } from './services/credential-manager.service';
+import { DlpService } from './services/dlp.service';
+import { FileScannerService } from './services/file-scanner.service';
+import { SecurityAuditService } from './services/security-audit.service';
+import { SecurityMetricsService } from './services/security-metrics.service';
+import { SecurityService } from './services/security.service';
+import { VpcServiceControlsService } from './services/vpc-service-controls.service';
 
 /**
  * Security module for the Fluxori platform
- * 
+ *
  * Provides comprehensive security controls including:
  * - VPC Service Controls management
  * - IAM role management
@@ -37,7 +37,7 @@ export class SecurityModule {
   static register(): DynamicModule {
     return this.registerWithOptions({});
   }
-  
+
   /**
    * Register the Security module with custom options
    * @param options Module configuration options
@@ -49,39 +49,43 @@ export class SecurityModule {
       SecurityService,
       CredentialManagerService,
       SecurityAuditService,
-      
+
       // GCP security services
       VpcServiceControlsService,
       CloudArmorService,
       DlpService,
-      
+
       // Content security
       FileScannerService,
-      
+
       // Monitoring and metrics
       SecurityMetricsService,
       SecurityHealthIndicator,
-      
+
       // Global security interceptor (if enabled)
-      ...(options.enableCrossModuleSecurityContext ? [
-        {
-          provide: APP_INTERCEPTOR,
-          useClass: SecurityInterceptor,
-        }
-      ] : []),
-      
+      ...(options.enableCrossModuleSecurityContext
+        ? [
+            {
+              provide: APP_INTERCEPTOR,
+              useClass: SecurityInterceptor,
+            },
+          ]
+        : []),
+
       // Global rate limit guard
       {
         provide: APP_GUARD,
         useClass: RateLimitGuard,
       },
-      
+
       // Module options
       {
         provide: 'SECURITY_MODULE_OPTIONS',
         useValue: {
-          enableExtendedAuditLogging: options.enableExtendedAuditLogging ?? false,
-          enableCrossModuleSecurityContext: options.enableCrossModuleSecurityContext ?? true,
+          enableExtendedAuditLogging:
+            options.enableExtendedAuditLogging ?? false,
+          enableCrossModuleSecurityContext:
+            options.enableCrossModuleSecurityContext ?? true,
           defaultPolicyConfig: options.defaultPolicyConfig ?? {
             rateLimit: {
               limit: 60,
@@ -95,7 +99,14 @@ export class SecurityModule {
             },
             fileUpload: {
               maxSizeBytes: 10 * 1024 * 1024, // 10 MB default
-              allowedExtensions: ['.jpg', '.jpeg', '.png', '.pdf', '.xlsx', '.csv'],
+              allowedExtensions: [
+                '.jpg',
+                '.jpeg',
+                '.png',
+                '.pdf',
+                '.xlsx',
+                '.csv',
+              ],
               scanForMalware: true,
               validateContentType: true,
             },
@@ -133,7 +144,7 @@ export class SecurityModule {
         },
       },
     ];
-    
+
     return {
       module: SecurityModule,
       imports: [],

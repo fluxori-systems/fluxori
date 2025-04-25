@@ -4,6 +4,7 @@
  */
 
 import { Logger } from '@nestjs/common';
+
 import { FirestoreEntity } from '../../../types/google-cloud.types';
 import { RepoCacheEntry } from '../types';
 
@@ -24,7 +25,7 @@ export const DEFAULT_CACHE_OPTIONS: CacheOptions = {
   enabled: true,
   ttlMs: 300000, // 5 minutes
   maxItems: 1000, // Maximum items to store in cache
-  logger: undefined
+  logger: undefined,
 };
 
 /**
@@ -39,9 +40,9 @@ export class RepositoryCache<T extends FirestoreEntity> {
 
   constructor(cacheOptions?: Partial<CacheOptions>) {
     this.options = { ...DEFAULT_CACHE_OPTIONS, ...cacheOptions };
-    
+
     this.logger = this.options.logger || new Logger('RepositoryCache');
-    
+
     // Periodically clean expired entries
     if (this.options.enabled) {
       setInterval(() => this.cleanupExpiredEntries(), this.CLEANUP_INTERVAL_MS);
@@ -53,16 +54,16 @@ export class RepositoryCache<T extends FirestoreEntity> {
    */
   get(key: string): T | undefined {
     if (!this.options.enabled) return undefined;
-    
+
     const entry = this.cache.get(key);
     if (!entry) return undefined;
-    
+
     // Check if entry has expired
     if (Date.now() > entry.expires) {
       this.cache.delete(key);
       return undefined;
     }
-    
+
     // Update last accessed time and return value
     entry.lastAccessed = Date.now();
     return entry.data;
@@ -73,24 +74,24 @@ export class RepositoryCache<T extends FirestoreEntity> {
    */
   set(key: string, value: T): void {
     if (!this.options.enabled) return;
-    
+
     // Evict items if we've reached capacity
     if (this.cache.size >= this.options.maxItems) {
       this.evictLeastRecentlyUsed();
     }
-    
+
     // Calculate expiration time
     const expires = Date.now() + this.options.ttlMs;
-    
+
     // Create cache entry
     const entry: RepoCacheEntry<T> = {
       data: value,
       expires,
-      lastAccessed: Date.now()
+      lastAccessed: Date.now(),
     };
-    
+
     this.cache.set(key, entry);
-    
+
     // Run cleanup if it's been a while
     if (Date.now() - this.lastCleanup > this.CLEANUP_INTERVAL_MS) {
       this.cleanupExpiredEntries();
@@ -102,16 +103,16 @@ export class RepositoryCache<T extends FirestoreEntity> {
    */
   has(key: string): boolean {
     if (!this.options.enabled) return false;
-    
+
     const entry = this.cache.get(key);
     if (!entry) return false;
-    
+
     // Check if entry has expired
     if (Date.now() > entry.expires) {
       this.cache.delete(key);
       return false;
     }
-    
+
     return true;
   }
 
@@ -144,10 +145,10 @@ export class RepositoryCache<T extends FirestoreEntity> {
    */
   private evictLeastRecentlyUsed(): void {
     if (this.cache.size === 0) return;
-    
+
     let oldestKey: string | null = null;
     let oldestTime = Infinity;
-    
+
     // Find the least recently used entry
     Array.from(this.cache.entries()).forEach(([key, entry]) => {
       if (entry.lastAccessed < oldestTime) {
@@ -155,7 +156,7 @@ export class RepositoryCache<T extends FirestoreEntity> {
         oldestKey = key;
       }
     });
-    
+
     // Delete the oldest entry
     if (oldestKey) {
       this.cache.delete(oldestKey);
@@ -169,9 +170,9 @@ export class RepositoryCache<T extends FirestoreEntity> {
   private cleanupExpiredEntries(): void {
     const now = Date.now();
     this.lastCleanup = now;
-    
+
     let expiredCount = 0;
-    
+
     // Remove expired entries
     Array.from(this.cache.entries()).forEach(([key, entry]) => {
       if (now > entry.expires) {
@@ -179,9 +180,11 @@ export class RepositoryCache<T extends FirestoreEntity> {
         expiredCount++;
       }
     });
-    
+
     if (expiredCount > 0) {
-      this.logger.debug(`Removed ${expiredCount} expired cache entries. Cache size: ${this.cache.size}`);
+      this.logger.debug(
+        `Removed ${expiredCount} expired cache entries. Cache size: ${this.cache.size}`,
+      );
     }
   }
 }

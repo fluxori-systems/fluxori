@@ -1,13 +1,25 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsNotEmpty, IsString, IsOptional, IsObject, IsNumber, Max, Min, IsEnum, IsBoolean, IsUUID } from 'class-validator';
+
+import {
+  IsNotEmpty,
+  IsString,
+  IsOptional,
+  IsObject,
+  IsNumber,
+  Max,
+  Min,
+  IsEnum,
+  IsBoolean,
+  IsUUID,
+} from 'class-validator';
 
 /**
  * Enum for image compression quality
  */
 export enum CompressionQuality {
-  LOW = 'low',           // High compression, low quality (smallest file size)
-  MEDIUM = 'medium',     // Medium compression and quality (balanced)
-  HIGH = 'high',         // Low compression, high quality (larger file size)
+  LOW = 'low', // High compression, low quality (smallest file size)
+  MEDIUM = 'medium', // Medium compression and quality (balanced)
+  HIGH = 'high', // Low compression, high quality (larger file size)
   ADAPTIVE = 'adaptive', // Adapts based on network conditions
 }
 
@@ -15,12 +27,12 @@ export enum CompressionQuality {
  * Enum for image resize options
  */
 export enum ResizeOption {
-  NONE = 'none',           // No resizing
+  NONE = 'none', // No resizing
   THUMBNAIL = 'thumbnail', // Small thumbnail (150x150)
-  SMALL = 'small',         // Small image (300x300)
-  MEDIUM = 'medium',       // Medium image (600x600)
-  LARGE = 'large',         // Large image (1200x1200)
-  CUSTOM = 'custom',       // Custom dimensions
+  SMALL = 'small', // Small image (300x300)
+  MEDIUM = 'medium', // Medium image (600x600)
+  LARGE = 'large', // Large image (1200x1200)
+  CUSTOM = 'custom', // Custom dimensions
 }
 
 /**
@@ -151,7 +163,8 @@ export class ProductImageSignedUrlRequestDto extends SignedUrlRequestDto {
   customHeight?: number;
 
   @ApiPropertyOptional({
-    description: 'Whether this image should be optimized for low-bandwidth conditions',
+    description:
+      'Whether this image should be optimized for low-bandwidth conditions',
     default: true,
   })
   @IsOptional()

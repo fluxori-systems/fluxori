@@ -1,9 +1,9 @@
 /**
  * Options for the Observability Module
  */
-import { LogLevel } from "@nestjs/common";
+import { LogLevel } from '@nestjs/common';
 
-import { SAMPLING_RATES } from "../constants/observability.constants";
+import { SAMPLING_RATES } from '../constants/observability.constants';
 
 /**
  * Logging options
@@ -169,13 +169,13 @@ export interface ObservabilityModuleOptions {
  * Default observability options
  */
 export const DEFAULT_OBSERVABILITY_OPTIONS: ObservabilityModuleOptions = {
-  appName: "fluxori-api",
-  environment: process.env.NODE_ENV || "development",
-  region: process.env.GCP_REGION || "africa-south1",
+  appName: 'fluxori-api',
+  environment: process.env.NODE_ENV || 'development',
+  region: process.env.GCP_REGION || 'africa-south1',
   logging: {
-    logLevel: "log",
+    logLevel: 'log',
     sanitizeLogs: true,
-    useJsonFormat: process.env.NODE_ENV === "production",
+    useJsonFormat: process.env.NODE_ENV === 'production',
     debugSamplingRate: SAMPLING_RATES.DEBUG_LOGS,
   },
   tracing: {
@@ -188,13 +188,13 @@ export const DEFAULT_OBSERVABILITY_OPTIONS: ObservabilityModuleOptions = {
   metrics: {
     enabled: true,
     registerDefaultMetrics: true,
-    metricPrefix: "fluxori.",
+    metricPrefix: 'fluxori.',
     collectionInterval: 60000, // 1 minute
   },
   health: {
     enabled: true,
     registerDefaultHealthChecks: true,
     healthCheckInterval: 60000, // 1 minute
-    exposeDetails: process.env.NODE_ENV !== "production",
+    exposeDetails: process.env.NODE_ENV !== 'production',
   },
 };

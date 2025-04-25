@@ -1,8 +1,8 @@
 /**
  * Document entity schema
  */
-import { FirestoreEntity } from "../../../types/google-cloud.types";
-import { DocumentType, DocumentStatus } from "../interfaces/types";
+import { FirestoreEntity } from '../../../types/google-cloud.types';
+import { DocumentType, DocumentStatus } from '../interfaces/types';
 
 /**
  * Document entity for Firestore

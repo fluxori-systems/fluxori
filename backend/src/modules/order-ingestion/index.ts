@@ -7,18 +7,18 @@
  */
 
 // Re-export module
-export { OrderIngestionModule } from "./order-ingestion.module";
+export { OrderIngestionModule } from './order-ingestion.module';
 
 // Re-export order mapper interfaces
 export {
   IOrderMapper,
   IOrderMapperRegistry,
-} from "./interfaces/order-mapper.interface";
+} from './interfaces/order-mapper.interface';
 
 // Re-export order mapper registry
-export { OrderMapperRegistry } from "./mappers/order-mapper.registry";
+export { OrderMapperRegistry } from './mappers/order-mapper.registry';
 
 // Re-export types
-export * from "./interfaces/types";
+export * from './interfaces/types';
 
 // Note: As the module is developed with services or repositories, they should be exported here.

@@ -1,14 +1,14 @@
 'use client';
 
 import React, { useRef, useState } from 'react';
+
+import { ConnectionQualitySimulator } from '@/lib/motion/components/ConnectionQualitySimulator';
+import { PerformanceDashboard } from '@/lib/motion/components/PerformanceDashboard';
+import { useConnectionQuality , useMotionMode } from '@/lib/motion/hooks/useServices';
+import type { ConnectionQuality } from '@/lib/shared/types/sa-market-types';
 import { Button } from '@/lib/ui/components/Button';
 import { FormField } from '@/lib/ui/components/FormField';
 import { PerformanceButton } from '@/lib/ui/components/PerformanceButton';
-import { useConnectionQuality } from '@/lib/motion/hooks/useServices';
-import { useMotionMode } from '@/lib/motion/hooks/useServices';
-import type { ConnectionQuality } from '@/lib/shared/types/sa-market-types';
-import { ConnectionQualitySimulator } from '@/lib/motion/components/ConnectionQualitySimulator';
-import { PerformanceDashboard } from '@/lib/motion/components/PerformanceDashboard';
 
 const NetworkDemo = () => {
   const { quality, isDataSaver } = useConnectionQuality();

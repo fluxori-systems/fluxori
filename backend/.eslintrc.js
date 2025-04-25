@@ -8,8 +8,7 @@ module.exports = {
   plugins: [
     '@typescript-eslint/eslint-plugin',
     'prettier',
-    'import',
-    'boundaries',
+    'import'
   ],
   extends: [
     'plugin:@typescript-eslint/recommended',
@@ -177,5 +176,8 @@ module.exports = {
         project: './tsconfig.json',
       },
     },
+    boundaries: {
+      elements: {}
+    }
   },
 };

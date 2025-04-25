@@ -1,8 +1,10 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import type { ConnectionQuality } from '../../shared/types/sa-market-types';
+
 import { defaultConnectionService } from '../services/connection-service.impl';
+
+import type { ConnectionQuality } from '../../shared/types/sa-market-types';
 
 // Simulator modes
 type SimulatorMode = 'auto' | 'manual';

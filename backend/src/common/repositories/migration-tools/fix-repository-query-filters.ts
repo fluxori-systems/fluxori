@@ -8,17 +8,17 @@
  * Run this after migrating repositories to the unified pattern.
  */
 
-import * as fs from "fs";
-import * as path from "path";
-import * as util from "util";
+import * as fs from 'fs';
+import * as path from 'path';
+import * as util from 'util';
 
 const readFileAsync = util.promisify(fs.readFile);
 const writeFileAsync = util.promisify(fs.writeFile);
 const readdirAsync = util.promisify(fs.readdir);
 const statAsync = util.promisify(fs.stat);
 
-const SRC_DIR = path.resolve(__dirname, "../../../");
-const EXCLUDED_DIRS = ["node_modules", "dist", "migration-tools"];
+const SRC_DIR = path.resolve(__dirname, '../../../');
+const EXCLUDED_DIRS = ['node_modules', 'dist', 'migration-tools'];
 
 interface FileChange {
   file: string;
@@ -45,7 +45,7 @@ async function walkDirectory(dir: string): Promise<string[]> {
     if (stat.isDirectory()) {
       const subDirFiles = await walkDirectory(entryPath);
       files.push(...subDirFiles);
-    } else if (entry.endsWith(".repository.ts")) {
+    } else if (entry.endsWith('.repository.ts')) {
       files.push(entryPath);
     }
   }
@@ -57,7 +57,7 @@ async function walkDirectory(dir: string): Promise<string[]> {
  * Fix query filter patterns in repository files
  */
 async function fixQueryFilters(file: string): Promise<FileChange> {
-  const content = await readFileAsync(file, "utf8");
+  const content = await readFileAsync(file, 'utf8');
   const result: FileChange = {
     file,
     replaced: false,
@@ -71,35 +71,35 @@ async function fixQueryFilters(file: string): Promise<FileChange> {
     /this\.findAll\s*\(\s*({[^}]*})\s*\)/g,
     (match, options) => {
       // Skip if it already has filters array
-      if (options.includes("filters:")) {
+      if (options.includes('filters:')) {
         return match;
       }
 
       // Skip empty object
-      if (options.trim() === "{}") {
-        return match.replace("findAll", "find");
+      if (options.trim() === '{}') {
+        return match.replace('findAll', 'find');
       }
 
       result.filterReplaceCount++;
 
       // Convert object properties to filter array
       const filterProperties = options
-        .replace(/{\s*/, "")
-        .replace(/\s*}/, "")
-        .split(",")
+        .replace(/{\s*/, '')
+        .replace(/\s*}/, '')
+        .split(',')
         .map((prop: string) => prop.trim())
         .filter((prop: string) => prop.length > 0);
 
       if (filterProperties.length === 0) {
-        return match.replace("findAll", "find");
+        return match.replace('findAll', 'find');
       }
 
       const filtersArray = filterProperties
         .map((prop: string) => {
-          const [key, value] = prop.split(":").map((p: string) => p.trim());
+          const [key, value] = prop.split(':').map((p: string) => p.trim());
           return `{ field: '${key}', operator: '==', value: ${value} }`;
         })
-        .join(",\n        ");
+        .join(',\n        ');
 
       return `this.find({\n      filters: [\n        ${filtersArray}\n      ]\n    })`;
     },
@@ -111,34 +111,34 @@ async function fixQueryFilters(file: string): Promise<FileChange> {
     (match) => {
       // Skip if it's already in filters format or doesn't look like a filter
       if (
-        match.includes("filters:") ||
-        match.includes("field:") ||
-        match.includes("options:")
+        match.includes('filters:') ||
+        match.includes('field:') ||
+        match.includes('options:')
       ) {
         return match;
       }
 
       // Try to detect if this is likely a filter object
       if (
-        match.includes("organizationId") ||
-        match.includes("isActive") ||
-        match.includes("type:")
+        match.includes('organizationId') ||
+        match.includes('isActive') ||
+        match.includes('type:')
       ) {
         result.filterReplaceCount++;
 
         // Extract key-value pairs
         const properties = match
-          .replace(/[{}]/g, "")
-          .split(",")
+          .replace(/[{}]/g, '')
+          .split(',')
           .map((prop) => prop.trim())
           .filter((prop) => prop.length > 0);
 
         const filtersArray = properties
           .map((prop) => {
-            const [key, value] = prop.split(":").map((p) => p.trim());
+            const [key, value] = prop.split(':').map((p) => p.trim());
             return `{ field: '${key}', operator: '==', value: ${value} }`;
           })
-          .join(",\n          ");
+          .join(',\n          ');
 
         return `{\n        filters: [\n          ${filtersArray}\n        ]\n      }`;
       }
@@ -152,16 +152,16 @@ async function fixQueryFilters(file: string): Promise<FileChange> {
     /operator\s*:\s*['"]([^'"]+)['"]/g,
     (match, operator) => {
       const validOperators = [
-        "==",
-        "!=",
-        ">",
-        ">=",
-        "<",
-        "<=",
-        "in",
-        "array-contains",
-        "array-contains-any",
-        "not-in",
+        '==',
+        '!=',
+        '>',
+        '>=',
+        '<',
+        '<=',
+        'in',
+        'array-contains',
+        'array-contains-any',
+        'not-in',
       ];
 
       if (validOperators.includes(operator)) {
@@ -183,7 +183,7 @@ async function fixQueryFilters(file: string): Promise<FileChange> {
 
   // Check if any changes were made
   if (content !== newContent) {
-    await writeFileAsync(file, newContent, "utf8");
+    await writeFileAsync(file, newContent, 'utf8');
     result.replaced = true;
   }
 
@@ -195,7 +195,7 @@ async function fixQueryFilters(file: string): Promise<FileChange> {
  */
 async function main() {
   try {
-    console.log("Starting filter fix script...");
+    console.log('Starting filter fix script...');
 
     const files = await walkDirectory(SRC_DIR);
     const changes: FileChange[] = [];
@@ -210,16 +210,16 @@ async function main() {
       }
     }
 
-    console.log("\nFix summary:");
+    console.log('\nFix summary:');
     console.log(`Total repository files processed: ${files.length}`);
     console.log(`Files changed: ${changes.length}`);
     console.log(
       `Total filter patterns fixed: ${changes.reduce((sum, c) => sum + c.filterReplaceCount, 0)}`,
     );
 
-    console.log("\nDone! Please review the changes and run tests.");
+    console.log('\nDone! Please review the changes and run tests.');
   } catch (error) {
-    console.error("Error during fixes:", error);
+    console.error('Error during fixes:', error);
   }
 }
 

@@ -1,13 +1,13 @@
-import { Injectable, Logger } from "@nestjs/common";
+import { Injectable, Logger } from '@nestjs/common';
 
-import { FirestoreBaseRepository } from "../../../common/repositories";
-import { FirestoreConfigService } from "../../../config/firestore.config";
+import { FirestoreBaseRepository } from '../../../common/repositories';
+import { FirestoreConfigService } from '../../../config/firestore.config';
 import {
   InsightStatus,
   InsightType,
   InsightSeverity,
-} from "../interfaces/types";
-import { Insight } from "../models/insight.schema";
+} from '../interfaces/types';
+import { Insight } from '../models/insight.schema';
 
 /**
  * Repository for Insight entities in Firestore
@@ -15,20 +15,20 @@ import { Insight } from "../models/insight.schema";
 @Injectable()
 export class InsightRepository extends FirestoreBaseRepository<Insight> {
   // Collection name in Firestore
-  protected readonly collectionName = "insights";
+  protected readonly collectionName = 'insights';
 
   constructor(firestoreConfigService: FirestoreConfigService) {
-    super(firestoreConfigService, "insights", {
+    super(firestoreConfigService, 'insights', {
       useSoftDeletes: true,
       useVersioning: true,
       enableCache: true,
       cacheTTLMs: 5 * 60 * 1000, // 5 minutes
       requiredFields: [
-        "organizationId",
-        "type",
-        "title",
-        "description",
-        "status",
+        'organizationId',
+        'type',
+        'title',
+        'description',
+        'status',
       ],
     });
   }
@@ -127,8 +127,8 @@ export class InsightRepository extends FirestoreBaseRepository<Insight> {
 
     // Basic query options
     const options = {
-      orderBy: "generatedAt" as keyof Insight,
-      direction: "desc" as "asc" | "desc",
+      orderBy: 'generatedAt' as keyof Insight,
+      direction: 'desc' as 'asc' | 'desc',
       limit: params.limit,
       offset: params.offset,
     };

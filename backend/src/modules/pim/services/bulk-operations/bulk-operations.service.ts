@@ -1,8 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { OperationResult } from '../../interfaces/types';
+
 import { NetworkStatusService } from '../../../../common/utils/network-status.service';
-import { LoadSheddingService } from '../load-shedding.service';
 import { FeatureFlagService } from '../../../../modules/feature-flags/services/feature-flag.service';
+import { OperationResult } from '../../interfaces/types';
+import { LoadSheddingService } from '../load-shedding.service';
 
 /**
  * Bulk Operation configuration options
@@ -57,7 +58,7 @@ export interface BulkOperationStats {
 
 /**
  * BulkOperationsService
- * 
+ *
  * Service for optimized bulk operations with South African market optimizations:
  * - Network-aware processing with adaptive concurrency
  * - Load shedding resilience with operation queueing
@@ -67,7 +68,7 @@ export interface BulkOperationStats {
 @Injectable()
 export class BulkOperationsService {
   private readonly logger = new Logger(BulkOperationsService.name);
-  
+
   // Default options optimized for South African conditions
   private readonly defaultOptions: BulkOperationOptions = {
     maxConcurrency: 5,
@@ -78,18 +79,18 @@ export class BulkOperationsService {
     maxRetries: 3,
     retryDelay: 1000,
     lowBandwidthMode: false,
-    loadSheddingResilience: true
+    loadSheddingResilience: true,
   };
 
   constructor(
     private readonly networkStatusService: NetworkStatusService,
     private readonly loadSheddingService: LoadSheddingService,
-    private readonly featureFlagService: FeatureFlagService
+    private readonly featureFlagService: FeatureFlagService,
   ) {}
 
   /**
    * Executes a batch of operations with optimized concurrency and resilience
-   * 
+   *
    * @param operations Array of operations to process
    * @param operationFn Function to execute for each operation
    * @param options Bulk operation options
@@ -98,61 +99,78 @@ export class BulkOperationsService {
   async executeBulk<T, R>(
     operations: T[],
     operationFn: (item: T) => Promise<R>,
-    options: Partial<BulkOperationOptions> = {}
-  ): Promise<{ results: (OperationResult<R>)[], stats: BulkOperationStats }> {
+    options: Partial<BulkOperationOptions> = {},
+  ): Promise<{ results: OperationResult<R>[]; stats: BulkOperationStats }> {
     const startTime = Date.now();
     const mergedOptions = { ...this.defaultOptions, ...options };
-    const results: (OperationResult<R>)[] = [];
-    
+    const results: OperationResult<R>[] = [];
+
     // Get current network conditions
     const networkStatus = await this.networkStatusService.getNetworkStatus();
-    const isLoadSheddingActive = await this.loadSheddingService.isLoadSheddingActive();
-    
+    const isLoadSheddingActive =
+      await this.loadSheddingService.isLoadSheddingActive();
+
     // Adjust concurrency based on network conditions
     let effectiveConcurrency = this.calculateEffectiveConcurrency(
       mergedOptions.maxConcurrency,
       networkStatus,
-      isLoadSheddingActive
+      isLoadSheddingActive,
     );
-    
-    this.logger.log(`Starting bulk operation with ${operations.length} items. ` +
-      `Network: ${networkStatus.connectionType}, Load shedding: ${isLoadSheddingActive}, ` +
-      `Effective concurrency: ${effectiveConcurrency}`);
+
+    this.logger.log(
+      `Starting bulk operation with ${operations.length} items. ` +
+        `Network: ${networkStatus.connectionType}, Load shedding: ${isLoadSheddingActive}, ` +
+        `Effective concurrency: ${effectiveConcurrency}`,
+    );
 
     // Process in chunks for better memory management
     const chunks = this.chunkArray(operations, mergedOptions.chunkSize);
-    
+
     for (const chunk of chunks) {
       // If load shedding becomes active during processing, queue operations
-      if (!isLoadSheddingActive && await this.loadSheddingService.isLoadSheddingActive()) {
+      if (
+        !isLoadSheddingActive &&
+        (await this.loadSheddingService.isLoadSheddingActive())
+      ) {
         if (mergedOptions.loadSheddingResilience) {
-          this.logger.log('Load shedding detected during operation, queueing remaining operations');
+          this.logger.log(
+            'Load shedding detected during operation, queueing remaining operations',
+          );
           const remainingOps = operations.slice(results.length);
-          await this.loadSheddingService.queueOperations('bulk-operations', remainingOps, operationFn);
+          await this.loadSheddingService.queueOperations(
+            'bulk-operations',
+            remainingOps,
+            operationFn,
+          );
           break;
         }
       }
-      
+
       // Process chunk with controlled concurrency
       const chunkResults = await this.processChunkWithConcurrency(
-        chunk, 
-        operationFn, 
+        chunk,
+        operationFn,
         effectiveConcurrency,
-        mergedOptions
+        mergedOptions,
       );
-      
+
       results.push(...chunkResults);
-      
+
       // Adaptively adjust concurrency based on results if needed
       if (this.shouldAdjustConcurrency(chunkResults)) {
-        effectiveConcurrency = Math.max(1, Math.floor(effectiveConcurrency * 0.7));
-        this.logger.log(`Reducing concurrency due to errors. New concurrency: ${effectiveConcurrency}`);
+        effectiveConcurrency = Math.max(
+          1,
+          Math.floor(effectiveConcurrency * 0.7),
+        );
+        this.logger.log(
+          `Reducing concurrency due to errors. New concurrency: ${effectiveConcurrency}`,
+        );
       }
     }
 
     // Calculate statistics
     const endTime = Date.now();
-    const successCount = results.filter(r => r.success).length;
+    const successCount = results.filter((r) => r.success).length;
     const stats: BulkOperationStats = {
       totalOperations: results.length,
       successCount,
@@ -163,19 +181,21 @@ export class BulkOperationsService {
         downloadSpeed: networkStatus.downloadSpeed,
         uploadSpeed: networkStatus.uploadSpeed,
         latency: networkStatus.latency,
-        loadSheddingActive: isLoadSheddingActive
-      }
+        loadSheddingActive: isLoadSheddingActive,
+      },
     };
 
-    this.logger.log(`Bulk operation completed. Success: ${successCount}/${results.length}, ` +
-      `Time: ${stats.processingTimeMs}ms`);
+    this.logger.log(
+      `Bulk operation completed. Success: ${successCount}/${results.length}, ` +
+        `Time: ${stats.processingTimeMs}ms`,
+    );
 
     return { results, stats };
   }
 
   /**
    * Process a chunk of operations with controlled concurrency
-   * 
+   *
    * @param chunk Array of operations to process
    * @param operationFn Function to execute for each operation
    * @param concurrency Maximum number of concurrent operations
@@ -186,11 +206,11 @@ export class BulkOperationsService {
     chunk: T[],
     operationFn: (item: T) => Promise<R>,
     concurrency: number,
-    options: BulkOperationOptions
+    options: BulkOperationOptions,
   ): Promise<OperationResult<R>[]> {
     const results: OperationResult<R>[] = [];
     const activePromises: Promise<void>[] = [];
-    
+
     for (const item of chunk) {
       // Wait if we've reached max concurrency
       if (activePromises.length >= concurrency) {
@@ -199,32 +219,38 @@ export class BulkOperationsService {
         const activePromisesCopy = [...activePromises];
         for (let i = 0; i < activePromisesCopy.length; i++) {
           const promise = activePromisesCopy[i];
-          if (promise.hasOwnProperty('$$settled') && (promise as any).$$settled) {
+          if (
+            promise.hasOwnProperty('$$settled') &&
+            (promise as any).$$settled
+          ) {
             activePromises.splice(activePromises.indexOf(promise), 1);
           }
         }
       }
-      
+
       // Create and start a new operation promise
-      const operationPromise = this.executeOperationWithRetry(item, operationFn, options)
-        .then(result => {
-          results.push(result);
-          // Mark the promise as settled for cleanup
-          (operationPromise as any).$$settled = true;
-        });
-      
+      const operationPromise = this.executeOperationWithRetry(
+        item,
+        operationFn,
+        options,
+      ).then((result) => {
+        results.push(result);
+        // Mark the promise as settled for cleanup
+        (operationPromise as any).$$settled = true;
+      });
+
       activePromises.push(operationPromise);
     }
-    
+
     // Wait for all remaining operations to complete
     await Promise.all(activePromises);
-    
+
     return results;
   }
 
   /**
    * Execute a single operation with retry logic
-   * 
+   *
    * @param item Operation input
    * @param operationFn Function to execute
    * @param options Bulk operation options
@@ -233,42 +259,45 @@ export class BulkOperationsService {
   private async executeOperationWithRetry<T, R>(
     item: T,
     operationFn: (item: T) => Promise<R>,
-    options: BulkOperationOptions
+    options: BulkOperationOptions,
   ): Promise<OperationResult<R>> {
     let retries = 0;
-    
+
     while (true) {
       try {
         // Execute the operation with timeout
         const result = await this.executeWithTimeout(
           () => operationFn(item),
-          options.operationTimeout
+          options.operationTimeout,
         );
-        
+
         return {
           success: true,
-          data: result
+          data: result,
         };
       } catch (error) {
         const isNetworkError = this.isNetworkRelatedError(error);
-        const canRetry = options.enableRetry && 
-                        retries < options.maxRetries && 
-                        (isNetworkError || this.isRetryableError(error));
-        
+        const canRetry =
+          options.enableRetry &&
+          retries < options.maxRetries &&
+          (isNetworkError || this.isRetryableError(error));
+
         if (canRetry) {
           retries++;
-          this.logger.debug(`Retrying operation (attempt ${retries}/${options.maxRetries}). Error: ${error.message}`);
-          
+          this.logger.debug(
+            `Retrying operation (attempt ${retries}/${options.maxRetries}). Error: ${error.message}`,
+          );
+
           // Exponential backoff for retries
           const delay = options.retryDelay * Math.pow(2, retries - 1);
-          await new Promise(resolve => setTimeout(resolve, delay));
+          await new Promise((resolve) => setTimeout(resolve, delay));
           continue;
         }
-        
+
         return {
           success: false,
           error: error.message,
-          errorCode: error.code || error.status || 'UNKNOWN_ERROR'
+          errorCode: error.code || error.status || 'UNKNOWN_ERROR',
         };
       }
     }
@@ -276,33 +305,36 @@ export class BulkOperationsService {
 
   /**
    * Execute a function with a timeout
-   * 
+   *
    * @param fn Function to execute
    * @param timeoutMs Timeout in milliseconds
    * @returns Function result
    */
-  private async executeWithTimeout<R>(fn: () => Promise<R>, timeoutMs: number): Promise<R> {
+  private async executeWithTimeout<R>(
+    fn: () => Promise<R>,
+    timeoutMs: number,
+  ): Promise<R> {
     return new Promise<R>((resolve, reject) => {
       const timeoutId = setTimeout(() => {
         reject(new Error('Operation timed out'));
       }, timeoutMs);
-      
+
       fn().then(
-        result => {
+        (result) => {
           clearTimeout(timeoutId);
           resolve(result);
         },
-        error => {
+        (error) => {
           clearTimeout(timeoutId);
           reject(error);
-        }
+        },
       );
     });
   }
 
   /**
    * Calculate effective concurrency based on network conditions and load shedding status
-   * 
+   *
    * @param baseConcurrency Base concurrency value
    * @param networkStatus Current network status
    * @param isLoadSheddingActive Whether load shedding is active
@@ -311,15 +343,15 @@ export class BulkOperationsService {
   private calculateEffectiveConcurrency(
     baseConcurrency: number,
     networkStatus: any,
-    isLoadSheddingActive: boolean
+    isLoadSheddingActive: boolean,
   ): number {
     let concurrency = baseConcurrency;
-    
+
     // Reduce concurrency during load shedding
     if (isLoadSheddingActive) {
       concurrency = Math.min(concurrency, 3);
     }
-    
+
     // Adjust based on connection type
     switch (networkStatus.connectionType) {
       case 'offline':
@@ -341,7 +373,7 @@ export class BulkOperationsService {
         }
         break;
     }
-    
+
     // Further adjust based on measured download speed if available
     if (networkStatus.downloadSpeed !== undefined) {
       if (networkStatus.downloadSpeed < 1) {
@@ -350,29 +382,29 @@ export class BulkOperationsService {
         concurrency = Math.min(concurrency, 3);
       }
     }
-    
+
     return Math.max(1, Math.floor(concurrency));
   }
 
   /**
    * Check if we should adjust concurrency based on operation results
-   * 
+   *
    * @param results Recent operation results
    * @returns Whether to adjust concurrency
    */
   private shouldAdjustConcurrency<R>(results: OperationResult<R>[]): boolean {
     if (results.length === 0) return false;
-    
+
     // If more than 30% of operations failed, reduce concurrency
-    const failureCount = results.filter(r => !r.success).length;
+    const failureCount = results.filter((r) => !r.success).length;
     const failureRate = failureCount / results.length;
-    
+
     return failureRate > 0.3;
   }
 
   /**
    * Chunk an array into smaller arrays
-   * 
+   *
    * @param array Array to chunk
    * @param size Chunk size
    * @returns Array of chunks
@@ -387,23 +419,32 @@ export class BulkOperationsService {
 
   /**
    * Check if an error is network-related
-   * 
+   *
    * @param error Error to check
    * @returns Whether the error is network-related
    */
   private isNetworkRelatedError(error: any): boolean {
     const errorMessage = (error.message || '').toLowerCase();
     const networkErrorPatterns = [
-      'network', 'connection', 'offline', 'timeout', 'unreachable',
-      'econnrefused', 'econnreset', 'enotfound', 'etimedout'
+      'network',
+      'connection',
+      'offline',
+      'timeout',
+      'unreachable',
+      'econnrefused',
+      'econnreset',
+      'enotfound',
+      'etimedout',
     ];
-    
-    return networkErrorPatterns.some(pattern => errorMessage.includes(pattern));
+
+    return networkErrorPatterns.some((pattern) =>
+      errorMessage.includes(pattern),
+    );
   }
 
   /**
    * Check if an error is retryable
-   * 
+   *
    * @param error Error to check
    * @returns Whether the error is retryable
    */
@@ -413,17 +454,23 @@ export class BulkOperationsService {
     if (status >= 500 && status < 600) {
       return true;
     }
-    
+
     if (status === 429) {
       return true; // Too Many Requests
     }
-    
+
     // Check error codes that indicate temporary failures
     const retryableCodes = [
-      'ECONNRESET', 'ECONNREFUSED', 'ETIMEDOUT', 'EPIPE',
-      'RESOURCE_EXHAUSTED', 'INTERNAL', 'UNAVAILABLE', 'DEADLINE_EXCEEDED'
+      'ECONNRESET',
+      'ECONNREFUSED',
+      'ETIMEDOUT',
+      'EPIPE',
+      'RESOURCE_EXHAUSTED',
+      'INTERNAL',
+      'UNAVAILABLE',
+      'DEADLINE_EXCEEDED',
     ];
-    
+
     return retryableCodes.includes(error.code);
   }
 }

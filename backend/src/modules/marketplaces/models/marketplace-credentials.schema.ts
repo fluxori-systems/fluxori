@@ -1,4 +1,4 @@
-import { FirestoreEntity, Timestamp } from "../../../types/google-cloud.types";
+import { FirestoreEntity, Timestamp } from '../../../types/google-cloud.types';
 
 /**
  * Marketplace credentials schema for Firestore

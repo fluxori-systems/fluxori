@@ -1,8 +1,9 @@
 'use client';
 
 import React from 'react';
-import { useMotion } from '../../../motion/context/MotionContext';
+
 import { AgentSuggestion } from './types';
+import { useMotion } from '../../../motion/context/MotionContext';
 import { useConnectionQuality } from '../../../motion/hooks';
 
 export interface AgentSuggestionChipProps {

@@ -1,10 +1,10 @@
-import { Injectable, Logger, OnModuleInit } from "@nestjs/common";
+import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 
-import { FirestoreConfigService } from "src/config/firestore.config";
+import { FirestoreConfigService } from 'src/config/firestore.config';
 
-import { FirestoreBaseRepository } from "src/common/repositories";
+import { FirestoreBaseRepository } from 'src/common/repositories';
 
-import { ModelRegistryEntry, ModelComplexity } from "../interfaces/types";
+import { ModelRegistryEntry, ModelComplexity } from '../interfaces/types';
 
 /**
  * Repository for managing AI model registry entries
@@ -17,14 +17,14 @@ export class ModelRegistryRepository
   protected readonly logger = new Logger(ModelRegistryRepository.name);
 
   constructor(firestoreConfigService: FirestoreConfigService) {
-    super(firestoreConfigService, "model_registry");
+    super(firestoreConfigService, 'model_registry');
   }
 
   /**
    * Initialize the repository when module loads
    */
   onModuleInit(): void {
-    this.logger.log("ModelRegistryRepository initialized");
+    this.logger.log('ModelRegistryRepository initialized');
   }
 
   /**
@@ -33,12 +33,12 @@ export class ModelRegistryRepository
   async findByProvider(provider: string): Promise<ModelRegistryEntry[]> {
     return this.find({
       advancedFilters: [
-        { field: "provider", operator: "==", value: provider },
-        { field: "isEnabled", operator: "==", value: true },
+        { field: 'provider', operator: '==', value: provider },
+        { field: 'isEnabled', operator: '==', value: true },
       ],
       queryOptions: {
-        orderBy: "order",
-        direction: "asc",
+        orderBy: 'order',
+        direction: 'asc',
       },
     });
   }
@@ -51,12 +51,12 @@ export class ModelRegistryRepository
   ): Promise<ModelRegistryEntry[]> {
     return this.find({
       advancedFilters: [
-        { field: "complexity", operator: "==", value: complexity },
-        { field: "isEnabled", operator: "==", value: true },
+        { field: 'complexity', operator: '==', value: complexity },
+        { field: 'isEnabled', operator: '==', value: true },
       ],
       queryOptions: {
-        orderBy: "order",
-        direction: "asc",
+        orderBy: 'order',
+        direction: 'asc',
       },
     });
   }
@@ -68,7 +68,7 @@ export class ModelRegistryRepository
     // This is a simplified implementation - in a real implementation, we would use
     // a more sophisticated query that checks array membership
     const allModels = await this.find({
-      advancedFilters: [{ field: "isEnabled", operator: "==", value: true }],
+      advancedFilters: [{ field: 'isEnabled', operator: '==', value: true }],
     });
 
     return allModels.filter((model) => model.capabilities.includes(capability));
@@ -93,7 +93,7 @@ export class ModelRegistryRepository
     // If preferred model is specified and exists, use it
     if (preferredModel) {
       const allModels = await this.find({
-        advancedFilters: [{ field: "isEnabled", operator: "==", value: true }],
+        advancedFilters: [{ field: 'isEnabled', operator: '==', value: true }],
       });
 
       const model = allModels.find(

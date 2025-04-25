@@ -9,20 +9,20 @@ import {
   Query,
   Logger,
   ForbiddenException,
-} from "@nestjs/common";
+} from '@nestjs/common';
 
-import { EmbeddingProvider } from "../models/embedding-provider.schema";
+import { EmbeddingProvider } from '../models/embedding-provider.schema';
 import {
   EmbeddingService,
   CreateEmbeddingProviderDto,
   UpdateEmbeddingProviderDto,
   EmbeddingResponse,
-} from "../services/embedding.service";
+} from '../services/embedding.service';
 
 /**
  * Controller for Embedding Provider endpoints
  */
-@Controller("api/embedding-providers")
+@Controller('api/embedding-providers')
 export class EmbeddingProviderController {
   private readonly logger = new Logger(EmbeddingProviderController.name);
 
@@ -45,8 +45,8 @@ export class EmbeddingProviderController {
    * @param id Provider ID
    * @returns Provider data
    */
-  @Get(":id")
-  async findById(@Param("id") id: string): Promise<EmbeddingProvider> {
+  @Get(':id')
+  async findById(@Param('id') id: string): Promise<EmbeddingProvider> {
     return this.embeddingService.findById(id);
   }
 
@@ -55,9 +55,9 @@ export class EmbeddingProviderController {
    * @param organizationId Organization ID
    * @returns Array of providers
    */
-  @Get("organization/:organizationId")
+  @Get('organization/:organizationId')
   async findByOrganization(
-    @Param("organizationId") organizationId: string,
+    @Param('organizationId') organizationId: string,
   ): Promise<EmbeddingProvider[]> {
     return this.embeddingService.findByOrganization(organizationId);
   }
@@ -67,9 +67,9 @@ export class EmbeddingProviderController {
    * @param organizationId Organization ID
    * @returns Default provider
    */
-  @Get("organization/:organizationId/default")
+  @Get('organization/:organizationId/default')
   async findDefaultProvider(
-    @Param("organizationId") organizationId: string,
+    @Param('organizationId') organizationId: string,
   ): Promise<EmbeddingProvider> {
     const provider =
       await this.embeddingService.findDefaultProvider(organizationId);
@@ -89,9 +89,9 @@ export class EmbeddingProviderController {
    * @param updateEmbeddingProviderDto Update data
    * @returns Updated provider
    */
-  @Put(":id")
+  @Put(':id')
   async update(
-    @Param("id") id: string,
+    @Param('id') id: string,
     @Body() updateEmbeddingProviderDto: UpdateEmbeddingProviderDto,
   ): Promise<EmbeddingProvider> {
     return this.embeddingService.updateProvider(id, updateEmbeddingProviderDto);
@@ -102,8 +102,8 @@ export class EmbeddingProviderController {
    * @param id Provider ID
    * @returns Updated provider
    */
-  @Put(":id/set-default")
-  async setAsDefault(@Param("id") id: string): Promise<EmbeddingProvider> {
+  @Put(':id/set-default')
+  async setAsDefault(@Param('id') id: string): Promise<EmbeddingProvider> {
     return this.embeddingService.setAsDefault(id);
   }
 
@@ -112,8 +112,8 @@ export class EmbeddingProviderController {
    * @param id Provider ID
    * @returns Updated provider
    */
-  @Put(":id/enable")
-  async enable(@Param("id") id: string): Promise<EmbeddingProvider> {
+  @Put(':id/enable')
+  async enable(@Param('id') id: string): Promise<EmbeddingProvider> {
     return this.embeddingService.setEnabled(id, true);
   }
 
@@ -122,8 +122,8 @@ export class EmbeddingProviderController {
    * @param id Provider ID
    * @returns Updated provider
    */
-  @Put(":id/disable")
-  async disable(@Param("id") id: string): Promise<EmbeddingProvider> {
+  @Put(':id/disable')
+  async disable(@Param('id') id: string): Promise<EmbeddingProvider> {
     return this.embeddingService.setEnabled(id, false);
   }
 
@@ -132,8 +132,8 @@ export class EmbeddingProviderController {
    * @param id Provider ID
    * @returns Success indicator
    */
-  @Delete(":id")
-  async delete(@Param("id") id: string): Promise<{ success: boolean }> {
+  @Delete(':id')
+  async delete(@Param('id') id: string): Promise<{ success: boolean }> {
     await this.embeddingService.deleteProvider(id);
     return { success: true };
   }
@@ -145,18 +145,18 @@ export class EmbeddingProviderController {
    * @param providerId Optional provider ID in request body
    * @returns Embedding response
    */
-  @Post("generate-embeddings")
+  @Post('generate-embeddings')
   async generateEmbeddings(
-    @Body("texts") texts: string[],
-    @Body("organizationId") organizationId: string,
-    @Body("providerId") providerId?: string,
+    @Body('texts') texts: string[],
+    @Body('organizationId') organizationId: string,
+    @Body('providerId') providerId?: string,
   ): Promise<EmbeddingResponse> {
     if (!texts || !texts.length) {
-      throw new ForbiddenException("Text array is required");
+      throw new ForbiddenException('Text array is required');
     }
 
     if (!organizationId) {
-      throw new ForbiddenException("Organization ID is required");
+      throw new ForbiddenException('Organization ID is required');
     }
 
     return this.embeddingService.generateEmbeddings(

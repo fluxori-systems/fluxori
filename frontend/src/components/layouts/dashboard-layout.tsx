@@ -1,8 +1,10 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+
 import { 
   AppShell, 
   Text, 
@@ -12,6 +14,7 @@ import {
   Title,
   Stack
 } from '@mantine/core';
+
 import { useFirebase } from '../../contexts/firebase-context';
 
 interface DashboardLayoutProps {

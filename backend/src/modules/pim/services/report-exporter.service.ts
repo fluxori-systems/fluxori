@@ -1,11 +1,14 @@
-import { Injectable, Logger, BadRequestException } from '@nestjs/common';
-import { NetworkAwareStorageService } from './network-aware-storage.service';
-import { LoadSheddingService } from './load-shedding.service';
-import { FeatureFlagService } from '../../../modules/feature-flags/services/feature-flag.service';
-import { PimStorageService } from './pim-storage.service';
-import { MarketContextService } from './market-context.service';
-import * as XLSX from 'xlsx';
 import { Stream } from 'stream';
+
+import { Injectable, Logger, BadRequestException } from '@nestjs/common';
+
+import * as XLSX from 'xlsx';
+
+import { LoadSheddingService } from './load-shedding.service';
+import { MarketContextService } from './market-context.service';
+import { NetworkAwareStorageService } from './network-aware-storage.service';
+import { PimStorageService } from './pim-storage.service';
+import { FeatureFlagService } from '../../../modules/feature-flags/services/feature-flag.service';
 
 /**
  * Export format types
@@ -146,7 +149,7 @@ export interface ReportBundleOptions {
 
 /**
  * ReportExporterService
- * 
+ *
  * Service for exporting reports in various formats with
  * South African market optimizations:
  * - Network-aware report generation that adapts to connectivity
@@ -161,7 +164,10 @@ export class ReportExporterService {
   private readonly logger = new Logger(ReportExporterService.name);
   private exportOperations = new Map<string, ExportOperation>();
   private scheduledExports = new Map<string, ScheduledExport>();
-  private processingQueue: Array<{ operation: ExportOperation; priority: number }> = [];
+  private processingQueue: Array<{
+    operation: ExportOperation;
+    priority: number;
+  }> = [];
   private isProcessingQueue = false;
   private readonly MAX_CONCURRENT_EXPORTS = 2;
   private currentExports = 0;
@@ -175,14 +181,14 @@ export class ReportExporterService {
   ) {
     // Start processing queue periodically
     setInterval(() => this.processQueue(), 10000); // Every 10 seconds
-    
+
     // Check for scheduled exports every minute
     setInterval(() => this.checkScheduledExports(), 60000); // Every minute
   }
 
   /**
    * Export report data to a specific format
-   * 
+   *
    * @param reportType Report type to export
    * @param reportData Report data to export
    * @param options Export options
@@ -199,15 +205,18 @@ export class ReportExporterService {
   ): Promise<ExportOperation> {
     try {
       const exportId = this.generateExportId(reportType, organizationId);
-      
+
       // Check for load shedding conditions
-      const isLoadSheddingActive = await this.loadSheddingService.isLoadSheddingActive(organizationId);
-      const loadSheddingStage = isLoadSheddingActive ? 
-        await this.loadSheddingService.getLoadSheddingStage(organizationId) : 0;
-      
+      const isLoadSheddingActive =
+        await this.loadSheddingService.isLoadSheddingActive(organizationId);
+      const loadSheddingStage = isLoadSheddingActive
+        ? await this.loadSheddingService.getLoadSheddingStage(organizationId)
+        : 0;
+
       // Get network conditions
-      const networkStatus = await this.networkAwareStorageService.getNetworkQuality();
-      
+      const networkStatus =
+        await this.networkAwareStorageService.getNetworkQuality();
+
       // Create export operation
       const exportOperation: ExportOperation = {
         id: exportId,
@@ -226,42 +235,47 @@ export class ReportExporterService {
         },
         notificationEmail: options.notificationEmail,
       };
-      
+
       this.exportOperations.set(exportId, exportOperation);
-      
+
       // Determine if we should queue or process immediately
       let shouldQueue = false;
-      
+
       // Queue during load shedding if resilience is enabled
       if (isLoadSheddingActive && options.enableLoadSheddingResilience) {
         shouldQueue = true;
-        
+
         // If stage is high, always queue
         if (loadSheddingStage >= 4) {
           exportOperation.status = ExportStatus.QUEUED;
-          this.logger.log(`Queuing export ${exportId} due to high load shedding stage (${loadSheddingStage})`);
+          this.logger.log(
+            `Queuing export ${exportId} due to high load shedding stage (${loadSheddingStage})`,
+          );
           this.queueExport(exportOperation, 0); // Low priority
           return exportOperation;
         }
       }
-      
+
       // Queue during poor network conditions if optimization is enabled
-      if (networkStatus.quality === 'poor' && options.enableNetworkOptimization) {
+      if (
+        networkStatus.quality === 'poor' &&
+        options.enableNetworkOptimization
+      ) {
         shouldQueue = true;
       }
-      
+
       // Queue if too many concurrent exports
       if (this.currentExports >= this.MAX_CONCURRENT_EXPORTS) {
         shouldQueue = true;
       }
-      
+
       if (shouldQueue) {
         exportOperation.status = ExportStatus.QUEUED;
         this.logger.log(`Queuing export ${exportId} due to system conditions`);
         this.queueExport(exportOperation, 1); // Medium priority
         return exportOperation;
       }
-      
+
       // Process immediately
       this.processExport(exportOperation, reportData, options);
       return exportOperation;
@@ -273,96 +287,124 @@ export class ReportExporterService {
 
   /**
    * Get export operation status
-   * 
+   *
    * @param exportId Export operation ID
    * @param organizationId Organization ID
    * @returns Export operation details
    */
-  async getExportStatus(exportId: string, organizationId: string): Promise<ExportOperation> {
+  async getExportStatus(
+    exportId: string,
+    organizationId: string,
+  ): Promise<ExportOperation> {
     const exportOperation = this.exportOperations.get(exportId);
-    
+
     if (!exportOperation) {
-      throw new BadRequestException(`Export operation with ID ${exportId} not found`);
+      throw new BadRequestException(
+        `Export operation with ID ${exportId} not found`,
+      );
     }
-    
+
     if (exportOperation.organizationId !== organizationId) {
-      throw new BadRequestException('You do not have permission to access this export operation');
+      throw new BadRequestException(
+        'You do not have permission to access this export operation',
+      );
     }
-    
+
     return exportOperation;
   }
 
   /**
    * Schedule a report for regular generation
-   * 
+   *
    * @param schedule Scheduled export details
    * @returns Scheduled export details
    */
-  async scheduleExport(schedule: Omit<ScheduledExport, 'id'>): Promise<ScheduledExport> {
+  async scheduleExport(
+    schedule: Omit<ScheduledExport, 'id'>,
+  ): Promise<ScheduledExport> {
     try {
-      const scheduleId = this.generateScheduleId(schedule.reportType, schedule.organizationId);
-      
+      const scheduleId = this.generateScheduleId(
+        schedule.reportType,
+        schedule.organizationId,
+      );
+
       const scheduledExport: ScheduledExport = {
         id: scheduleId,
         ...schedule,
         nextRunTime: this.calculateNextRunTime(schedule.frequency),
       };
-      
+
       this.scheduledExports.set(scheduleId, scheduledExport);
-      this.logger.log(`Scheduled export ${scheduleId} created for ${schedule.reportType}`);
-      
+      this.logger.log(
+        `Scheduled export ${scheduleId} created for ${schedule.reportType}`,
+      );
+
       return scheduledExport;
     } catch (error) {
-      this.logger.error(`Error scheduling export: ${error.message}`, error.stack);
-      throw new BadRequestException(`Failed to schedule export: ${error.message}`);
+      this.logger.error(
+        `Error scheduling export: ${error.message}`,
+        error.stack,
+      );
+      throw new BadRequestException(
+        `Failed to schedule export: ${error.message}`,
+      );
     }
   }
 
   /**
    * Get all scheduled exports for an organization
-   * 
+   *
    * @param organizationId Organization ID
    * @returns List of scheduled exports
    */
-  async getScheduledExports(organizationId: string): Promise<ScheduledExport[]> {
+  async getScheduledExports(
+    organizationId: string,
+  ): Promise<ScheduledExport[]> {
     const schedules: ScheduledExport[] = [];
-    
+
     for (const schedule of this.scheduledExports.values()) {
       if (schedule.organizationId === organizationId) {
         schedules.push(schedule);
       }
     }
-    
+
     return schedules;
   }
 
   /**
    * Cancel a scheduled export
-   * 
+   *
    * @param scheduleId Schedule ID
    * @param organizationId Organization ID
    * @returns Success status
    */
-  async cancelScheduledExport(scheduleId: string, organizationId: string): Promise<boolean> {
+  async cancelScheduledExport(
+    scheduleId: string,
+    organizationId: string,
+  ): Promise<boolean> {
     const schedule = this.scheduledExports.get(scheduleId);
-    
+
     if (!schedule) {
-      throw new BadRequestException(`Scheduled export with ID ${scheduleId} not found`);
+      throw new BadRequestException(
+        `Scheduled export with ID ${scheduleId} not found`,
+      );
     }
-    
+
     if (schedule.organizationId !== organizationId) {
-      throw new BadRequestException('You do not have permission to access this scheduled export');
+      throw new BadRequestException(
+        'You do not have permission to access this scheduled export',
+      );
     }
-    
+
     this.scheduledExports.delete(scheduleId);
     this.logger.log(`Scheduled export ${scheduleId} cancelled`);
-    
+
     return true;
   }
 
   /**
    * Create a bundle of multiple reports
-   * 
+   *
    * @param options Bundle options
    * @param organizationId Organization ID
    * @param userId User ID
@@ -375,22 +417,28 @@ export class ReportExporterService {
   ): Promise<ExportOperation> {
     try {
       const bundleId = this.generateExportId('bundle', organizationId);
-      
+
       // Check for load shedding conditions
-      const isLoadSheddingActive = await this.loadSheddingService.isLoadSheddingActive(organizationId);
-      const loadSheddingStage = isLoadSheddingActive ? 
-        await this.loadSheddingService.getLoadSheddingStage(organizationId) : 0;
-      
+      const isLoadSheddingActive =
+        await this.loadSheddingService.isLoadSheddingActive(organizationId);
+      const loadSheddingStage = isLoadSheddingActive
+        ? await this.loadSheddingService.getLoadSheddingStage(organizationId)
+        : 0;
+
       // Get network conditions
-      const networkStatus = await this.networkAwareStorageService.getNetworkQuality();
-      
+      const networkStatus =
+        await this.networkAwareStorageService.getNetworkQuality();
+
       // Create export operation for the bundle
       const bundleOperation: ExportOperation = {
         id: bundleId,
         format: options.format,
         status: ExportStatus.PENDING,
         reportType: 'bundle',
-        reportParams: { reports: options.reports, bundleName: options.bundleName },
+        reportParams: {
+          reports: options.reports,
+          bundleName: options.bundleName,
+        },
         createdAt: new Date(),
         organizationId,
         userId,
@@ -402,41 +450,51 @@ export class ReportExporterService {
         },
         notificationEmail: options.notificationEmail,
       };
-      
+
       this.exportOperations.set(bundleId, bundleOperation);
-      
+
       // During load shedding or poor network, we should always queue bundles
-      if ((isLoadSheddingActive && options.enableLoadSheddingResilience) || 
-          (networkStatus.quality === 'poor' && options.enableNetworkOptimization)) {
+      if (
+        (isLoadSheddingActive && options.enableLoadSheddingResilience) ||
+        (networkStatus.quality === 'poor' && options.enableNetworkOptimization)
+      ) {
         bundleOperation.status = ExportStatus.QUEUED;
         this.logger.log(`Queuing bundle ${bundleId} due to system conditions`);
         this.queueExport(bundleOperation, 0); // Low priority for bundles
         return bundleOperation;
       }
-      
+
       // Process immediately
       this.processBundleExport(bundleOperation, options);
       return bundleOperation;
     } catch (error) {
-      this.logger.error(`Error creating report bundle: ${error.message}`, error.stack);
-      throw new BadRequestException(`Failed to create report bundle: ${error.message}`);
+      this.logger.error(
+        `Error creating report bundle: ${error.message}`,
+        error.stack,
+      );
+      throw new BadRequestException(
+        `Failed to create report bundle: ${error.message}`,
+      );
     }
   }
 
   /**
    * Get bundle export status
-   * 
+   *
    * @param bundleId Bundle export ID
    * @param organizationId Organization ID
    * @returns Export operation details
    */
-  async getBundleStatus(bundleId: string, organizationId: string): Promise<ExportOperation> {
+  async getBundleStatus(
+    bundleId: string,
+    organizationId: string,
+  ): Promise<ExportOperation> {
     return this.getExportStatus(bundleId, organizationId);
   }
 
   /**
    * Process a report export
-   * 
+   *
    * @param operation Export operation
    * @param reportData Report data
    * @param options Export options
@@ -450,14 +508,17 @@ export class ReportExporterService {
       this.currentExports++;
       operation.status = ExportStatus.PROCESSING;
       this.logger.log(`Processing export ${operation.id}`);
-      
+
       // Apply network-aware optimizations if enabled
       if (options.enableNetworkOptimization) {
-        reportData = this.optimizeForNetwork(reportData, operation.networkConditions);
+        reportData = this.optimizeForNetwork(
+          reportData,
+          operation.networkConditions,
+        );
       }
-      
+
       let exportResult: { fileContent: Buffer | Stream; fileName: string };
-      
+
       switch (options.format) {
         case ExportFormat.CSV:
           exportResult = await this.exportToCSV(reportData, options);
@@ -474,7 +535,7 @@ export class ReportExporterService {
         default:
           throw new Error(`Unsupported export format: ${options.format}`);
       }
-      
+
       // Upload the file to storage
       const fileName = options.fileName || exportResult.fileName;
       const fileUrl = await this.uploadExportFile(
@@ -484,30 +545,33 @@ export class ReportExporterService {
         options.format,
         operation.organizationId,
       );
-      
+
       // Update export operation
       operation.status = ExportStatus.COMPLETED;
       operation.completedAt = new Date();
       operation.fileUrl = fileUrl;
-      
+
       // Send notification email if provided
       if (operation.notificationEmail) {
         await this.sendExportNotification(operation);
       }
-      
+
       this.logger.log(`Export ${operation.id} completed successfully`);
       this.currentExports--;
     } catch (error) {
       operation.status = ExportStatus.FAILED;
       operation.error = error.message;
-      this.logger.error(`Error processing export ${operation.id}: ${error.message}`, error.stack);
+      this.logger.error(
+        `Error processing export ${operation.id}: ${error.message}`,
+        error.stack,
+      );
       this.currentExports--;
     }
   }
 
   /**
    * Process a bundle export
-   * 
+   *
    * @param operation Bundle export operation
    * @param options Bundle options
    */
@@ -519,10 +583,10 @@ export class ReportExporterService {
       this.currentExports++;
       operation.status = ExportStatus.PROCESSING;
       this.logger.log(`Processing bundle export ${operation.id}`);
-      
+
       // Process each report in the bundle
       const reportFiles = [];
-      
+
       for (const report of options.reports) {
         try {
           // TODO: In a real implementation, this would fetch the actual report data
@@ -534,38 +598,52 @@ export class ReportExporterService {
               { id: 2, name: 'Sample 2' },
             ],
           };
-          
+
           // Generate the export file
           let exportResult: { fileContent: Buffer | Stream; fileName: string };
-          
+
           switch (options.format) {
             case ExportFormat.CSV:
-              exportResult = await this.exportToCSV(reportData, { format: ExportFormat.CSV, fileName: report.fileName });
+              exportResult = await this.exportToCSV(reportData, {
+                format: ExportFormat.CSV,
+                fileName: report.fileName,
+              });
               break;
             case ExportFormat.XLSX:
-              exportResult = await this.exportToXLSX(reportData, { format: ExportFormat.XLSX, fileName: report.fileName });
+              exportResult = await this.exportToXLSX(reportData, {
+                format: ExportFormat.XLSX,
+                fileName: report.fileName,
+              });
               break;
             case ExportFormat.PDF:
-              exportResult = await this.exportToPDF(reportData, { format: ExportFormat.PDF, fileName: report.fileName });
+              exportResult = await this.exportToPDF(reportData, {
+                format: ExportFormat.PDF,
+                fileName: report.fileName,
+              });
               break;
             case ExportFormat.JSON:
-              exportResult = await this.exportToJSON(reportData, { format: ExportFormat.JSON, fileName: report.fileName });
+              exportResult = await this.exportToJSON(reportData, {
+                format: ExportFormat.JSON,
+                fileName: report.fileName,
+              });
               break;
             default:
               throw new Error(`Unsupported export format: ${options.format}`);
           }
-          
+
           // Add to the list of report files
           reportFiles.push({
             content: exportResult.fileContent,
             fileName: report.fileName || exportResult.fileName,
           });
         } catch (error) {
-          this.logger.error(`Error processing report ${report.reportType} in bundle: ${error.message}`);
+          this.logger.error(
+            `Error processing report ${report.reportType} in bundle: ${error.message}`,
+          );
           // Continue with other reports in the bundle
         }
       }
-      
+
       // Create the bundle file
       const bundleFileName = `${options.bundleName || 'report-bundle'}-${new Date().getTime()}`;
       const bundleFileUrl = await this.createBundleFile(
@@ -575,23 +653,26 @@ export class ReportExporterService {
         options.compressBundle,
         operation.organizationId,
       );
-      
+
       // Update export operation
       operation.status = ExportStatus.COMPLETED;
       operation.completedAt = new Date();
       operation.fileUrl = bundleFileUrl;
-      
+
       // Send notification email if provided
       if (operation.notificationEmail) {
         await this.sendExportNotification(operation);
       }
-      
+
       this.logger.log(`Bundle export ${operation.id} completed successfully`);
       this.currentExports--;
     } catch (error) {
       operation.status = ExportStatus.FAILED;
       operation.error = error.message;
-      this.logger.error(`Error processing bundle export ${operation.id}: ${error.message}`, error.stack);
+      this.logger.error(
+        `Error processing bundle export ${operation.id}: ${error.message}`,
+        error.stack,
+      );
       this.currentExports--;
     }
   }
@@ -603,47 +684,58 @@ export class ReportExporterService {
     if (this.isProcessingQueue || this.processingQueue.length === 0) {
       return;
     }
-    
+
     // Check if we can process more exports
     if (this.currentExports >= this.MAX_CONCURRENT_EXPORTS) {
       return;
     }
-    
+
     this.isProcessingQueue = true;
-    
+
     try {
       // Check for load shedding conditions
-      const isLoadSheddingActive = await this.loadSheddingService.isLoadSheddingActive();
-      
+      const isLoadSheddingActive =
+        await this.loadSheddingService.isLoadSheddingActive();
+
       // During load shedding, only process high priority exports
       if (isLoadSheddingActive) {
-        const highPriorityExports = this.processingQueue.filter(item => item.priority === 2);
-        
+        const highPriorityExports = this.processingQueue.filter(
+          (item) => item.priority === 2,
+        );
+
         if (highPriorityExports.length > 0) {
           // Process one high priority export
           const nextExport = highPriorityExports[0];
-          this.processingQueue = this.processingQueue.filter(item => item !== nextExport);
-          
+          this.processingQueue = this.processingQueue.filter(
+            (item) => item !== nextExport,
+          );
+
           // TODO: In a real implementation, this would fetch the report data and process it
           // For this example, we'll just mark it as completed
           const operation = nextExport.operation;
           operation.status = ExportStatus.COMPLETED;
           operation.completedAt = new Date();
           operation.fileUrl = `https://example.com/reports/${operation.id}.${operation.format}`;
-          
-          this.logger.log(`Processed high-priority queued export ${operation.id} during load shedding`);
+
+          this.logger.log(
+            `Processed high-priority queued export ${operation.id} during load shedding`,
+          );
         }
       } else {
         // Sort queue by priority (descending)
         this.processingQueue.sort((a, b) => b.priority - a.priority);
-        
+
         // Process up to MAX_CONCURRENT_EXPORTS - currentExports
-        const availableSlots = this.MAX_CONCURRENT_EXPORTS - this.currentExports;
-        const itemsToProcess = Math.min(availableSlots, this.processingQueue.length);
-        
+        const availableSlots =
+          this.MAX_CONCURRENT_EXPORTS - this.currentExports;
+        const itemsToProcess = Math.min(
+          availableSlots,
+          this.processingQueue.length,
+        );
+
         for (let i = 0; i < itemsToProcess; i++) {
           const nextExport = this.processingQueue.shift();
-          
+
           if (nextExport) {
             // TODO: In a real implementation, this would fetch the report data and process it
             // For this example, we'll just mark it as completed
@@ -651,13 +743,16 @@ export class ReportExporterService {
             operation.status = ExportStatus.COMPLETED;
             operation.completedAt = new Date();
             operation.fileUrl = `https://example.com/reports/${operation.id}.${operation.format}`;
-            
+
             this.logger.log(`Processed queued export ${operation.id}`);
           }
         }
       }
     } catch (error) {
-      this.logger.error(`Error processing queue: ${error.message}`, error.stack);
+      this.logger.error(
+        `Error processing queue: ${error.message}`,
+        error.stack,
+      );
     } finally {
       this.isProcessingQueue = false;
     }
@@ -665,7 +760,7 @@ export class ReportExporterService {
 
   /**
    * Queue an export operation
-   * 
+   *
    * @param operation Export operation
    * @param priority Priority (0: low, 1: medium, 2: high)
    */
@@ -676,7 +771,7 @@ export class ReportExporterService {
 
   /**
    * Export data to CSV format
-   * 
+   *
    * @param data Data to export
    * @param options Export options
    * @returns Exported file content and name
@@ -687,31 +782,40 @@ export class ReportExporterService {
   ): Promise<{ fileContent: Buffer; fileName: string }> {
     try {
       // For demonstration purposes - in a real implementation this would create a CSV file
-      
+
       // Create a worksheet from the data
-      const worksheet = XLSX.utils.json_to_sheet(Array.isArray(data) ? data : data.data || []);
-      
+      const worksheet = XLSX.utils.json_to_sheet(
+        Array.isArray(data) ? data : data.data || [],
+      );
+
       // Create a workbook and add the worksheet
       const workbook = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
-      
+
       // Generate CSV content
-      const csvContent = XLSX.write(workbook, { type: 'buffer', bookType: 'csv' });
-      
+      const csvContent = XLSX.write(workbook, {
+        type: 'buffer',
+        bookType: 'csv',
+      });
+
       // Generate filename
       const reportName = data.name || 'export';
-      const fileName = options.fileName || `${reportName}-${new Date().getTime()}.csv`;
-      
+      const fileName =
+        options.fileName || `${reportName}-${new Date().getTime()}.csv`;
+
       return { fileContent: csvContent, fileName };
     } catch (error) {
-      this.logger.error(`Error exporting to CSV: ${error.message}`, error.stack);
+      this.logger.error(
+        `Error exporting to CSV: ${error.message}`,
+        error.stack,
+      );
       throw new Error(`Failed to export to CSV: ${error.message}`);
     }
   }
 
   /**
    * Export data to XLSX format
-   * 
+   *
    * @param data Data to export
    * @param options Export options
    * @returns Exported file content and name
@@ -722,29 +826,38 @@ export class ReportExporterService {
   ): Promise<{ fileContent: Buffer; fileName: string }> {
     try {
       // Create a worksheet from the data
-      const worksheet = XLSX.utils.json_to_sheet(Array.isArray(data) ? data : data.data || []);
-      
+      const worksheet = XLSX.utils.json_to_sheet(
+        Array.isArray(data) ? data : data.data || [],
+      );
+
       // Create a workbook and add the worksheet
       const workbook = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
-      
+
       // Generate XLSX content
-      const xlsxContent = XLSX.write(workbook, { type: 'buffer', bookType: 'xlsx' });
-      
+      const xlsxContent = XLSX.write(workbook, {
+        type: 'buffer',
+        bookType: 'xlsx',
+      });
+
       // Generate filename
       const reportName = data.name || 'export';
-      const fileName = options.fileName || `${reportName}-${new Date().getTime()}.xlsx`;
-      
+      const fileName =
+        options.fileName || `${reportName}-${new Date().getTime()}.xlsx`;
+
       return { fileContent: xlsxContent, fileName };
     } catch (error) {
-      this.logger.error(`Error exporting to XLSX: ${error.message}`, error.stack);
+      this.logger.error(
+        `Error exporting to XLSX: ${error.message}`,
+        error.stack,
+      );
       throw new Error(`Failed to export to XLSX: ${error.message}`);
     }
   }
 
   /**
    * Export data to PDF format
-   * 
+   *
    * @param data Data to export
    * @param options Export options
    * @returns Exported file content and name
@@ -757,22 +870,28 @@ export class ReportExporterService {
     // For this example, we'll create a simple placeholder
     try {
       // For demonstration, creating a simple text buffer as placeholder for PDF content
-      const pdfContent = Buffer.from(`PDF Export for ${JSON.stringify(data, null, 2)}`);
-      
+      const pdfContent = Buffer.from(
+        `PDF Export for ${JSON.stringify(data, null, 2)}`,
+      );
+
       // Generate filename
       const reportName = data.name || 'export';
-      const fileName = options.fileName || `${reportName}-${new Date().getTime()}.pdf`;
-      
+      const fileName =
+        options.fileName || `${reportName}-${new Date().getTime()}.pdf`;
+
       return { fileContent: pdfContent, fileName };
     } catch (error) {
-      this.logger.error(`Error exporting to PDF: ${error.message}`, error.stack);
+      this.logger.error(
+        `Error exporting to PDF: ${error.message}`,
+        error.stack,
+      );
       throw new Error(`Failed to export to PDF: ${error.message}`);
     }
   }
 
   /**
    * Export data to JSON format
-   * 
+   *
    * @param data Data to export
    * @param options Export options
    * @returns Exported file content and name
@@ -785,21 +904,25 @@ export class ReportExporterService {
       // Convert data to JSON string
       const jsonString = JSON.stringify(data, null, 2);
       const jsonContent = Buffer.from(jsonString);
-      
+
       // Generate filename
       const reportName = data.name || 'export';
-      const fileName = options.fileName || `${reportName}-${new Date().getTime()}.json`;
-      
+      const fileName =
+        options.fileName || `${reportName}-${new Date().getTime()}.json`;
+
       return { fileContent: jsonContent, fileName };
     } catch (error) {
-      this.logger.error(`Error exporting to JSON: ${error.message}`, error.stack);
+      this.logger.error(
+        `Error exporting to JSON: ${error.message}`,
+        error.stack,
+      );
       throw new Error(`Failed to export to JSON: ${error.message}`);
     }
   }
 
   /**
    * Upload export file to storage
-   * 
+   *
    * @param exportId Export ID
    * @param fileContent File content
    * @param fileName File name
@@ -817,28 +940,31 @@ export class ReportExporterService {
     try {
       // For demonstration - in a real implementation this would upload to cloud storage
       // using the PIM storage service
-      
+
       const contentType = this.getContentTypeForFormat(format);
-      
+
       // Use network-aware storage service to adapt upload to network conditions
       const filePath = `reports/${organizationId}/${exportId}/${fileName}`;
-      
+
       // Placeholder for actual upload
       // const fileUrl = await this.pimStorageService.uploadFile(filePath, fileContent, contentType);
-      
+
       // For this example, return a mock URL
       const fileUrl = `https://storage.example.com/${filePath}`;
-      
+
       return fileUrl;
     } catch (error) {
-      this.logger.error(`Error uploading export file: ${error.message}`, error.stack);
+      this.logger.error(
+        `Error uploading export file: ${error.message}`,
+        error.stack,
+      );
       throw new Error(`Failed to upload export file: ${error.message}`);
     }
   }
 
   /**
    * Create a bundle file from multiple report files
-   * 
+   *
    * @param reportFiles Report files
    * @param bundleName Bundle name
    * @param format Export format
@@ -856,31 +982,41 @@ export class ReportExporterService {
     try {
       // For demonstration - in a real implementation this would create a bundle file
       // using a library like archiver or jszip
-      
+
       // For this example, return a mock URL
       const fileUrl = `https://storage.example.com/bundles/${organizationId}/${bundleName}.zip`;
-      
+
       return fileUrl;
     } catch (error) {
-      this.logger.error(`Error creating bundle file: ${error.message}`, error.stack);
+      this.logger.error(
+        `Error creating bundle file: ${error.message}`,
+        error.stack,
+      );
       throw new Error(`Failed to create bundle file: ${error.message}`);
     }
   }
 
   /**
    * Send export notification email
-   * 
+   *
    * @param operation Export operation
    */
-  private async sendExportNotification(operation: ExportOperation): Promise<void> {
+  private async sendExportNotification(
+    operation: ExportOperation,
+  ): Promise<void> {
     try {
       // For demonstration - in a real implementation this would send an email
-      this.logger.log(`Sending export notification email for ${operation.id} to ${operation.notificationEmail}`);
-      
+      this.logger.log(
+        `Sending export notification email for ${operation.id} to ${operation.notificationEmail}`,
+      );
+
       // Simulate email sending
       this.logger.log(`Email sending simulated successfully`);
     } catch (error) {
-      this.logger.error(`Error sending export notification: ${error.message}`, error.stack);
+      this.logger.error(
+        `Error sending export notification: ${error.message}`,
+        error.stack,
+      );
       // Don't throw error, as the export itself was successful
     }
   }
@@ -890,20 +1026,28 @@ export class ReportExporterService {
    */
   private async checkScheduledExports(): Promise<void> {
     const now = new Date();
-    
+
     for (const [scheduleId, schedule] of this.scheduledExports.entries()) {
       if (schedule.isActive && schedule.nextRunTime <= now) {
         try {
           // Execute the scheduled export
           await this.executeScheduledExport(schedule);
-          
+
           // Update next run time
           schedule.lastRunTime = now;
-          schedule.nextRunTime = this.calculateNextRunTime(schedule.frequency, now);
-          
-          this.logger.log(`Scheduled export ${scheduleId} executed successfully, next run: ${schedule.nextRunTime}`);
+          schedule.nextRunTime = this.calculateNextRunTime(
+            schedule.frequency,
+            now,
+          );
+
+          this.logger.log(
+            `Scheduled export ${scheduleId} executed successfully, next run: ${schedule.nextRunTime}`,
+          );
         } catch (error) {
-          this.logger.error(`Error executing scheduled export ${scheduleId}: ${error.message}`, error.stack);
+          this.logger.error(
+            `Error executing scheduled export ${scheduleId}: ${error.message}`,
+            error.stack,
+          );
         }
       }
     }
@@ -911,14 +1055,19 @@ export class ReportExporterService {
 
   /**
    * Execute a scheduled export
-   * 
+   *
    * @param schedule Scheduled export
    */
-  private async executeScheduledExport(schedule: ScheduledExport): Promise<void> {
+  private async executeScheduledExport(
+    schedule: ScheduledExport,
+  ): Promise<void> {
     try {
       // Generate export ID
-      const exportId = this.generateExportId(`scheduled-${schedule.reportType}`, schedule.organizationId);
-      
+      const exportId = this.generateExportId(
+        `scheduled-${schedule.reportType}`,
+        schedule.organizationId,
+      );
+
       // Create export operation
       const exportOperation: ExportOperation = {
         id: exportId,
@@ -933,23 +1082,28 @@ export class ReportExporterService {
         notificationEmail: schedule.emailRecipients.join(','),
         networkConditions: {},
       };
-      
+
       this.exportOperations.set(exportId, exportOperation);
-      
+
       // Queue for processing
       exportOperation.status = ExportStatus.QUEUED;
       this.queueExport(exportOperation, 1); // Medium priority for scheduled exports
-      
-      this.logger.log(`Scheduled export ${schedule.id} queued as export operation ${exportId}`);
+
+      this.logger.log(
+        `Scheduled export ${schedule.id} queued as export operation ${exportId}`,
+      );
     } catch (error) {
-      this.logger.error(`Error executing scheduled export: ${error.message}`, error.stack);
+      this.logger.error(
+        `Error executing scheduled export: ${error.message}`,
+        error.stack,
+      );
       throw error;
     }
   }
 
   /**
    * Calculate next run time based on frequency
-   * 
+   *
    * @param frequency Export frequency (daily, weekly, monthly)
    * @param from Date to calculate from (defaults to now)
    * @returns Next run time
@@ -959,7 +1113,7 @@ export class ReportExporterService {
     from: Date = new Date(),
   ): Date {
     const nextRun = new Date(from);
-    
+
     switch (frequency) {
       case 'daily':
         nextRun.setDate(nextRun.getDate() + 1);
@@ -971,16 +1125,16 @@ export class ReportExporterService {
         nextRun.setMonth(nextRun.getMonth() + 1);
         break;
     }
-    
+
     // Set to early morning (2:00 AM)
     nextRun.setHours(2, 0, 0, 0);
-    
+
     return nextRun;
   }
 
   /**
    * Generate a unique export ID
-   * 
+   *
    * @param reportType Report type
    * @param organizationId Organization ID
    * @returns Unique export ID
@@ -993,12 +1147,15 @@ export class ReportExporterService {
 
   /**
    * Generate a unique schedule ID
-   * 
+   *
    * @param reportType Report type
    * @param organizationId Organization ID
    * @returns Unique schedule ID
    */
-  private generateScheduleId(reportType: string, organizationId: string): string {
+  private generateScheduleId(
+    reportType: string,
+    organizationId: string,
+  ): string {
     const timestamp = new Date().getTime();
     const random = Math.floor(Math.random() * 1000);
     return `schedule-${reportType}-${timestamp}-${random}`;
@@ -1006,7 +1163,7 @@ export class ReportExporterService {
 
   /**
    * Get content type for export format
-   * 
+   *
    * @param format Export format
    * @returns Content type
    */
@@ -1027,7 +1184,7 @@ export class ReportExporterService {
 
   /**
    * Optimize report data for network conditions
-   * 
+   *
    * @param data Report data
    * @param networkConditions Network conditions
    * @returns Optimized report data
@@ -1036,14 +1193,14 @@ export class ReportExporterService {
     // Apply optimizations based on network quality
     const isPoorConnection = networkConditions.connectionType === 'poor';
     const isLoadSheddingActive = networkConditions.loadSheddingActive;
-    
+
     if (isPoorConnection || isLoadSheddingActive) {
       // For arrays, limit the number of items
       if (Array.isArray(data)) {
         const limit = isPoorConnection ? 100 : 500;
         return data.slice(0, limit);
       }
-      
+
       // For objects with data arrays, limit the number of items
       if (data && Array.isArray(data.data)) {
         const limit = isPoorConnection ? 100 : 500;
@@ -1051,18 +1208,22 @@ export class ReportExporterService {
           ...data,
           data: data.data.slice(0, limit),
           isOptimized: true,
-          optimizationReason: isPoorConnection ? 'Poor network connection' : 'Load shedding active',
+          optimizationReason: isPoorConnection
+            ? 'Poor network connection'
+            : 'Load shedding active',
         };
       }
-      
+
       // Add optimization flag
       return {
         ...data,
         isOptimized: true,
-        optimizationReason: isPoorConnection ? 'Poor network connection' : 'Load shedding active',
+        optimizationReason: isPoorConnection
+          ? 'Poor network connection'
+          : 'Load shedding active',
       };
     }
-    
+
     return data;
   }
 }

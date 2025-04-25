@@ -3,7 +3,7 @@
  * This helps TypeScript correctly resolve decorator types
  */
 
-import "reflect-metadata";
+import 'reflect-metadata';
 
 declare global {
   // Fix TypeScript decorator error with experimentalDecorators
@@ -33,7 +33,7 @@ declare global {
   }
 }
 
-declare module "@nestjs/common" {
+declare module '@nestjs/common' {
   export function Controller(prefix?: string | string[]): ClassDecorator;
   export function Get(path?: string | string[]): MethodDecorator;
   export function Post(path?: string | string[]): MethodDecorator;
@@ -59,7 +59,7 @@ declare module "@nestjs/common" {
   ): MethodDecorator & ClassDecorator;
 }
 
-declare module "@nestjs/terminus" {
+declare module '@nestjs/terminus' {
   export interface HealthCheckOptions {
     noCache?: boolean;
     swaggerDocumentation?: boolean;

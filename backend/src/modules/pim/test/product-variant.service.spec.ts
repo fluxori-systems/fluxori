@@ -1,12 +1,16 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ProductVariantService } from '../services/product-variant.service';
+
+import { ProductStatus, ProductType } from '../interfaces/types';
+import {
+  CreateProductVariantDto,
+  ProductVariant,
+} from '../models/product-variant.model';
 import { ProductVariantRepository } from '../repositories/product-variant.repository';
 import { ProductRepository } from '../repositories/product.repository';
+import { LoadSheddingResilienceService } from '../services/load-shedding-resilience.service';
 import { MarketContextService } from '../services/market-context.service';
 import { NetworkAwareStorageService } from '../services/network-aware-storage.service';
-import { LoadSheddingResilienceService } from '../services/load-shedding-resilience.service';
-import { CreateProductVariantDto, ProductVariant } from '../models/product-variant.model';
-import { ProductStatus, ProductType } from '../interfaces/types';
+import { ProductVariantService } from '../services/product-variant.service';
 
 describe('ProductVariantService', () => {
   let service: ProductVariantService;
@@ -49,21 +53,46 @@ describe('ProductVariantService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         ProductVariantService,
-        { provide: ProductVariantRepository, useFactory: mockProductVariantRepository },
+        {
+          provide: ProductVariantRepository,
+          useFactory: mockProductVariantRepository,
+        },
         { provide: ProductRepository, useFactory: mockProductRepository },
         { provide: MarketContextService, useFactory: mockMarketContextService },
-        { provide: NetworkAwareStorageService, useFactory: mockNetworkAwareStorageService },
-        { provide: LoadSheddingResilienceService, useFactory: mockLoadSheddingResilienceService },
-        { provide: 'PIM_MODULE_OPTIONS', useValue: { enableSouthAfricanOptimizations: true, enableLoadSheddingResilience: true } },
+        {
+          provide: NetworkAwareStorageService,
+          useFactory: mockNetworkAwareStorageService,
+        },
+        {
+          provide: LoadSheddingResilienceService,
+          useFactory: mockLoadSheddingResilienceService,
+        },
+        {
+          provide: 'PIM_MODULE_OPTIONS',
+          useValue: {
+            enableSouthAfricanOptimizations: true,
+            enableLoadSheddingResilience: true,
+          },
+        },
       ],
     }).compile();
 
     service = module.get<ProductVariantService>(ProductVariantService);
-    productVariantRepository = module.get(ProductVariantRepository) as jest.Mocked<ProductVariantRepository>;
-    productRepository = module.get(ProductRepository) as jest.Mocked<ProductRepository>;
-    marketContextService = module.get(MarketContextService) as jest.Mocked<MarketContextService>;
-    networkAwareStorageService = module.get(NetworkAwareStorageService) as jest.Mocked<NetworkAwareStorageService>;
-    loadSheddingResilienceService = module.get(LoadSheddingResilienceService) as jest.Mocked<LoadSheddingResilienceService>;
+    productVariantRepository = module.get(
+      ProductVariantRepository,
+    ) as jest.Mocked<ProductVariantRepository>;
+    productRepository = module.get(
+      ProductRepository,
+    ) as jest.Mocked<ProductRepository>;
+    marketContextService = module.get(
+      MarketContextService,
+    ) as jest.Mocked<MarketContextService>;
+    networkAwareStorageService = module.get(
+      NetworkAwareStorageService,
+    ) as jest.Mocked<NetworkAwareStorageService>;
+    loadSheddingResilienceService = module.get(
+      LoadSheddingResilienceService,
+    ) as jest.Mocked<LoadSheddingResilienceService>;
   });
 
   it('should be defined', () => {
@@ -124,7 +153,10 @@ describe('ProductVariantService', () => {
 
       const result = await service.create(tenantId, dto);
 
-      expect(productRepository.findById).toHaveBeenCalledWith('product-123', tenantId);
+      expect(productRepository.findById).toHaveBeenCalledWith(
+        'product-123',
+        tenantId,
+      );
       expect(productVariantRepository.create).toHaveBeenCalled();
       expect(result).toEqual(mockCreatedVariant);
     });
@@ -143,7 +175,10 @@ describe('ProductVariantService', () => {
 
       const result = await service.findByParentId(parentId, tenantId);
 
-      expect(productVariantRepository.findByParentId).toHaveBeenCalledWith(parentId, tenantId);
+      expect(productVariantRepository.findByParentId).toHaveBeenCalledWith(
+        parentId,
+        tenantId,
+      );
       expect(result).toEqual(mockVariants);
     });
   });
@@ -152,7 +187,7 @@ describe('ProductVariantService', () => {
     it('should return a variant group', async () => {
       const tenantId = 'tenant-123';
       const productId = 'product-123';
-      
+
       const mockProduct = {
         id: productId,
         attributes: [
@@ -160,7 +195,7 @@ describe('ProductVariantService', () => {
           { code: 'size', label: 'Size', usedForVariants: true },
         ],
       };
-      
+
       const mockVariants = [
         { id: 'variant-1', parentId: productId, name: 'Variant 1' },
         { id: 'variant-2', parentId: productId, name: 'Variant 2' },
@@ -171,8 +206,14 @@ describe('ProductVariantService', () => {
 
       const result = await service.getVariantGroup(productId, tenantId);
 
-      expect(productRepository.findById).toHaveBeenCalledWith(productId, tenantId);
-      expect(productVariantRepository.findByParentId).toHaveBeenCalledWith(productId, tenantId);
+      expect(productRepository.findById).toHaveBeenCalledWith(
+        productId,
+        tenantId,
+      );
+      expect(productVariantRepository.findByParentId).toHaveBeenCalledWith(
+        productId,
+        tenantId,
+      );
       expect(result).toEqual({
         productId,
         variantAttributes: ['color', 'size'],
@@ -187,7 +228,7 @@ describe('ProductVariantService', () => {
       const tenantId = 'tenant-123';
       const productId = 'product-123';
       const attributeCodes = ['color', 'size'];
-      
+
       const mockProduct = {
         id: productId,
         name: 'Test Product',
@@ -218,15 +259,25 @@ describe('ProductVariantService', () => {
           currency: 'ZAR',
         },
       };
-      
+
       productRepository.findById.mockResolvedValue(mockProduct);
-      productVariantRepository.create.mockImplementation((dto) => 
-        Promise.resolve({ id: `variant-${Math.random()}`, ...dto } as ProductVariant)
+      productVariantRepository.create.mockImplementation((dto) =>
+        Promise.resolve({
+          id: `variant-${Math.random()}`,
+          ...dto,
+        } as ProductVariant),
       );
-      
-      const result = await service.generateVariants(productId, tenantId, attributeCodes);
-      
-      expect(productRepository.findById).toHaveBeenCalledWith(productId, tenantId);
+
+      const result = await service.generateVariants(
+        productId,
+        tenantId,
+        attributeCodes,
+      );
+
+      expect(productRepository.findById).toHaveBeenCalledWith(
+        productId,
+        tenantId,
+      );
       expect(productVariantRepository.create).toHaveBeenCalledTimes(9); // 3 colors × 3 sizes
       expect(productRepository.update).toHaveBeenCalledWith(
         productId,
@@ -236,9 +287,9 @@ describe('ProductVariantService', () => {
             expect.objectContaining({ code: 'size', usedForVariants: true }),
           ]),
         }),
-        tenantId
+        tenantId,
       );
-      
+
       expect(result.success).toBe(true);
       expect(result.data.variants.length).toBe(9);
     });

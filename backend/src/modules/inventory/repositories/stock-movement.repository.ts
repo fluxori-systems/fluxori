@@ -1,12 +1,12 @@
-import { Injectable, Logger } from "@nestjs/common";
+import { Injectable, Logger } from '@nestjs/common';
 
 import {
   FirestoreBaseRepository,
   FirestoreAdvancedFilter,
-} from "../../../common/repositories";
-import { FirestoreConfigService } from "../../../config/firestore.config";
-import { StockMovementType, StockMovementReason } from "../interfaces/types";
-import { StockMovement } from "../models/stock-movement.schema";
+} from '../../../common/repositories';
+import { FirestoreConfigService } from '../../../config/firestore.config';
+import { StockMovementType, StockMovementReason } from '../interfaces/types';
+import { StockMovement } from '../models/stock-movement.schema';
 
 /**
  * Repository for Stock Movement entities
@@ -16,16 +16,16 @@ export class StockMovementRepository extends FirestoreBaseRepository<StockMoveme
   protected readonly logger = new Logger(StockMovementRepository.name);
 
   constructor(firestoreConfigService: FirestoreConfigService) {
-    super(firestoreConfigService, "stock_movements", {
+    super(firestoreConfigService, 'stock_movements', {
       useSoftDeletes: false, // Don't allow soft deletes for audit trail
       useVersioning: true,
       enableCache: false, // No caching for audit records
       requiredFields: [
-        "organizationId",
-        "productId",
-        "warehouseId",
-        "movementType",
-        "quantity",
+        'organizationId',
+        'productId',
+        'warehouseId',
+        'movementType',
+        'quantity',
       ],
     });
   }
@@ -42,11 +42,11 @@ export class StockMovementRepository extends FirestoreBaseRepository<StockMoveme
   ): Promise<StockMovement[]> {
     return this.find({
       advancedFilters: [
-        { field: "organizationId", operator: "==", value: organizationId },
+        { field: 'organizationId', operator: '==', value: organizationId },
       ],
       queryOptions: {
-        orderBy: "createdAt",
-        direction: "desc",
+        orderBy: 'createdAt',
+        direction: 'desc',
         limit,
       },
     });
@@ -64,11 +64,11 @@ export class StockMovementRepository extends FirestoreBaseRepository<StockMoveme
   ): Promise<StockMovement[]> {
     return this.find({
       advancedFilters: [
-        { field: "productId", operator: "==", value: productId },
+        { field: 'productId', operator: '==', value: productId },
       ],
       queryOptions: {
-        orderBy: "createdAt",
-        direction: "desc",
+        orderBy: 'createdAt',
+        direction: 'desc',
         limit,
       },
     });
@@ -86,11 +86,11 @@ export class StockMovementRepository extends FirestoreBaseRepository<StockMoveme
   ): Promise<StockMovement[]> {
     return this.find({
       advancedFilters: [
-        { field: "warehouseId", operator: "==", value: warehouseId },
+        { field: 'warehouseId', operator: '==', value: warehouseId },
       ],
       queryOptions: {
-        orderBy: "createdAt",
-        direction: "desc",
+        orderBy: 'createdAt',
+        direction: 'desc',
         limit,
       },
     });
@@ -110,12 +110,12 @@ export class StockMovementRepository extends FirestoreBaseRepository<StockMoveme
   ): Promise<StockMovement[]> {
     return this.find({
       advancedFilters: [
-        { field: "organizationId", operator: "==", value: organizationId },
-        { field: "movementType", operator: "==", value: movementType },
+        { field: 'organizationId', operator: '==', value: organizationId },
+        { field: 'movementType', operator: '==', value: movementType },
       ],
       queryOptions: {
-        orderBy: "createdAt",
-        direction: "desc",
+        orderBy: 'createdAt',
+        direction: 'desc',
         limit,
       },
     });
@@ -129,11 +129,11 @@ export class StockMovementRepository extends FirestoreBaseRepository<StockMoveme
   async findByReferenceId(referenceId: string): Promise<StockMovement[]> {
     return this.find({
       advancedFilters: [
-        { field: "referenceId", operator: "==", value: referenceId },
+        { field: 'referenceId', operator: '==', value: referenceId },
       ],
       queryOptions: {
-        orderBy: "createdAt",
-        direction: "desc",
+        orderBy: 'createdAt',
+        direction: 'desc',
       },
     });
   }
@@ -159,69 +159,69 @@ export class StockMovementRepository extends FirestoreBaseRepository<StockMoveme
   }): Promise<StockMovement[]> {
     // Build the advanced filters
     const advancedFilters: FirestoreAdvancedFilter<StockMovement>[] = [
-      { field: "organizationId", operator: "==", value: params.organizationId },
+      { field: 'organizationId', operator: '==', value: params.organizationId },
     ];
 
     if (params.productId) {
       advancedFilters.push({
-        field: "productId",
-        operator: "==",
+        field: 'productId',
+        operator: '==',
         value: params.productId,
       });
     }
 
     if (params.warehouseId) {
       advancedFilters.push({
-        field: "warehouseId",
-        operator: "==",
+        field: 'warehouseId',
+        operator: '==',
         value: params.warehouseId,
       });
     }
 
     if (params.movementType) {
       advancedFilters.push({
-        field: "movementType",
-        operator: "==",
+        field: 'movementType',
+        operator: '==',
         value: params.movementType,
       });
     }
 
     if (params.movementReason) {
       advancedFilters.push({
-        field: "movementReason",
-        operator: "==",
+        field: 'movementReason',
+        operator: '==',
         value: params.movementReason,
       });
     }
 
     if (params.userId) {
       advancedFilters.push({
-        field: "userId",
-        operator: "==",
+        field: 'userId',
+        operator: '==',
         value: params.userId,
       });
     }
 
     if (params.referenceNumber) {
       advancedFilters.push({
-        field: "referenceNumber",
-        operator: "==",
+        field: 'referenceNumber',
+        operator: '==',
         value: params.referenceNumber,
       });
     }
 
     if (params.referenceType) {
       advancedFilters.push({
-        field: "referenceType",
-        operator: "==",
+        field: 'referenceType',
+        operator: '==',
         value: params.referenceType,
       });
     }
 
     // Define query options
     const queryOptions = {
-      orderBy: "createdAt",
-      direction: "desc" as "asc" | "desc",
+      orderBy: 'createdAt',
+      direction: 'desc' as 'asc' | 'desc',
       limit: params.limit,
       offset: params.offset,
     };
@@ -269,7 +269,7 @@ export class StockMovementRepository extends FirestoreBaseRepository<StockMoveme
    * @returns Created stock movement
    */
   async recordMovement(
-    movementData: Omit<StockMovement, "id" | "createdAt" | "updatedAt">,
+    movementData: Omit<StockMovement, 'id' | 'createdAt' | 'updatedAt'>,
   ): Promise<StockMovement> {
     return this.create(movementData);
   }

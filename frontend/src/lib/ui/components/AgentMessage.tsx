@@ -1,10 +1,12 @@
 'use client';
 
 import { ReactNode, useState, useEffect, useRef } from 'react';
+
+import { gsap } from 'gsap';
+
 import { Card } from './Card';
 import { Text } from './Text';
 import { AIProcessingIndicator, StreamingText, useMotion } from '../../motion';
-import { gsap } from 'gsap';
 
 /**
  * Agent message types for different contexts

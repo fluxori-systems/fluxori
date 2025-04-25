@@ -1,9 +1,10 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useEffect, useState , Suspense } from 'react';
+
 import Link from 'next/link';
-import { Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+
 import { 
   Container, 
   Paper, 
@@ -23,8 +24,10 @@ import {
   LoadingOverlay,
   Loader
 } from '@mantine/core';
-import { useForm } from 'react-hook-form';
+
 import { IconAlertCircle, IconBrandGoogle } from '@tabler/icons-react';
+import { useForm } from 'react-hook-form';
+
 import { useFirebase } from '../../contexts/firebase-context';
 import { LoginCredentials } from '../../types/user/user.types';
 

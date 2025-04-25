@@ -1,6 +1,6 @@
 /**
  * Security module for the Fluxori platform
- * 
+ *
  * Provides comprehensive security controls for the Fluxori platform:
  * - VPC Service Controls management
  * - IAM role management

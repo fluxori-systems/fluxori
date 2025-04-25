@@ -1,8 +1,8 @@
-import { Injectable, Logger } from "@nestjs/common";
+import { Injectable, Logger } from '@nestjs/common';
 
-import { VertexAIModelAdapter } from "../adapters/vertex-ai.adapter";
-import { ModelAdapter } from "../interfaces/model-adapter.interface";
-import { ModelRegistryEntry } from "../interfaces/types";
+import { VertexAIModelAdapter } from '../adapters/vertex-ai.adapter';
+import { ModelAdapter } from '../interfaces/model-adapter.interface';
+import { ModelRegistryEntry } from '../interfaces/types';
 
 /**
  * Factory for creating and managing model adapters
@@ -14,7 +14,7 @@ export class ModelAdapterFactory {
 
   constructor(private readonly vertexAdapter: VertexAIModelAdapter) {
     // Register the built-in adapters
-    this.registerAdapter("vertex-ai", vertexAdapter);
+    this.registerAdapter('vertex-ai', vertexAdapter);
   }
 
   /**
@@ -59,9 +59,9 @@ export class ModelAdapterFactory {
     const initPromises: Promise<void>[] = [];
 
     // Initialize the Vertex AI adapter
-    if (config["vertex-ai"]) {
+    if (config['vertex-ai']) {
       initPromises.push(
-        this.vertexAdapter.initialize(config["vertex-ai"]).catch((error) => {
+        this.vertexAdapter.initialize(config['vertex-ai']).catch((error) => {
           this.logger.error(
             `Failed to initialize Vertex AI adapter: ${error.message}`,
             error.stack,
@@ -74,7 +74,7 @@ export class ModelAdapterFactory {
     // Initialize any other registered adapters
     for (const [provider, adapter] of this.adapters.entries()) {
       // Skip Vertex AI as we already handled it
-      if (provider === "vertex-ai") continue;
+      if (provider === 'vertex-ai') continue;
 
       // Only initialize if config is provided
       if (config[provider]) {
@@ -92,7 +92,7 @@ export class ModelAdapterFactory {
 
     // Wait for all adapters to initialize
     await Promise.all(initPromises);
-    this.logger.log("All model adapters initialized");
+    this.logger.log('All model adapters initialized');
   }
 
   /**

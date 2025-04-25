@@ -1,11 +1,11 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable } from '@nestjs/common';
 
-import { 
+import {
   AgentResponse,
   ModelAdapter,
   ModelRegistryEntry,
-  TokenEstimator 
-} from "src/modules/agent-framework";
+  TokenEstimator,
+} from 'src/modules/agent-framework';
 
 // Define the ChatMessage interface inline since it's not exported by the agent-framework
 interface ChatMessage {
@@ -18,16 +18,14 @@ interface ChatMessage {
   };
 }
 
-import { AgentFrameworkDependencies } from "../interfaces/dependencies";
+import { AgentFrameworkDependencies } from '../interfaces/dependencies';
 
 /**
  * Adapter for integrating with Agent Framework
  */
 @Injectable()
 export class AgentFrameworkAdapter implements AgentFrameworkDependencies {
-  constructor(
-    private readonly tokenEstimator: TokenEstimator,
-  ) {}
+  constructor(private readonly tokenEstimator: TokenEstimator) {}
 
   /**
    * Calculate token cost for a specific model
@@ -43,10 +41,10 @@ export class AgentFrameworkAdapter implements AgentFrameworkDependencies {
   ): number {
     const inputCost = (inputTokens * model.costPer1kInputTokens) / 1000;
     const outputCost = (outputTokens * model.costPer1kOutputTokens) / 1000;
-    
+
     // Convert from dollars to credits (assuming 100 credits = $1)
     const creditCost = Math.ceil((inputCost + outputCost) * 100);
-    
+
     // Ensure minimum cost of 1 credit
     return Math.max(1, creditCost);
   }
@@ -62,15 +60,16 @@ export class AgentFrameworkAdapter implements AgentFrameworkDependencies {
     messages: ChatMessage[],
   ): Promise<{ inputTokens: number; outputTokens: number }> {
     // Use token estimator to count tokens
-    const inputTokens = this.tokenEstimator.estimateTokensForConversation(messages);
-    
+    const inputTokens =
+      this.tokenEstimator.estimateTokensForConversation(messages);
+
     // For output tokens, we use a heuristic based on input tokens and model context window
     const maxOutputTokens = model.maxOutputTokens;
     const estimatedOutputTokens = Math.min(
       maxOutputTokens,
       Math.ceil(inputTokens * 0.7), // Rough heuristic: output is ~70% of input
     );
-    
+
     return {
       inputTokens,
       outputTokens: estimatedOutputTokens,

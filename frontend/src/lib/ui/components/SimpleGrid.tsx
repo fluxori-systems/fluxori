@@ -1,15 +1,16 @@
 'use client';
 
 import React, { forwardRef, useRef, useCallback } from 'react';
-import { SimpleGrid as MantineSimpleGrid, MantineTheme } from '@mantine/core';
-import { useCombinedRefs } from '../utils/use-combined-refs';
-import { BaseComponentProps, Spacing, AnimatableComponentProps } from '../types';
-import { useTokenTracking } from '../../design-system/utils/token-analysis';
-import { useMantineTheme } from '@mantine/core';
-import { useNetworkAware, useConnectionQuality } from '../hooks/useConnection';
-import { useSouthAfricanMarketOptimizations } from '../../shared/hooks/useSouthAfricanMarketOptimizations';
+
+import { SimpleGrid as MantineSimpleGrid, MantineTheme , useMantineTheme } from '@mantine/core';
+
 import { SpacingScale } from '../../design-system/types/tokens';
 import { getSpacingFromMantine } from '../../design-system/utils/mantine-theme-adapter';
+import { useTokenTracking } from '../../design-system/utils/token-analysis';
+import { useSouthAfricanMarketOptimizations } from '../../shared/hooks/useSouthAfricanMarketOptimizations';
+import { useNetworkAware, useConnectionQuality } from '../hooks/useConnection';
+import { BaseComponentProps, Spacing, AnimatableComponentProps } from '../types';
+import { useCombinedRefs } from '../utils/use-combined-refs';
 
 export interface SimpleGridProps extends BaseComponentProps, AnimatableComponentProps {
   /** Number of columns */
