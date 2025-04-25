@@ -148,7 +148,7 @@ To locate and begin cleaning up stub artifacts:
 
 After stubs are cleaned, tackle each code slice to remove all remaining lint and TypeScript errors:
 
-1. Choose a slice (e.g. `backend/src/modules/auth` or `backend/src/common`).
+1. Choose a slice (e.g. `backend/src/modules/auth` or `backend/src/common`). The cleanup script will first run dependency validation (cycles/boundary rules) for that slice.
 2. Run ESLint auto-fix and type-check on that slice only:
    - `npm run phase2:clean --slice=<your-slice>`
    - Example: `npm run phase2:auth` to fix `backend/src/modules/auth`
