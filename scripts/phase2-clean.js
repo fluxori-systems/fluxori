@@ -19,12 +19,12 @@ let lintTarget;
 let tsTarget;
 if (slice.startsWith('backend/')) {
   workspaceDir = 'backend';
-  const rel = slice.replace(/^backend\//, 'src/');
+  const rel = slice.replace(/^backend\//, '');
   lintTarget = `${rel}/**/*.{ts,tsx}`;
   tsTarget = `"${rel}/**/*.{ts,tsx}"`;
 } else if (slice.startsWith('frontend/')) {
   workspaceDir = 'frontend';
-  const rel = slice.replace(/^frontend\//, 'src/');
+  const rel = slice.replace(/^frontend\//, '');
   lintTarget = `src/${rel}/**/*.{ts,tsx}`;
   tsTarget = `"src/${rel}/**/*.{ts,tsx}"`;
 } else {
