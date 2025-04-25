@@ -7,7 +7,7 @@ import { FirebaseAuthGuard } from './guards/firebase-auth.guard';
 import { AuthService } from './services/auth.service';
 import { FirebaseAuthService } from './services/firebase-auth.service';
 import { FirestoreConfigService } from '../../config/firestore.config';
-import { UserRepository } from '../users/repositories/user.repository';
+import { UserRepository } from '../../users/repositories/user.repository';
 
 /**
  * Auth module for handling authentication and authorization
