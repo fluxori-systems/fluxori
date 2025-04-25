@@ -147,6 +147,8 @@ module.exports = {
         }
       }
     ],
+    'boundaries/element-types': 'off',
+    'boundaries/dependency-type': 'off',
     'import/no-cycle': 'error',
     'import/no-unresolved': 'error',
     'import/named': 'error',

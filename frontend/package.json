@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "next lint --fix",
     "typecheck": "tsc --noEmit",
     "test": "vitest run --config src/testing/config/vitest.config.ts",
     "test:watch": "vitest --config src/testing/config/vitest.config.ts",
