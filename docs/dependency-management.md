@@ -143,3 +143,17 @@ To locate and begin cleaning up stub artifacts:
    - Remove any `@ts-ignore`/`@ts-expect-error` by fixing the underlying TS mismatch.
 3. After editing stubs, run `npm run typecheck` and `npm run lint` to confirm no regressions.
 4. Commit stub clean-ups in isolated PRs to preserve clear stub history.
+
+## Phase 2 – Module-By-Module Manual Sweep
+
+After stubs are cleaned, tackle each code slice to remove all remaining lint and TypeScript errors:
+
+1. Choose a slice (e.g. `backend/src/modules/auth` or `backend/src/common`).
+2. Run ESLint auto-fix and type-check on that slice only:
+   - `npm run phase2:clean --slice=<your-slice>`
+   - Example: `npm run phase2:auth` to fix `backend/src/modules/auth`
+3. Manually fix any remaining lint or TS errors in that slice:
+   - Add missing return types, eliminate `any`, handle `null`/`undefined`, remove suppression comments.
+4. Re-run `npm run phase2:clean --slice=<same-slice>` until no errors.
+5. Commit and merge the slice-specific cleanup in its own PR, then remove it from your cleanup list.
+6. Repeat for each slice in dependency order (use your dependency graph to sequence low-coupling modules first).
