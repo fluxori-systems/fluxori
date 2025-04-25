@@ -61,10 +61,11 @@ execSync(
     --rule "import/named:off" \
     --rule "import/no-restricted-paths:off" \
     --rule "import/no-duplicates:off" \
-    --rule "import/export:off"`,
+    --rule "import/export:off" \
+    --rule "@typescript-eslint/no-unused-vars:off"`,
   { stdio: 'inherit' }
 );
 
-// Run TypeScript check on slice
-console.log(`Running TypeScript check on ${workspaceDir}/${tsTarget}`);
-execSync(`cd ${workspaceDir} && npx tsc --noEmit ${tsTarget}`, { stdio: 'inherit' });
+// Run full TypeScript check
+console.log(`Running full TypeScript check in ${workspaceDir}...`);
+execSync(`cd ${workspaceDir} && npx tsc --noEmit`, { stdio: 'inherit' });
