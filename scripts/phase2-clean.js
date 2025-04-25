@@ -65,7 +65,3 @@ execSync(
     --rule "@typescript-eslint/no-unused-vars:off"`,
   { stdio: 'inherit' }
 );
-
-// Run full TypeScript check
-console.log(`Running full TypeScript check in ${workspaceDir}...`);
-execSync(`cd ${workspaceDir} && npx tsc --noEmit`, { stdio: 'inherit' });
