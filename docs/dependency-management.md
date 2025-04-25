@@ -122,3 +122,13 @@ The GitHub workflow in `.github/workflows/dependency-validation.yml` automatical
 4. Uploads the visualizations as build artifacts
 
 Failed checks will block pull request merges, ensuring architectural integrity is maintained.
+## Baseline Dependency Graphs
+
+To establish a baseline for future comparison, initial dependency graphs have been generated and checked into the repository under `docs/dependency-baseline`. These SVG files reflect the current module dependency structure:
+
+- `docs/dependency-baseline/backend-dependency-graph.svg`
+- `docs/dependency-baseline/backend-module-dependencies.svg`
+- `docs/dependency-baseline/frontend-dependency-graph.svg`
+- `docs/dependency-baseline/frontend-module-dependencies.svg`
+
+Use these baseline graphs to track changes in module coupling and to identify when new cycles or boundary violations are introduced over time.

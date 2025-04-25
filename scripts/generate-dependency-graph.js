@@ -7,19 +7,19 @@ const Viz = require('viz.js');
 
 // Paths to generate dependency graphs for
 const paths = [
-  { 
-    name: 'backend', 
+  {
+    name: 'backend',
     src: 'backend/src',
     outputs: [
-      { name: 'module-graph', focus: '^src/modules/', output: 'backend/module-graph.dot' },
+      { name: 'module-dependencies', focus: '^src/modules/', output: 'backend/module-dependencies.dot' },
       { name: 'full-graph', include: '^src', output: 'backend/dependency-graph.dot' }
     ]
   },
-  { 
-    name: 'frontend', 
+  {
+    name: 'frontend',
     src: 'frontend/src',
     outputs: [
-      { name: 'module-graph', focus: '^src/lib/(ui|motion|shared)/', output: 'frontend/module-graph.dot' },
+      { name: 'module-dependencies', focus: '^src/lib/(ui|motion|shared)/', output: 'frontend/module-dependencies.dot' },
       { name: 'component-graph', include: '^src/components', output: 'frontend/component-dependencies.dot' }
     ]
   }

@@ -15,6 +15,7 @@
     "deps:circular:frontend": "cd frontend && npm run dep:check-circular",
     "deps:graph": "npm run deps:graph:backend && npm run deps:graph:frontend",
     "deps:generate": "node scripts/generate-dependency-graph.js",
+    "dep:baseline": "npm run deps:generate && mkdir -p docs/dependency-baseline && cp backend/dependency-graph.svg docs/dependency-baseline/backend-dependency-graph.svg && cp backend/module-dependencies.svg docs/dependency-baseline/backend-module-dependencies.svg && cp frontend/dependency-graph.svg docs/dependency-baseline/frontend-dependency-graph.svg && cp frontend/module-dependencies.svg docs/dependency-baseline/frontend-module-dependencies.svg",
     "deps:simple-graph": "node scripts/generate-simple-graph.js",
     "deps:cross-module": "node scripts/analyze-cross-module-dependencies.js",
     "deps:graph:backend": "cd backend && npm run dep:graph && npm run dep:modules && npm run dep:archi",
