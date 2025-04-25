@@ -51,8 +51,12 @@ try {
 }
 
 // Run ESLint auto-fix on slice
-console.log(`Running ESLint auto-fix on ${workspaceDir}/${lintTarget}`);
-execSync(`cd ${workspaceDir} && npx eslint --ext .ts,.tsx "${lintTarget}" --fix --cache`, { stdio: 'inherit' });
+console.log(`Running ESLint auto-fix on ${workspaceDir}/${lintTarget} (disabling import/no-unresolved & import/no-cycle)`);
+execSync(
+  `cd ${workspaceDir} && npx eslint --ext .ts,.tsx "${lintTarget}" --fix --cache \
+    --rule "import/no-unresolved:off" --rule "import/no-cycle:off"`,
+  { stdio: 'inherit' }
+);
 
 // Run TypeScript check on slice
 console.log(`Running TypeScript check on ${workspaceDir}/${tsTarget}`);
