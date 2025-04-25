@@ -132,3 +132,14 @@ To establish a baseline for future comparison, initial dependency graphs have be
 - `docs/dependency-baseline/frontend-module-dependencies.svg`
 
 Use these baseline graphs to track changes in module coupling and to identify when new cycles or boundary violations are introduced over time.
+
+## Phase 1.5 – Stub Audit & Cleanup
+
+To locate and begin cleaning up stub artifacts:
+1. Run `npm run stub:audit` to list all stub files (`*.stub.ts[x]`, `__stubs__`, `__mocks__`, and `.d.ts` stubs) and any `@ts-ignore`/`@ts-expect-error` directives within them.
+2. For each stub file:
+   - If it’s a placeholder implementation, add a minimal typed implementation (e.g. `throw new Error('not implemented')`) with correct return types.
+   - If it’s a pure type declaration with `any`, install official `@types/...` or write focused interfaces.
+   - Remove any `@ts-ignore`/`@ts-expect-error` by fixing the underlying TS mismatch.
+3. After editing stubs, run `npm run typecheck` and `npm run lint` to confirm no regressions.
+4. Commit stub clean-ups in isolated PRs to preserve clear stub history.

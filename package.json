@@ -33,6 +33,7 @@
     "smoke-test-dev": "bash scripts/smoke-test-dev.sh",
     "pre-commit": "lint-staged",
     "phase1:autofix": "node scripts/phase1-autofix-chunked.js",
+    "stub:audit": "node scripts/audit-stubs.js",
     "check-deps": "npm run deps:circular && npm run deps:validate",
     "adr:create": "cd scripts/adr && ./adr.sh create",
     "adr:update-index": "cd scripts/adr && ./adr.sh update-index",
