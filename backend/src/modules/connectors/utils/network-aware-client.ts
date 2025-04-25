@@ -1,3 +1,4 @@
+/* eslint-disable import/default, import/no-named-as-default, import/no-named-as-default-member */
 /**
  * Network-Aware HTTP Client
  *
