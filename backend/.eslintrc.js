@@ -152,6 +152,9 @@ module.exports = {
     'import/no-cycle': 'off',
     'import/no-unresolved': 'off',
     'import/named': 'off',
+    'import/namespace': 'off',
+    'import/order': 'off',
+    'import/no-duplicates': 'off',
     'import/no-restricted-paths': 'off',
   },
   settings: {
