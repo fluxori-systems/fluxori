@@ -155,6 +155,7 @@ module.exports = {
     'import/namespace': 'off',
     'import/order': 'off',
     'import/no-duplicates': 'off',
+    'import/export': 'off',
     'import/no-restricted-paths': 'off',
   },
   settings: {
