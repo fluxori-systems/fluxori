@@ -60,7 +60,8 @@ execSync(
     --rule "import/order:off" \
     --rule "import/named:off" \
     --rule "import/no-restricted-paths:off" \
-    --rule "import/no-duplicates:off"`,
+    --rule "import/no-duplicates:off" \
+    --rule "import/export:off"`,
   { stdio: 'inherit' }
 );
 
