@@ -175,6 +175,9 @@ module.exports = {
         alwaysTryTypes: true,
         project: './tsconfig.json',
       },
+      node: {
+        extensions: ['.js', '.jsx', '.ts', '.tsx'],
+      },
     },
     boundaries: {
       elements: {}
