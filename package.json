@@ -74,6 +74,12 @@
   },
   "homepage": "https://github.com/fluxori/fluxori",
   "devDependencies": {
+    "@types/jest": "^29.5.14",
+    "@types/node": "^22.15.2",
+    "@types/react": "^18.3.20",
+    "@types/react-dom": "^18.3.6",
+    "@types/testing-library__jest-dom": "^5.14.9",
+    "@types/testing-library__react": "^10.0.1",
     "dependency-cruiser": "^16.10.1",
     "husky": "^8.0.3",
     "lint-staged": "^15.1.0",
