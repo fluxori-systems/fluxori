@@ -132,9 +132,7 @@ export class FirestoreConfigService {
     collectionName: string,
     documentId: string,
   ): DocumentReference<T> {
-    return this.getCollection<T>(collectionName).doc(
-      documentId,
-    ) as DocumentReference<T>;
+    return this.getCollection<T>(collectionName).doc(documentId);
   }
 
   /**

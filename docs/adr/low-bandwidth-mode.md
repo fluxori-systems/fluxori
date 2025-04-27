@@ -15,6 +15,7 @@ South African e-commerce businesses face several bandwidth-related challenges:
 5. **Load shedding impact**: Power outages affect network infrastructure reliability
 
 These challenges require a specialized approach to bandwidth management to ensure:
+
 - Minimized data usage while maintaining functionality
 - Optimized operation during slow or degraded connections
 - Prioritization of critical operations when bandwidth is limited
@@ -27,26 +28,31 @@ The implemented solution provides a comprehensive set of bandwidth optimization 
 ### Key Features
 
 1. **Automatic Bandwidth Detection**
+
    - Real-time bandwidth monitoring
    - Automatic mode activation based on threshold detection
    - Connection quality classification (excellent, good, fair, poor, critical)
 
 2. **Request and Response Compression**
+
    - GZIP compression for request and response payloads
    - Configurable compression levels based on CPU/bandwidth trade-offs
    - Only applied when content type supports compression
 
 3. **Field Filtering and Selective Loading**
+
    - Only essential fields requested from API (vs. full resource representation)
    - Endpoint-specific field configurations
    - Reduced data for listing endpoints
 
 4. **Image Optimization**
+
    - Automatic image dimension reduction
    - Lower resolution for product images in listings
    - Smart loading of images based on connection quality
 
 5. **Request Prioritization and Deferral**
+
    - Critical requests processed immediately (orders, payments)
    - Non-critical requests queued during bandwidth constraints
    - Priority-based processing queue
@@ -109,21 +115,21 @@ private updateBandwidthEstimate(): void {
   const totalBytes = this.bandwidthSamples.reduce(
     (sum, sample) => sum + sample.bytes, 0
   );
-  
+
   // Calculate bandwidth in bytes per second
   const windowDuration = (now - Math.min(...this.bandwidthSamples.map(s => s.timestamp))) / 1000;
-  
+
   this.currentBandwidth = totalBytes / windowDuration;
-  
+
   // Auto-enable or disable based on bandwidth conditions
-  if (!this.lowBandwidthConfig.enabled && 
+  if (!this.lowBandwidthConfig.enabled &&
       this.currentBandwidth < this.lowBandwidthConfig.activationThreshold) {
     this.logger.warn(
       `Auto-enabling low-bandwidth mode. Current bandwidth: ${this.formatBandwidth(this.currentBandwidth)}`
     );
     this.lowBandwidthConfig.enabled = true;
   }
-  
+
   // Additional logic for mode switching
 }
 ```
@@ -134,27 +140,28 @@ The system compresses request data when appropriate:
 
 ```typescript
 // Compress request body for POST/PUT/PATCH
-if (this.lowBandwidthConfig.compressRequests && 
-    config.data && 
-    ['POST', 'PUT', 'PATCH'].includes(config.method.toUpperCase())) {
-  
+if (
+  this.lowBandwidthConfig.compressRequests &&
+  config.data &&
+  ["POST", "PUT", "PATCH"].includes(config.method.toUpperCase())
+) {
   // Convert data to buffer
   const dataToCompress = Buffer.from(JSON.stringify(originalData));
-  
+
   // Record original size for metrics
   const originalSize = dataToCompress.length;
-  
+
   // Compress data
   const compressedData = await this.gzip(dataToCompress, {
-    level: this.lowBandwidthConfig.compressionLevel
+    level: this.lowBandwidthConfig.compressionLevel,
   });
-  
+
   // Update request with compressed data
   lowBandwidthConfig.data = compressedData;
   lowBandwidthConfig.headers = {
     ...lowBandwidthConfig.headers,
-    'Content-Type': 'application/json',
-    'Content-Encoding': 'gzip'
+    "Content-Type": "application/json",
+    "Content-Encoding": "gzip",
   };
 }
 ```
@@ -169,27 +176,27 @@ if (config && this.shouldDeferRequest(config)) {
   return new Promise((resolve, reject) => {
     // Determine request priority (0-10, higher = more important)
     let priority = 5; // Default medium priority
-    
+
     // Check URL patterns to adjust priority
-    const url = config.url || '';
-    if (url.includes('/orders/')) {
+    const url = config.url || "";
+    if (url.includes("/orders/")) {
       priority = 8; // Higher priority for order operations
-    } else if (url.includes('/products/')) {
+    } else if (url.includes("/products/")) {
       priority = 6; // Medium-high priority for product operations
     }
-    
+
     // Add to deferred queue
     this.deferredRequestsQueue.push({
       config: { ...config },
       resolve,
       reject,
       priority,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     });
-    
+
     this.logger.debug(
       `Request to ${config.url} deferred in low-bandwidth mode. ` +
-      `Queue size: ${this.deferredRequestsQueue.length}`
+        `Queue size: ${this.deferredRequestsQueue.length}`,
     );
   });
 }
@@ -200,11 +207,13 @@ if (config && this.shouldDeferRequest(config)) {
 The low-bandwidth mode is exposed through a REST API for client-side control:
 
 ### 1. Get Low-Bandwidth Status
+
 ```
 GET /api/connectors/woocommerce/low-bandwidth/status?organizationId={orgId}
 ```
 
 Response:
+
 ```json
 {
   "success": true,
@@ -214,7 +223,7 @@ Response:
     "config": {
       "enabled": true,
       "compressionLevel": 6,
-      "requestCompressedResponses": true,
+      "requestCompressedResponses": true
       // Additional configuration
     },
     "stats": {
@@ -227,11 +236,13 @@ Response:
 ```
 
 ### 2. Configure Low-Bandwidth Mode
+
 ```
 PUT /api/connectors/woocommerce/low-bandwidth/config?organizationId={orgId}
 ```
 
 Request:
+
 ```json
 {
   "enabled": true,
@@ -245,6 +256,7 @@ Request:
 ```
 
 Response:
+
 ```json
 {
   "success": true,

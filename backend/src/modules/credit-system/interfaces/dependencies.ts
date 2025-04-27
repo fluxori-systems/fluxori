@@ -11,6 +11,8 @@ import {
   ModelRegistryEntry,
 } from '../../agent-framework';
 
+import { CreditArguments } from './types';
+
 // Define the ChatMessage interface inline since it's not exported by the agent-framework
 interface ChatMessage {
   role: string;
@@ -18,10 +20,10 @@ interface ChatMessage {
   name?: string;
   functionCall?: {
     name: string;
-    arguments: Record<string, any>;
+    // TODO: Refine arguments type as requirements become clear
+    arguments: CreditArguments; // TODO: Refine fields as discovered
   };
 }
-import { FeatureFlagService } from '../../feature-flags';
 
 /**
  * Agent Framework dependencies required by the Credit System

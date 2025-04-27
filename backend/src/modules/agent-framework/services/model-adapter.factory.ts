@@ -1,7 +1,10 @@
 import { Injectable, Logger } from '@nestjs/common';
 
 import { VertexAIModelAdapter } from '../adapters/vertex-ai.adapter';
-import { ModelAdapter } from '../interfaces/model-adapter.interface';
+import {
+  ModelAdapter,
+  AdapterConfig,
+} from '../interfaces/model-adapter.interface';
 import { ModelRegistryEntry } from '../interfaces/types';
 
 /**
@@ -55,19 +58,22 @@ export class ModelAdapterFactory {
    * Initialize all registered adapters
    * @param config Configuration for adapters
    */
-  async initializeAdapters(config: Record<string, any>): Promise<void> {
+  async initializeAdapters(config: AdapterConfig): Promise<void> {
+    // TODO: Refine AdapterConfig fields as discovered
     const initPromises: Promise<void>[] = [];
 
     // Initialize the Vertex AI adapter
     if (config['vertex-ai']) {
       initPromises.push(
-        this.vertexAdapter.initialize(config['vertex-ai']).catch((error) => {
-          this.logger.error(
-            `Failed to initialize Vertex AI adapter: ${error.message}`,
-            error.stack,
-          );
-          // Don't throw - we want to continue initializing other adapters
-        }),
+        this.vertexAdapter
+          .initialize(config['vertex-ai'] as any)
+          .catch((error) => {
+            this.logger.error(
+              `Failed to initialize Vertex AI adapter: ${error.message}`,
+              error.stack,
+            );
+            // Don't throw - we want to continue initializing other adapters
+          }),
       );
     }
 
@@ -79,7 +85,7 @@ export class ModelAdapterFactory {
       // Only initialize if config is provided
       if (config[provider]) {
         initPromises.push(
-          adapter.initialize(config[provider]).catch((error) => {
+          adapter.initialize(config[provider] as any).catch((error) => {
             this.logger.error(
               `Failed to initialize ${provider} adapter: ${error.message}`,
               error.stack,

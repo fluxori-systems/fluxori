@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
 /**
  * Enhanced auth hook that provides authentication state and role-based permissions
  */
-import { useCallback } from 'react';
+import { useCallback } from "react";
 
-import { useFirebase } from '../contexts/firebase-context';
-import { User, UserRole } from '../types/user/user.types';
+import { useFirebase } from "../contexts/firebase-context";
+import { User, UserRole } from "../types/user/user.types";
 
 interface UseAuthResult {
   user: User | null;
@@ -19,7 +19,12 @@ interface UseAuthResult {
   error: Error | null;
   login: (email: string, password: string) => Promise<User>;
   logout: () => Promise<void>;
-  register: (email: string, password: string, name: string, organizationName?: string) => Promise<User>;
+  register: (
+    email: string,
+    password: string,
+    name: string,
+    organizationName?: string,
+  ) => Promise<User>;
   resetPassword: (email: string) => Promise<void>;
   hasPermission: (permission: string) => boolean;
   hasRole: (role: UserRole | UserRole[]) => boolean;
@@ -37,7 +42,7 @@ export function useAuth(): UseAuthResult {
     logout,
     register,
     resetPassword,
-    refreshAuthToken
+    refreshAuthToken,
   } = useFirebase();
 
   /**
@@ -46,14 +51,14 @@ export function useAuth(): UseAuthResult {
   const hasPermission = useCallback(
     (permission: string): boolean => {
       if (!user) return false;
-      
+
       // Admins have all permissions
       if (user.role === UserRole.ADMIN) return true;
-      
+
       // Check explicit permissions
       return !!user.permissions?.includes(permission);
     },
-    [user]
+    [user],
   );
 
   /**
@@ -62,14 +67,14 @@ export function useAuth(): UseAuthResult {
   const hasRole = useCallback(
     (role: UserRole | UserRole[]): boolean => {
       if (!user) return false;
-      
+
       if (Array.isArray(role)) {
         return role.includes(user.role);
       }
-      
+
       return user.role === role;
     },
-    [user]
+    [user],
   );
 
   /**
@@ -78,14 +83,14 @@ export function useAuth(): UseAuthResult {
   const hasFeatureAccess = useCallback(
     (feature: string): boolean => {
       if (!user) return false;
-      
+
       // Admins have access to all features
       if (user.role === UserRole.ADMIN) return true;
-      
+
       // Check if feature is in accessible features
       return !!user.accessibleFeatures?.includes(feature);
     },
-    [user]
+    [user],
   );
 
   return {

@@ -3,7 +3,7 @@
  * This file provides type-safe wrappers around Jest DOM matcher functions
  */
 
-import { expect } from 'vitest';
+import { expect } from "vitest";
 
 /**
  * Assert that an element is in the document
@@ -18,9 +18,9 @@ export function assertInDocument(element: HTMLElement): void {
  * Assert that an element has an attribute
  */
 export function assertHasAttribute(
-  element: HTMLElement, 
-  attr: string, 
-  value?: string
+  element: HTMLElement,
+  attr: string,
+  value?: string,
 ): void {
   // We need to cast this since TypeScript doesn't know about the jest-dom matchers
   const assertion = expect(element) as any;
@@ -31,8 +31,8 @@ export function assertHasAttribute(
  * Assert that an element does not have an attribute
  */
 export function assertNotHasAttribute(
-  element: HTMLElement, 
-  attr: string
+  element: HTMLElement,
+  attr: string,
 ): void {
   // We need to cast this since TypeScript doesn't know about the jest-dom matchers
   const assertion = expect(element) as any;
@@ -61,8 +61,8 @@ export function assertNotDisabled(element: HTMLElement): void {
  * Assert that an element has text content
  */
 export function assertHasTextContent(
-  element: HTMLElement, 
-  text: string | RegExp
+  element: HTMLElement,
+  text: string | RegExp,
 ): void {
   // We need to cast this since TypeScript doesn't know about the jest-dom matchers
   const assertion = expect(element) as any;
@@ -72,10 +72,7 @@ export function assertHasTextContent(
 /**
  * Assert that an element has a class
  */
-export function assertHasClass(
-  element: HTMLElement, 
-  className: string
-): void {
+export function assertHasClass(element: HTMLElement, className: string): void {
   // We need to cast this since TypeScript doesn't know about the jest-dom matchers
   const assertion = expect(element) as any;
   assertion.toHaveClass(className);

@@ -1,4 +1,5 @@
 import * as z from 'zod';
+import { CreditSystemMetadata } from '../interfaces/types';
 
 /**
  * Schema for credit allocation validation
@@ -15,7 +16,8 @@ export const CreditAllocationSchema = z.object({
   resetDate: z.date().optional(),
   expirationDate: z.date().optional(),
   isActive: z.boolean(),
-  metadata: z.record(z.any()).optional(),
+  // NOTE: Runtime validation uses Zod; static type is CreditSystemMetadata
+  metadata: z.record(z.any()).optional(), // TODO: Refine fields as discovered
 });
 
 /**
@@ -50,7 +52,8 @@ export const CreditTransactionSchema = z.object({
   operationId: z.string().optional(),
   resourceId: z.string().optional(),
   resourceType: z.string().optional(),
-  metadata: z.record(z.any()).optional(),
+  // NOTE: Runtime validation uses Zod; static type is CreditSystemMetadata
+  metadata: z.record(z.any()).optional(), // TODO: Refine fields as discovered
 });
 
 /**
@@ -84,5 +87,6 @@ export const CreditUsageLogSchema = z.object({
   errorMessage: z.string().optional(),
   resourceId: z.string().optional(),
   resourceType: z.string().optional(),
-  metadata: z.record(z.any()).optional(),
+  // NOTE: Runtime validation uses Zod; static type is CreditSystemMetadata
+  metadata: z.record(z.any()).optional(), // TODO: Refine fields as discovered
 });

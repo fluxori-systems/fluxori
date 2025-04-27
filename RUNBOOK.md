@@ -5,6 +5,7 @@ This runbook provides step-by-step procedures for common operational tasks and t
 ## Table of Contents
 
 1. [Common Operations](#common-operations)
+
    - [Scaling Resources](#scaling-resources)
    - [Database Operations](#database-operations)
    - [Backup and Restore](#backup-and-restore)
@@ -12,6 +13,7 @@ This runbook provides step-by-step procedures for common operational tasks and t
    - [API Key Management](#api-key-management)
 
 2. [Troubleshooting](#troubleshooting)
+
    - [API Service Issues](#api-service-issues)
    - [Frontend Issues](#frontend-issues)
    - [Database Issues](#database-issues)
@@ -19,6 +21,7 @@ This runbook provides step-by-step procedures for common operational tasks and t
    - [Authentication Issues](#authentication-issues)
 
 3. [Monitoring and Alerting](#monitoring-and-alerting)
+
    - [Alert Response Procedures](#alert-response-procedures)
    - [Service Level Objectives](#service-level-objectives)
 
@@ -63,6 +66,7 @@ gcloud run services update fluxori-backend \
 Firestore scales automatically, but you can optimize performance by:
 
 1. Adjusting index configurations:
+
    ```bash
    gcloud firestore indexes composite create \
      --collection-group=orders \
@@ -223,6 +227,7 @@ node scripts/admin/list-api-keys.js --organizationId=org123 --project=fluxori-<e
 If the API service is unavailable:
 
 1. Check Cloud Run service status:
+
    ```bash
    gcloud run services describe fluxori-backend \
      --region=africa-south1 \
@@ -230,6 +235,7 @@ If the API service is unavailable:
    ```
 
 2. Check recent deployments:
+
    ```bash
    gcloud run revisions list \
      --service=fluxori-backend \
@@ -240,6 +246,7 @@ If the API service is unavailable:
    ```
 
 3. Check logs for errors:
+
    ```bash
    gcloud logging read 'resource.type="cloud_run_revision" AND resource.labels.service_name="fluxori-backend" AND severity>=ERROR' \
      --project=fluxori-<environment> \
@@ -260,6 +267,7 @@ If API response times are high:
 
 1. Check Cloud Run metrics in the Google Cloud Console
 2. Check if the service is hitting resource limits:
+
    ```bash
    gcloud run services describe fluxori-backend \
      --region=africa-south1 \
@@ -268,6 +276,7 @@ If API response times are high:
    ```
 
 3. Increase resources if needed:
+
    ```bash
    gcloud run services update fluxori-backend \
      --memory=2Gi \
@@ -290,6 +299,7 @@ If API response times are high:
 If the frontend is not loading:
 
 1. Check Cloud Run service status:
+
    ```bash
    gcloud run services describe fluxori-frontend \
      --region=africa-south1 \
@@ -305,6 +315,7 @@ If the frontend is not loading:
 If pages are loading slowly:
 
 1. Check CDN performance:
+
    ```bash
    # Run CDN performance test
    cd scripts/performance-tests
@@ -312,6 +323,7 @@ If pages are loading slowly:
    ```
 
 2. Check API response times:
+
    ```bash
    # Run API performance test
    cd scripts/performance-tests
@@ -331,6 +343,7 @@ If pages are loading slowly:
 If queries are timing out:
 
 1. Identify the slow query from the logs:
+
    ```bash
    gcloud logging read 'resource.type="cloud_run_revision" AND resource.labels.service_name="fluxori-backend" AND json_payload.message="Query timeout"' \
      --project=fluxori-<environment> \
@@ -338,6 +351,7 @@ If queries are timing out:
    ```
 
 2. Create an index for the query:
+
    ```bash
    gcloud firestore indexes composite create \
      --collection-group=<COLLECTION> \
@@ -353,6 +367,7 @@ If queries are timing out:
 If there are data consistency issues:
 
 1. Check for failed transactions in the logs:
+
    ```bash
    gcloud logging read 'resource.type="cloud_run_revision" AND resource.labels.service_name="fluxori-backend" AND json_payload.message="Transaction failed"' \
      --project=fluxori-<environment> \
@@ -370,16 +385,19 @@ If there are data consistency issues:
 If file uploads are failing:
 
 1. Check Cloud Storage permissions:
+
    ```bash
    gsutil iam get gs://fluxori-<environment>-storage
    ```
 
 2. Verify CORS configuration:
+
    ```bash
    gsutil cors get gs://fluxori-<environment>-storage
    ```
 
 3. Set proper CORS configuration:
+
    ```bash
    cat > cors.json << EOF
    [
@@ -391,7 +409,7 @@ If file uploads are failing:
      }
    ]
    EOF
-   
+
    gsutil cors set cors.json gs://fluxori-<environment>-storage
    ```
 
@@ -407,15 +425,17 @@ If file uploads are failing:
 If files cannot be accessed:
 
 1. Check file permissions:
+
    ```bash
    gsutil acl get gs://fluxori-<environment>-storage/<PATH_TO_FILE>
    ```
 
 2. Set proper ACLs:
+
    ```bash
    # For public files
    gsutil acl ch -u AllUsers:R gs://fluxori-<environment>-storage/<PATH_TO_FILE>
-   
+
    # For private files, use signed URLs instead
    ```
 
@@ -431,6 +451,7 @@ If files cannot be accessed:
 If users cannot log in:
 
 1. Check authentication service logs:
+
    ```bash
    gcloud logging read 'resource.type="cloud_run_revision" AND resource.labels.service_name="fluxori-backend" AND json_payload.message=~"Authentication"' \
      --project=fluxori-<environment> \
@@ -438,6 +459,7 @@ If users cannot log in:
    ```
 
 2. Verify user exists and is not locked:
+
    ```bash
    node scripts/admin/check-user.js --email=user@example.com --project=fluxori-<environment>
    ```
@@ -454,6 +476,7 @@ If token verification is failing:
 
 1. Check for clock skew between client and server
 2. Verify the token is properly formed in the logs:
+
    ```bash
    gcloud logging read 'resource.type="cloud_run_revision" AND resource.labels.service_name="fluxori-backend" AND json_payload.message=~"Token verification"' \
      --project=fluxori-<environment> \
@@ -462,20 +485,21 @@ If token verification is failing:
 
 3. Check if the token has expired
 4. Refresh the JWT secret if necessary:
+
    ```bash
    # Generate a new JWT secret
    NEW_SECRET=$(openssl rand -base64 64)
-   
+
    # Update the secret in Secret Manager
    echo -n "$NEW_SECRET" | gcloud secrets versions add jwt-secret --data-file=- --project=fluxori-<environment>
-   
+
    # Restart the backend service to pick up the new secret
    gcloud run services update fluxori-backend \
      --no-traffic \
      --revision-suffix=jwt-secret-update \
      --region=africa-south1 \
      --project=fluxori-<environment>
-   
+
    gcloud run services update-traffic fluxori-backend \
      --to-latest \
      --region=africa-south1 \
@@ -493,6 +517,7 @@ If token verification is failing:
 If you receive a high error rate alert:
 
 1. Check the error logs:
+
    ```bash
    gcloud logging read 'resource.type="cloud_run_revision" AND resource.labels.service_name="fluxori-backend" AND severity>=ERROR' \
      --project=fluxori-<environment> \
@@ -501,6 +526,7 @@ If you receive a high error rate alert:
 
 2. Identify the most common errors
 3. Check recent deployments:
+
    ```bash
    gcloud run revisions list \
      --service=fluxori-backend \
@@ -524,6 +550,7 @@ If you receive a high latency alert:
 
 1. Check CPU and memory usage in Cloud Monitoring
 2. Check database query performance:
+
    ```bash
    gcloud logging read 'resource.type="cloud_run_revision" AND resource.labels.service_name="fluxori-backend" AND json_payload.message=~"query took"' \
      --project=fluxori-<environment> \
@@ -531,6 +558,7 @@ If you receive a high latency alert:
    ```
 
 3. Identify slow endpoints:
+
    ```bash
    gcloud logging read 'resource.type="cloud_run_revision" AND resource.labels.service_name="fluxori-backend" AND json_payload.responseTime>1000' \
      --project=fluxori-<environment> \

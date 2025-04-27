@@ -1,76 +1,80 @@
-'use client';
+"use client";
 
 /**
  * GSAP Business License Features
- * 
+ *
  * This file contains utilities for GSAP Business license features.
- * These features are commented out and would need to be activated 
+ * These features are commented out and would need to be activated
  * with a valid GSAP Business license.
- * 
+ *
  * IMPORTANT: A GSAP Business license is required to use these features.
  * See: https://greensock.com/docs/v3/Installation#business
  */
 
-import { gsap } from 'gsap';
+import { gsap } from "gsap";
 
 // Business license plugins
-import { CustomBounce } from 'gsap/CustomBounce';
-import { CustomEase } from 'gsap/CustomEase';
-import { CustomWiggle } from 'gsap/CustomWiggle';
-import { DrawSVGPlugin } from 'gsap/DrawSVGPlugin';
-import { Flip } from 'gsap/Flip';
-import { GSDevTools } from 'gsap/GSDevTools';
-import { InertiaPlugin } from 'gsap/InertiaPlugin';
-import { MorphSVGPlugin } from 'gsap/MorphSVGPlugin';
-import { MotionPathPlugin } from 'gsap/MotionPathPlugin';
-import { Physics2DPlugin } from 'gsap/Physics2DPlugin';
-import { PhysicsPropsPlugin } from 'gsap/PhysicsPropsPlugin';
-import { ScrambleTextPlugin } from 'gsap/ScrambleTextPlugin';
-import { SplitText } from 'gsap/SplitText';
+import { CustomBounce } from "gsap/CustomBounce";
+import { CustomEase } from "gsap/CustomEase";
+import { CustomWiggle } from "gsap/CustomWiggle";
+import { DrawSVGPlugin } from "gsap/DrawSVGPlugin";
+import { Flip } from "gsap/Flip";
+import { GSDevTools } from "gsap/GSDevTools";
+import { InertiaPlugin } from "gsap/InertiaPlugin";
+import { MorphSVGPlugin } from "gsap/MorphSVGPlugin";
+import { MotionPathPlugin } from "gsap/MotionPathPlugin";
+import { Physics2DPlugin } from "gsap/Physics2DPlugin";
+import { PhysicsPropsPlugin } from "gsap/PhysicsPropsPlugin";
+import { ScrambleTextPlugin } from "gsap/ScrambleTextPlugin";
+import { SplitText } from "gsap/SplitText";
 
 /**
  * GSAP Business license token
  * This token is used to activate the GSAP Business license features
  */
-const GSAP_BUSINESS_TOKEN = 'aa268268-f5ee-47e4-9af7-ec057209343b';
+const GSAP_BUSINESS_TOKEN = "aa268268-f5ee-47e4-9af7-ec057209343b";
 
 /**
  * Initializes GSAP Business features with license
  * @param moduleToken Optional override token (default uses the project token)
  */
-export function initGSAPBusiness(moduleToken: string = GSAP_BUSINESS_TOKEN): void {
+export function initGSAPBusiness(
+  moduleToken: string = GSAP_BUSINESS_TOKEN,
+): void {
   // With the token provided, we can register the business license
   if (!moduleToken) {
-    console.warn('GSAP Business features require a valid license key');
+    console.warn("GSAP Business features require a valid license key");
     return;
   }
 
   // Register the GSAP Business plugins with token
-  
+
   // Register the license
   gsap.registerPlugin(
-    SplitText, 
-    DrawSVGPlugin, 
-    MotionPathPlugin, 
-    MorphSVGPlugin, 
-    Flip, 
-    GSDevTools, 
+    SplitText,
+    DrawSVGPlugin,
+    MotionPathPlugin,
+    MorphSVGPlugin,
+    Flip,
+    GSDevTools,
     ScrambleTextPlugin,
     CustomEase,
     CustomBounce,
     CustomWiggle,
     Physics2DPlugin,
     PhysicsPropsPlugin,
-    InertiaPlugin
+    InertiaPlugin,
   );
-  
+
   // Apply the module installation token
-  if (typeof window !== 'undefined') {
+  if (typeof window !== "undefined") {
     // GSAP Business license activation
     // Add the token to the window object with proper typing
     // First cast to unknown then to the target type to avoid TypeScript errors
-    ((window as unknown) as { _gsapModuleInstallation: string })._gsapModuleInstallation = moduleToken;
-    console.log('GSAP Business license active:', gsap.version);
+    (
+      window as unknown as { _gsapModuleInstallation: string }
+    )._gsapModuleInstallation = moduleToken;
+    console.log("GSAP Business license active:", gsap.version);
   }
 }
 
@@ -88,12 +92,12 @@ export const SplitTextUtils = {
     // Using GSAP Business SplitText
     const split = new SplitText(target, {
       type: options.type || "chars,words,lines",
-      ...options
+      ...options,
     });
-    
+
     return split;
   },
-  
+
   /**
    * Animates split text with staggered effect
    * @param splitText SplitText instance
@@ -102,19 +106,19 @@ export const SplitTextUtils = {
   animateSplitText: (splitText: any, options: any = {}) => {
     // Using GSAP Business SplitText animation
     const timeline = gsap.timeline(options.timeline || {});
-    const elements = splitText[options.animateWhat || 'chars'];
-    
+    const elements = splitText[options.animateWhat || "chars"];
+
     timeline.from(elements, {
       opacity: 0,
       y: options.y || 20,
       duration: options.duration || 0.5,
       stagger: options.stagger || 0.02,
       ease: options.ease || "power2.out",
-      ...options.animation
+      ...options.animation,
     });
-    
+
     return timeline;
-  }
+  },
 };
 
 /**
@@ -129,17 +133,18 @@ export const SVGUtils = {
    */
   drawSVG: (target: string | Element, options: any = {}) => {
     // Using GSAP Business DrawSVGPlugin
-    return gsap.fromTo(target, 
+    return gsap.fromTo(
+      target,
       { drawSVG: options.from || "0%" },
-      { 
-        drawSVG: options.to || "100%", 
+      {
+        drawSVG: options.to || "100%",
         duration: options.duration || 1,
         ease: options.ease || "power2.inOut",
-        ...options
-      }
+        ...options,
+      },
     );
   },
-  
+
   /**
    * Morphs between SVG paths
    * @param target SVG element to morph
@@ -151,13 +156,13 @@ export const SVGUtils = {
     return gsap.to(target, {
       morphSVG: {
         shape: endShape,
-        ...options.morphOptions
+        ...options.morphOptions,
       },
       duration: options.duration || 1,
       ease: options.ease || "power2.inOut",
-      ...options
+      ...options,
     });
-  }
+  },
 };
 
 /**
@@ -174,20 +179,20 @@ export const FlipUtils = {
     // Using GSAP Business Flip
     // Record the initial state
     const state = Flip.getState(options.targets || ".flip-element");
-    
+
     // Make DOM changes that affect layout
     if (options.layoutChanges) {
       options.layoutChanges();
     }
-    
+
     // Animate from the initial state to the new layout
     return Flip.from(state, {
       duration: options.duration || 0.5,
       ease: options.ease || "power1.out",
       absolute: options.absolute !== undefined ? options.absolute : false,
-      ...options
+      ...options,
     });
-  }
+  },
 };
 
 /**
@@ -201,7 +206,11 @@ export const TextUtils = {
    * @param newText New text content
    * @param options Animation options
    */
-  scrambleText: (target: string | Element, newText: string, options: any = {}) => {
+  scrambleText: (
+    target: string | Element,
+    newText: string,
+    options: any = {},
+  ) => {
     // Using GSAP Business ScrambleTextPlugin
     return gsap.to(target, {
       scrambleText: {
@@ -209,13 +218,13 @@ export const TextUtils = {
         chars: options.chars || "0123456789!@#$%^&*()",
         revealDelay: options.revealDelay || 0.5,
         speed: options.speed || 0.3,
-        ...options.scrambleOptions
+        ...options.scrambleOptions,
       },
       duration: options.duration || 1,
       ease: options.ease || "none",
-      ...options
+      ...options,
     });
-  }
+  },
 };
 
 /**
@@ -236,11 +245,11 @@ export const PhysicsUtils = {
         velocity: options.velocity || 300,
         angle: options.angle || -60,
         gravity: options.gravity || 700,
-        ...options.physicsOptions
+        ...options.physicsOptions,
       },
-      ...options
+      ...options,
     });
-  }
+  },
 };
 
 /**
@@ -257,7 +266,7 @@ export const CustomEasingUtils = {
     // Using GSAP Business CustomEase
     return CustomEase.create(name, bezierPoints);
   },
-  
+
   /**
    * Creates a custom bounce ease
    * @param name Name for the custom bounce
@@ -267,7 +276,7 @@ export const CustomEasingUtils = {
     // Using GSAP Business CustomBounce
     return CustomBounce.create(name, options);
   },
-  
+
   /**
    * Creates a custom wiggle ease
    * @param name Name for the custom wiggle
@@ -276,5 +285,5 @@ export const CustomEasingUtils = {
   createCustomWiggle: (name: string, options: any = {}) => {
     // Using GSAP Business CustomWiggle
     return CustomWiggle.create(name, options);
-  }
+  },
 };

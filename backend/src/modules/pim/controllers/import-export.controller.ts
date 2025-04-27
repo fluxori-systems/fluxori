@@ -27,8 +27,9 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 
 import { Response as ExpressResponse } from 'express';
+import * as Multer from 'multer';
 
-import { FirebaseAuthGuard } from '../../../common/guards/firebase-auth.guard';
+import { FirebaseAuthGuard } from '../../auth';
 import { GetUser } from '../../auth/decorators/get-user.decorator';
 import {
   ImportExportService,
@@ -73,7 +74,7 @@ export class ImportExportController {
         ],
       }),
     )
-    file: Express.Multer.File,
+    file: Multer.File,
     @Query('updateExisting') updateExisting: boolean = false,
     @Query('continueOnError') continueOnError: boolean = false,
     @GetUser() user: any,
@@ -223,7 +224,7 @@ export class ImportExportController {
   private getFormatFromFileName(
     fileName: string,
   ): 'csv' | 'json' | 'xml' | 'xlsx' {
-    const extension = fileName.split('.').pop().toLowerCase();
+    const extension = (fileName.split('.').pop() || '').toLowerCase();
 
     switch (extension) {
       case 'csv':

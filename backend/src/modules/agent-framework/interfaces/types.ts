@@ -1,7 +1,48 @@
 /**
  * Types for the Agent Framework module
  */
-import { FirestoreEntity } from '../../../types/google-cloud.types';
+import { FirestoreEntityWithMetadata } from '../../../common/repositories/base/repository-types';
+
+/**
+ * Placeholder for Agent Framework metadata fields. TODO: Add concrete fields as discovered.
+ */
+export interface AgentMetadata {
+  tokenCount?: number;
+  cost?: number;
+  attachments?: { type: string; content: AgentContent }[];
+  model?: string;
+  conversationId?: string;
+  provider?: string;
+  messageId?: string;
+  // TODO: Add concrete metadata fields here as they are discovered in the codebase
+}
+
+/**
+ * Placeholder for Agent Framework arguments fields. TODO: Add concrete fields as discovered.
+ */
+export interface AgentArguments {
+  // TODO: Add concrete arguments fields here as they are discovered in the codebase
+}
+
+/**
+ * Placeholder for Agent Framework parameters fields. TODO: Add concrete fields as discovered.
+ */
+export interface AgentParameters {
+  // TODO: Add concrete parameters fields here as they are discovered in the codebase
+}
+
+/**
+ * Placeholder for Agent Framework content fields. TODO: Add concrete fields as discovered.
+ */
+export type AgentContent = string | Record<string, unknown>; // TODO: Refine as discovered
+
+/**
+ * Placeholder for Agent Framework handler type. TODO: Add concrete signature as discovered.
+ */
+export type AgentHandler = (
+  params: AgentParameters,
+  context: AgentContext,
+) => Promise<unknown>; // TODO: Refine as discovered
 
 /**
  * Model complexity levels
@@ -20,10 +61,10 @@ export interface ConversationMessage {
   role: 'user' | 'assistant' | 'system' | 'function';
   content: string;
   timestamp: Date;
-  metadata?: Record<string, any>;
+  metadata?: AgentMetadata; // TODO: Refine fields as discovered
   functionCall?: {
     name: string;
-    arguments: Record<string, any>;
+    arguments: AgentArguments; // TODO: Refine fields as discovered
   };
   functionResponse?: string;
 }
@@ -47,7 +88,7 @@ export interface AgentContext {
   organizationId: string;
   userId: string;
   messages: ConversationMessage[];
-  metadata?: Record<string, any>;
+  metadata?: AgentMetadata; // TODO: Refine fields as discovered
 }
 
 /**
@@ -55,7 +96,7 @@ export interface AgentContext {
  */
 export interface AgentResponse {
   type: AgentResponseType;
-  content: string | Record<string, any>;
+  content: AgentContent; // TODO: Refine fields as discovered
   tokenUsage: {
     input: number;
     output: number;
@@ -68,13 +109,13 @@ export interface AgentResponse {
   };
   processingTime: number;
   cost: number;
-  metadata?: Record<string, any>;
+  metadata?: AgentMetadata; // TODO: Refine fields as discovered
 }
 
 /**
  * Agent configuration
  */
-export interface AgentConfig extends FirestoreEntity {
+export interface AgentConfig extends FirestoreEntityWithMetadata {
   organizationId: string;
   name: string;
   description?: string;
@@ -90,18 +131,18 @@ export interface AgentConfig extends FirestoreEntity {
   functions?: Array<{
     name: string;
     description: string;
-    parameters: Record<string, any>;
+    parameters: AgentParameters; // TODO: Refine fields as discovered
   }>;
   isEnabled: boolean;
   allowedTools?: string[];
   labels?: string[];
-  metadata?: Record<string, any>;
+  metadata?: AgentMetadata; // TODO: Refine fields as discovered
 }
 
 /**
  * Conversation entity for Firestore
  */
-export interface AgentConversation extends FirestoreEntity {
+export interface AgentConversation extends FirestoreEntityWithMetadata {
   organizationId: string;
   userId: string;
   title: string;
@@ -110,15 +151,21 @@ export interface AgentConversation extends FirestoreEntity {
   tokensUsed: number;
   cost: number;
   lastActivityAt: Date;
-  metadata?: Record<string, any>;
+  metadata?: AgentMetadata; // TODO: Refine fields as discovered
   isActive: boolean;
   tags?: string[];
+  id: string;
+  createdAt: Date;
+  updatedAt: Date;
+  isDeleted: boolean;
+  deletedAt: Date | null;
+  version: number;
 }
 
 /**
  * Model registry entry for Firestore
  */
-export interface ModelRegistryEntry extends FirestoreEntity {
+export interface ModelRegistryEntry extends FirestoreEntityWithMetadata {
   provider: string;
   model: string;
   displayName: string;
@@ -133,7 +180,7 @@ export interface ModelRegistryEntry extends FirestoreEntity {
   endpoint?: string;
   isEnabled: boolean;
   order: number;
-  metadata?: Record<string, any>;
+  metadata?: AgentMetadata; // TODO: Refine fields as discovered
 }
 
 /**
@@ -142,8 +189,8 @@ export interface ModelRegistryEntry extends FirestoreEntity {
 export interface AgentTool {
   name: string;
   description: string;
-  parameters: Record<string, any>;
-  handler: (params: Record<string, any>, context: AgentContext) => Promise<any>;
+  parameters: AgentParameters; // TODO: Refine fields as discovered
+  handler: AgentHandler; // TODO: Refine fields as discovered
   requiresAuthentication: boolean;
 }
 
@@ -156,7 +203,7 @@ export interface CreateConversationRequest {
   title?: string;
   agentConfigId: string;
   initialMessage?: string;
-  metadata?: Record<string, any>;
+  metadata?: AgentMetadata; // TODO: Refine fields as discovered
 }
 
 /**
@@ -169,7 +216,7 @@ export interface SendMessageRequest {
   overrideModel?: string;
   attachments?: Array<{
     type: string;
-    content: string | Record<string, any>;
+    content: AgentContent; // TODO: Refine fields as discovered
   }>;
 }
 
@@ -181,7 +228,7 @@ export interface ConversationResponse {
   title: string;
   messages: ConversationMessage[];
   lastUpdated: Date;
-  metadata?: Record<string, any>;
+  metadata?: AgentMetadata; // TODO: Refine fields as discovered
 }
 
 /**
@@ -219,5 +266,5 @@ export interface AgentError {
   detail?: string;
   retryable: boolean;
   timestamp: Date;
-  metadata?: Record<string, any>;
+  metadata?: AgentMetadata; // TODO: Refine fields as discovered
 }

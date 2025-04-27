@@ -8,10 +8,7 @@
           "module": "../../motion/components/AIProcessingIndicator",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/motion/components/AIProcessingIndicator.tsx",
           "coreModule": false,
           "followable": true,
@@ -25,10 +22,7 @@
           "module": "../../motion/components/StreamingText",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/motion/components/StreamingText.tsx",
           "coreModule": false,
           "followable": true,
@@ -42,10 +36,7 @@
           "module": "../../motion/context/MotionContext",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/motion/context/MotionContext.tsx",
           "coreModule": false,
           "followable": true,
@@ -59,10 +50,7 @@
           "module": "./Card",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/ui/components/Card.tsx",
           "coreModule": false,
           "followable": true,
@@ -76,10 +64,7 @@
           "module": "./Text",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/ui/components/Text.tsx",
           "coreModule": false,
           "followable": true,
@@ -93,10 +78,7 @@
           "module": "gsap",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "npm",
-            "import"
-          ],
+          "dependencyTypes": ["npm", "import"],
           "resolved": "node_modules/gsap/dist/gsap.js",
           "coreModule": false,
           "followable": false,
@@ -110,10 +92,7 @@
           "module": "react",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "npm",
-            "import"
-          ],
+          "dependencyTypes": ["npm", "import"],
           "resolved": "node_modules/react/index.js",
           "coreModule": false,
           "followable": false,
@@ -136,10 +115,7 @@
       "coreModule": false,
       "couldNotResolve": false,
       "matchesDoNotFollow": true,
-      "dependencyTypes": [
-        "npm",
-        "import"
-      ],
+      "dependencyTypes": ["npm", "import"],
       "dependencies": [],
       "dependents": [
         "src/lib/ui/components/AgentMessage.tsx",
@@ -159,10 +135,7 @@
       "coreModule": false,
       "couldNotResolve": false,
       "matchesDoNotFollow": true,
-      "dependencyTypes": [
-        "npm",
-        "import"
-      ],
+      "dependencyTypes": ["npm", "import"],
       "dependencies": [],
       "dependents": [
         "src/lib/ui/components/AgentMessage.tsx",
@@ -212,10 +185,7 @@
           "module": "../context/MotionContext",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/motion/context/MotionContext.tsx",
           "coreModule": false,
           "followable": true,
@@ -229,10 +199,7 @@
           "module": "../hooks/useReducedMotion",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/motion/hooks/useReducedMotion.ts",
           "coreModule": false,
           "followable": true,
@@ -246,10 +213,7 @@
           "module": "../utils/motion-tokens",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/motion/utils/motion-tokens.ts",
           "coreModule": false,
           "followable": true,
@@ -263,10 +227,7 @@
           "module": "gsap",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "npm",
-            "import"
-          ],
+          "dependencyTypes": ["npm", "import"],
           "resolved": "node_modules/gsap/dist/gsap.js",
           "coreModule": false,
           "followable": false,
@@ -280,10 +241,7 @@
           "module": "react",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "npm",
-            "import"
-          ],
+          "dependencyTypes": ["npm", "import"],
           "resolved": "node_modules/react/index.js",
           "coreModule": false,
           "followable": false,
@@ -293,9 +251,7 @@
           "valid": true
         }
       ],
-      "dependents": [
-        "src/lib/ui/components/AgentMessage.tsx"
-      ],
+      "dependents": ["src/lib/ui/components/AgentMessage.tsx"],
       "orphan": false,
       "valid": true
     },
@@ -307,10 +263,7 @@
           "module": "react",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "npm",
-            "import"
-          ],
+          "dependencyTypes": ["npm", "import"],
           "resolved": "node_modules/react/index.js",
           "coreModule": false,
           "followable": false,
@@ -348,10 +301,7 @@
           "module": "../context/MotionContext",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/motion/context/MotionContext.tsx",
           "coreModule": false,
           "followable": true,
@@ -396,10 +346,7 @@
           "module": "../context/MotionContext",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/motion/context/MotionContext.tsx",
           "coreModule": false,
           "followable": true,
@@ -413,10 +360,7 @@
           "module": "../hooks/useConnectionQuality",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/motion/hooks/useConnectionQuality.ts",
           "coreModule": false,
           "followable": true,
@@ -430,10 +374,7 @@
           "module": "../hooks/useReducedMotion",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/motion/hooks/useReducedMotion.ts",
           "coreModule": false,
           "followable": true,
@@ -447,10 +388,7 @@
           "module": "../utils/motion-tokens",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/motion/utils/motion-tokens.ts",
           "coreModule": false,
           "followable": true,
@@ -464,10 +402,7 @@
           "module": "gsap",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "npm",
-            "import"
-          ],
+          "dependencyTypes": ["npm", "import"],
           "resolved": "node_modules/gsap/dist/gsap.js",
           "coreModule": false,
           "followable": false,
@@ -481,10 +416,7 @@
           "module": "react",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "npm",
-            "import"
-          ],
+          "dependencyTypes": ["npm", "import"],
           "resolved": "node_modules/react/index.js",
           "coreModule": false,
           "followable": false,
@@ -494,9 +426,7 @@
           "valid": true
         }
       ],
-      "dependents": [
-        "src/lib/ui/components/AgentMessage.tsx"
-      ],
+      "dependents": ["src/lib/ui/components/AgentMessage.tsx"],
       "orphan": false,
       "valid": true
     },
@@ -508,10 +438,7 @@
           "module": "../context/MotionContext",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/motion/context/MotionContext.tsx",
           "coreModule": false,
           "followable": true,
@@ -525,10 +452,7 @@
           "module": "react",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "npm",
-            "import"
-          ],
+          "dependencyTypes": ["npm", "import"],
           "resolved": "node_modules/react/index.js",
           "coreModule": false,
           "followable": false,
@@ -562,10 +486,7 @@
           "module": "../../design-system/utils/token-analysis",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/design-system/utils/token-analysis.ts",
           "coreModule": false,
           "followable": true,
@@ -579,10 +500,7 @@
           "module": "../../design-system/utils/tokens",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/design-system/utils/tokens.ts",
           "coreModule": false,
           "followable": true,
@@ -596,10 +514,7 @@
           "module": "../../motion/hooks/useConnectionQuality",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/motion/hooks/useConnectionQuality.ts",
           "coreModule": false,
           "followable": true,
@@ -613,10 +528,7 @@
           "module": "../hooks/useComponentAnimation",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/ui/hooks/useComponentAnimation.ts",
           "coreModule": false,
           "followable": true,
@@ -630,10 +542,7 @@
           "module": "../types",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/ui/types/index.ts",
           "coreModule": false,
           "followable": true,
@@ -647,10 +556,7 @@
           "module": "../utils/use-combined-refs",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/ui/utils/use-combined-refs.ts",
           "coreModule": false,
           "followable": true,
@@ -664,10 +570,7 @@
           "module": "@mantine/core",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "npm",
-            "import"
-          ],
+          "dependencyTypes": ["npm", "import"],
           "resolved": "node_modules/@mantine/core/cjs/index.cjs",
           "coreModule": false,
           "followable": false,
@@ -681,10 +584,7 @@
           "module": "react",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "npm",
-            "import"
-          ],
+          "dependencyTypes": ["npm", "import"],
           "resolved": "node_modules/react/index.js",
           "coreModule": false,
           "followable": false,
@@ -708,10 +608,7 @@
       "coreModule": false,
       "couldNotResolve": false,
       "matchesDoNotFollow": true,
-      "dependencyTypes": [
-        "npm",
-        "import"
-      ],
+      "dependencyTypes": ["npm", "import"],
       "dependencies": [],
       "dependents": [
         "src/lib/ui/components/Card.tsx",
@@ -740,10 +637,7 @@
           "module": "../tokens",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "dynamic-import"
-          ],
+          "dependencyTypes": ["local", "dynamic-import"],
           "resolved": "src/lib/design-system/tokens/index.ts",
           "coreModule": false,
           "followable": true,
@@ -757,10 +651,7 @@
           "module": "react",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "npm",
-            "import"
-          ],
+          "dependencyTypes": ["npm", "import"],
           "resolved": "node_modules/react/index.js",
           "coreModule": false,
           "followable": false,
@@ -794,10 +685,7 @@
           "module": "../types/tokens",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/design-system/types/tokens.ts",
           "coreModule": false,
           "followable": true,
@@ -811,10 +699,7 @@
           "module": "./colors",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/design-system/tokens/colors.ts",
           "coreModule": false,
           "followable": true,
@@ -828,10 +713,7 @@
           "module": "./motion",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/design-system/tokens/motion.ts",
           "coreModule": false,
           "followable": true,
@@ -845,10 +727,7 @@
           "module": "./radii",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/design-system/tokens/radii.ts",
           "coreModule": false,
           "followable": true,
@@ -862,10 +741,7 @@
           "module": "./shadows",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/design-system/tokens/shadows.ts",
           "coreModule": false,
           "followable": true,
@@ -879,10 +755,7 @@
           "module": "./spacing",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/design-system/tokens/spacing.ts",
           "coreModule": false,
           "followable": true,
@@ -896,10 +769,7 @@
           "module": "./typography",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/design-system/tokens/typography.ts",
           "coreModule": false,
           "followable": true,
@@ -941,10 +811,7 @@
           "module": "../types/tokens",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/design-system/types/tokens.ts",
           "coreModule": false,
           "followable": true,
@@ -954,18 +821,14 @@
           "valid": true
         }
       ],
-      "dependents": [
-        "src/lib/design-system/tokens/index.ts"
-      ],
+      "dependents": ["src/lib/design-system/tokens/index.ts"],
       "orphan": false,
       "valid": true
     },
     {
       "source": "src/lib/design-system/tokens/motion.ts",
       "dependencies": [],
-      "dependents": [
-        "src/lib/design-system/tokens/index.ts"
-      ],
+      "dependents": ["src/lib/design-system/tokens/index.ts"],
       "orphan": false,
       "valid": true
     },
@@ -977,10 +840,7 @@
           "module": "../types/tokens",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/design-system/types/tokens.ts",
           "coreModule": false,
           "followable": true,
@@ -990,9 +850,7 @@
           "valid": true
         }
       ],
-      "dependents": [
-        "src/lib/design-system/tokens/index.ts"
-      ],
+      "dependents": ["src/lib/design-system/tokens/index.ts"],
       "orphan": false,
       "valid": true
     },
@@ -1004,10 +862,7 @@
           "module": "../types/tokens",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/design-system/types/tokens.ts",
           "coreModule": false,
           "followable": true,
@@ -1017,9 +872,7 @@
           "valid": true
         }
       ],
-      "dependents": [
-        "src/lib/design-system/tokens/index.ts"
-      ],
+      "dependents": ["src/lib/design-system/tokens/index.ts"],
       "orphan": false,
       "valid": true
     },
@@ -1031,10 +884,7 @@
           "module": "../types/tokens",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/design-system/types/tokens.ts",
           "coreModule": false,
           "followable": true,
@@ -1044,9 +894,7 @@
           "valid": true
         }
       ],
-      "dependents": [
-        "src/lib/design-system/tokens/index.ts"
-      ],
+      "dependents": ["src/lib/design-system/tokens/index.ts"],
       "orphan": false,
       "valid": true
     },
@@ -1058,10 +906,7 @@
           "module": "../types/tokens",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/design-system/types/tokens.ts",
           "coreModule": false,
           "followable": true,
@@ -1086,10 +931,7 @@
           "module": "../tokens",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/design-system/tokens/index.ts",
           "coreModule": false,
           "followable": true,
@@ -1103,10 +945,7 @@
           "module": "../types/tokens",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/design-system/types/tokens.ts",
           "coreModule": false,
           "followable": true,
@@ -1136,10 +975,7 @@
           "module": "../../motion/context/MotionContext",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/motion/context/MotionContext.tsx",
           "coreModule": false,
           "followable": true,
@@ -1153,10 +989,7 @@
           "module": "../../motion/hooks/useConnectionQuality",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/motion/hooks/useConnectionQuality.ts",
           "coreModule": false,
           "followable": true,
@@ -1170,10 +1003,7 @@
           "module": "../../motion/hooks/useReducedMotion",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/motion/hooks/useReducedMotion.ts",
           "coreModule": false,
           "followable": true,
@@ -1187,10 +1017,7 @@
           "module": "../../motion/utils/animation-strategy",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/motion/utils/animation-strategy.ts",
           "coreModule": false,
           "followable": true,
@@ -1204,10 +1031,7 @@
           "module": "gsap",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "npm",
-            "import"
-          ],
+          "dependencyTypes": ["npm", "import"],
           "resolved": "node_modules/gsap/dist/gsap.js",
           "coreModule": false,
           "followable": false,
@@ -1221,10 +1045,7 @@
           "module": "react",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "npm",
-            "import"
-          ],
+          "dependencyTypes": ["npm", "import"],
           "resolved": "node_modules/react/index.js",
           "coreModule": false,
           "followable": false,
@@ -1258,10 +1079,7 @@
           "module": "../context/MotionContext",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/motion/context/MotionContext.tsx",
           "coreModule": false,
           "followable": true,
@@ -1275,10 +1093,7 @@
           "module": "./motion-tokens",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/motion/utils/motion-tokens.ts",
           "coreModule": false,
           "followable": true,
@@ -1288,9 +1103,7 @@
           "valid": true
         }
       ],
-      "dependents": [
-        "src/lib/ui/hooks/useComponentAnimation.ts"
-      ],
+      "dependents": ["src/lib/ui/hooks/useComponentAnimation.ts"],
       "orphan": false,
       "valid": true
     },
@@ -1302,10 +1115,7 @@
           "module": "react",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "npm",
-            "import"
-          ],
+          "dependencyTypes": ["npm", "import"],
           "resolved": "node_modules/react/index.js",
           "coreModule": false,
           "followable": false,
@@ -1339,10 +1149,7 @@
           "module": "react",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "npm",
-            "import"
-          ],
+          "dependencyTypes": ["npm", "import"],
           "resolved": "node_modules/react/index.js",
           "coreModule": false,
           "followable": false,
@@ -1376,10 +1183,7 @@
           "module": "../../design-system/tokens/typography",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/design-system/tokens/typography.ts",
           "coreModule": false,
           "followable": true,
@@ -1393,10 +1197,7 @@
           "module": "../../design-system/utils/token-analysis",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/design-system/utils/token-analysis.ts",
           "coreModule": false,
           "followable": true,
@@ -1410,10 +1211,7 @@
           "module": "../../design-system/utils/tokens",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/design-system/utils/tokens.ts",
           "coreModule": false,
           "followable": true,
@@ -1427,10 +1225,7 @@
           "module": "../../motion/hooks/useConnectionQuality",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/motion/hooks/useConnectionQuality.ts",
           "coreModule": false,
           "followable": true,
@@ -1444,10 +1239,7 @@
           "module": "../hooks/useComponentAnimation",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/ui/hooks/useComponentAnimation.ts",
           "coreModule": false,
           "followable": true,
@@ -1461,10 +1253,7 @@
           "module": "../types",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/ui/types/index.ts",
           "coreModule": false,
           "followable": true,
@@ -1478,10 +1267,7 @@
           "module": "../utils/use-combined-refs",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/ui/utils/use-combined-refs.ts",
           "coreModule": false,
           "followable": true,
@@ -1495,10 +1281,7 @@
           "module": "@mantine/core",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "npm",
-            "import"
-          ],
+          "dependencyTypes": ["npm", "import"],
           "resolved": "node_modules/@mantine/core/cjs/index.cjs",
           "coreModule": false,
           "followable": false,
@@ -1512,10 +1295,7 @@
           "module": "react",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "npm",
-            "import"
-          ],
+          "dependencyTypes": ["npm", "import"],
           "resolved": "node_modules/react/index.js",
           "coreModule": false,
           "followable": false,
@@ -1544,10 +1324,7 @@
           "module": "../../design-system/utils/token-analysis",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/design-system/utils/token-analysis.ts",
           "coreModule": false,
           "followable": true,
@@ -1561,10 +1338,7 @@
           "module": "../../motion/components/TransitionFade",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/motion/components/TransitionFade.tsx",
           "coreModule": false,
           "followable": true,
@@ -1578,10 +1352,7 @@
           "module": "../../motion/context/MotionContext",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/motion/context/MotionContext.tsx",
           "coreModule": false,
           "followable": true,
@@ -1595,10 +1366,7 @@
           "module": "../../motion/hooks/useConnectionQuality",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/motion/hooks/useConnectionQuality.ts",
           "coreModule": false,
           "followable": true,
@@ -1612,10 +1380,7 @@
           "module": "../hooks/useComponentAnimation",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/ui/hooks/useComponentAnimation.ts",
           "coreModule": false,
           "followable": true,
@@ -1629,10 +1394,7 @@
           "module": "../types",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/ui/types/index.ts",
           "coreModule": false,
           "followable": true,
@@ -1646,10 +1408,7 @@
           "module": "../utils/token-helpers",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/ui/utils/token-helpers.ts",
           "coreModule": false,
           "followable": true,
@@ -1663,10 +1422,7 @@
           "module": "../utils/use-combined-refs",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/ui/utils/use-combined-refs.ts",
           "coreModule": false,
           "followable": true,
@@ -1680,10 +1436,7 @@
           "module": "./Text",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/ui/components/Text.tsx",
           "coreModule": false,
           "followable": true,
@@ -1697,10 +1450,7 @@
           "module": "@mantine/core",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "npm",
-            "import"
-          ],
+          "dependencyTypes": ["npm", "import"],
           "resolved": "node_modules/@mantine/core/cjs/index.cjs",
           "coreModule": false,
           "followable": false,
@@ -1714,10 +1464,7 @@
           "module": "react",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "npm",
-            "import"
-          ],
+          "dependencyTypes": ["npm", "import"],
           "resolved": "node_modules/react/index.js",
           "coreModule": false,
           "followable": false,
@@ -1743,10 +1490,7 @@
           "module": "../hooks/useGSAPAnimation",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/motion/hooks/useGSAPAnimation.ts",
           "coreModule": false,
           "followable": true,
@@ -1760,10 +1504,7 @@
           "module": "../hooks/useReducedMotion",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/motion/hooks/useReducedMotion.ts",
           "coreModule": false,
           "followable": true,
@@ -1777,10 +1518,7 @@
           "module": "react",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "npm",
-            "import"
-          ],
+          "dependencyTypes": ["npm", "import"],
           "resolved": "node_modules/react/index.js",
           "coreModule": false,
           "followable": false,
@@ -1790,9 +1528,7 @@
           "valid": true
         }
       ],
-      "dependents": [
-        "src/lib/ui/components/Alert.tsx"
-      ],
+      "dependents": ["src/lib/ui/components/Alert.tsx"],
       "orphan": false,
       "valid": true
     },
@@ -1804,10 +1540,7 @@
           "module": "../context/MotionContext",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/motion/context/MotionContext.tsx",
           "coreModule": false,
           "followable": true,
@@ -1821,10 +1554,7 @@
           "module": "../gsap/gsap-core",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/motion/gsap/gsap-core.ts",
           "coreModule": false,
           "followable": true,
@@ -1838,10 +1568,7 @@
           "module": "../utils/motion-tokens",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/motion/utils/motion-tokens.ts",
           "coreModule": false,
           "followable": true,
@@ -1855,10 +1582,7 @@
           "module": "./useConnectionQuality",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/motion/hooks/useConnectionQuality.ts",
           "coreModule": false,
           "followable": true,
@@ -1872,10 +1596,7 @@
           "module": "./useReducedMotion",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/motion/hooks/useReducedMotion.ts",
           "coreModule": false,
           "followable": true,
@@ -1889,10 +1610,7 @@
           "module": "gsap",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "npm",
-            "import"
-          ],
+          "dependencyTypes": ["npm", "import"],
           "resolved": "node_modules/gsap/dist/gsap.js",
           "coreModule": false,
           "followable": false,
@@ -1906,10 +1624,7 @@
           "module": "react",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "npm",
-            "import"
-          ],
+          "dependencyTypes": ["npm", "import"],
           "resolved": "node_modules/react/index.js",
           "coreModule": false,
           "followable": false,
@@ -1919,9 +1634,7 @@
           "valid": true
         }
       ],
-      "dependents": [
-        "src/lib/motion/components/TransitionFade.tsx"
-      ],
+      "dependents": ["src/lib/motion/components/TransitionFade.tsx"],
       "orphan": false,
       "valid": true
     },
@@ -1933,10 +1646,7 @@
           "module": "../hooks/useConnectionQuality",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/motion/hooks/useConnectionQuality.ts",
           "coreModule": false,
           "followable": true,
@@ -1950,10 +1660,7 @@
           "module": "../utils/motion-tokens",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/motion/utils/motion-tokens.ts",
           "coreModule": false,
           "followable": true,
@@ -1967,10 +1674,7 @@
           "module": "gsap",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "npm",
-            "import"
-          ],
+          "dependencyTypes": ["npm", "import"],
           "resolved": "node_modules/gsap/dist/gsap.js",
           "coreModule": false,
           "followable": false,
@@ -1984,10 +1688,7 @@
           "module": "gsap/Draggable",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "npm",
-            "import"
-          ],
+          "dependencyTypes": ["npm", "import"],
           "resolved": "node_modules/gsap/Draggable.js",
           "coreModule": false,
           "followable": false,
@@ -2001,10 +1702,7 @@
           "module": "gsap/ScrollToPlugin",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "npm",
-            "import"
-          ],
+          "dependencyTypes": ["npm", "import"],
           "resolved": "node_modules/gsap/ScrollToPlugin.js",
           "coreModule": false,
           "followable": false,
@@ -2018,10 +1716,7 @@
           "module": "gsap/ScrollTrigger",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "npm",
-            "import"
-          ],
+          "dependencyTypes": ["npm", "import"],
           "resolved": "node_modules/gsap/ScrollTrigger.js",
           "coreModule": false,
           "followable": false,
@@ -2031,9 +1726,7 @@
           "valid": true
         }
       ],
-      "dependents": [
-        "src/lib/motion/hooks/useGSAPAnimation.ts"
-      ],
+      "dependents": ["src/lib/motion/hooks/useGSAPAnimation.ts"],
       "orphan": false,
       "valid": true
     },
@@ -2043,14 +1736,9 @@
       "coreModule": false,
       "couldNotResolve": false,
       "matchesDoNotFollow": true,
-      "dependencyTypes": [
-        "npm",
-        "import"
-      ],
+      "dependencyTypes": ["npm", "import"],
       "dependencies": [],
-      "dependents": [
-        "src/lib/motion/gsap/gsap-core.ts"
-      ],
+      "dependents": ["src/lib/motion/gsap/gsap-core.ts"],
       "orphan": false,
       "valid": true
     },
@@ -2060,14 +1748,9 @@
       "coreModule": false,
       "couldNotResolve": false,
       "matchesDoNotFollow": true,
-      "dependencyTypes": [
-        "npm",
-        "import"
-      ],
+      "dependencyTypes": ["npm", "import"],
       "dependencies": [],
-      "dependents": [
-        "src/lib/motion/gsap/gsap-core.ts"
-      ],
+      "dependents": ["src/lib/motion/gsap/gsap-core.ts"],
       "orphan": false,
       "valid": true
     },
@@ -2077,14 +1760,9 @@
       "coreModule": false,
       "couldNotResolve": false,
       "matchesDoNotFollow": true,
-      "dependencyTypes": [
-        "npm",
-        "import"
-      ],
+      "dependencyTypes": ["npm", "import"],
       "dependencies": [],
-      "dependents": [
-        "src/lib/motion/gsap/gsap-core.ts"
-      ],
+      "dependents": ["src/lib/motion/gsap/gsap-core.ts"],
       "orphan": false,
       "valid": true
     },
@@ -2096,10 +1774,7 @@
           "module": "../types",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/ui/types/index.ts",
           "coreModule": false,
           "followable": true,
@@ -2126,10 +1801,7 @@
           "module": "../../motion/context/MotionContext",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/motion/context/MotionContext.tsx",
           "coreModule": false,
           "followable": true,
@@ -2143,10 +1815,7 @@
           "module": "../../motion/hooks/useReducedMotion",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/motion/hooks/useReducedMotion.ts",
           "coreModule": false,
           "followable": true,
@@ -2160,10 +1829,7 @@
           "module": "../../motion/utils/motion-tokens",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/motion/utils/motion-tokens.ts",
           "coreModule": false,
           "followable": true,
@@ -2177,10 +1843,7 @@
           "module": "../hooks/useComponentAnimation",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/ui/hooks/useComponentAnimation.ts",
           "coreModule": false,
           "followable": true,
@@ -2194,10 +1857,7 @@
           "module": "../utils/ref-utils",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/ui/utils/ref-utils.ts",
           "coreModule": false,
           "followable": true,
@@ -2211,10 +1871,7 @@
           "module": "@mantine/core",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "npm",
-            "import"
-          ],
+          "dependencyTypes": ["npm", "import"],
           "resolved": "node_modules/@mantine/core/cjs/index.cjs",
           "coreModule": false,
           "followable": false,
@@ -2228,10 +1885,7 @@
           "module": "gsap",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "npm",
-            "import"
-          ],
+          "dependencyTypes": ["npm", "import"],
           "resolved": "node_modules/gsap/dist/gsap.js",
           "coreModule": false,
           "followable": false,
@@ -2245,10 +1899,7 @@
           "module": "react",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "npm",
-            "import"
-          ],
+          "dependencyTypes": ["npm", "import"],
           "resolved": "node_modules/react/index.js",
           "coreModule": false,
           "followable": false,
@@ -2274,10 +1925,7 @@
           "module": "react",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "npm",
-            "import"
-          ],
+          "dependencyTypes": ["npm", "import"],
           "resolved": "node_modules/react/index.js",
           "coreModule": false,
           "followable": false,
@@ -2302,10 +1950,7 @@
           "module": "./AgentMessage",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/ui/components/AgentMessage.tsx",
           "coreModule": false,
           "followable": true,
@@ -2319,10 +1964,7 @@
           "module": "./Alert",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/ui/components/Alert.tsx",
           "coreModule": false,
           "followable": true,
@@ -2336,10 +1978,7 @@
           "module": "./Button",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/ui/components/Button.tsx",
           "coreModule": false,
           "followable": true,
@@ -2353,10 +1992,7 @@
           "module": "./Card",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/ui/components/Card.tsx",
           "coreModule": false,
           "followable": true,
@@ -2370,10 +2006,7 @@
           "module": "./Container",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/ui/components/Container.tsx",
           "coreModule": false,
           "followable": true,
@@ -2387,10 +2020,7 @@
           "module": "./FormField",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/ui/components/FormField.tsx",
           "coreModule": false,
           "followable": true,
@@ -2404,10 +2034,7 @@
           "module": "./Grid",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/ui/components/Grid.tsx",
           "coreModule": false,
           "followable": true,
@@ -2421,10 +2048,7 @@
           "module": "./Group",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/ui/components/Group.tsx",
           "coreModule": false,
           "followable": true,
@@ -2438,10 +2062,7 @@
           "module": "./Stack",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/ui/components/Stack.tsx",
           "coreModule": false,
           "followable": true,
@@ -2455,10 +2076,7 @@
           "module": "./Text",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/ui/components/Text.tsx",
           "coreModule": false,
           "followable": true,
@@ -2472,10 +2090,7 @@
           "module": "react",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "npm",
-            "import"
-          ],
+          "dependencyTypes": ["npm", "import"],
           "resolved": "node_modules/react/index.js",
           "coreModule": false,
           "followable": false,
@@ -2485,9 +2100,7 @@
           "valid": true
         }
       ],
-      "dependents": [
-        "src/lib/ui/components/index.ts"
-      ],
+      "dependents": ["src/lib/ui/components/index.ts"],
       "orphan": false,
       "valid": true
     },
@@ -2499,10 +2112,7 @@
           "module": "../../design-system/utils/token-analysis",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/design-system/utils/token-analysis.ts",
           "coreModule": false,
           "followable": true,
@@ -2516,10 +2126,7 @@
           "module": "../../motion/hooks/useConnectionQuality",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/motion/hooks/useConnectionQuality.ts",
           "coreModule": false,
           "followable": true,
@@ -2533,10 +2140,7 @@
           "module": "../hooks/useComponentAnimation",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/ui/hooks/useComponentAnimation.ts",
           "coreModule": false,
           "followable": true,
@@ -2550,10 +2154,7 @@
           "module": "../types",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/ui/types/index.ts",
           "coreModule": false,
           "followable": true,
@@ -2567,10 +2168,7 @@
           "module": "../utils/token-helpers",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/ui/utils/token-helpers.ts",
           "coreModule": false,
           "followable": true,
@@ -2584,10 +2182,7 @@
           "module": "../utils/use-combined-refs",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/ui/utils/use-combined-refs.ts",
           "coreModule": false,
           "followable": true,
@@ -2601,10 +2196,7 @@
           "module": "@mantine/core",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "npm",
-            "import"
-          ],
+          "dependencyTypes": ["npm", "import"],
           "resolved": "node_modules/@mantine/core/cjs/index.cjs",
           "coreModule": false,
           "followable": false,
@@ -2618,10 +2210,7 @@
           "module": "react",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "npm",
-            "import"
-          ],
+          "dependencyTypes": ["npm", "import"],
           "resolved": "node_modules/react/index.js",
           "coreModule": false,
           "followable": false,
@@ -2647,10 +2236,7 @@
           "module": "../../design-system/utils/token-analysis",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/design-system/utils/token-analysis.ts",
           "coreModule": false,
           "followable": true,
@@ -2664,10 +2250,7 @@
           "module": "../../motion/context/MotionContext",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/motion/context/MotionContext.tsx",
           "coreModule": false,
           "followable": true,
@@ -2681,10 +2264,7 @@
           "module": "../../motion/hooks/useConnectionQuality",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/motion/hooks/useConnectionQuality.ts",
           "coreModule": false,
           "followable": true,
@@ -2698,10 +2278,7 @@
           "module": "../../motion/hooks/useReducedMotion",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/motion/hooks/useReducedMotion.ts",
           "coreModule": false,
           "followable": true,
@@ -2715,10 +2292,7 @@
           "module": "../hooks/useComponentAnimation",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/ui/hooks/useComponentAnimation.ts",
           "coreModule": false,
           "followable": true,
@@ -2732,10 +2306,7 @@
           "module": "../types",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/ui/types/index.ts",
           "coreModule": false,
           "followable": true,
@@ -2749,10 +2320,7 @@
           "module": "../utils/token-helpers",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/ui/utils/token-helpers.ts",
           "coreModule": false,
           "followable": true,
@@ -2766,10 +2334,7 @@
           "module": "../utils/use-combined-refs",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/ui/utils/use-combined-refs.ts",
           "coreModule": false,
           "followable": true,
@@ -2783,10 +2348,7 @@
           "module": "./Text",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/ui/components/Text.tsx",
           "coreModule": false,
           "followable": true,
@@ -2800,10 +2362,7 @@
           "module": "@mantine/core",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "npm",
-            "import"
-          ],
+          "dependencyTypes": ["npm", "import"],
           "resolved": "node_modules/@mantine/core/cjs/index.cjs",
           "coreModule": false,
           "followable": false,
@@ -2817,10 +2376,7 @@
           "module": "react",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "npm",
-            "import"
-          ],
+          "dependencyTypes": ["npm", "import"],
           "resolved": "node_modules/react/index.js",
           "coreModule": false,
           "followable": false,
@@ -2846,10 +2402,7 @@
           "module": "../../design-system/utils/token-analysis",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/design-system/utils/token-analysis.ts",
           "coreModule": false,
           "followable": true,
@@ -2863,10 +2416,7 @@
           "module": "../../motion/hooks/useConnectionQuality",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/motion/hooks/useConnectionQuality.ts",
           "coreModule": false,
           "followable": true,
@@ -2880,10 +2430,7 @@
           "module": "../hooks/useComponentAnimation",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/ui/hooks/useComponentAnimation.ts",
           "coreModule": false,
           "followable": true,
@@ -2897,10 +2444,7 @@
           "module": "../utils/use-combined-refs",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/ui/utils/use-combined-refs.ts",
           "coreModule": false,
           "followable": true,
@@ -2914,10 +2458,7 @@
           "module": "@mantine/core",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "npm",
-            "import"
-          ],
+          "dependencyTypes": ["npm", "import"],
           "resolved": "node_modules/@mantine/core/cjs/index.cjs",
           "coreModule": false,
           "followable": false,
@@ -2931,10 +2472,7 @@
           "module": "react",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "npm",
-            "import"
-          ],
+          "dependencyTypes": ["npm", "import"],
           "resolved": "node_modules/react/index.js",
           "coreModule": false,
           "followable": false,
@@ -2960,10 +2498,7 @@
           "module": "../../design-system/utils/token-analysis",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/design-system/utils/token-analysis.ts",
           "coreModule": false,
           "followable": true,
@@ -2977,10 +2512,7 @@
           "module": "../../design-system/utils/tokens",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/design-system/utils/tokens.ts",
           "coreModule": false,
           "followable": true,
@@ -2994,10 +2526,7 @@
           "module": "../types",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/ui/types/index.ts",
           "coreModule": false,
           "followable": true,
@@ -3011,10 +2540,7 @@
           "module": "../utils/use-combined-refs",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/ui/utils/use-combined-refs.ts",
           "coreModule": false,
           "followable": true,
@@ -3028,10 +2554,7 @@
           "module": "@mantine/core",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "npm",
-            "import"
-          ],
+          "dependencyTypes": ["npm", "import"],
           "resolved": "node_modules/@mantine/core/cjs/index.cjs",
           "coreModule": false,
           "followable": false,
@@ -3045,10 +2568,7 @@
           "module": "react",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "npm",
-            "import"
-          ],
+          "dependencyTypes": ["npm", "import"],
           "resolved": "node_modules/react/index.js",
           "coreModule": false,
           "followable": false,
@@ -3073,10 +2593,7 @@
           "module": "../../design-system/utils/token-analysis",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/design-system/utils/token-analysis.ts",
           "coreModule": false,
           "followable": true,
@@ -3090,10 +2607,7 @@
           "module": "../../design-system/utils/tokens",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/design-system/utils/tokens.ts",
           "coreModule": false,
           "followable": true,
@@ -3107,10 +2621,7 @@
           "module": "../../motion/context/MotionContext",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/motion/context/MotionContext.tsx",
           "coreModule": false,
           "followable": true,
@@ -3124,10 +2635,7 @@
           "module": "../../motion/hooks/useConnectionQuality",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/motion/hooks/useConnectionQuality.ts",
           "coreModule": false,
           "followable": true,
@@ -3141,10 +2649,7 @@
           "module": "../hooks/useComponentAnimation",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/ui/hooks/useComponentAnimation.ts",
           "coreModule": false,
           "followable": true,
@@ -3158,10 +2663,7 @@
           "module": "../utils/use-combined-refs",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/ui/utils/use-combined-refs.ts",
           "coreModule": false,
           "followable": true,
@@ -3175,10 +2677,7 @@
           "module": "@mantine/core",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "npm",
-            "import"
-          ],
+          "dependencyTypes": ["npm", "import"],
           "resolved": "node_modules/@mantine/core/cjs/index.cjs",
           "coreModule": false,
           "followable": false,
@@ -3192,10 +2691,7 @@
           "module": "react",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "npm",
-            "import"
-          ],
+          "dependencyTypes": ["npm", "import"],
           "resolved": "node_modules/react/index.js",
           "coreModule": false,
           "followable": false,
@@ -3221,10 +2717,7 @@
           "module": "../../design-system/utils/token-analysis",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/design-system/utils/token-analysis.ts",
           "coreModule": false,
           "followable": true,
@@ -3238,10 +2731,7 @@
           "module": "../../design-system/utils/tokens",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/design-system/utils/tokens.ts",
           "coreModule": false,
           "followable": true,
@@ -3255,10 +2745,7 @@
           "module": "../hooks/useComponentAnimation",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/ui/hooks/useComponentAnimation.ts",
           "coreModule": false,
           "followable": true,
@@ -3272,10 +2759,7 @@
           "module": "../types",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/ui/types/index.ts",
           "coreModule": false,
           "followable": true,
@@ -3289,10 +2773,7 @@
           "module": "../utils/use-combined-refs",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/ui/utils/use-combined-refs.ts",
           "coreModule": false,
           "followable": true,
@@ -3306,10 +2787,7 @@
           "module": "@mantine/core",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "npm",
-            "import"
-          ],
+          "dependencyTypes": ["npm", "import"],
           "resolved": "node_modules/@mantine/core/cjs/index.cjs",
           "coreModule": false,
           "followable": false,
@@ -3323,10 +2801,7 @@
           "module": "react",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "npm",
-            "import"
-          ],
+          "dependencyTypes": ["npm", "import"],
           "resolved": "node_modules/react/index.js",
           "coreModule": false,
           "followable": false,
@@ -3340,11 +2815,7 @@
           "module": "react",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "npm",
-            "type-only",
-            "import"
-          ],
+          "dependencyTypes": ["npm", "type-only", "import"],
           "resolved": "node_modules/react/index.js",
           "coreModule": false,
           "followable": false,
@@ -3369,10 +2840,7 @@
           "module": "../../design-system/utils/token-analysis",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/design-system/utils/token-analysis.ts",
           "coreModule": false,
           "followable": true,
@@ -3386,10 +2854,7 @@
           "module": "../../design-system/utils/tokens",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/design-system/utils/tokens.ts",
           "coreModule": false,
           "followable": true,
@@ -3403,10 +2868,7 @@
           "module": "../types",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/ui/types/index.ts",
           "coreModule": false,
           "followable": true,
@@ -3420,10 +2882,7 @@
           "module": "../utils/use-combined-refs",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/ui/utils/use-combined-refs.ts",
           "coreModule": false,
           "followable": true,
@@ -3437,10 +2896,7 @@
           "module": "@mantine/core",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "npm",
-            "import"
-          ],
+          "dependencyTypes": ["npm", "import"],
           "resolved": "node_modules/@mantine/core/cjs/index.cjs",
           "coreModule": false,
           "followable": false,
@@ -3454,10 +2910,7 @@
           "module": "react",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "npm",
-            "import"
-          ],
+          "dependencyTypes": ["npm", "import"],
           "resolved": "node_modules/react/index.js",
           "coreModule": false,
           "followable": false,
@@ -3467,9 +2920,7 @@
           "valid": true
         }
       ],
-      "dependents": [
-        "src/lib/ui/components/index.ts"
-      ],
+      "dependents": ["src/lib/ui/components/index.ts"],
       "orphan": false,
       "valid": true
     },
@@ -3481,10 +2932,7 @@
           "module": "../../design-system/utils/token-analysis",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/design-system/utils/token-analysis.ts",
           "coreModule": false,
           "followable": true,
@@ -3498,10 +2946,7 @@
           "module": "../../design-system/utils/tokens",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/design-system/utils/tokens.ts",
           "coreModule": false,
           "followable": true,
@@ -3515,10 +2960,7 @@
           "module": "../hooks/useComponentAnimation",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/ui/hooks/useComponentAnimation.ts",
           "coreModule": false,
           "followable": true,
@@ -3532,10 +2974,7 @@
           "module": "../types",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/ui/types/index.ts",
           "coreModule": false,
           "followable": true,
@@ -3549,10 +2988,7 @@
           "module": "../utils/use-combined-refs",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/ui/utils/use-combined-refs.ts",
           "coreModule": false,
           "followable": true,
@@ -3566,10 +3002,7 @@
           "module": "@mantine/core",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "npm",
-            "import"
-          ],
+          "dependencyTypes": ["npm", "import"],
           "resolved": "node_modules/@mantine/core/cjs/index.cjs",
           "coreModule": false,
           "followable": false,
@@ -3583,10 +3016,7 @@
           "module": "react",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "npm",
-            "import"
-          ],
+          "dependencyTypes": ["npm", "import"],
           "resolved": "node_modules/react/index.js",
           "coreModule": false,
           "followable": false,
@@ -3600,11 +3030,7 @@
           "module": "react",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "npm",
-            "type-only",
-            "import"
-          ],
+          "dependencyTypes": ["npm", "type-only", "import"],
           "resolved": "node_modules/react/index.js",
           "coreModule": false,
           "followable": false,
@@ -3614,9 +3040,7 @@
           "valid": true
         }
       ],
-      "dependents": [
-        "src/lib/ui/components/index.ts"
-      ],
+      "dependents": ["src/lib/ui/components/index.ts"],
       "orphan": false,
       "valid": true
     },
@@ -3628,10 +3052,7 @@
           "module": "../../utils/test-utils",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/ui/utils/test-utils.ts",
           "coreModule": false,
           "followable": true,
@@ -3645,10 +3066,7 @@
           "module": "../Alert",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/ui/components/Alert.tsx",
           "coreModule": false,
           "followable": true,
@@ -3662,10 +3080,7 @@
           "module": "@testing-library/react",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "npm-dev",
-            "import"
-          ],
+          "dependencyTypes": ["npm-dev", "import"],
           "resolved": "node_modules/@testing-library/react/dist/index.js",
           "coreModule": false,
           "followable": false,
@@ -3679,10 +3094,7 @@
           "module": "react",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "npm",
-            "import"
-          ],
+          "dependencyTypes": ["npm", "import"],
           "resolved": "node_modules/react/index.js",
           "coreModule": false,
           "followable": false,
@@ -3702,10 +3114,7 @@
       "coreModule": false,
       "couldNotResolve": false,
       "matchesDoNotFollow": true,
-      "dependencyTypes": [
-        "npm-dev",
-        "import"
-      ],
+      "dependencyTypes": ["npm-dev", "import"],
       "dependencies": [],
       "dependents": [
         "src/lib/ui/components/__tests__/Alert.test.tsx",
@@ -3730,10 +3139,7 @@
           "module": "../../design-system/theme/ThemeContext",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/design-system/theme/ThemeContext.tsx",
           "coreModule": false,
           "followable": true,
@@ -3747,10 +3153,7 @@
           "module": "../../motion/context/MotionContext",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/motion/context/MotionContext.tsx",
           "coreModule": false,
           "followable": true,
@@ -3764,10 +3167,7 @@
           "module": "@testing-library/react",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "npm-dev",
-            "import"
-          ],
+          "dependencyTypes": ["npm-dev", "import"],
           "resolved": "node_modules/@testing-library/react/dist/index.js",
           "coreModule": false,
           "followable": false,
@@ -3781,10 +3181,7 @@
           "module": "react",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "npm",
-            "import"
-          ],
+          "dependencyTypes": ["npm", "import"],
           "resolved": "node_modules/react/index.js",
           "coreModule": false,
           "followable": false,
@@ -3814,10 +3211,7 @@
           "module": "../tokens",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/design-system/tokens/index.ts",
           "coreModule": false,
           "followable": true,
@@ -3831,10 +3225,7 @@
           "module": "../types/tokens",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/design-system/types/tokens.ts",
           "coreModule": false,
           "followable": true,
@@ -3848,10 +3239,7 @@
           "module": "react",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "npm",
-            "import"
-          ],
+          "dependencyTypes": ["npm", "import"],
           "resolved": "node_modules/react/index.js",
           "coreModule": false,
           "followable": false,
@@ -3861,9 +3249,7 @@
           "valid": true
         }
       ],
-      "dependents": [
-        "src/lib/ui/utils/test-utils.ts"
-      ],
+      "dependents": ["src/lib/ui/utils/test-utils.ts"],
       "orphan": false,
       "valid": true
     },
@@ -3875,10 +3261,7 @@
           "module": "../../utils/test-utils",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/ui/utils/test-utils.ts",
           "coreModule": false,
           "followable": true,
@@ -3892,10 +3275,7 @@
           "module": "../Button",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/ui/components/Button.tsx",
           "coreModule": false,
           "followable": true,
@@ -3909,10 +3289,7 @@
           "module": "@testing-library/react",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "npm-dev",
-            "import"
-          ],
+          "dependencyTypes": ["npm-dev", "import"],
           "resolved": "node_modules/@testing-library/react/dist/index.js",
           "coreModule": false,
           "followable": false,
@@ -3926,10 +3303,7 @@
           "module": "react",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "npm",
-            "import"
-          ],
+          "dependencyTypes": ["npm", "import"],
           "resolved": "node_modules/react/index.js",
           "coreModule": false,
           "followable": false,
@@ -3951,10 +3325,7 @@
           "module": "../../utils/test-utils",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/ui/utils/test-utils.ts",
           "coreModule": false,
           "followable": true,
@@ -3968,10 +3339,7 @@
           "module": "../Container",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/ui/components/Container.tsx",
           "coreModule": false,
           "followable": true,
@@ -3985,10 +3353,7 @@
           "module": "@testing-library/react",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "npm-dev",
-            "import"
-          ],
+          "dependencyTypes": ["npm-dev", "import"],
           "resolved": "node_modules/@testing-library/react/dist/index.js",
           "coreModule": false,
           "followable": false,
@@ -4002,10 +3367,7 @@
           "module": "react",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "npm",
-            "import"
-          ],
+          "dependencyTypes": ["npm", "import"],
           "resolved": "node_modules/react/index.js",
           "coreModule": false,
           "followable": false,
@@ -4027,10 +3389,7 @@
           "module": "../../utils/test-utils",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/ui/utils/test-utils.ts",
           "coreModule": false,
           "followable": true,
@@ -4044,10 +3403,7 @@
           "module": "../FormField",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/ui/components/FormField.tsx",
           "coreModule": false,
           "followable": true,
@@ -4061,10 +3417,7 @@
           "module": "@testing-library/react",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "npm-dev",
-            "import"
-          ],
+          "dependencyTypes": ["npm-dev", "import"],
           "resolved": "node_modules/@testing-library/react/dist/index.js",
           "coreModule": false,
           "followable": false,
@@ -4078,10 +3431,7 @@
           "module": "react",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "npm",
-            "import"
-          ],
+          "dependencyTypes": ["npm", "import"],
           "resolved": "node_modules/react/index.js",
           "coreModule": false,
           "followable": false,
@@ -4103,10 +3453,7 @@
           "module": "../../utils/test-utils",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/ui/utils/test-utils.ts",
           "coreModule": false,
           "followable": true,
@@ -4120,10 +3467,7 @@
           "module": "../Grid",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/ui/components/Grid.tsx",
           "coreModule": false,
           "followable": true,
@@ -4137,10 +3481,7 @@
           "module": "@testing-library/react",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "npm-dev",
-            "import"
-          ],
+          "dependencyTypes": ["npm-dev", "import"],
           "resolved": "node_modules/@testing-library/react/dist/index.js",
           "coreModule": false,
           "followable": false,
@@ -4154,10 +3495,7 @@
           "module": "react",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "npm",
-            "import"
-          ],
+          "dependencyTypes": ["npm", "import"],
           "resolved": "node_modules/react/index.js",
           "coreModule": false,
           "followable": false,
@@ -4179,10 +3517,7 @@
           "module": "../Menu",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/ui/components/Menu.tsx",
           "coreModule": false,
           "followable": true,
@@ -4196,10 +3531,7 @@
           "module": "@testing-library/react",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "npm-dev",
-            "import"
-          ],
+          "dependencyTypes": ["npm-dev", "import"],
           "resolved": "node_modules/@testing-library/react/dist/index.js",
           "coreModule": false,
           "followable": false,
@@ -4221,10 +3553,7 @@
           "module": "../../utils/test-utils",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/ui/utils/test-utils.ts",
           "coreModule": false,
           "followable": true,
@@ -4238,10 +3567,7 @@
           "module": "../Stack",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/ui/components/Stack.tsx",
           "coreModule": false,
           "followable": true,
@@ -4255,10 +3581,7 @@
           "module": "@testing-library/react",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "npm-dev",
-            "import"
-          ],
+          "dependencyTypes": ["npm-dev", "import"],
           "resolved": "node_modules/@testing-library/react/dist/index.js",
           "coreModule": false,
           "followable": false,
@@ -4272,10 +3595,7 @@
           "module": "react",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "npm",
-            "import"
-          ],
+          "dependencyTypes": ["npm", "import"],
           "resolved": "node_modules/react/index.js",
           "coreModule": false,
           "followable": false,
@@ -4297,10 +3617,7 @@
           "module": "../../utils/test-utils",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/ui/utils/test-utils.ts",
           "coreModule": false,
           "followable": true,
@@ -4314,10 +3631,7 @@
           "module": "../Text",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/ui/components/Text.tsx",
           "coreModule": false,
           "followable": true,
@@ -4331,10 +3645,7 @@
           "module": "@testing-library/react",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "npm-dev",
-            "import"
-          ],
+          "dependencyTypes": ["npm-dev", "import"],
           "resolved": "node_modules/@testing-library/react/dist/index.js",
           "coreModule": false,
           "followable": false,
@@ -4348,10 +3659,7 @@
           "module": "react",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "npm",
-            "import"
-          ],
+          "dependencyTypes": ["npm", "import"],
           "resolved": "node_modules/react/index.js",
           "coreModule": false,
           "followable": false,
@@ -4373,10 +3681,7 @@
           "module": "./AgentMessage",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "export"
-          ],
+          "dependencyTypes": ["local", "export"],
           "resolved": "src/lib/ui/components/AgentMessage.tsx",
           "coreModule": false,
           "followable": true,
@@ -4390,10 +3695,7 @@
           "module": "./Alert",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "export"
-          ],
+          "dependencyTypes": ["local", "export"],
           "resolved": "src/lib/ui/components/Alert.tsx",
           "coreModule": false,
           "followable": true,
@@ -4407,10 +3709,7 @@
           "module": "./Button",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "export"
-          ],
+          "dependencyTypes": ["local", "export"],
           "resolved": "src/lib/ui/components/Button.tsx",
           "coreModule": false,
           "followable": true,
@@ -4424,10 +3723,7 @@
           "module": "./Card",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "export"
-          ],
+          "dependencyTypes": ["local", "export"],
           "resolved": "src/lib/ui/components/Card.tsx",
           "coreModule": false,
           "followable": true,
@@ -4441,10 +3737,7 @@
           "module": "./ComponentShowcase",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "export"
-          ],
+          "dependencyTypes": ["local", "export"],
           "resolved": "src/lib/ui/components/ComponentShowcase.tsx",
           "coreModule": false,
           "followable": true,
@@ -4458,10 +3751,7 @@
           "module": "./Container",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "export"
-          ],
+          "dependencyTypes": ["local", "export"],
           "resolved": "src/lib/ui/components/Container.tsx",
           "coreModule": false,
           "followable": true,
@@ -4475,10 +3765,7 @@
           "module": "./FormField",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "export"
-          ],
+          "dependencyTypes": ["local", "export"],
           "resolved": "src/lib/ui/components/FormField.tsx",
           "coreModule": false,
           "followable": true,
@@ -4492,10 +3779,7 @@
           "module": "./Grid",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "export"
-          ],
+          "dependencyTypes": ["local", "export"],
           "resolved": "src/lib/ui/components/Grid.tsx",
           "coreModule": false,
           "followable": true,
@@ -4509,10 +3793,7 @@
           "module": "./Group",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "export"
-          ],
+          "dependencyTypes": ["local", "export"],
           "resolved": "src/lib/ui/components/Group.tsx",
           "coreModule": false,
           "followable": true,
@@ -4526,10 +3807,7 @@
           "module": "./Menu",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "export"
-          ],
+          "dependencyTypes": ["local", "export"],
           "resolved": "src/lib/ui/components/Menu.tsx",
           "coreModule": false,
           "followable": true,
@@ -4543,10 +3821,7 @@
           "module": "./SimpleGrid",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "export"
-          ],
+          "dependencyTypes": ["local", "export"],
           "resolved": "src/lib/ui/components/SimpleGrid.tsx",
           "coreModule": false,
           "followable": true,
@@ -4560,10 +3835,7 @@
           "module": "./Stack",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "export"
-          ],
+          "dependencyTypes": ["local", "export"],
           "resolved": "src/lib/ui/components/Stack.tsx",
           "coreModule": false,
           "followable": true,
@@ -4577,10 +3849,7 @@
           "module": "./Tabs",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "export"
-          ],
+          "dependencyTypes": ["local", "export"],
           "resolved": "src/lib/ui/components/Tabs.tsx",
           "coreModule": false,
           "followable": true,
@@ -4594,10 +3863,7 @@
           "module": "./Text",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "export"
-          ],
+          "dependencyTypes": ["local", "export"],
           "resolved": "src/lib/ui/components/Text.tsx",
           "coreModule": false,
           "followable": true,
@@ -4607,9 +3873,7 @@
           "valid": true
         }
       ],
-      "dependents": [
-        "src/lib/ui/index.ts"
-      ],
+      "dependents": ["src/lib/ui/index.ts"],
       "orphan": false,
       "valid": true
     },
@@ -4621,10 +3885,7 @@
           "module": "./useComponentAnimation",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "export"
-          ],
+          "dependencyTypes": ["local", "export"],
           "resolved": "src/lib/ui/hooks/useComponentAnimation.ts",
           "coreModule": false,
           "followable": true,
@@ -4634,9 +3895,7 @@
           "valid": true
         }
       ],
-      "dependents": [
-        "src/lib/ui/index.ts"
-      ],
+      "dependents": ["src/lib/ui/index.ts"],
       "orphan": false,
       "valid": true
     },
@@ -4648,10 +3907,7 @@
           "module": "../motion/context/MotionContext",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "export"
-          ],
+          "dependencyTypes": ["local", "export"],
           "resolved": "src/lib/motion/context/MotionContext.tsx",
           "coreModule": false,
           "followable": true,
@@ -4665,10 +3921,7 @@
           "module": "../motion/hooks/useReducedMotion",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "export"
-          ],
+          "dependencyTypes": ["local", "export"],
           "resolved": "src/lib/motion/hooks/useReducedMotion.ts",
           "coreModule": false,
           "followable": true,
@@ -4682,10 +3935,7 @@
           "module": "./components",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "export"
-          ],
+          "dependencyTypes": ["local", "export"],
           "resolved": "src/lib/ui/components/index.ts",
           "coreModule": false,
           "followable": true,
@@ -4699,10 +3949,7 @@
           "module": "./hooks",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "export"
-          ],
+          "dependencyTypes": ["local", "export"],
           "resolved": "src/lib/ui/hooks/index.ts",
           "coreModule": false,
           "followable": true,
@@ -4716,10 +3963,7 @@
           "module": "./types",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "export"
-          ],
+          "dependencyTypes": ["local", "export"],
           "resolved": "src/lib/ui/types/index.ts",
           "coreModule": false,
           "followable": true,
@@ -4733,10 +3977,7 @@
           "module": "./utils",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "export"
-          ],
+          "dependencyTypes": ["local", "export"],
           "resolved": "src/lib/ui/utils/index.ts",
           "coreModule": false,
           "followable": true,
@@ -4750,10 +3991,7 @@
           "module": "@mantine/core",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "npm",
-            "export"
-          ],
+          "dependencyTypes": ["npm", "export"],
           "resolved": "node_modules/@mantine/core/cjs/index.cjs",
           "coreModule": false,
           "followable": false,
@@ -4775,10 +4013,7 @@
           "module": "./ref-utils",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "export"
-          ],
+          "dependencyTypes": ["local", "export"],
           "resolved": "src/lib/ui/utils/ref-utils.ts",
           "coreModule": false,
           "followable": true,
@@ -4792,10 +4027,7 @@
           "module": "./token-helpers",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "export"
-          ],
+          "dependencyTypes": ["local", "export"],
           "resolved": "src/lib/ui/utils/token-helpers.ts",
           "coreModule": false,
           "followable": true,
@@ -4805,9 +4037,7 @@
           "valid": true
         }
       ],
-      "dependents": [
-        "src/lib/ui/index.ts"
-      ],
+      "dependents": ["src/lib/ui/index.ts"],
       "orphan": false,
       "valid": true
     },
@@ -4819,10 +4049,7 @@
           "module": "../../motion/context/MotionContext",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "local",
-            "import"
-          ],
+          "dependencyTypes": ["local", "import"],
           "resolved": "src/lib/motion/context/MotionContext.tsx",
           "coreModule": false,
           "followable": true,
@@ -4836,10 +4063,7 @@
           "module": "@mantine/core",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "npm",
-            "import"
-          ],
+          "dependencyTypes": ["npm", "import"],
           "resolved": "node_modules/@mantine/core/cjs/index.cjs",
           "coreModule": false,
           "followable": false,
@@ -4853,10 +4077,7 @@
           "module": "@testing-library/jest-dom",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "npm-dev",
-            "import"
-          ],
+          "dependencyTypes": ["npm-dev", "import"],
           "resolved": "node_modules/@testing-library/jest-dom/dist/index.js",
           "coreModule": false,
           "followable": false,
@@ -4870,10 +4091,7 @@
           "module": "@testing-library/react",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "npm-dev",
-            "import"
-          ],
+          "dependencyTypes": ["npm-dev", "import"],
           "resolved": "node_modules/@testing-library/react/dist/index.js",
           "coreModule": false,
           "followable": false,
@@ -4887,10 +4105,7 @@
           "module": "react",
           "moduleSystem": "es6",
           "exoticallyRequired": false,
-          "dependencyTypes": [
-            "npm",
-            "import"
-          ],
+          "dependencyTypes": ["npm", "import"],
           "resolved": "node_modules/react/index.js",
           "coreModule": false,
           "followable": false,
@@ -4910,14 +4125,9 @@
       "coreModule": false,
       "couldNotResolve": false,
       "matchesDoNotFollow": true,
-      "dependencyTypes": [
-        "npm-dev",
-        "import"
-      ],
+      "dependencyTypes": ["npm-dev", "import"],
       "dependencies": [],
-      "dependents": [
-        "src/lib/ui/utils/test-utils.tsx"
-      ],
+      "dependents": ["src/lib/ui/utils/test-utils.tsx"],
       "orphan": false,
       "valid": true
     }
@@ -4948,10 +4158,7 @@
       "exoticRequireStrings": [],
       "externalModuleResolutionStrategy": "node_modules",
       "metrics": false,
-      "moduleSystems": [
-        "es6",
-        "cjs"
-      ],
+      "moduleSystems": ["es6", "cjs"],
       "outputTo": "-",
       "outputType": "json",
       "preserveSymlinks": false,

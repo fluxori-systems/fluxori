@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import React from 'react';
+import React from "react";
 
-import { AgentSuggestion } from './types';
-import { useMotion } from '../../../motion/context/MotionContext';
-import { useConnectionQuality } from '../../../motion/hooks';
+import { AgentSuggestion } from "./types";
+import { useMotion } from "../../../motion/context/MotionContext";
+import { useConnectionQuality } from "../../../motion/hooks";
 
 export interface AgentSuggestionChipProps {
   suggestion: AgentSuggestion;
@@ -24,25 +24,25 @@ export function AgentSuggestionChip({
   onClick,
   disabled = false,
   networkAware = true,
-  className = '',
+  className = "",
   style,
   ...props
 }: AgentSuggestionChipProps) {
   const { motionMode } = useMotion();
   const { quality } = useConnectionQuality();
-  
+
   // Adapt to network conditions when networkAware is true
-  const useSimpleDesign = networkAware && quality === 'low';
+  const useSimpleDesign = networkAware && quality === "low";
   const showIcon = suggestion.icon && !useSimpleDesign;
   const showDescription = suggestion.description && !useSimpleDesign;
-  
+
   // Handle click
   const handleClick = () => {
     if (!disabled) {
       onClick();
     }
   };
-  
+
   return (
     <button
       type="button"
@@ -50,42 +50,40 @@ export function AgentSuggestionChip({
       disabled={disabled}
       className={`agent-suggestion-chip ${className}`}
       style={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: '6px',
-        padding: useSimpleDesign ? '4px 8px' : '6px 12px',
-        backgroundColor: 'var(--color-primary-50)',
-        border: '1px solid var(--color-primary-200)',
-        borderRadius: 'var(--radius-md)',
-        cursor: disabled ? 'not-allowed' : 'pointer',
-        transition: motionMode === 'full' ? 'all 0.2s ease' : 'none',
-        color: 'var(--color-primary-700)',
+        display: "flex",
+        alignItems: "center",
+        gap: "6px",
+        padding: useSimpleDesign ? "4px 8px" : "6px 12px",
+        backgroundColor: "var(--color-primary-50)",
+        border: "1px solid var(--color-primary-200)",
+        borderRadius: "var(--radius-md)",
+        cursor: disabled ? "not-allowed" : "pointer",
+        transition: motionMode === "full" ? "all 0.2s ease" : "none",
+        color: "var(--color-primary-700)",
         fontWeight: 500,
-        fontSize: useSimpleDesign ? 'var(--font-size-sm)' : 'var(--font-size-md)',
+        fontSize: useSimpleDesign
+          ? "var(--font-size-sm)"
+          : "var(--font-size-md)",
         lineHeight: 1.2,
         opacity: disabled ? 0.6 : 1,
-        outline: 'none',
-        ...style
+        outline: "none",
+        ...style,
       }}
       {...props}
     >
       {showIcon && (
-        <span className="agent-suggestion-icon">
-          {suggestion.icon}
-        </span>
+        <span className="agent-suggestion-icon">{suggestion.icon}</span>
       )}
-      
-      <span className="agent-suggestion-text">
-        {suggestion.text}
-      </span>
-      
+
+      <span className="agent-suggestion-text">{suggestion.text}</span>
+
       {showDescription && (
-        <span 
+        <span
           className="agent-suggestion-description"
           style={{
-            fontSize: 'var(--font-size-xs)',
-            color: 'var(--color-primary-500)',
-            fontWeight: 'normal'
+            fontSize: "var(--font-size-xs)",
+            color: "var(--color-primary-500)",
+            fontWeight: "normal",
           }}
         >
           {suggestion.description}

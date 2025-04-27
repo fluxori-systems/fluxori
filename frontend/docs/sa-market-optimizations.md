@@ -22,13 +22,13 @@ Our animation system automatically adapts to network conditions, using several t
 // Detect network conditions with South African-specific thresholds
 const CONNECTION_THRESHOLDS = {
   // Downlink speed thresholds in Mbps
-  POOR_DOWNLINK: 0.5,   // Very slow (rural areas, 2G EDGE)
-  LOW_DOWNLINK: 1.5,    // Slow (3G in congested areas)
+  POOR_DOWNLINK: 0.5, // Very slow (rural areas, 2G EDGE)
+  LOW_DOWNLINK: 1.5, // Slow (3G in congested areas)
   MEDIUM_DOWNLINK: 5.0, // Average (good 3G/weak 4G)
-  
+
   // RTT thresholds in ms - critical for SA conditions
-  POOR_RTT: 600,  // Very high latency (rural areas)
-  LOW_RTT: 400,   // High latency (weak signal)
+  POOR_RTT: 600, // Very high latency (rural areas)
+  LOW_RTT: 400, // High latency (weak signal)
   MEDIUM_RTT: 200, // Average latency
 };
 ```
@@ -36,7 +36,7 @@ const CONNECTION_THRESHOLDS = {
 Each component can enable network-aware optimizations with the `networkAware` prop:
 
 ```tsx
-<Card 
+<Card
   animated={true}
   animationType="fade"
   networkAware={true} // Enables network-aware optimizations
@@ -53,7 +53,7 @@ The animation strategy pattern adapts animation complexity based on detected net
 // Animation strategy specifically for South African network conditions
 if (networkAware && preset.reduceNetworkAnimations) {
   switch (networkCondition) {
-    case 'poor':
+    case "poor":
       // For very poor connections (2G)
       return {
         ...baseParams,
@@ -64,8 +64,8 @@ if (networkAware && preset.reduceNetworkAnimations) {
         disableStaggering: true,
         scaleMultiplier: 0.5,
       };
-      
-    case 'slow':
+
+    case "slow":
       // For slow connections (3G)
       return {
         ...baseParams,
@@ -86,7 +86,7 @@ Components respect Data Saver mode, which is popular in South Africa due to high
 ```typescript
 // Detect and respect Data Saver mode
 if (result.isDataSaver) {
-  result.quality = 'poor';
+  result.quality = "poor";
   return result;
 }
 ```
@@ -98,12 +98,16 @@ Typography is optimized for low-bandwidth connections:
 ```typescript
 // Optimize font size display for network conditions
 let optimizedFz = fz || presetStyles.fz;
-if (shouldSimplify && typeof optimizedFz === 'string' && ['5xl', '6xl', '4xl'].includes(optimizedFz)) {
+if (
+  shouldSimplify &&
+  typeof optimizedFz === "string" &&
+  ["5xl", "6xl", "4xl"].includes(optimizedFz)
+) {
   // Down-scale very large fonts on poor connections
   optimizedFz = {
-    '6xl': '4xl',
-    '5xl': '3xl',
-    '4xl': '2xl'
+    "6xl": "4xl",
+    "5xl": "3xl",
+    "4xl": "2xl",
   }[optimizedFz] as Size;
 }
 ```
@@ -114,14 +118,19 @@ All layout components (Stack, Grid, Container, Card, etc.) adapt to network cond
 
 ```tsx
 // Simplify styling when on slow connections
-const shouldSimplify = networkAware && (isDataSaver || networkQuality === 'poor');
+const shouldSimplify =
+  networkAware && (isDataSaver || networkQuality === "poor");
 
 // Custom styles with token integration
 const cardStyles: React.CSSProperties = {
   ...getVariantStyles(),
   ...getIntentStyles(),
   borderRadius: getRadius(theme, radius, undefined),
-  boxShadow: shouldSimplify ? 'none' : shadow ? getShadow(theme, shadow, undefined) : undefined,
+  boxShadow: shouldSimplify
+    ? "none"
+    : shadow
+      ? getShadow(theme, shadow, undefined)
+      : undefined,
   // ...other styles
 };
 ```
@@ -132,12 +141,12 @@ The Stack component optimizes spacing and disables animations on poor connection
 
 ```tsx
 // Apply simplified spacing for data saver mode or poor connections
-if (networkAware && (isDataSaver || quality === 'poor')) {
+if (networkAware && (isDataSaver || quality === "poor")) {
   // Reduce spacing to optimize rendering and improve performance
-  if (typeof gapValue === 'string') {
+  if (typeof gapValue === "string") {
     switch (gapValue) {
-      case 'xl':
-        tokenTracking.trackToken('network-optimize-spacing');
+      case "xl":
+        tokenTracking.trackToken("network-optimize-spacing");
         return (
           <MantineStack
             ref={ref}
@@ -148,10 +157,10 @@ if (networkAware && (isDataSaver || quality === 'poor')) {
             {children}
           </MantineStack>
         );
-      case 'lg':
-        tokenTracking.trackToken('network-optimize-spacing');
-        // Reduce from lg to md
-        // ...similar pattern
+      case "lg":
+        tokenTracking.trackToken("network-optimize-spacing");
+      // Reduce from lg to md
+      // ...similar pattern
     }
   }
 }
@@ -163,18 +172,18 @@ The Grid component implements intelligent responsive simplification for poor con
 
 ```tsx
 // Grid.Col with network-aware responsive behavior
-if (networkAware && (isDataSaver || quality === 'poor')) {
+if (networkAware && (isDataSaver || quality === "poor")) {
   // For poor connections, simplify responsive behavior
-  if (typeof span === 'object' && !('span' in span)) {
-    tokenTracking.trackToken('network-optimize-responsive');
-    
+  if (typeof span === "object" && !("span" in span)) {
+    tokenTracking.trackToken("network-optimize-responsive");
+
     // Simplified responsive behavior - use fewer breakpoints
     const optimizedSpan = {
       // Use xs and md only to simplify layout calculations
       xs: span.xs || span.sm || 12, // Default to full width on mobile
-      md: span.md || span.lg || span.xl // Take the largest size for desktop
+      md: span.md || span.lg || span.xl, // Take the largest size for desktop
     };
-    
+
     return (
       <MantineGrid.Col
         ref={ref}
@@ -195,35 +204,36 @@ The Container component adapts size and padding based on network conditions:
 
 ```tsx
 // For poor network, use smaller container to reduce layout calculations
-const shouldOptimizeSize = networkAware && (isDataSaver || quality === 'poor');
+const shouldOptimizeSize = networkAware && (isDataSaver || quality === "poor");
 
 switch (size) {
-  case 'md': 
-    return shouldOptimizeSize ? 
-      'var(--container-size-sm, 768px)' : // Optimize by using smaller container
-      'var(--container-size-md, 992px)';   // Normal size for good connections
-  case 'lg': 
-    return shouldOptimizeSize ? 
-      'var(--container-size-md, 992px)' :  // Optimize by using smaller container
-      'var(--container-size-lg, 1200px)';  // Normal size for good connections
+  case "md":
+    return shouldOptimizeSize
+      ? "var(--container-size-sm, 768px)" // Optimize by using smaller container
+      : "var(--container-size-md, 992px)"; // Normal size for good connections
+  case "lg":
+    return shouldOptimizeSize
+      ? "var(--container-size-md, 992px)" // Optimize by using smaller container
+      : "var(--container-size-lg, 1200px)"; // Normal size for good connections
   // ...other sizes
 }
 
 // Apply responsive padding with network-aware optimizations
 const getDefaultPadding = (): string => {
-  const shouldOptimizePadding = networkAware && (isDataSaver || quality === 'poor');
-  
+  const shouldOptimizePadding =
+    networkAware && (isDataSaver || quality === "poor");
+
   if (shouldOptimizePadding) {
-    tokenTracking.trackToken('network-optimize-padding');
-    return size === 'xs' || size === 'sm' ? 
-      getSpacingValue('sm') : // Smaller padding
-      getSpacingValue('md');  // Smaller padding
+    tokenTracking.trackToken("network-optimize-padding");
+    return size === "xs" || size === "sm"
+      ? getSpacingValue("sm") // Smaller padding
+      : getSpacingValue("md"); // Smaller padding
   }
-  
+
   // Normal padding for good connections
-  return size === 'xs' || size === 'sm' ? 
-    getSpacingValue('md') : 
-    getSpacingValue('lg');
+  return size === "xs" || size === "sm"
+    ? getSpacingValue("md")
+    : getSpacingValue("lg");
 };
 ```
 
@@ -232,13 +242,13 @@ const getDefaultPadding = (): string => {
 The `useConnectionQuality` hook provides detailed network information:
 
 ```typescript
-const { 
-  quality,        // 'high', 'medium', 'low', or 'poor'
-  isDataSaver,    // Whether data saver mode is enabled
-  isMetered,      // Whether connection is pay-per-use
-  downlinkSpeed,  // Raw download speed
-  rtt,            // Round-trip time
-  effectiveType   // Connection type ('4g', '3g', etc.)
+const {
+  quality, // 'high', 'medium', 'low', or 'poor'
+  isDataSaver, // Whether data saver mode is enabled
+  isMetered, // Whether connection is pay-per-use
+  downlinkSpeed, // Raw download speed
+  rtt, // Round-trip time
+  effectiveType, // Connection type ('4g', '3g', etc.)
 } = useConnectionQuality();
 ```
 
@@ -269,17 +279,17 @@ Components adapt in the following ways:
 We've implemented specific tests for South African network conditions:
 
 ```typescript
-test('prioritizes high RTT for South African conditions', () => {
+test("prioritizes high RTT for South African conditions", () => {
   mockConnection({
-    effectiveType: '4g', // Fast connection type
-    downlink: 10,        // Good bandwidth
-    rtt: 650             // But very high latency (common in rural SA)
+    effectiveType: "4g", // Fast connection type
+    downlink: 10, // Good bandwidth
+    rtt: 650, // But very high latency (common in rural SA)
   });
-  
+
   const { result } = renderHook(() => useConnectionQuality());
-  
+
   // Despite good bandwidth, high RTT should make this poor quality
-  expect(result.current.quality).toBe('poor');
+  expect(result.current.quality).toBe("poor");
 });
 ```
 
@@ -296,19 +306,19 @@ test('prioritizes high RTT for South African conditions', () => {
 These optimizations have been implemented across the component library:
 
 | Component Type | Network Detection | Data Saver | Adaptive Layout | Animation Control | Token Tracking | Critical Optimizations |
-|----------------|------------------|------------|-----------------|-------------------|---------------|----------------------|
-| Stack          | ✅               | ✅          | ✅              | ✅                | ✅             | ✅                    |
-| Grid           | ✅               | ✅          | ✅              | ✅                | ✅             | ✅                    |
-| Container      | ✅               | ✅          | ✅              | ✅                | ✅             | ✅                    |
-| Text           | ✅               | ✅          | ✅              | ✅                | ✅             | ✅                    |
-| Card           | ✅               | ✅          | ✅              | ✅                | ✅             | ✅                    |
-| Button         | ✅               | ✅          | ✅              | ✅                | ✅             | ✅                    |
-| Menu           | ✅               | ✅          | ✅              | ✅                | ✅             | ✅                    |
-| Tabs           | ✅               | ✅          | ✅              | ✅                | ✅             | ✅                    |
-| SimpleGrid     | ✅               | ✅          | ✅              | ✅                | ✅             | ✅                    |
-| Alert          | ✅               | ✅          | ✅              | ✅                | ✅             | ✅                    |
-| FormField      | ✅               | ✅          | ✅              | ✅                | ✅             | ✅                    |
-| SAProductCard  | ✅               | ✅          | ✅              | ✅                | ✅             | ✅                    |
+| -------------- | ----------------- | ---------- | --------------- | ----------------- | -------------- | ---------------------- |
+| Stack          | ✅                | ✅         | ✅              | ✅                | ✅             | ✅                     |
+| Grid           | ✅                | ✅         | ✅              | ✅                | ✅             | ✅                     |
+| Container      | ✅                | ✅         | ✅              | ✅                | ✅             | ✅                     |
+| Text           | ✅                | ✅         | ✅              | ✅                | ✅             | ✅                     |
+| Card           | ✅                | ✅         | ✅              | ✅                | ✅             | ✅                     |
+| Button         | ✅                | ✅         | ✅              | ✅                | ✅             | ✅                     |
+| Menu           | ✅                | ✅         | ✅              | ✅                | ✅             | ✅                     |
+| Tabs           | ✅                | ✅         | ✅              | ✅                | ✅             | ✅                     |
+| SimpleGrid     | ✅                | ✅         | ✅              | ✅                | ✅             | ✅                     |
+| Alert          | ✅                | ✅         | ✅              | ✅                | ✅             | ✅                     |
+| FormField      | ✅                | ✅         | ✅              | ✅                | ✅             | ✅                     |
+| SAProductCard  | ✅                | ✅         | ✅              | ✅                | ✅             | ✅                     |
 
 ### Component-Specific Optimizations
 
@@ -354,22 +364,22 @@ We've implemented a comprehensive testing suite for network-aware components:
 
 ```tsx
 // Mock data saver mode
-Object.defineProperty(navigator, 'connection', {
+Object.defineProperty(navigator, "connection", {
   value: {
-    saveData: true
+    saveData: true,
   },
-  configurable: true
+  configurable: true,
 });
 
 // Test container optimization
 const { container } = renderWithProviders(
   <Container size="lg" networkAware={true}>
     <div>Data Saver Container</div>
-  </Container>
+  </Container>,
 );
 
 // Verify container was optimized
-expect(container.firstChild).toHaveAttribute('data-network-quality');
+expect(container.firstChild).toHaveAttribute("data-network-quality");
 ```
 
 By implementing these optimizations, Fluxori UI components provide a responsive, efficient experience for users across South Africa's diverse network landscape, ensuring the application performs well even in challenging connectivity environments.

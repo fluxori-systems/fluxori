@@ -1,24 +1,24 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
-import { useConnectionQuality } from '../../../motion/hooks';
-import { Button } from '../Button';
-import { Card } from '../Card';
-import { Group } from '../Group';
-import { Text } from '../Text';
-import { useAgentConversation } from './AgentConversation';
-import { AgentInteractiveElementProps } from './types';
+import { useConnectionQuality } from "../../../motion/hooks";
+import { Button } from "../Button";
+import { Card } from "../Card";
+import { Group } from "../Group";
+import { Text } from "../Text";
+import { useAgentConversation } from "./AgentConversation";
+import { AgentInteractiveElementProps } from "./types";
 
 /**
  * Interactive element component for agent responses
  * Embeds interactive UI elements within agent messages
  */
 export function AgentInteractiveElement({
-  type = 'button',
+  type = "button",
   label,
   action,
-  intent = 'primary',
+  intent = "primary",
   children,
   disabled = false,
   ...props
@@ -28,42 +28,42 @@ export function AgentInteractiveElement({
   const [success, setSuccess] = useState<string | null>(null);
   const { quality } = useConnectionQuality();
   const { sendMessage } = useAgentConversation();
-  
+
   // Adapt to network conditions
-  const useSimpleDesign = quality === 'low';
-  const isActionString = typeof action === 'string';
-  
+  const useSimpleDesign = quality === "low";
+  const isActionString = typeof action === "string";
+
   // Handle click action
   const handleAction = async () => {
     if (disabled || isLoading) return;
-    
+
     setIsLoading(true);
     setError(null);
     setSuccess(null);
-    
+
     try {
       if (isActionString) {
         // If the action is a string, send it as a message
         await sendMessage(action as string);
-        setSuccess('Action completed');
-      } else if (typeof action === 'function') {
+        setSuccess("Action completed");
+      } else if (typeof action === "function") {
         // If the action is a function, execute it
         await (action as Function)();
-        setSuccess('Action completed');
+        setSuccess("Action completed");
       }
     } catch (err) {
-      console.error('Error executing action:', err);
-      setError('Failed to complete action');
+      console.error("Error executing action:", err);
+      setError("Failed to complete action");
     } finally {
       setIsLoading(false);
-      
+
       // Clear success message after a delay
       if (success) {
         setTimeout(() => setSuccess(null), 3000);
       }
     }
   };
-  
+
   // Render button element
   const renderButton = () => (
     <Button
@@ -71,47 +71,47 @@ export function AgentInteractiveElement({
       loading={isLoading}
       disabled={disabled}
       intent={intent}
-      size={useSimpleDesign ? 'sm' : 'md'}
+      size={useSimpleDesign ? "sm" : "md"}
       animated={!useSimpleDesign}
       {...props}
     >
       {label}
     </Button>
   );
-  
+
   // Render link element
   const renderLink = () => (
     <button
       onClick={handleAction}
       disabled={disabled || isLoading}
       style={{
-        background: 'none',
-        border: 'none',
+        background: "none",
+        border: "none",
         padding: 0,
         color: `var(--color-${intent}-500)`,
-        cursor: disabled || isLoading ? 'not-allowed' : 'pointer',
-        textDecoration: 'underline',
-        fontSize: 'var(--font-size-md)',
-        opacity: disabled || isLoading ? 0.5 : 1
+        cursor: disabled || isLoading ? "not-allowed" : "pointer",
+        textDecoration: "underline",
+        fontSize: "var(--font-size-md)",
+        opacity: disabled || isLoading ? 0.5 : 1,
       }}
       {...props}
     >
-      {isLoading ? 'Loading...' : label}
+      {isLoading ? "Loading..." : label}
     </button>
   );
-  
+
   // Render checkbox element
   const renderCheckbox = () => {
     const [checked, setChecked] = useState(false);
-    
+
     return (
       <label
         style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '8px',
-          cursor: disabled ? 'not-allowed' : 'pointer',
-          opacity: disabled ? 0.5 : 1
+          display: "flex",
+          alignItems: "center",
+          gap: "8px",
+          cursor: disabled ? "not-allowed" : "pointer",
+          opacity: disabled ? 0.5 : 1,
         }}
         {...props}
       >
@@ -123,25 +123,25 @@ export function AgentInteractiveElement({
             handleAction();
           }}
           disabled={disabled || isLoading}
-          style={{ cursor: disabled ? 'not-allowed' : 'pointer' }}
+          style={{ cursor: disabled ? "not-allowed" : "pointer" }}
         />
         <span>{label}</span>
       </label>
     );
   };
-  
+
   // Render radio element
   const renderRadio = () => {
     const [selected, setSelected] = useState(false);
-    
+
     return (
       <label
         style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '8px',
-          cursor: disabled ? 'not-allowed' : 'pointer',
-          opacity: disabled ? 0.5 : 1
+          display: "flex",
+          alignItems: "center",
+          gap: "8px",
+          cursor: disabled ? "not-allowed" : "pointer",
+          opacity: disabled ? 0.5 : 1,
         }}
         {...props}
       >
@@ -153,20 +153,27 @@ export function AgentInteractiveElement({
             handleAction();
           }}
           disabled={disabled || isLoading}
-          style={{ cursor: disabled ? 'not-allowed' : 'pointer' }}
+          style={{ cursor: disabled ? "not-allowed" : "pointer" }}
         />
         <span>{label}</span>
       </label>
     );
   };
-  
+
   // Render select element
   const renderSelect = () => {
-    const options = children ? (Array.isArray(children) ? children : [children]) : [];
-    
+    const options = children
+      ? Array.isArray(children)
+        ? children
+        : [children]
+      : [];
+
     return (
       <div>
-        <label htmlFor="agent-select" style={{ display: 'block', marginBottom: '4px' }}>
+        <label
+          htmlFor="agent-select"
+          style={{ display: "block", marginBottom: "4px" }}
+        >
           {label}
         </label>
         <select
@@ -174,13 +181,13 @@ export function AgentInteractiveElement({
           onChange={handleAction}
           disabled={disabled || isLoading}
           style={{
-            padding: '8px 12px',
-            borderRadius: 'var(--radius-sm)',
-            border: '1px solid var(--border-light)',
-            backgroundColor: 'var(--background-default)',
-            width: '100%',
-            cursor: disabled ? 'not-allowed' : 'pointer',
-            opacity: disabled ? 0.5 : 1
+            padding: "8px 12px",
+            borderRadius: "var(--radius-sm)",
+            border: "1px solid var(--border-light)",
+            backgroundColor: "var(--background-default)",
+            width: "100%",
+            cursor: disabled ? "not-allowed" : "pointer",
+            opacity: disabled ? 0.5 : 1,
           }}
           {...props}
         >
@@ -193,14 +200,17 @@ export function AgentInteractiveElement({
       </div>
     );
   };
-  
+
   // Render input element
   const renderInput = () => {
-    const [value, setValue] = useState('');
-    
+    const [value, setValue] = useState("");
+
     return (
       <div>
-        <label htmlFor="agent-input" style={{ display: 'block', marginBottom: '4px' }}>
+        <label
+          htmlFor="agent-input"
+          style={{ display: "block", marginBottom: "4px" }}
+        >
           {label}
         </label>
         <Group gap="xs">
@@ -211,12 +221,12 @@ export function AgentInteractiveElement({
             onChange={(e) => setValue(e.target.value)}
             disabled={disabled || isLoading}
             style={{
-              padding: '8px 12px',
-              borderRadius: 'var(--radius-sm)',
-              border: '1px solid var(--border-light)',
-              backgroundColor: 'var(--background-default)',
+              padding: "8px 12px",
+              borderRadius: "var(--radius-sm)",
+              border: "1px solid var(--border-light)",
+              backgroundColor: "var(--background-default)",
               flex: 1,
-              opacity: disabled ? 0.5 : 1
+              opacity: disabled ? 0.5 : 1,
             }}
             {...props}
           />
@@ -224,7 +234,7 @@ export function AgentInteractiveElement({
             onClick={() => {
               if (isActionString) {
                 sendMessage(`${action as string}: ${value}`);
-              } else if (typeof action === 'function') {
+              } else if (typeof action === "function") {
                 (action as Function)(value);
               }
             }}
@@ -239,12 +249,14 @@ export function AgentInteractiveElement({
       </div>
     );
   };
-  
+
   // Render form element
   const renderForm = () => {
     return (
       <Card p="md" radius="md" withBorder>
-        <Text fw={500} mb="sm">{label}</Text>
+        <Text fw={500} mb="sm">
+          {label}
+        </Text>
         <form
           onSubmit={(e) => {
             e.preventDefault();
@@ -266,31 +278,39 @@ export function AgentInteractiveElement({
       </Card>
     );
   };
-  
+
   // Render the appropriate element based on type
   const renderElement = () => {
     switch (type) {
-      case 'button': return renderButton();
-      case 'link': return renderLink();
-      case 'checkbox': return renderCheckbox();
-      case 'radio': return renderRadio();
-      case 'select': return renderSelect();
-      case 'input': return renderInput();
-      case 'form': return renderForm();
-      default: return renderButton();
+      case "button":
+        return renderButton();
+      case "link":
+        return renderLink();
+      case "checkbox":
+        return renderCheckbox();
+      case "radio":
+        return renderRadio();
+      case "select":
+        return renderSelect();
+      case "input":
+        return renderInput();
+      case "form":
+        return renderForm();
+      default:
+        return renderButton();
     }
   };
-  
+
   return (
     <div className="agent-interactive-element">
       {renderElement()}
-      
+
       {error && (
         <Text c="var(--color-error-500)" size="xs" mt="xs">
           {error}
         </Text>
       )}
-      
+
       {success && (
         <Text c="var(--color-success-500)" size="xs" mt="xs">
           {success}

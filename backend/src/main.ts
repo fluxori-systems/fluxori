@@ -74,7 +74,7 @@ async function bootstrap() {
         component: 'app.startup',
         status: HealthStatus.HEALTHY,
         details: {
-          startupTime: new Date(),
+          startupTime: new Date().toISOString(),
           host,
           port,
           version: process.env.npm_package_version || '1.0.0',
@@ -105,7 +105,10 @@ async function bootstrap() {
     const healthStatus = await observability.getDetailedHealthCheck();
     logger.log(`Initial health check: ${healthStatus.status}`, {
       service: 'Bootstrap',
-      health: healthStatus,
+      timestamp: new Date(),
+      customFields: {
+        health: JSON.stringify(healthStatus),
+      },
     });
 
     // Handle shutdown signals

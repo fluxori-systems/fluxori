@@ -2,7 +2,11 @@
  * Stock Movement Schema
  */
 import { FirestoreEntity } from '../../../types/google-cloud.types';
-import { StockMovementType, StockMovementReason } from '../interfaces/types';
+import {
+  StockMovementType,
+  StockMovementReason,
+  InventoryMetadata,
+} from '../interfaces/types';
 
 /**
  * Stock Movement entity for Firestore
@@ -48,5 +52,6 @@ export interface StockMovement extends FirestoreEntity {
   batchNumber?: string;
   expiryDate?: Date;
   serialNumbers?: string[];
-  metadata?: Record<string, any>;
+  // TODO: Refine metadata type as requirements become clear
+  metadata?: InventoryMetadata; // TODO: Refine fields as discovered
 }

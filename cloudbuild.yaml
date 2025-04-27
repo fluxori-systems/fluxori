@@ -1,0 +1,117 @@
+steps:
+  # Build the container image and deploy directly to Cloud Run
+  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+    entrypoint: bash
+    args:
+      - "-c"
+      - |
+        # Build the container
+        echo "Building container..."
+        cd /workspace/marketplace-scraper
+        ls -la
+
+        # Deploy directly to Cloud Run using buildpacks (no registry push needed)
+        echo "Deploying to Cloud Run..."
+        gcloud run deploy marketplace-scraper \
+          --source=. \
+          --project=fluxori-web-app \
+          --platform=managed \
+          --region=africa-south1 \
+          --memory=2Gi \
+          --cpu=1 \
+          --min-instances=0 \
+          --max-instances=2 \
+          --service-account=marketplace-scraper-sa@fluxori-web-app.iam.gserviceaccount.com \
+          --set-env-vars="GCP_PROJECT_ID=fluxori-web-app,GCP_REGION=africa-south1,CONFIG_PATH=/app/config/config.json" \
+          --allow-unauthenticated
+    id: "build-and-deploy"
+
+  # Store SmartProxy token in Secret Manager
+  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+    entrypoint: bash
+    args:
+      - "-c"
+      - |
+        # Read SmartProxy token from file
+        SMARTPROXY_TOKEN=$(cat /workspace/smartproxy_token.txt)
+
+        # Check if secret exists and create/update it
+        if ! gcloud secrets describe smartproxy-auth-token --project=fluxori-web-app 2>/dev/null; then
+          echo "Creating smartproxy-auth-token secret..."
+          echo -n "$${SMARTPROXY_TOKEN}" | \
+          gcloud secrets create smartproxy-auth-token \
+            --project=fluxori-web-app \
+            --replication-policy="user-managed" \
+            --locations="africa-south1" \
+            --data-file=-
+        else
+          echo "Secret smartproxy-auth-token already exists, updating value..."
+          echo -n "$${SMARTPROXY_TOKEN}" | \
+          gcloud secrets versions add smartproxy-auth-token \
+            --project=fluxori-web-app \
+            --data-file=-
+        fi
+
+        # Ensure the service account has access to the secret
+        gcloud secrets add-iam-policy-binding smartproxy-auth-token \
+          --project=fluxori-web-app \
+          --member="serviceAccount:marketplace-scraper-sa@fluxori-web-app.iam.gserviceaccount.com" \
+          --role="roles/secretmanager.secretAccessor"
+    id: "manage-secrets"
+    waitFor: ["build-and-deploy"]
+
+  # Setup Firestore if needed
+  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+    entrypoint: bash
+    args:
+      - "-c"
+      - |
+        echo "Setting up Firestore collections and indexes..."
+        cd /workspace/marketplace-scraper/deployment/firestore
+        chmod +x setup-firestore.sh
+        ./setup-firestore.sh --project=fluxori-web-app --region=africa-south1
+    id: "setup-firestore"
+    waitFor: ["manage-secrets"]
+
+  # Setup Cloud Scheduler for daily tasks using a hardcoded URL
+  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+    entrypoint: bash
+    args:
+      - "-c"
+      - |
+        echo "Setting up Cloud Scheduler for daily marketplace data collection..."
+
+        # Use a static URL format for simplicity
+        SERVICE_URL="https://marketplace-scraper-lqzaa4uh4a-ez.a.run.app"
+
+        # Check if job already exists
+        if ! gcloud scheduler jobs describe marketplace-daily-scraper --location=africa-south1 --project=fluxori-web-app 2>/dev/null; then
+          echo "Creating scheduler job..."
+          gcloud scheduler jobs create http marketplace-daily-scraper \
+            --location=africa-south1 \
+            --project=fluxori-web-app \
+            --schedule="0 2 * * *" \
+            --uri="${SERVICE_URL}/tasks/daily-collection" \
+            --http-method=POST \
+            --attempt-deadline=30m \
+            --time-zone="Africa/Johannesburg" \
+            --description="Daily marketplace data collection job"
+        else
+          echo "Updating scheduler job..."
+          gcloud scheduler jobs update http marketplace-daily-scraper \
+            --location=africa-south1 \
+            --project=fluxori-web-app \
+            --schedule="0 2 * * *" \
+            --uri="${SERVICE_URL}/tasks/daily-collection" \
+            --http-method=POST \
+            --attempt-deadline=30m \
+            --time-zone="Africa/Johannesburg" \
+            --description="Daily marketplace data collection job"
+        fi
+    id: "setup-scheduler"
+    waitFor: ["setup-firestore"]
+
+options:
+  logging: CLOUD_LOGGING_ONLY
+
+timeout: 1800s

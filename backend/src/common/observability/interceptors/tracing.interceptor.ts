@@ -136,7 +136,9 @@ export class TracingInterceptor implements NestInterceptor {
           if (request.user) {
             userId = request.user.id;
             organizationId = request.user.organizationId;
-            span.setAttribute(TRACE_ATTRIBUTES.USER_ID, userId);
+            if (userId !== undefined) {
+              span.setAttribute(TRACE_ATTRIBUTES.USER_ID, userId);
+            }
 
             if (organizationId) {
               span.setAttribute(

@@ -1,4 +1,8 @@
-import { CreditModelType, CreditUsageType } from '../interfaces/types';
+import {
+  CreditModelType,
+  CreditUsageType,
+  CreditSystemMetadata,
+} from '../interfaces/types';
 
 /**
  * DTOs for credit system API
@@ -11,17 +15,17 @@ export class CreateAllocationDto {
   /**
    * Organization ID
    */
-  organizationId: string;
+  organizationId!: string;
 
   /**
    * Credit model type
    */
-  modelType: CreditModelType;
+  modelType!: CreditModelType;
 
   /**
    * Total credits to allocate
    */
-  totalCredits: number;
+  totalCredits!: number;
 
   /**
    * Optional user ID for user-specific allocation
@@ -41,7 +45,7 @@ export class CreateAllocationDto {
   /**
    * Optional metadata
    */
-  metadata?: Record<string, any>;
+  metadata?: CreditSystemMetadata; // TODO: Refine fields as discovered
 }
 
 /**
@@ -51,17 +55,17 @@ export class AddCreditsDto {
   /**
    * Allocation ID
    */
-  allocationId: string;
+  allocationId!: string;
 
   /**
    * Amount of credits to add
    */
-  amount: number;
+  amount!: number;
 
   /**
    * Optional metadata
    */
-  metadata?: Record<string, any>;
+  metadata?: CreditSystemMetadata; // TODO: Refine fields as discovered
 }
 
 /**
@@ -71,7 +75,7 @@ export class CheckCreditsDto {
   /**
    * Organization ID
    */
-  organizationId: string;
+  organizationId!: string;
 
   /**
    * Optional user ID
@@ -81,22 +85,22 @@ export class CheckCreditsDto {
   /**
    * Expected input tokens
    */
-  expectedInputTokens: number;
+  expectedInputTokens!: number;
 
   /**
    * Expected output tokens
    */
-  expectedOutputTokens: number;
+  expectedOutputTokens!: number;
 
   /**
    * Model ID
    */
-  modelId: string;
+  modelId!: string;
 
   /**
    * Usage type
    */
-  usageType: CreditUsageType;
+  usageType!: CreditUsageType;
 
   /**
    * Optional operation ID
@@ -106,7 +110,7 @@ export class CheckCreditsDto {
   /**
    * Optional metadata
    */
-  metadata?: Record<string, any>;
+  metadata?: CreditSystemMetadata; // TODO: Refine fields as discovered
 }
 
 /**
@@ -116,7 +120,7 @@ export class RecordUsageDto {
   /**
    * Organization ID
    */
-  organizationId: string;
+  organizationId!: string;
 
   /**
    * Optional user ID
@@ -126,27 +130,27 @@ export class RecordUsageDto {
   /**
    * Usage type
    */
-  usageType: CreditUsageType;
+  usageType!: CreditUsageType;
 
   /**
    * Model ID
    */
-  modelId: string;
+  modelId!: string;
 
   /**
    * Model provider
    */
-  modelProvider: string;
+  modelProvider!: string;
 
   /**
    * Input tokens
    */
-  inputTokens: number;
+  inputTokens!: number;
 
   /**
    * Output tokens
    */
-  outputTokens: number;
+  outputTokens!: number;
 
   /**
    * Optional processing time in milliseconds
@@ -176,7 +180,7 @@ export class RecordUsageDto {
   /**
    * Whether the operation was successful
    */
-  success: boolean;
+  success!: boolean;
 
   /**
    * Optional error message
@@ -186,7 +190,7 @@ export class RecordUsageDto {
   /**
    * Optional metadata
    */
-  metadata?: Record<string, any>;
+  metadata?: CreditSystemMetadata; // TODO: Refine fields as discovered
 }
 
 /**
@@ -196,17 +200,17 @@ export class OptimizeModelDto {
   /**
    * Organization ID
    */
-  organizationId: string;
+  organizationId!: string;
 
   /**
    * User prompt for token estimation
    */
-  userPrompt: string;
+  userPrompt!: string;
 
   /**
    * Task complexity level
    */
-  taskComplexity: 'simple' | 'standard' | 'complex';
+  taskComplexity!: 'simple' | 'standard' | 'complex';
 
   /**
    * Optional preferred model

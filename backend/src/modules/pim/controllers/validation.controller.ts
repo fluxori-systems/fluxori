@@ -17,7 +17,7 @@ import {
   Logger,
 } from '@nestjs/common';
 
-import { FirebaseAuthGuard } from '../../../common/guards/firebase-auth.guard';
+import { FirebaseAuthGuard } from '../../auth';
 import { GetUser } from '../../auth/decorators/get-user.decorator';
 import { Product } from '../models/product.model';
 import { MarketplaceValidationService } from '../services/marketplace-validation.service';
@@ -179,7 +179,7 @@ export class ValidationController {
 
       // Validate for marketplace
       const result = this.marketplaceValidationService.validateProduct(
-        product as Product,
+        product,
         marketplaceId,
         variants,
       );
@@ -293,7 +293,7 @@ export class ValidationController {
 
       for (const marketplace of marketplaces) {
         const result = this.marketplaceValidationService.validateProduct(
-          product as Product,
+          product,
           marketplace,
         );
 

@@ -10,23 +10,23 @@
 
 ### Backend
 
-| File | Error Count |
-|------|------------|
-| src/modules/pim/services/product-ai.service.ts | 48 |
-| src/modules/pim/services/image-analysis.service.ts | 32 |
-| src/modules/pim/services/product-review.service.ts | 31 |
-| src/modules/pim/repositories/b2b-price-list.repository.ts | 29 |
-| src/modules/pim/repositories/purchase-order.repository.ts | 27 |
+| File                                                      | Error Count |
+| --------------------------------------------------------- | ----------- |
+| src/modules/pim/services/product-ai.service.ts            | 48          |
+| src/modules/pim/services/image-analysis.service.ts        | 32          |
+| src/modules/pim/services/product-review.service.ts        | 31          |
+| src/modules/pim/repositories/b2b-price-list.repository.ts | 29          |
+| src/modules/pim/repositories/purchase-order.repository.ts | 27          |
 
 ### Frontend
 
-| File | Error Count |
-|------|------------|
-| src/components/pim/analytics/AnalyticsDashboard.tsx | 55 |
-| src/components/pim/product/ProductBatchOperations.tsx | 49 |
-| src/components/pim/product/ProductForm.tsx | 46 |
-| src/components/pim/product/ProductAdvancedSearch.tsx | 45 |
-| src/components/pim/product/ProductVariantManager.tsx | 45 |
+| File                                                  | Error Count |
+| ----------------------------------------------------- | ----------- |
+| src/components/pim/analytics/AnalyticsDashboard.tsx   | 55          |
+| src/components/pim/product/ProductBatchOperations.tsx | 49          |
+| src/components/pim/product/ProductForm.tsx            | 46          |
+| src/components/pim/product/ProductAdvancedSearch.tsx  | 45          |
+| src/components/pim/product/ProductVariantManager.tsx  | 45          |
 
 ## Common Error Patterns
 

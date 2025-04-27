@@ -20,9 +20,8 @@
       }
     ],
     // Add types for testing libraries
-    "types": ["jest", "node", "@testing-library/jest-dom", "vitest/globals", "./src/testing/types"],
-    // Looser rules for test files
-    "noImplicitAny": false,
+    // Default types for production code
+    "types": ["jest", "node", "@testing-library/jest-dom", "vitest/globals"],
     "paths": {
       "@/*": ["./src/*"],
       "@components/*": ["./src/components/*"],

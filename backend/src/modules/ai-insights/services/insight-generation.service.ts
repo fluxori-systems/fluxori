@@ -1,4 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
+import { InsightData } from '../interfaces/types';
 
 import { AIModelConfigService } from './ai-model-config.service';
 import { CreditSystemService } from './credit-system.service';
@@ -18,7 +19,7 @@ export interface GenerateInsightsRequest {
   organizationId: string;
   userId: string;
   dataType: 'inventory' | 'sales' | 'marketplaces' | 'competitors';
-  data: Record<string, any>;
+  data: InsightData; // TODO: Refine fields as discovered
   options?: {
     modelProvider?: string;
     modelName?: string;

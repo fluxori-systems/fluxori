@@ -16,32 +16,38 @@ The UI components needed features from the Motion module, and the Motion module 
 ## Solution: Dependency Inversion Pattern
 
 We implemented the Dependency Inversion Principle, which states:
+
 - High-level modules should not depend on low-level modules. Both should depend on abstractions.
 - Abstractions should not depend on details. Details should depend on abstractions.
 
 ### Implementation Architecture
 
 1. **Shared Module**
+
    - Contains interfaces, types, and utilities used by both UI and Motion modules
    - Acts as the contract that both modules adhere to
    - Houses the service registry and provider implementations
 
 2. **Service Registry**
+
    - A central registry for storing and retrieving service implementations
    - Allows runtime lookup instead of compile-time dependencies
    - Implemented in `shared/services/service-registry.ts`
 
 3. **Service Interfaces**
+
    - Defines the contract for services like animation and connection quality
    - Located in `shared/services/*.interface.ts`
    - Enables both UI and Motion to depend on abstractions instead of implementations
 
 4. **Service Implementations**
+
    - Motion module provides concrete implementations of the service interfaces
    - These are registered with the Service Registry at application startup
    - Located in `motion/services/*.impl.ts`
 
 5. **Service Provider**
+
    - React context provider that makes services available to components
    - Acts as a facade for accessing services
    - Located in `shared/providers/service-provider.tsx`
@@ -56,8 +62,9 @@ We implemented the Dependency Inversion Principle, which states:
 ### Accessing Connection Quality in UI Components
 
 **Before:**
+
 ```typescript
-import { useConnectionQuality } from '../../motion/hooks/useConnectionQuality';
+import { useConnectionQuality } from "../../motion/hooks/useConnectionQuality";
 
 function MyComponent() {
   const { quality, isDataSaver } = useConnectionQuality();
@@ -66,8 +73,9 @@ function MyComponent() {
 ```
 
 **After:**
+
 ```typescript
-import { useConnectionQuality } from '../hooks/useConnection';
+import { useConnectionQuality } from "../hooks/useConnection";
 
 function MyComponent() {
   const { quality, isDataSaver } = useConnectionQuality();
@@ -78,8 +86,9 @@ function MyComponent() {
 ### Accessing Animation Services in UI Components
 
 **Before:**
+
 ```typescript
-import { useGSAPAnimation } from '../../motion/hooks/useGSAPAnimation';
+import { useGSAPAnimation } from "../../motion/hooks/useGSAPAnimation";
 
 function MyComponent() {
   const { animate } = useGSAPAnimation();
@@ -88,8 +97,9 @@ function MyComponent() {
 ```
 
 **After:**
+
 ```typescript
-import { useAnimationService } from '../../shared/services';
+import { useAnimationService } from "../../shared/services";
 
 function MyComponent() {
   const animationService = useAnimationService();

@@ -2,7 +2,7 @@
  * Firebase utility functions
  */
 
-import { firestore, firebaseStorage } from './config';
+import { firestore, firebaseStorage } from "./config";
 
 // Mock types for TypeScript errors
 interface DocumentData {
@@ -20,7 +20,10 @@ interface QuerySnapshot {
  * @returns Unique ID string
  */
 export function generateId(): string {
-  return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+  return (
+    Math.random().toString(36).substring(2, 15) +
+    Math.random().toString(36).substring(2, 15)
+  );
 }
 
 /**
@@ -33,13 +36,13 @@ export function generateId(): string {
 export async function uploadFile(
   file: File,
   path: string,
-  metadata?: Record<string, string>
+  metadata?: Record<string, string>,
 ): Promise<string> {
   try {
     // Pretend to upload file
     return `https://storage.example.com/${path}`;
   } catch (error) {
-    console.error('Error uploading file:', error);
+    console.error("Error uploading file:", error);
     throw error;
   }
 }
@@ -53,7 +56,7 @@ export async function deleteFile(path: string): Promise<boolean> {
   try {
     return true;
   } catch (error) {
-    console.error('Error deleting file:', error);
+    console.error("Error deleting file:", error);
     throw error;
   }
 }
@@ -64,22 +67,25 @@ export async function deleteFile(path: string): Promise<boolean> {
  * @param asString Whether to return the date as an ISO string
  * @returns Date object or ISO string
  */
-export function convertTimestamp(timestamp: any, asString = false): Date | string | null {
+export function convertTimestamp(
+  timestamp: any,
+  asString = false,
+): Date | string | null {
   if (!timestamp) return null;
-  
+
   // Check if it's a Firestore timestamp (has seconds and nanoseconds)
-  if (timestamp && typeof timestamp.toDate === 'function') {
+  if (timestamp && typeof timestamp.toDate === "function") {
     const date = timestamp.toDate();
     return asString ? date.toISOString() : date;
   }
-  
+
   // Already a Date object
   if (timestamp instanceof Date) {
     return asString ? timestamp.toISOString() : timestamp;
   }
-  
+
   // String timestamp
-  if (typeof timestamp === 'string') {
+  if (typeof timestamp === "string") {
     try {
       const date = new Date(timestamp);
       return asString ? date.toISOString() : date;
@@ -87,7 +93,7 @@ export function convertTimestamp(timestamp: any, asString = false): Date | strin
       return null;
     }
   }
-  
+
   return null;
 }
 
@@ -98,7 +104,7 @@ export function convertTimestamp(timestamp: any, asString = false): Date | strin
  */
 export function convertFirestoreDoc<T>(doc: DocumentData): T {
   if (!doc.exists) return null as any;
-  
+
   const data = doc.data();
   const result: any = {
     ...data,
@@ -107,20 +113,20 @@ export function convertFirestoreDoc<T>(doc: DocumentData): T {
     createdAt: convertTimestamp(data.createdAt),
     updatedAt: convertTimestamp(data.updatedAt),
   };
-  
+
   // Convert other timestamps if present
   if (data.deletedAt) {
     result.deletedAt = convertTimestamp(data.deletedAt);
   }
-  
+
   if (data.lastLogin) {
     result.lastLogin = convertTimestamp(data.lastLogin);
   }
-  
+
   if (data.expiresAt) {
     result.expiresAt = convertTimestamp(data.expiresAt);
   }
-  
+
   return result as T;
 }
 
@@ -130,9 +136,9 @@ export function convertFirestoreDoc<T>(doc: DocumentData): T {
  * @returns Array of converted entity objects
  */
 export function convertQuerySnapshot<T>(snapshot: QuerySnapshot): T[] {
-  return snapshot.docs.map(doc => {
+  return snapshot.docs.map((doc) => {
     const data = doc.data();
-    
+
     return {
       ...data,
       id: doc.id,
@@ -156,13 +162,16 @@ export async function searchDocuments<T>(
   collectionName: string,
   searchField: string,
   searchTerm: string,
-  maxResults = 10
+  maxResults = 10,
 ): Promise<T[]> {
   try {
     // Mock implementation
     return [] as T[];
   } catch (error) {
-    console.error(`Error searching ${collectionName} by ${searchField}:`, error);
+    console.error(
+      `Error searching ${collectionName} by ${searchField}:`,
+      error,
+    );
     throw error;
   }
 }
@@ -175,8 +184,8 @@ export async function searchDocuments<T>(
 export function generateSlug(name: string): string {
   return name
     .toLowerCase()
-    .replace(/[^\w\s-]/g, '') // Remove special characters
-    .replace(/\s+/g, '-') // Replace spaces with hyphens
-    .replace(/-+/g, '-') // Replace multiple hyphens with single hyphen
+    .replace(/[^\w\s-]/g, "") // Remove special characters
+    .replace(/\s+/g, "-") // Replace spaces with hyphens
+    .replace(/-+/g, "-") // Replace multiple hyphens with single hyphen
     .trim();
 }

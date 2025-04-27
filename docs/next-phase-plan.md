@@ -5,6 +5,7 @@
 ### Week 1: Feature Flags and Auth Modules
 
 1. **Feature Flags Module Refactoring**
+
    - Update controller to use auth module's public API
    - Fix repository imports to use common repositories public API
    - Create proper feature flag access pattern for other modules
@@ -19,6 +20,7 @@
 ### Week 2: Common Repositories and Testing
 
 1. **Common Repositories Refactoring**
+
    - Update all repositories to use the common repository public API
    - Fix internal dependencies within the repository package
    - Create proper repository access patterns
@@ -35,6 +37,7 @@
 ### Week 3: Core Business Modules
 
 1. **Inventory Module Refactoring**
+
    - Create proper public API
    - Fix repository dependencies
    - Update service imports
@@ -49,6 +52,7 @@
 ### Week 4: Additional Business Modules
 
 1. **AI Insights Module Refactoring**
+
    - Create proper public API
    - Fix repository dependencies
    - Update service imports
@@ -65,6 +69,7 @@
 ### Week 5: CI/CD and Developer Guidelines
 
 1. **CI/CD Integration**
+
    - Add pre-commit hooks for dependency validation
    - Update GitHub workflow for comprehensive checking
    - Create dependency visualization artifacts
@@ -81,6 +86,7 @@
 ### Week 6: Remaining Modules and Monitoring
 
 1. **Complete Remaining Modules**
+
    - Refactor all remaining modules
    - Ensure all have proper public APIs
    - Validate no boundary violations remain
@@ -97,21 +103,25 @@
 For each module, follow this process:
 
 1. **Analysis**
+
    - Review current imports and exports
    - Identify boundary violations
    - Determine proper public API
 
 2. **Public API Creation**
+
    - Create or update index.ts file
    - Use explicit named exports
    - Document the public interface
 
 3. **Dependency Fixing**
+
    - Update imports to use public APIs
    - Fix repository dependencies
    - Update service imports
 
 4. **Testing**
+
    - Run dependency validation
    - Generate visualization
    - Verify no boundary violations
@@ -123,12 +133,12 @@ For each module, follow this process:
 
 ## Success Metrics
 
-| Metric | Current | Target | Tracking Method |
-|--------|---------|--------|-----------------|
-| Modules with proper public APIs | 53% | 100% | Module interface analysis |
-| Boundary violations | 17 | 0 | Dependency validation |
-| Documentation coverage | 13% | 100% | Module documentation count |
-| Developer compliance | Low | High | Code review rejection rate |
+| Metric                          | Current | Target | Tracking Method            |
+| ------------------------------- | ------- | ------ | -------------------------- |
+| Modules with proper public APIs | 53%     | 100%   | Module interface analysis  |
+| Boundary violations             | 17      | 0      | Dependency validation      |
+| Documentation coverage          | 13%     | 100%   | Module documentation count |
+| Developer compliance            | Low     | High   | Code review rejection rate |
 
 ## Dependencies and Requirements
 

@@ -47,7 +47,7 @@ If you notice data quality problems:
    {
      "task_type": "refresh_products",
      "marketplace": "affected_marketplace_name",
-     "params": {"max_count": 100},
+     "params": { "max_count": 100 },
      "priority": "HIGH"
    }
    ```

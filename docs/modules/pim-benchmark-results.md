@@ -21,13 +21,13 @@ The performance benchmark tests evaluate the following key optimization strategi
 
 ## Summary of Results
 
-| Catalog Size | Network | Load Shedding | Avg Improvement | Service Overhead | Top Performing Query |
-|--------------|---------|---------------|-----------------|------------------|----------------------|
-| Small        | Good    | None          | 18.5%           | 5.2%             | Category filter (32.1%) |
-| Medium       | Good    | None          | 42.7%           | 7.8%             | Large result set (68.3%) |
-| Medium       | Poor    | Stage 2       | 53.2%           | 8.5%             | Complex query (76.4%) |
+| Catalog Size | Network | Load Shedding | Avg Improvement | Service Overhead | Top Performing Query        |
+| ------------ | ------- | ------------- | --------------- | ---------------- | --------------------------- |
+| Small        | Good    | None          | 18.5%           | 5.2%             | Category filter (32.1%)     |
+| Medium       | Good    | None          | 42.7%           | 7.8%             | Large result set (68.3%)    |
+| Medium       | Poor    | Stage 2       | 53.2%           | 8.5%             | Complex query (76.4%)       |
 | Large        | Good    | None          | 67.3%           | 9.3%             | Pagination - Cursor (82.1%) |
-| Large        | Poor    | Stage 4       | 72.5%           | 12.6%            | Complex query (88.9%) |
+| Large        | Poor    | Stage 4       | 72.5%           | 12.6%            | Complex query (88.9%)       |
 
 ### Key Findings
 
@@ -55,7 +55,7 @@ The improvement becomes more pronounced as the page number increases, as cursor-
 Field filtering showed substantial bandwidth savings:
 
 | Network Condition | Data Reduction | Performance Improvement |
-|-------------------|----------------|-------------------------|
+| ----------------- | -------------- | ----------------------- |
 | Excellent         | 35%            | 12-18%                  |
 | Good              | 45%            | 20-30%                  |
 | Fair              | 60%            | 30-45%                  |
@@ -77,13 +77,13 @@ This approach significantly enhances the user experience during degraded network
 
 The system automatically adapted to network conditions:
 
-| Network Quality | Batch Size | Fields | Caching Strategy | Result |
-|-----------------|------------|--------|------------------|--------|
-| Excellent       | 500        | Full   | Standard         | Optimal performance |
-| Good            | 400        | Full   | Enhanced         | Minimal degradation |
-| Fair            | 250        | Partial| Aggressive       | 15-25% degradation |
-| Poor            | 150        | Minimal| Maximum          | 30-40% degradation |
-| Critical        | 50         | Minimal| Maximum + Queue  | 50-60% degradation |
+| Network Quality | Batch Size | Fields  | Caching Strategy | Result              |
+| --------------- | ---------- | ------- | ---------------- | ------------------- |
+| Excellent       | 500        | Full    | Standard         | Optimal performance |
+| Good            | 400        | Full    | Enhanced         | Minimal degradation |
+| Fair            | 250        | Partial | Aggressive       | 15-25% degradation  |
+| Poor            | 150        | Minimal | Maximum          | 30-40% degradation  |
+| Critical        | 50         | Minimal | Maximum + Queue  | 50-60% degradation  |
 
 Without optimization, poor network conditions would cause 70-90% performance degradation or complete failures.
 
@@ -92,7 +92,7 @@ Without optimization, poor network conditions would cause 70-90% performance deg
 During simulated load shedding events:
 
 | Operation Priority | Stage 0 | Stage 2 | Stage 4 | Stage 6 |
-|--------------------|---------|---------|---------|---------|
+| ------------------ | ------- | ------- | ------- | ------- |
 | Critical           | 100%    | 100%    | 98%     | 95%     |
 | High               | 100%    | 99%     | 95%     | 85%     |
 | Medium             | 100%    | 95%     | 85%     | 70%     |

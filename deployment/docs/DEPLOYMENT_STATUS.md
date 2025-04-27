@@ -41,11 +41,13 @@ cd /home/tarquin_stapa/fluxori
 Once the deployment is complete and the scheduler jobs are set up, verify the scrapers are working:
 
 1. Visit the service health endpoint:
+
    ```
    curl ${SERVICE_URL}/health
    ```
 
 2. Manually trigger a test scraper run:
+
    ```
    curl -X POST ${SERVICE_URL}/tasks/execute \
      -H "Content-Type: application/json" \
@@ -53,6 +55,7 @@ Once the deployment is complete and the scheduler jobs are set up, verify the sc
    ```
 
 3. Check logs to see if the scraper executed successfully:
+
    ```
    gcloud logging read "resource.type=cloud_run_revision AND resource.labels.service_name=marketplace-scraper" --limit=10
    ```

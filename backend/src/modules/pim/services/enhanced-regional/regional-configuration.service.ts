@@ -7,10 +7,17 @@
  */
 
 import { Injectable, Logger, Inject } from '@nestjs/common';
+// Import DeepPartial from the controller location
+import type { DeepPartial } from '../../controllers/regional-configuration.controller';
 
 import { FeatureFlagService } from '../../../feature-flags';
 import { RegionalConfigurationRepository } from '../../repositories/regional-configuration.repository';
 import { MarketContextService } from '../market-context.service';
+
+// Utility to check if a value is a non-null object
+function isObject(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null;
+}
 
 /**
  * Region data including currencies, languages, and business rules
@@ -323,15 +330,14 @@ export class RegionalConfigurationService {
     countryCode: string,
     tenantId: string,
   ): Promise<RegionConfiguration> {
+    // Get from repository
     const regions = await this.regionalConfigRepository.findByCountryCode(
       countryCode,
       tenantId,
     );
-
-    if (regions.length > 0) {
+    if (regions && regions.length > 0) {
       return regions[0];
     }
-
     throw new Error(`Region with country code ${countryCode} not found`);
   }
 
@@ -346,8 +352,104 @@ export class RegionalConfigurationService {
     region: Omit<RegionConfiguration, 'createdAt' | 'updatedAt'>,
     tenantId: string,
   ): Promise<RegionConfiguration> {
+    // Ensure supportedCurrencies is string[]
+    const safeSupportedCurrencies = region.supportedCurrencies.filter(
+      (c): c is string => typeof c === 'string',
+    );
+    const safeSupportedLanguages = region.supportedLanguages.filter(
+      (l): l is string => typeof l === 'string',
+    );
+    const safeBusinessRules = isObject(region.businessRules)
+      ? {
+          defaultTaxRate: region.businessRules.defaultTaxRate ?? 0,
+          defaultShippingMethods: (
+            region.businessRules.defaultShippingMethods ?? []
+          ).filter((v: unknown): v is string => typeof v === 'string'),
+          defaultPaymentMethods: (
+            region.businessRules.defaultPaymentMethods ?? []
+          ).filter((v: unknown): v is string => typeof v === 'string'),
+          enableMarketplaceIntegration:
+            region.businessRules.enableMarketplaceIntegration ?? false,
+          enableMultiWarehouse:
+            region.businessRules.enableMultiWarehouse ?? false,
+          enableLoadSheddingResilience:
+            region.businessRules.enableLoadSheddingResilience ?? false,
+          enableNetworkAwareComponents:
+            region.businessRules.enableNetworkAwareComponents ?? false,
+          enableEuVatCompliance:
+            region.businessRules.enableEuVatCompliance ?? false,
+          enableCrossBorderTrading:
+            region.businessRules.enableCrossBorderTrading ?? false,
+          enableAfricanTaxFramework:
+            region.businessRules.enableAfricanTaxFramework ?? false,
+          enableAdvancedComplianceFramework:
+            region.businessRules.enableAdvancedComplianceFramework ?? false,
+          customSettings: region.businessRules.customSettings ?? {},
+        }
+      : {
+          defaultTaxRate: 0,
+          defaultShippingMethods: [],
+          defaultPaymentMethods: [],
+          enableMarketplaceIntegration: false,
+          enableMultiWarehouse: false,
+          enableLoadSheddingResilience: false,
+          enableNetworkAwareComponents: false,
+          enableEuVatCompliance: false,
+          enableCrossBorderTrading: false,
+          enableAfricanTaxFramework: false,
+          enableAdvancedComplianceFramework: false,
+          customSettings: {},
+        };
+
+    const safeSupportedMarketplaces = (
+      region.supportedMarketplaces ?? []
+    ).filter((v: unknown): v is string => typeof v === 'string');
+    const safeRequiredProductAttributes = (
+      region.requiredProductAttributes ?? []
+    ).filter((v: unknown): v is string => typeof v === 'string');
+    const safePricingRules = {
+      ...region.pricingRules,
+      roundingRule:
+        region.pricingRules?.roundingRule === 'nearest' ||
+        region.pricingRules?.roundingRule === 'up' ||
+        region.pricingRules?.roundingRule === 'down'
+          ? region.pricingRules.roundingRule
+          : 'nearest',
+      // add other pricingRules fields as needed, with appropriate defaults
+    };
+    const safeLocalization = {
+      ...region.localization,
+      dateFormat: region.localization?.dateFormat ?? 'yyyy-MM-dd',
+    };
+    const safeComplianceRequirements = {
+      requiredCertifications: (region.complianceRequirements &&
+      Array.isArray(region.complianceRequirements.requiredCertifications)
+        ? region.complianceRequirements.requiredCertifications
+        : []
+      ).filter((v: unknown): v is string => typeof v === 'string'),
+      requiredDocumentation: (region.complianceRequirements &&
+      Array.isArray(region.complianceRequirements.requiredDocumentation)
+        ? region.complianceRequirements.requiredDocumentation
+        : []
+      ).filter((v: unknown): v is string => typeof v === 'string'),
+      restrictedCategories: (region.complianceRequirements &&
+      Array.isArray(region.complianceRequirements.restrictedCategories)
+        ? region.complianceRequirements.restrictedCategories
+        : []
+      ).filter((v: unknown): v is string => typeof v === 'string'),
+      warningLabelsRequired:
+        region.complianceRequirements?.warningLabelsRequired ?? false,
+    };
     const newRegion: RegionConfiguration = {
       ...region,
+      supportedCurrencies: safeSupportedCurrencies,
+      supportedLanguages: safeSupportedLanguages,
+      supportedMarketplaces: safeSupportedMarketplaces,
+      requiredProductAttributes: safeRequiredProductAttributes,
+      pricingRules: safePricingRules,
+      localization: safeLocalization,
+      complianceRequirements: safeComplianceRequirements,
+      businessRules: safeBusinessRules,
       createdAt: new Date(),
       updatedAt: new Date(),
     };
@@ -377,14 +479,142 @@ export class RegionalConfigurationService {
    */
   async updateRegion(
     regionId: string,
-    updates: Partial<RegionConfiguration>,
+    updates: DeepPartial<RegionConfiguration>,
     tenantId: string,
   ): Promise<RegionConfiguration> {
     const existing = await this.getRegionById(regionId, tenantId);
+    if (!existing) {
+      throw new Error(`Region with ID ${regionId} not found`);
+    }
+    // Ensure supportedCurrencies is string[]
+    const safeSupportedCurrencies = (
+      updates.supportedCurrencies ?? existing.supportedCurrencies
+    ).filter((c): c is string => typeof c === 'string');
+    const safeSupportedLanguages = (
+      updates.supportedLanguages ?? existing.supportedLanguages
+    ).filter((l): l is string => typeof l === 'string');
+    const safeBusinessRules = {
+      defaultTaxRate:
+        updates.businessRules &&
+        typeof updates.businessRules.defaultTaxRate === 'number'
+          ? updates.businessRules.defaultTaxRate
+          : typeof existing.businessRules.defaultTaxRate === 'number'
+            ? existing.businessRules.defaultTaxRate
+            : 0,
+      defaultShippingMethods: (
+        updates.businessRules?.defaultShippingMethods ??
+        existing.businessRules.defaultShippingMethods ??
+        []
+      ).filter((v: unknown): v is string => typeof v === 'string'),
+      defaultPaymentMethods: (
+        updates.businessRules?.defaultPaymentMethods ??
+        existing.businessRules.defaultPaymentMethods ??
+        []
+      ).filter((v: unknown): v is string => typeof v === 'string'),
+      enableMarketplaceIntegration:
+        updates.businessRules?.enableMarketplaceIntegration ??
+        existing.businessRules.enableMarketplaceIntegration ??
+        false,
+      enableMultiWarehouse:
+        updates.businessRules?.enableMultiWarehouse ??
+        existing.businessRules.enableMultiWarehouse ??
+        false,
+      enableLoadSheddingResilience:
+        updates.businessRules?.enableLoadSheddingResilience ??
+        existing.businessRules.enableLoadSheddingResilience ??
+        false,
+      enableNetworkAwareComponents:
+        updates.businessRules?.enableNetworkAwareComponents ??
+        existing.businessRules.enableNetworkAwareComponents ??
+        false,
+      enableEuVatCompliance:
+        updates.businessRules?.enableEuVatCompliance ??
+        existing.businessRules.enableEuVatCompliance ??
+        false,
+      enableCrossBorderTrading:
+        updates.businessRules?.enableCrossBorderTrading ??
+        existing.businessRules.enableCrossBorderTrading ??
+        false,
+      enableAfricanTaxFramework:
+        updates.businessRules?.enableAfricanTaxFramework ??
+        existing.businessRules.enableAfricanTaxFramework ??
+        false,
+      enableAdvancedComplianceFramework:
+        updates.businessRules?.enableAdvancedComplianceFramework ??
+        existing.businessRules.enableAdvancedComplianceFramework ??
+        false,
+      customSettings:
+        updates.businessRules?.customSettings ??
+        existing.businessRules.customSettings ??
+        {},
+    };
+
+    const safeSupportedMarketplaces = (
+      updates.supportedMarketplaces ??
+      existing.supportedMarketplaces ??
+      []
+    ).filter((v: unknown): v is string => typeof v === 'string');
+    const safeRequiredProductAttributes = (
+      updates.requiredProductAttributes ??
+      existing.requiredProductAttributes ??
+      []
+    ).filter((v: unknown): v is string => typeof v === 'string');
+    const safePricingRules = {
+      ...existing.pricingRules,
+      ...updates.pricingRules,
+      roundingRule:
+        updates.pricingRules?.roundingRule === 'nearest' ||
+        updates.pricingRules?.roundingRule === 'up' ||
+        updates.pricingRules?.roundingRule === 'down'
+          ? updates.pricingRules.roundingRule
+          : existing.pricingRules?.roundingRule === 'nearest' ||
+              existing.pricingRules?.roundingRule === 'up' ||
+              existing.pricingRules?.roundingRule === 'down'
+            ? existing.pricingRules.roundingRule
+            : 'nearest',
+      // add other pricingRules fields as needed, with appropriate defaults
+    };
+    const safeLocalization = {
+      ...existing.localization,
+      ...updates.localization,
+      dateFormat:
+        updates.localization?.dateFormat ??
+        existing.localization?.dateFormat ??
+        'yyyy-MM-dd',
+    };
+    const safeComplianceRequirements = {
+      requiredCertifications: (updates.complianceRequirements &&
+      Array.isArray(updates.complianceRequirements.requiredCertifications)
+        ? updates.complianceRequirements.requiredCertifications
+        : (existing.complianceRequirements?.requiredCertifications ?? [])
+      ).filter((v: unknown): v is string => typeof v === 'string'),
+      requiredDocumentation: (updates.complianceRequirements &&
+      Array.isArray(updates.complianceRequirements.requiredDocumentation)
+        ? updates.complianceRequirements.requiredDocumentation
+        : (existing.complianceRequirements?.requiredDocumentation ?? [])
+      ).filter((v: unknown): v is string => typeof v === 'string'),
+      restrictedCategories: (updates.complianceRequirements &&
+      Array.isArray(updates.complianceRequirements.restrictedCategories)
+        ? updates.complianceRequirements.restrictedCategories
+        : (existing.complianceRequirements?.restrictedCategories ?? [])
+      ).filter((v: unknown): v is string => typeof v === 'string'),
+      warningLabelsRequired:
+        updates.complianceRequirements?.warningLabelsRequired ??
+        existing.complianceRequirements?.warningLabelsRequired ??
+        false,
+    };
 
     const updated: RegionConfiguration = {
       ...existing,
       ...updates,
+      supportedCurrencies: safeSupportedCurrencies,
+      supportedLanguages: safeSupportedLanguages,
+      supportedMarketplaces: safeSupportedMarketplaces,
+      requiredProductAttributes: safeRequiredProductAttributes,
+      pricingRules: safePricingRules,
+      localization: safeLocalization,
+      complianceRequirements: safeComplianceRequirements,
+      businessRules: safeBusinessRules,
       updatedAt: new Date(),
     };
 

@@ -5,13 +5,13 @@ This UI library provides a consistent set of components for building the Fluxori
 ## Usage
 
 ```tsx
-import { Button, Text, Stack } from '@/lib/ui';
+import { Button, Text, Stack } from "@/lib/ui";
 
 function MyComponent() {
   return (
     <Stack spacing="md">
       <Text weight={500}>Hello world</Text>
-      <Button onClick={() => console.log('Clicked')}>Click me</Button>
+      <Button onClick={() => console.log("Clicked")}>Click me</Button>
     </Stack>
   );
 }

@@ -2,45 +2,45 @@
 
 /**
  * Component Generator
- * 
+ *
  * This script generates a new React component with proper TypeScript typing.
- * 
+ *
  * Usage:
  *   node generate-component.js ComponentName [--client] [--path=components/path]
- *   
+ *
  * Options:
  *   --client        Add 'use client' directive (default for components with state)
  *   --path          Subdirectory under src/components (default: components)
  *   --stateful      Create a stateful component with useState
  */
 
-const fs = require('fs');
-const path = require('path');
+const fs = require("fs");
+const path = require("path");
 
 // Parse arguments
 const args = process.argv.slice(2);
 if (args.length === 0) {
-  console.error('❌ Please provide a component name!');
+  console.error("❌ Please provide a component name!");
   process.exit(1);
 }
 
 const componentName = args[0];
-const isClient = args.includes('--client');
-const isStateful = args.includes('--stateful');
+const isClient = args.includes("--client");
+const isStateful = args.includes("--stateful");
 const forcedClient = isClient || isStateful;
 
 // Default path is components, but can be overridden with --path
-let componentPath = 'components';
-const pathArg = args.find(arg => arg.startsWith('--path='));
+let componentPath = "components";
+const pathArg = args.find((arg) => arg.startsWith("--path="));
 if (pathArg) {
-  componentPath = pathArg.split('=')[1];
+  componentPath = pathArg.split("=")[1];
 }
 
 // Absolute path to frontend directory
-const FRONTEND_DIR = path.resolve(__dirname, '../frontend');
+const FRONTEND_DIR = path.resolve(__dirname, "../frontend");
 
 // Full path where the component will be created
-const fullPath = path.join(FRONTEND_DIR, 'src', componentPath, componentName);
+const fullPath = path.join(FRONTEND_DIR, "src", componentPath, componentName);
 
 // Create component directory if it doesn't exist
 if (!fs.existsSync(fullPath)) {
@@ -52,11 +52,11 @@ if (!fs.existsSync(fullPath)) {
 const indexContent = `export { ${componentName} } from './${componentName}';
 `;
 
-fs.writeFileSync(path.join(fullPath, 'index.ts'), indexContent);
+fs.writeFileSync(path.join(fullPath, "index.ts"), indexContent);
 console.log(`📝 Created index.ts`);
 
 // Generate component file
-let componentContent = '';
+let componentContent = "";
 
 if (forcedClient) {
   componentContent += `'use client';
@@ -104,7 +104,7 @@ componentContent += `}
  */
 export function ${componentName}({
   children,
-  className${isStateful ? ',\n  initialCount = 0,\n  onCountChange' : ''}
+  className${isStateful ? ",\n  initialCount = 0,\n  onCountChange" : ""}
 }: ${componentName}Props) {
 `;
 
@@ -149,7 +149,7 @@ fs.writeFileSync(path.join(fullPath, `${componentName}.tsx`), componentContent);
 console.log(`📝 Created ${componentName}.tsx`);
 
 // Generate test file
-const testContent = `import { render, screen${isStateful ? ', fireEvent' : ''} } from '@testing-library/react';
+const testContent = `import { render, screen${isStateful ? ", fireEvent" : ""} } from '@testing-library/react';
 import { ${componentName} } from './${componentName}';
 
 describe('${componentName}', () => {
@@ -157,7 +157,9 @@ describe('${componentName}', () => {
     render(<${componentName}>Test Content</${componentName}>);
     expect(screen.getByText('Test Content')).toBeInTheDocument();
   });
-${isStateful ? `
+${
+  isStateful
+    ? `
   it('increments counter when button is clicked', () => {
     render(<${componentName} />);
     expect(screen.getByText('Count: 0')).toBeInTheDocument();
@@ -172,7 +174,9 @@ ${isStateful ? `
     
     fireEvent.click(screen.getByText('Increment'));
     expect(handleCountChange).toHaveBeenCalledWith(1);
-  });` : ''}
+  });`
+    : ""
+}
 });
 `;
 
@@ -184,6 +188,10 @@ console.log(`   Location: ${path.relative(process.cwd(), fullPath)}\n`);
 
 if (!forcedClient) {
   console.log(`ℹ️ Note: This component was created as a server component.`);
-  console.log(`   If it uses hooks, state, or event handlers, add 'use client' at the top.`);
-  console.log(`   Or run with --client flag: node generate-component.js ${componentName} --client\n`);
+  console.log(
+    `   If it uses hooks, state, or event handlers, add 'use client' at the top.`,
+  );
+  console.log(
+    `   Or run with --client flag: node generate-component.js ${componentName} --client\n`,
+  );
 }

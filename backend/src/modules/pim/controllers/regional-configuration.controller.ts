@@ -19,7 +19,7 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 
-import { FirebaseAuthGuard } from '../../../common/guards/firebase-auth.guard';
+import { FirebaseAuthGuard } from '../../auth';
 import { GetUser } from '../../auth/decorators/get-user.decorator';
 import {
   RegionalConfigurationService,
@@ -33,16 +33,16 @@ import {
  * DTO for creating a region configuration
  */
 class CreateRegionDto implements Partial<RegionConfiguration> {
-  id: string;
-  name: string;
-  countryCode: string;
-  active: boolean;
-  primaryCurrency: string;
-  supportedCurrencies: string[];
-  primaryLanguage: string;
-  supportedLanguages: string[];
-  timezone: string;
-  businessRules: {
+  id!: string;
+  name!: string;
+  countryCode!: string;
+  active!: boolean;
+  primaryCurrency!: string;
+  supportedCurrencies!: string[];
+  primaryLanguage!: string;
+  supportedLanguages!: string[];
+  timezone!: string;
+  businessRules!: {
     defaultTaxRate: number;
     defaultShippingMethods: string[];
     defaultPaymentMethods: string[];
@@ -56,21 +56,21 @@ class CreateRegionDto implements Partial<RegionConfiguration> {
     enableAdvancedComplianceFramework: boolean;
     customSettings?: Record<string, any>;
   };
-  supportedMarketplaces: string[];
-  requiredProductAttributes: string[];
-  pricingRules: {
+  supportedMarketplaces!: string[];
+  requiredProductAttributes!: string[];
+  pricingRules!: {
     roundingRule: 'nearest' | 'up' | 'down';
     roundToNearest?: number;
     pricingEnding?: string;
     minimumMarkupPercentage?: number;
   };
-  localization: {
+  localization!: {
     dateFormat: string;
     numberFormat: string;
     currencyFormat: string;
     addressFormat: string;
   };
-  complianceRequirements: {
+  complianceRequirements!: {
     requiredCertifications: string[];
     requiredDocumentation: string[];
     restrictedCategories: string[];
@@ -85,7 +85,11 @@ class CreateRegionDto implements Partial<RegionConfiguration> {
 /**
  * DTO for updating a region configuration
  */
-class UpdateRegionDto implements Partial<RegionConfiguration> {
+export type DeepPartial<T> = {
+  [P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P];
+};
+
+class UpdateRegionDto implements DeepPartial<RegionConfiguration> {
   name?: string;
   countryCode?: string;
   active?: boolean;
@@ -94,40 +98,14 @@ class UpdateRegionDto implements Partial<RegionConfiguration> {
   primaryLanguage?: string;
   supportedLanguages?: string[];
   timezone?: string;
-  businessRules?: {
-    defaultTaxRate?: number;
-    defaultShippingMethods?: string[];
-    defaultPaymentMethods?: string[];
-    enableMarketplaceIntegration?: boolean;
-    enableMultiWarehouse?: boolean;
-    enableLoadSheddingResilience?: boolean;
-    enableNetworkAwareComponents?: boolean;
-    enableEuVatCompliance?: boolean;
-    enableCrossBorderTrading?: boolean;
-    enableAfricanTaxFramework?: boolean;
-    enableAdvancedComplianceFramework?: boolean;
-    customSettings?: Record<string, any>;
-  };
+  businessRules?: DeepPartial<CreateRegionDto['businessRules']>;
   supportedMarketplaces?: string[];
   requiredProductAttributes?: string[];
-  pricingRules?: {
-    roundingRule?: 'nearest' | 'up' | 'down';
-    roundToNearest?: number;
-    pricingEnding?: string;
-    minimumMarkupPercentage?: number;
-  };
-  localization?: {
-    dateFormat?: string;
-    numberFormat?: string;
-    currencyFormat?: string;
-    addressFormat?: string;
-  };
-  complianceRequirements?: {
-    requiredCertifications?: string[];
-    requiredDocumentation?: string[];
-    restrictedCategories?: string[];
-    warningLabelsRequired?: boolean;
-  };
+  pricingRules?: DeepPartial<CreateRegionDto['pricingRules']>;
+  localization?: DeepPartial<CreateRegionDto['localization']>;
+  complianceRequirements?: DeepPartial<
+    CreateRegionDto['complianceRequirements']
+  >;
   warehouses?: {
     defaultWarehouseId?: string;
     regionalWarehouseIds?: string[];

@@ -5,6 +5,8 @@ import {
   Query,
   UseGuards,
   Logger,
+  HttpException,
+  HttpStatus,
 } from '@nestjs/common';
 
 import { FeatureFlagService } from '../../../modules/feature-flags/services/feature-flag.service';
@@ -96,7 +98,15 @@ export class BulkOperationsController {
     const enableLoadSheddingResilience =
       await this.featureFlagService.isEnabled(
         'pim.south-africa.load-shedding-resilience',
-        user.organizationId,
+        (() => {
+          if (!user.organizationId) {
+            throw new HttpException(
+              'Missing organizationId for user',
+              HttpStatus.BAD_REQUEST,
+            );
+          }
+          return { organizationId: user.organizationId };
+        })(),
       );
 
     if (enableLoadSheddingResilience) {
@@ -105,7 +115,15 @@ export class BulkOperationsController {
 
     const lowBandwidthMode = await this.featureFlagService.isEnabled(
       'pim.south-africa.low-bandwidth-mode',
-      user.organizationId,
+      (() => {
+        if (!user.organizationId) {
+          throw new HttpException(
+            'Missing organizationId for user',
+            HttpStatus.BAD_REQUEST,
+          );
+        }
+        return { organizationId: user.organizationId };
+      })(),
     );
 
     if (lowBandwidthMode) {
@@ -142,7 +160,15 @@ export class BulkOperationsController {
       ...op,
       updates: {
         ...op.updates,
-        organizationId: user.organizationId,
+        organizationId: (() => {
+          if (!user.organizationId) {
+            throw new HttpException(
+              'Missing organizationId for user',
+              HttpStatus.BAD_REQUEST,
+            );
+          }
+          return user.organizationId;
+        })(),
       },
     }));
 
@@ -175,7 +201,15 @@ export class BulkOperationsController {
     const options = await this.getBulkOptions(user, queryParams);
 
     return await this.productBulkService.bulkDeleteProducts(
-      user.organizationId,
+      (() => {
+        if (!user.organizationId) {
+          throw new HttpException(
+            'Missing organizationId for user',
+            HttpStatus.BAD_REQUEST,
+          );
+        }
+        return user.organizationId;
+      })(),
       body.productIds,
       options,
     );
@@ -205,7 +239,15 @@ export class BulkOperationsController {
     const options = await this.getBulkOptions(user, queryParams);
 
     return await this.productBulkService.bulkUpdateProductStatus(
-      user.organizationId,
+      (() => {
+        if (!user.organizationId) {
+          throw new HttpException(
+            'Missing organizationId for user',
+            HttpStatus.BAD_REQUEST,
+          );
+        }
+        return user.organizationId;
+      })(),
       operations,
       options,
     );
@@ -235,7 +277,15 @@ export class BulkOperationsController {
     const options = await this.getBulkOptions(user, queryParams);
 
     return await this.productBulkService.bulkUpdateProductPrices(
-      user.organizationId,
+      (() => {
+        if (!user.organizationId) {
+          throw new HttpException(
+            'Missing organizationId for user',
+            HttpStatus.BAD_REQUEST,
+          );
+        }
+        return user.organizationId;
+      })(),
       operations,
       options,
     );
@@ -265,7 +315,15 @@ export class BulkOperationsController {
     const options = await this.getBulkOptions(user, queryParams);
 
     return await this.productBulkService.bulkUpdateProductCategories(
-      user.organizationId,
+      (() => {
+        if (!user.organizationId) {
+          throw new HttpException(
+            'Missing organizationId for user',
+            HttpStatus.BAD_REQUEST,
+          );
+        }
+        return user.organizationId;
+      })(),
       operations,
       options,
     );
@@ -295,7 +353,15 @@ export class BulkOperationsController {
     const options = await this.getBulkOptions(user, queryParams);
 
     return await this.productBulkService.bulkUpdateProductInventory(
-      user.organizationId,
+      (() => {
+        if (!user.organizationId) {
+          throw new HttpException(
+            'Missing organizationId for user',
+            HttpStatus.BAD_REQUEST,
+          );
+        }
+        return user.organizationId;
+      })(),
       operations,
       options,
     );
@@ -325,7 +391,15 @@ export class BulkOperationsController {
     const options = await this.getBulkOptions(user, queryParams);
 
     return await this.productBulkService.bulkDuplicateProducts(
-      user.organizationId,
+      (() => {
+        if (!user.organizationId) {
+          throw new HttpException(
+            'Missing organizationId for user',
+            HttpStatus.BAD_REQUEST,
+          );
+        }
+        return user.organizationId;
+      })(),
       operations,
       options,
     );
@@ -355,7 +429,15 @@ export class BulkOperationsController {
       ...op,
       updates: {
         ...op.updates,
-        organizationId: user.organizationId,
+        organizationId: (() => {
+          if (!user.organizationId) {
+            throw new HttpException(
+              'Missing organizationId for user',
+              HttpStatus.BAD_REQUEST,
+            );
+          }
+          return user.organizationId;
+        })(),
       },
     }));
 
@@ -388,7 +470,15 @@ export class BulkOperationsController {
     const options = await this.getBulkOptions(user, queryParams);
 
     return await this.categoryBulkService.bulkDeleteCategories(
-      user.organizationId,
+      (() => {
+        if (!user.organizationId) {
+          throw new HttpException(
+            'Missing organizationId for user',
+            HttpStatus.BAD_REQUEST,
+          );
+        }
+        return user.organizationId;
+      })(),
       body.categoryIds,
       options,
     );
@@ -416,7 +506,15 @@ export class BulkOperationsController {
     const options = await this.getBulkOptions(user, queryParams);
 
     return await this.categoryBulkService.bulkMoveCategories(
-      user.organizationId,
+      (() => {
+        if (!user.organizationId) {
+          throw new HttpException(
+            'Missing organizationId for user',
+            HttpStatus.BAD_REQUEST,
+          );
+        }
+        return user.organizationId;
+      })(),
       operations,
       options,
     );
@@ -446,7 +544,15 @@ export class BulkOperationsController {
     const options = await this.getBulkOptions(user, queryParams);
 
     return await this.categoryBulkService.bulkUpdateCategoryMarketplaceMappings(
-      user.organizationId,
+      (() => {
+        if (!user.organizationId) {
+          throw new HttpException(
+            'Missing organizationId for user',
+            HttpStatus.BAD_REQUEST,
+          );
+        }
+        return user.organizationId;
+      })(),
       operations,
       options,
     );

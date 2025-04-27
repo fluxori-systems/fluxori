@@ -88,7 +88,7 @@ The main configuration file for the scraper service:
       "task_type": "refresh_products",
       "max_count": 500,
       "priority": "HIGH"
-    },
+    }
     // ... other jobs
   ]
 }
@@ -99,11 +99,13 @@ The main configuration file for the scraper service:
 The system incorporates several mechanisms to handle South African load shedding:
 
 1. **Automatic Detection**: The system can detect load shedding through:
+
    - Network pattern analysis
    - Failed request pattern monitoring
    - Configurable detection thresholds
 
 2. **Adaptive Behavior**: During load shedding periods:
+
    - Non-critical tasks are automatically paused
    - Request timeouts are dynamically adjusted
    - Results are cached for longer periods
@@ -119,6 +121,7 @@ The system incorporates several mechanisms to handle South African load shedding
 The system implements sophisticated quota management to stay within the 82K monthly limit:
 
 1. **Hierarchical Allocation**:
+
    - Critical tasks: 40% (32,800 requests)
    - High priority: 30% (24,600 requests)
    - Medium priority: 20% (16,400 requests)
@@ -126,6 +129,7 @@ The system implements sophisticated quota management to stay within the 82K mont
    - Background: 5% (4,100 requests)
 
 2. **Daily Limits**:
+
    - Default: 2,700 requests per day
    - Adjustable per category and task type
 
@@ -139,6 +143,7 @@ The system implements sophisticated quota management to stay within the 82K mont
 The deployment includes comprehensive monitoring:
 
 1. **Dashboard**: Real-time visualization of:
+
    - Quota usage
    - Success rates
    - Response times
@@ -146,6 +151,7 @@ The deployment includes comprehensive monitoring:
    - Load shedding status
 
 2. **Alerts**:
+
    - High quota usage (>80%)
    - Elevated error rates (>20%)
    - Load shedding detection
@@ -160,11 +166,13 @@ The deployment includes comprehensive monitoring:
 ### Common Issues
 
 1. **Deployment Failures**:
+
    - Check service account permissions
    - Verify API enablement in the GCP project
    - Check billing status
 
 2. **Runtime Errors**:
+
    - Check logs: `gcloud logging read "resource.type=cloud_run_revision AND resource.labels.service_name=marketplace-scraper"`
    - Verify SmartProxy token validity
    - Check Firestore indexes
@@ -177,16 +185,18 @@ The deployment includes comprehensive monitoring:
 ### Recovery Steps
 
 1. **Service Not Starting**:
+
    ```bash
    # Check Cloud Run logs
    gcloud logging read "resource.type=cloud_run_revision AND resource.labels.service_name=marketplace-scraper" --limit=50
-   
+
    # Restart service
    gcloud run services update marketplace-scraper --region=africa-south1 --clear-env-vars
    gcloud run services update marketplace-scraper --region=africa-south1 --set-env-vars="GCP_PROJECT_ID=fluxori-marketplace-data,GCP_REGION=africa-south1"
    ```
 
 2. **Scheduler Jobs Failing**:
+
    ```bash
    # Check job status
    gcloud scheduler jobs describe marketplace-scraper-daily-product-refresh
@@ -209,11 +219,13 @@ The deployment includes comprehensive monitoring:
 ### Regular Maintenance Tasks
 
 1. **Weekly**:
+
    - Review quota usage trends
    - Check error patterns
    - Verify data quality
 
 2. **Monthly**:
+
    - Adjust quota allocation based on usage
    - Update category and keyword priorities
    - Review and optimize scheduling

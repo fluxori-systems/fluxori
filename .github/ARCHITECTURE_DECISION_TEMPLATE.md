@@ -17,7 +17,7 @@ This pull request implements or affects Architecture Decision Record (ADR) [ADR-
 
 ## Dependency Impact
 
-<!-- 
+<!--
 Describe how this PR affects module dependencies. Reference dependency visualizations.
 You can generate visualizations using:
   npm run adr:gen-viz -- --adr=XXX --title="Module Dependencies" --modules=module1,module2

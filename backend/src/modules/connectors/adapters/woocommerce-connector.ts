@@ -54,8 +54,8 @@ export class WooCommerceConnector extends BaseMarketplaceConnector {
   readonly connectorId: string = 'woocommerce';
   readonly connectorName: string = 'WooCommerce REST API';
 
-  private client: AxiosInstance;
-  private config: WooCommerceConfig;
+  private client!: AxiosInstance;
+  private config!: WooCommerceConfig;
   private rateLimitRemaining: number = 1000;
   private rateLimitTotal: number = 1000;
   private rateLimitReset: Date = new Date();

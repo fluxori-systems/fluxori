@@ -23,7 +23,7 @@ import {
  */
 export abstract class BaseMarketplaceAdapter implements IMarketplaceAdapter {
   protected logger: Logger;
-  protected credentials: MarketplaceCredentials;
+  protected credentials!: MarketplaceCredentials;
   protected isInitialized = false;
 
   /**

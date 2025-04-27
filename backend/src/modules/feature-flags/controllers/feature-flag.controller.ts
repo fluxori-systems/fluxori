@@ -17,8 +17,7 @@ import {
   FirebaseAuthGuard,
   GetUser,
   DecodedFirebaseToken,
-  AuthUtils,
-} from 'src/common/auth';
+} from '@modules/auth';
 
 import {
   FeatureFlag,
@@ -44,7 +43,7 @@ export class FeatureFlagController {
   @Post()
   async createFlag(
     @Body() flagDTO: FeatureFlagDTO,
-    @GetUser() user: any,
+    @GetUser() user: DecodedFirebaseToken,
   ): Promise<FeatureFlag> {
     this.logger.log(`Creating feature flag: ${flagDTO.key}`);
     return this.featureFlagService.createFlag(flagDTO, user.id);
@@ -88,7 +87,7 @@ export class FeatureFlagController {
   async updateFlag(
     @Param('id') id: string,
     @Body() flagDTO: Partial<FeatureFlagDTO>,
-    @GetUser() user: any,
+    @GetUser() user: DecodedFirebaseToken,
   ): Promise<FeatureFlag> {
     this.logger.log(`Updating feature flag: ${id}`);
     return this.featureFlagService.updateFlag(id, flagDTO, user.id);
@@ -101,7 +100,7 @@ export class FeatureFlagController {
   async toggleFlag(
     @Param('id') id: string,
     @Body() toggleDTO: FeatureFlagToggleDTO,
-    @GetUser() user: any,
+    @GetUser() user: DecodedFirebaseToken,
   ): Promise<FeatureFlag> {
     this.logger.log(`Toggling feature flag: ${id} to ${toggleDTO.enabled}`);
     return this.featureFlagService.toggleFlag(id, toggleDTO, user.id);
@@ -113,7 +112,7 @@ export class FeatureFlagController {
   @Delete(':id')
   async deleteFlag(
     @Param('id') id: string,
-    @GetUser() user: any,
+    @GetUser() user: DecodedFirebaseToken,
   ): Promise<{ success: boolean }> {
     this.logger.log(`Deleting feature flag: ${id}`);
     const result = await this.featureFlagService.deleteFlag(id, user.id);
@@ -136,7 +135,7 @@ export class FeatureFlagController {
   async evaluateFlag(
     @Param('key') key: string,
     @Body() context: FlagEvaluationContext,
-    @GetUser() user: any,
+    @GetUser() user: DecodedFirebaseToken,
   ): Promise<FlagEvaluationResult> {
     this.logger.debug(`Evaluating feature flag: ${key}`);
 
@@ -173,7 +172,7 @@ export class FeatureFlagController {
     // Log additional context if the user is in an organization
     if (
       mergedContext.organizationId &&
-      AuthUtils.isInOrganization(user, mergedContext.organizationId)
+      user.organizationId === mergedContext.organizationId
     ) {
       this.logger.debug(
         `User belongs to evaluated organization: ${mergedContext.organizationId}`,
@@ -193,7 +192,7 @@ export class FeatureFlagController {
   @Post('evaluate-batch')
   async evaluateBatchFlags(
     @Body() data: { keys: string[]; context: FlagEvaluationContext },
-    @GetUser() user: any,
+    @GetUser() user: DecodedFirebaseToken,
   ): Promise<Record<string, FlagEvaluationResult>> {
     this.logger.debug(
       `Evaluating batch of feature flags: ${data.keys.join(', ')}`,

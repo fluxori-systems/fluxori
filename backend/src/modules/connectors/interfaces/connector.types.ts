@@ -2,11 +2,18 @@
  * Common connector types used across all connector modules
  */
 
+/**
+ * Placeholder for connector settings fields. TODO: Add concrete fields as discovered.
+ */
+export interface ConnectorSettings {
+  // TODO: Add concrete settings fields here as they are discovered in the codebase
+}
+
 export interface ConnectorCredentials {
   type: string;
   organizationId: string;
   accountId?: string;
-  settings?: Record<string, any>;
+  settings?: ConnectorSettings; // TODO: replace with concrete fields as discovered
   [key: string]: any;
 }
 
@@ -42,7 +49,7 @@ export interface PaginationOptions {
   pageSize?: number;
   sortBy?: string;
   sortDirection?: 'ASC' | 'DESC';
-  filter?: Record<string, any>;
+  filter?: ConnectorSettings; // TODO: replace with concrete fields as discovered
 }
 
 export interface PaginatedResponse<T> {

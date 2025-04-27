@@ -1,18 +1,18 @@
-'use client';
+"use client";
 
-import { ReactNode, createContext, useContext, useMemo } from 'react';
+import { ReactNode, createContext, useContext, useMemo } from "react";
 
-import { 
-  IAnimationService, 
-  ANIMATION_SERVICE_KEY 
-} from '../services/animation-service.interface';
-import { 
-  IConnectionService, 
-  CONNECTION_SERVICE_KEY 
-} from '../services/connection-service.interface';
-import { SERVICE_KEYS } from '../services/service-registry';
+import {
+  IAnimationService,
+  ANIMATION_SERVICE_KEY,
+} from "../services/animation-service.interface";
+import {
+  IConnectionService,
+  CONNECTION_SERVICE_KEY,
+} from "../services/connection-service.interface";
+import { SERVICE_KEYS } from "../services/service-registry";
 
-import type { MotionContextType } from '../interfaces/motion-hooks.interface';
+import type { MotionContextType } from "../interfaces/motion-hooks.interface";
 
 // Create context to hold all service implementations
 interface ServiceContextType {
@@ -34,14 +34,17 @@ interface ServiceProviderProps {
 export function ServiceProvider({
   children,
   animationService,
-  connectionService
+  connectionService,
 }: ServiceProviderProps) {
   // Create services object that will be provided through context
-  const services = useMemo(() => ({
-    [ANIMATION_SERVICE_KEY]: animationService,
-    [CONNECTION_SERVICE_KEY]: connectionService
-  }), [animationService, connectionService]);
-  
+  const services = useMemo(
+    () => ({
+      [ANIMATION_SERVICE_KEY]: animationService,
+      [CONNECTION_SERVICE_KEY]: connectionService,
+    }),
+    [animationService, connectionService],
+  );
+
   return (
     <ServiceContext.Provider value={services}>
       {children}
@@ -56,7 +59,7 @@ export function ServiceProvider({
 export function useServiceContext(): ServiceContextType {
   const context = useContext(ServiceContext);
   if (!context) {
-    throw new Error('useServiceContext must be used within a ServiceProvider');
+    throw new Error("useServiceContext must be used within a ServiceProvider");
   }
   return context;
 }
@@ -69,11 +72,11 @@ export function useServiceContext(): ServiceContextType {
 export function useService<T>(key: string): T {
   const services = useServiceContext();
   const service = services[key];
-  
+
   if (!service) {
     throw new Error(`Service ${key} not found in context`);
   }
-  
+
   return service as T;
 }
 
@@ -95,7 +98,7 @@ export function useConnectionService(): IConnectionService {
 
 /**
  * Get motion context from wherever it's implemented, using dependency inversion
- * 
+ *
  * This uses a dynamic import and type checking to avoid direct dependencies
  * on the motion module. If the motion module is not available, it provides
  * sensible defaults instead of failing.
@@ -106,17 +109,19 @@ export function useMotion(): MotionContextType {
     prefersReducedMotion: false,
     isAnimating: false,
     setIsAnimating: () => {},
-    animationComplexity: 'standard',
+    animationComplexity: "standard",
     enableAnimations: () => {},
     disableAnimations: () => {},
-    setAnimationComplexity: () => {}
+    setAnimationComplexity: () => {},
   };
-  
+
   try {
     // Try to dynamically get the real motion context
     // In a real environment, this would be provided by the motion module
     // but we decouple it via this dynamic import
-    return (window as any).__MOTION_CONTEXT_HOOK ? (window as any).__MOTION_CONTEXT_HOOK() : defaultMotionContext;
+    return (window as any).__MOTION_CONTEXT_HOOK
+      ? (window as any).__MOTION_CONTEXT_HOOK()
+      : defaultMotionContext;
   } catch (e) {
     // If anything fails, return the default
     return defaultMotionContext;

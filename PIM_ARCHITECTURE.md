@@ -64,44 +64,44 @@ The PIM module provides the following key interface points:
 
 ```typescript
 // Product data types
-export { Product, ProductStatus, ProductType } from './models/product.model';
+export { Product, ProductStatus, ProductType } from "./models/product.model";
 
 // B2B data types
-export { 
-  B2BCustomer, 
-  CustomerTier, 
-  CustomerGroup, 
+export {
+  B2BCustomer,
+  CustomerTier,
+  CustomerGroup,
   B2BPriceList,
   CustomerContract,
-  PurchaseOrder
-} from './models/b2b';
+  PurchaseOrder,
+} from "./models/b2b";
 
 // Services for other modules to consume
-export { ProductService, CategoryService } from './services';
+export { ProductService, CategoryService } from "./services";
 
 // Synchronization capabilities
-export { MarketplaceSyncService } from './services';
+export { MarketplaceSyncService } from "./services";
 
 // B2B Services
-export { B2BService } from './services/b2b/b2b-service';
+export { B2BService } from "./services/b2b/b2b-service";
 ```
 
 ### Consumed by PIM Module
 
 ```typescript
 // From Connectors Module
-import { IMarketplaceConnector } from '../connectors/interfaces/connector.interface';
-import { ConnectorFactoryService } from '../connectors/services/connector-factory.service';
+import { IMarketplaceConnector } from "../connectors/interfaces/connector.interface";
+import { ConnectorFactoryService } from "../connectors/services/connector-factory.service";
 
 // From Auth Module
-import { FirebaseAuthGuard } from '../auth/guards/firebase-auth.guard';
-import { GetUser } from '../auth/decorators/get-user.decorator';
+import { FirebaseAuthGuard } from "../auth/guards/firebase-auth.guard";
+import { GetUser } from "../auth/decorators/get-user.decorator";
 
 // From Credit System Module
-import { CreditSystemService } from '../credit-system/services/credit-system.service';
+import { CreditSystemService } from "../credit-system/services/credit-system.service";
 
 // From Feature Flags Module
-import { FeatureFlagService } from '../feature-flags/services/feature-flag.service';
+import { FeatureFlagService } from "../feature-flags/services/feature-flag.service";
 ```
 
 ## Module Registration
@@ -122,12 +122,12 @@ export class PimModule {
       MarketplaceConnectorController,
       ImportExportController,
     ];
-    
+
     // Conditionally include B2B controller based on feature flag
     if (options?.enableAdvancedB2BSupport) {
       controllers.push(B2BController);
     }
-    
+
     return {
       module: PimModule,
       imports: [
@@ -143,24 +143,26 @@ export class PimModule {
         CategoryService,
         AttributeTemplateService,
         // ...other providers
-        
+
         // Conditionally include B2B service
-        ...(options?.enableAdvancedB2BSupport ? [
-          B2BService,
-          B2BCustomerRepository,
-          CustomerTierRepository,
-          CustomerGroupRepository,
-          B2BPriceListRepository,
-          B2BContractRepository,
-          PurchaseOrderRepository,
-          ApprovalWorkflowRepository,
-        ] : []),
+        ...(options?.enableAdvancedB2BSupport
+          ? [
+              B2BService,
+              B2BCustomerRepository,
+              CustomerTierRepository,
+              CustomerGroupRepository,
+              B2BPriceListRepository,
+              B2BContractRepository,
+              PurchaseOrderRepository,
+              ApprovalWorkflowRepository,
+            ]
+          : []),
       ],
       exports: [
         ProductService,
         CategoryService,
         // ...other exports
-        
+
         // Conditionally export B2B service
         ...(options?.enableAdvancedB2BSupport ? [B2BService] : []),
       ],

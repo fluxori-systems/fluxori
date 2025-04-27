@@ -5,9 +5,9 @@ import { FirestoreEntity } from '../types/google-cloud.types';
 
 /**
  * This is a template for implementing a repository that extends FirestoreBaseRepository.
- * 
+ *
  * Use this as a reference for creating repository implementations in your modules.
- * 
+ *
  * Replace 'YourEntity' with your actual entity type that extends FirestoreEntity.
  */
 
@@ -27,7 +27,7 @@ export interface YourEntity extends FirestoreEntity {
 export class YourEntityRepository extends FirestoreBaseRepository<YourEntity> {
   // Define the collection name - must be set in every repository
   protected readonly collectionName = 'your_entities';
-  
+
   /**
    * Constructor with Firestore config service dependency
    * @param firestoreConfigService Firestore configuration service
@@ -42,7 +42,7 @@ export class YourEntityRepository extends FirestoreBaseRepository<YourEntity> {
       requiredFields: ['name', 'status'], // Define required fields
     });
   }
-  
+
   /**
    * Example of a custom query method
    * Find entities by status
@@ -52,7 +52,7 @@ export class YourEntityRepository extends FirestoreBaseRepository<YourEntity> {
   async findByStatus(status: 'active' | 'inactive'): Promise<YourEntity[]> {
     return this.findAll({ status });
   }
-  
+
   /**
    * Example of a custom update method
    * Set an entity to active status
@@ -60,11 +60,11 @@ export class YourEntityRepository extends FirestoreBaseRepository<YourEntity> {
    * @returns Updated entity or null if not found
    */
   async setActive(id: string): Promise<YourEntity | null> {
-    return this.update(id, { 
-      status: 'active'
+    return this.update(id, {
+      status: 'active',
     });
   }
-  
+
   /**
    * Example of transaction usage
    * Swap status between two entities
@@ -77,30 +77,30 @@ export class YourEntityRepository extends FirestoreBaseRepository<YourEntity> {
       // Get both documents
       const doc1Ref = this.getDocRef(id1);
       const doc2Ref = this.getDocRef(id2);
-      
+
       const [doc1Snapshot, doc2Snapshot] = await Promise.all([
         transaction.get(doc1Ref),
-        transaction.get(doc2Ref)
+        transaction.get(doc2Ref),
       ]);
-      
+
       if (!doc1Snapshot.exists || !doc2Snapshot.exists) {
         throw new Error('One or both documents do not exist');
       }
-      
+
       const doc1 = doc1Snapshot.data() as YourEntity;
       const doc2 = doc2Snapshot.data() as YourEntity;
-      
+
       // Swap status
-      transaction.update(doc1Ref, { 
+      transaction.update(doc1Ref, {
         status: doc2.status,
-        updatedAt: new Date()
+        updatedAt: new Date(),
       });
-      
-      transaction.update(doc2Ref, { 
+
+      transaction.update(doc2Ref, {
         status: doc1.status,
-        updatedAt: new Date()
+        updatedAt: new Date(),
       });
-      
+
       return true;
     });
   }

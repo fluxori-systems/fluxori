@@ -1,24 +1,32 @@
 /**
  * Custom Dashboard Creation Script for Fluxori
- * 
+ *
  * This script creates custom dashboards optimized for monitoring Fluxori's GCP
  * infrastructure with a focus on South African hosting requirements.
  */
 
-const { google } = require('googleapis');
-const chalk = require('chalk');
-const fs = require('fs');
-const path = require('path');
+const { google } = require("googleapis");
+const chalk = require("chalk");
+const fs = require("fs");
+const path = require("path");
 
 // Command line arguments
 const args = process.argv.slice(2);
-const projectId = args.find(arg => arg.startsWith('--project='))?.split('=')[1];
-const env = args.find(arg => arg.startsWith('--env='))?.split('=')[1] || 'dev';
-const dashboardType = args.find(arg => arg.startsWith('--type='))?.split('=')[1] || 'all';
-const region = args.find(arg => arg.startsWith('--region='))?.split('=')[1] || 'africa-south1';
+const projectId = args
+  .find((arg) => arg.startsWith("--project="))
+  ?.split("=")[1];
+const env =
+  args.find((arg) => arg.startsWith("--env="))?.split("=")[1] || "dev";
+const dashboardType =
+  args.find((arg) => arg.startsWith("--type="))?.split("=")[1] || "all";
+const region =
+  args.find((arg) => arg.startsWith("--region="))?.split("=")[1] ||
+  "africa-south1";
 
 if (!projectId) {
-  console.error(chalk.red('Error: Project ID is required. Use --project=YOUR_PROJECT_ID'));
+  console.error(
+    chalk.red("Error: Project ID is required. Use --project=YOUR_PROJECT_ID"),
+  );
   process.exit(1);
 }
 
@@ -35,24 +43,27 @@ async function createDashboard(dashboardJson) {
   try {
     // Initialize monitoring client
     const auth = new google.auth.GoogleAuth({
-      scopes: ['https://www.googleapis.com/auth/cloud-platform'],
+      scopes: ["https://www.googleapis.com/auth/cloud-platform"],
     });
-    
+
     const monitoring = google.monitoring({
-      version: 'v3',
+      version: "v3",
       auth,
     });
-    
+
     // Create the dashboard
     const response = await monitoring.projects.dashboards.create({
       parent: `projects/${projectId}`,
       requestBody: dashboardJson,
     });
-    
+
     console.log(chalk.green(`Created dashboard: ${dashboardJson.displayName}`));
     return response.data;
   } catch (error) {
-    console.error(chalk.red(`Error creating dashboard ${dashboardJson.displayName}:`), error.message);
+    console.error(
+      chalk.red(`Error creating dashboard ${dashboardJson.displayName}:`),
+      error.message,
+    );
     return null;
   }
 }
@@ -61,8 +72,8 @@ async function createDashboard(dashboardJson) {
  * Creates a system overview dashboard
  */
 async function createSystemDashboard() {
-  console.log(chalk.blue('Creating system overview dashboard...'));
-  
+  console.log(chalk.blue("Creating system overview dashboard..."));
+
   const systemDashboard = {
     displayName: `Fluxori System Dashboard (${env})`,
     gridLayout: {
@@ -85,7 +96,8 @@ async function createSystemDashboard() {
                   unitOverride: "1",
                 },
                 plotType: "LINE",
-                legendTemplate: "Response Code: ${metric.label.response_code_class}",
+                legendTemplate:
+                  "Response Code: ${metric.label.response_code_class}",
               },
             ],
             timeshiftDuration: "0s",
@@ -298,7 +310,7 @@ async function createSystemDashboard() {
       ],
     },
   };
-  
+
   await createDashboard(systemDashboard);
 }
 
@@ -306,8 +318,8 @@ async function createSystemDashboard() {
  * Creates an AI services dashboard
  */
 async function createAIDashboard() {
-  console.log(chalk.blue('Creating AI services dashboard...'));
-  
+  console.log(chalk.blue("Creating AI services dashboard..."));
+
   const aiDashboard = {
     displayName: `Fluxori AI Services Dashboard (${env})`,
     gridLayout: {
@@ -423,7 +435,7 @@ async function createAIDashboard() {
       ],
     },
   };
-  
+
   await createDashboard(aiDashboard);
 }
 
@@ -431,8 +443,8 @@ async function createAIDashboard() {
  * Creates a network performance dashboard optimized for South Africa
  */
 async function createNetworkDashboard() {
-  console.log(chalk.blue('Creating network performance dashboard...'));
-  
+  console.log(chalk.blue("Creating network performance dashboard..."));
+
   const networkDashboard = {
     displayName: `Fluxori Network Performance Dashboard (${env})`,
     gridLayout: {
@@ -574,7 +586,7 @@ async function createNetworkDashboard() {
       ],
     },
   };
-  
+
   await createDashboard(networkDashboard);
 }
 
@@ -582,30 +594,30 @@ async function createNetworkDashboard() {
  * Main function to create dashboards
  */
 async function main() {
-  console.log(chalk.bold.green('Fluxori Custom Dashboard Creation'));
-  console.log(chalk.bold.green('================================'));
+  console.log(chalk.bold.green("Fluxori Custom Dashboard Creation"));
+  console.log(chalk.bold.green("================================"));
   console.log(chalk.blue(`Environment: ${env}`));
   console.log(chalk.blue(`Project ID: ${projectId}`));
   console.log(chalk.blue(`Dashboard Type: ${dashboardType}`));
-  console.log(chalk.bold.green('================================\n'));
-  
-  if (dashboardType === 'all' || dashboardType === 'system') {
+  console.log(chalk.bold.green("================================\n"));
+
+  if (dashboardType === "all" || dashboardType === "system") {
     await createSystemDashboard();
   }
-  
-  if (dashboardType === 'all' || dashboardType === 'ai') {
+
+  if (dashboardType === "all" || dashboardType === "ai") {
     await createAIDashboard();
   }
-  
-  if (dashboardType === 'all' || dashboardType === 'network') {
+
+  if (dashboardType === "all" || dashboardType === "network") {
     await createNetworkDashboard();
   }
-  
-  console.log(chalk.bold.green('\nDashboard creation complete!'));
+
+  console.log(chalk.bold.green("\nDashboard creation complete!"));
 }
 
 // Run main function
-main().catch(error => {
-  console.error(chalk.red('Unhandled error:'), error);
+main().catch((error) => {
+  console.error(chalk.red("Unhandled error:"), error);
   process.exit(1);
 });

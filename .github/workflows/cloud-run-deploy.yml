@@ -5,29 +5,29 @@ on:
     branches:
       - main
     paths:
-      - 'backend/**'
-      - 'frontend/**'
-      - '.github/workflows/cloud-run-deploy.yml'
-  
+      - "backend/**"
+      - "frontend/**"
+      - ".github/workflows/cloud-run-deploy.yml"
+
   # Allow manual trigger
   workflow_dispatch:
     inputs:
       deploy_backend:
-        description: 'Deploy backend service'
+        description: "Deploy backend service"
         type: boolean
         default: true
       deploy_frontend:
-        description: 'Deploy frontend service'
+        description: "Deploy frontend service"
         type: boolean
         default: true
       environment:
-        description: 'Environment to deploy to'
+        description: "Environment to deploy to"
         type: choice
         options:
           - dev
           - staging
           - prod
-        default: 'dev'
+        default: "dev"
 
 env:
   BACKEND_IMAGE: gcr.io/${{ secrets.GCP_PROJECT_ID }}/fluxori-backend
@@ -43,13 +43,13 @@ jobs:
     outputs:
       backend_changed: ${{ steps.changes.outputs.backend }}
       frontend_changed: ${{ steps.changes.outputs.frontend }}
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
           fetch-depth: 2
-      
+
       - name: Detect file changes
         id: changes
         uses: dorny/paths-filter@v2
@@ -59,28 +59,27 @@ jobs:
               - 'backend/**'
             frontend:
               - 'frontend/**'
-  
+
   build-and-deploy-backend:
     needs: detect-changes
     if: |
       (needs.detect-changes.outputs.backend_changed == 'true' ||
        github.event_name == 'workflow_dispatch' && github.event.inputs.deploy_backend == 'true')
     runs-on: ubuntu-latest
-    
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Set up Google Cloud SDK
         uses: google-github-actions/setup-gcloud@v1
         with:
           project_id: ${{ secrets.GCP_PROJECT_ID }}
           service_account_key: ${{ secrets.GCP_SA_KEY }}
           export_default_credentials: true
-      
+
       - name: Configure Docker for Google Container Registry
         run: gcloud auth configure-docker
-      
+
       - name: Set environment variables based on input
         run: |
           if [[ "${{ github.event.inputs.environment }}" == "prod" ]]; then
@@ -90,18 +89,18 @@ jobs:
           else
             echo "ENV_SUFFIX=development" >> $GITHUB_ENV
           fi
-      
+
       - name: Build and tag Backend Docker image
         working-directory: ./backend
         run: |
           docker build -t $BACKEND_IMAGE:${{ github.sha }} .
           docker tag $BACKEND_IMAGE:${{ github.sha }} $BACKEND_IMAGE:latest
-      
+
       - name: Push Backend Docker image
         run: |
           docker push $BACKEND_IMAGE:${{ github.sha }}
           docker push $BACKEND_IMAGE:latest
-      
+
       - name: Deploy Backend to Cloud Run
         id: deploy-backend
         uses: google-github-actions/deploy-cloudrun@v1
@@ -121,31 +120,30 @@ jobs:
             --set-env-vars=GCP_PROJECT_ID=${{ secrets.GCP_PROJECT_ID }},NODE_ENV=${{ env.ENV_SUFFIX }},CLOUD_RUN=true
             --set-secrets=JWT_SECRET=jwt-secret:latest,FIREBASE_CREDENTIALS=firebase-credentials:latest
             --cpu-throttling=false
-      
+
       - name: Backend Deployment URL
         run: echo "Backend deployed to ${{ steps.deploy-backend.outputs.url }}"
-  
+
   build-and-deploy-frontend:
     needs: [detect-changes, build-and-deploy-backend]
     if: |
       (needs.detect-changes.outputs.frontend_changed == 'true' ||
        github.event_name == 'workflow_dispatch' && github.event.inputs.deploy_frontend == 'true')
     runs-on: ubuntu-latest
-    
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Set up Google Cloud SDK
         uses: google-github-actions/setup-gcloud@v1
         with:
           project_id: ${{ secrets.GCP_PROJECT_ID }}
           service_account_key: ${{ secrets.GCP_SA_KEY }}
           export_default_credentials: true
-      
+
       - name: Configure Docker for Google Container Registry
         run: gcloud auth configure-docker
-      
+
       - name: Set environment variables based on input
         run: |
           if [[ "${{ github.event.inputs.environment }}" == "prod" ]]; then
@@ -158,18 +156,18 @@ jobs:
             echo "ENV_SUFFIX=development" >> $GITHUB_ENV
             echo "BACKEND_URL=https://fluxori-backend-${{ secrets.GCP_PROJECT_ID }}.run.app" >> $GITHUB_ENV
           fi
-      
+
       - name: Build and tag Frontend Docker image
         working-directory: ./frontend
         run: |
           docker build -t $FRONTEND_IMAGE:${{ github.sha }} .
           docker tag $FRONTEND_IMAGE:${{ github.sha }} $FRONTEND_IMAGE:latest
-      
+
       - name: Push Frontend Docker image
         run: |
           docker push $FRONTEND_IMAGE:${{ github.sha }}
           docker push $FRONTEND_IMAGE:latest
-      
+
       - name: Deploy Frontend to Cloud Run
         id: deploy-frontend
         uses: google-github-actions/deploy-cloudrun@v1
@@ -188,7 +186,7 @@ jobs:
             --port=8080
             --set-env-vars=GCP_PROJECT_ID=${{ secrets.GCP_PROJECT_ID }},NODE_ENV=${{ env.ENV_SUFFIX }},CLOUD_RUN=true,BACKEND_SERVICE_URL=${{ env.BACKEND_URL }}
             --cpu-throttling=false
-      
+
       - name: Configure traffic percentage and canary deployment
         if: github.event.inputs.environment == 'prod'
         run: |
@@ -197,20 +195,20 @@ jobs:
             --platform=managed \
             --region=${{ env.GCP_REGION }} \
             --to-revisions=${{ github.ref_name }}-${{ github.sha }}=20,LATEST=80
-          
+
           # After 10 minutes, update to 50% traffic
           sleep 600
           gcloud run services update-traffic ${{ env.FRONTEND_SERVICE_NAME }} \
             --platform=managed \
             --region=${{ env.GCP_REGION }} \
             --to-revisions=${{ github.ref_name }}-${{ github.sha }}=50,LATEST=50
-          
+
           # After another 10 minutes, update to 100% traffic if no issues
           sleep 600
           gcloud run services update-traffic ${{ env.FRONTEND_SERVICE_NAME }} \
             --platform=managed \
             --region=${{ env.GCP_REGION }} \
             --to-latest
-      
+
       - name: Frontend Deployment URL
         run: echo "Frontend deployed to ${{ steps.deploy-frontend.outputs.url }}"

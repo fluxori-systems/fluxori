@@ -61,7 +61,7 @@ export class BundleRepository extends FirestoreBaseRepository<Bundle> {
 
       // Convert to bundles
       const bundles = snapshot.docs.map((doc) => {
-        const data = doc.data() as Bundle;
+        const data = doc.data();
         return {
           ...data,
           id: doc.id,

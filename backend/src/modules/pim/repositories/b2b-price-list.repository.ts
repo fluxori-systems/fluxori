@@ -310,7 +310,7 @@ export class B2BPriceListRepository extends FirestoreBaseRepository<
   ): Promise<B2BPriceList[]> {
     // Implementation details would go here
     // This is just a stub to satisfy TypeScript
-    const query = this.collection.where(field as string, '==', value);
+    const query = this.collection.where(field, '==', value);
     const snapshot = await this.executeQuery(query);
     return snapshot.docs.map((doc) => this.mapSnapshotToEntity(doc));
   }

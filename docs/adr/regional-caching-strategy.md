@@ -14,6 +14,7 @@ South African e-commerce businesses face several network-related challenges:
 4. **Regional service variance**: Different ISPs have varying levels of service in different provinces
 
 These challenges can lead to:
+
 - Poor user experience due to slow API responses
 - Increased operational costs from redundant API calls
 - Data inconsistency when updates fail during connectivity issues
@@ -26,23 +27,28 @@ The implemented solution provides a sophisticated caching system with South Afri
 ### Key Components
 
 1. **Adaptive Time-To-Live (TTL) based on network quality**
+
    - Cache duration automatically extends during poor network conditions
    - Cache items expire faster during excellent connectivity
 
 2. **Load shedding awareness**
+
    - Cache TTLs are extended during detected or scheduled load shedding periods
    - Critical data is prioritized for caching during power interruptions
 
 3. **Regional network provider optimizations**
+
    - Cache behavior adapts based on detected South African ISP
    - Specific optimizations for major providers (Vodacom, MTN, Telkom, etc.)
 
 4. **Time-of-day optimizations**
+
    - Extended cache during peak internet usage hours (6PM-10PM)
    - Longer TTLs during overnight hours when data is less likely to change
    - Reduced cache times during business hours when data changes frequently
 
 5. **Resource relationship tracking for smart invalidation**
+
    - Product-category relationships are tracked for smarter cache invalidation
    - Order-customer relationships ensure consistent data
 
@@ -61,21 +67,21 @@ export const DEFAULT_SA_CACHE_CONFIG: CacheConfig = {
   defaultTtl: 5 * 60 * 1000, // 5 minutes default
   maxSize: 500, // Store up to 500 items
   qualityTtlAdjustments: {
-    [ConnectionQuality.EXCELLENT]: 0.5,  // 2.5 minutes
-    [ConnectionQuality.GOOD]: 1,         // 5 minutes (unchanged) 
-    [ConnectionQuality.FAIR]: 2,         // 10 minutes
-    [ConnectionQuality.POOR]: 4,         // 20 minutes
-    [ConnectionQuality.CRITICAL]: 8,     // 40 minutes
+    [ConnectionQuality.EXCELLENT]: 0.5, // 2.5 minutes
+    [ConnectionQuality.GOOD]: 1, // 5 minutes (unchanged)
+    [ConnectionQuality.FAIR]: 2, // 10 minutes
+    [ConnectionQuality.POOR]: 4, // 20 minutes
+    [ConnectionQuality.CRITICAL]: 8, // 40 minutes
   },
   // South African e-commerce specific paths to cache
   includePaths: [
     /\/products\//,
     /\/categories\//,
     /\/tax_rates\//,
-    /\/shipping_zones\//
+    /\/shipping_zones\//,
   ],
   smartInvalidation: true,
-  regionalOptimization: true
+  regionalOptimization: true,
 };
 ```
 
@@ -114,20 +120,20 @@ private checkLoadSheddingPattern(): boolean {
   // Current hour in South Africa (SAST is UTC+2)
   const now = new Date();
   const hour = now.getHours();
-  
+
   // Common load shedding hours in South Africa
   const loadSheddingHours = [6, 7, 8, 12, 13, 18, 19, 20];
-  
+
   // Check if we're in a common load shedding hour and success rate is low
   if (loadSheddingHours.includes(hour) && this.requestStats.failedRequests > 3) {
-    const failRate = this.requestStats.failedRequests / 
+    const failRate = this.requestStats.failedRequests /
       Math.max(1, this.requestStats.totalRequests);
-    
+
     if (failRate > 0.5) {
       return true;
     }
   }
-  
+
   return false;
 }
 ```
@@ -137,6 +143,7 @@ private checkLoadSheddingPattern(): boolean {
 The caching system exposes several endpoints for monitoring and control:
 
 1. **Stats Monitoring**
+
    - `GET /connectors/woocommerce/cache/stats` - Returns cache hit rates and effectiveness
    - `GET /connectors/woocommerce/network/status` - Shows current connectivity and cache status
 
@@ -175,6 +182,7 @@ The following metrics are collected to measure the effectiveness of the caching 
 ## Related Components
 
 This caching strategy works in conjunction with:
+
 - Adaptive timeout mechanism
 - Network-aware retry logic
 - Load shedding detection and handling

@@ -1,0 +1,162 @@
+src/app/create-organization/page.tsx(17,25): error TS2307: Cannot find module '../../hooks/useAuth' or its corresponding type declarations.
+src/app/login/page.tsx(31,29): error TS2307: Cannot find module '../../contexts/firebase-context' or its corresponding type declarations.
+src/app/register/page.tsx(39,29): error TS2307: Cannot find module '../../contexts/firebase-context' or its corresponding type declarations.
+src/app/unauthorized/page.tsx(37,25): error TS2307: Cannot find module '../../hooks/useAuth' or its corresponding type declarations.
+src/components/auth/login-form.tsx(9,29): error TS2307: Cannot find module '../../contexts/firebase-context' or its corresponding type declarations.
+src/components/auth/organization-management.tsx(21,25): error TS2307: Cannot find module '../../hooks/useAuth' or its corresponding type declarations.
+src/components/auth/permission-guard.tsx(5,25): error TS2307: Cannot find module '../../hooks/useAuth' or its corresponding type declarations.
+src/components/auth/register-form.tsx(11,29): error TS2307: Cannot find module '../../contexts/firebase-context' or its corresponding type declarations.
+src/components/auth/route-guard.tsx(17,25): error TS2307: Cannot find module '../../hooks/useAuth' or its corresponding type declarations.
+src/components/credit-system/analytics/AnalyticsDashboard.tsx(45,10): error TS2305: Module '"../../../types/analytics.types"' has no exported member 'KeywordAnalyticsData'.
+src/components/credit-system/analytics/AnalyticsDashboard.tsx(234,95): error TS7006: Parameter 'range' implicitly has an 'any' type.
+src/components/credit-system/analytics/AnalyticsDashboard.tsx(234,102): error TS7006: Parameter 'index' implicitly has an 'any' type.
+src/components/credit-system/analytics/AnalyticsDashboard.tsx(255,80): error TS7006: Parameter 'brand' implicitly has an 'any' type.
+src/components/credit-system/analytics/AnalyticsDashboard.tsx(255,87): error TS7006: Parameter 'index' implicitly has an 'any' type.
+src/components/credit-system/analytics/AnalyticsDashboard.tsx(337,78): error TS7006: Parameter 'month' implicitly has an 'any' type.
+src/components/credit-system/analytics/AnalyticsDashboard.tsx(337,85): error TS7006: Parameter 'index' implicitly has an 'any' type.
+src/components/credit-system/analytics/AnalyticsDashboard.tsx(346,84): error TS7006: Parameter 'keyword' implicitly has an 'any' type.
+src/components/credit-system/analytics/AnalyticsDashboard.tsx(346,93): error TS7006: Parameter 'index' implicitly has an 'any' type.
+src/components/credit-system/analytics/AnalyticsDashboard.tsx(373,40): error TS18046: 'value' is of type 'unknown'.
+src/components/credit-system/analytics/AnalyticsDashboard.tsx(373,62): error TS18046: 'value' is of type 'unknown'.
+src/components/credit-system/analytics/AnalyticsDashboard.tsx(375,38): error TS18046: 'value' is of type 'unknown'.
+src/components/credit-system/analytics/AnalyticsDashboard.tsx(396,40): error TS18046: 'value' is of type 'unknown'.
+src/components/credit-system/analytics/AnalyticsDashboard.tsx(396,62): error TS18046: 'value' is of type 'unknown'.
+src/components/credit-system/analytics/AnalyticsDashboard.tsx(398,38): error TS18046: 'value' is of type 'unknown'.
+src/components/credit-system/analytics/AnalyticsDashboard.tsx(478,78): error TS7006: Parameter 'competitor' implicitly has an 'any' type.
+src/components/credit-system/analytics/AnalyticsDashboard.tsx(478,90): error TS7006: Parameter 'index' implicitly has an 'any' type.
+src/components/credit-system/analytics/AnalyticsDashboard.tsx(568,75): error TS7006: Parameter 'forecast' implicitly has an 'any' type.
+src/components/credit-system/analytics/AnalyticsDashboard.tsx(568,85): error TS7006: Parameter 'index' implicitly has an 'any' type.
+src/components/credit-system/analytics/AnalyticsDashboard.tsx(626,98): error TS7006: Parameter 'term' implicitly has an 'any' type.
+src/components/credit-system/analytics/AnalyticsDashboard.tsx(626,104): error TS7006: Parameter 'index' implicitly has an 'any' type.
+src/components/credit-system/analytics/AnalyticsDashboard.tsx(643,81): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/components/credit-system/analytics/AnalyticsDashboard.tsx(643,88): error TS7006: Parameter 'index' implicitly has an 'any' type.
+src/components/credit-system/analytics/KeywordAnalytics.tsx(24,10): error TS2305: Module '"../../../types/analytics.types"' has no exported member 'KeywordAnalyticsData'.
+src/components/credit-system/analytics/KeywordAnalytics.tsx(581,17): error TS2322: Type '{ month: string; factor: unknown; }[]' is not assignable to type 'ChartDataPoint[]'.
+  Type '{ month: string; factor: unknown; }' is not assignable to type 'ChartDataPoint'.
+    Property 'factor' is incompatible with index signature.
+      Type 'unknown' is not assignable to type 'string | number | Date | null'.
+src/components/credit-system/analytics/KeywordAnalytics.tsx(590,157): error TS2345: Argument of type 'unknown' is not assignable to parameter of type 'number'.
+src/components/feature-flags/FeatureFlagAdmin.tsx(4,25): error TS2307: Cannot find module '../../hooks/useAuth' or its corresponding type declarations.
+src/components/layouts/dashboard-layout.tsx(18,29): error TS2307: Cannot find module '../../contexts/firebase-context' or its corresponding type declarations.
+src/hooks/index.ts(6,15): error TS2307: Cannot find module './useAuth' or its corresponding type declarations.
+src/hooks/index.ts(9,15): error TS2307: Cannot find module './useFirestore' or its corresponding type declarations.
+src/hooks/useFeatureFlag.ts(3,25): error TS2307: Cannot find module './useAuth' or its corresponding type declarations.
+src/lib/firebase/firebase-context.tsx(12,30): error TS2307: Cannot find module '../lib/firebase/config' or its corresponding type declarations.
+src/lib/firebase/firebase-context.tsx(13,54): error TS2307: Cannot find module '../types/organization/organization.types' or its corresponding type declarations.
+src/lib/firebase/firebase-context.tsx(14,45): error TS2307: Cannot find module '../types/user/user.types' or its corresponding type declarations.
+src/lib/firebase/useAuth.ts(8,29): error TS2307: Cannot find module '../contexts/firebase-context' or its corresponding type declarations.
+src/lib/firebase/useAuth.ts(9,32): error TS2307: Cannot find module '../types/user/user.types' or its corresponding type declarations.
+src/lib/firebase/useFirestore.ts(12,29): error TS2307: Cannot find module '../contexts/firebase-context' or its corresponding type declarations.
+src/lib/firebase/useFirestore.ts(13,58): error TS2307: Cannot find module '../lib/firebase/firestore.service' or its corresponding type declarations.
+src/lib/firebase/useFirestore.ts(14,75): error TS2307: Cannot find module '../types/core/entity.types' or its corresponding type declarations.
+src/lib/motion/components/SouthAfricanPerformanceDashboard.tsx(110,55): error TS2339: Property 'connection' does not exist on type 'Navigator'.
+src/lib/motion/components/SouthAfricanPerformanceDashboard.tsx(111,36): error TS2339: Property 'connection' does not exist on type 'Navigator'.
+src/lib/motion/hooks/useSouthAfricanPerformance.ts(106,55): error TS2339: Property 'connection' does not exist on type 'Navigator'.
+src/lib/motion/hooks/useSouthAfricanPerformance.ts(107,30): error TS2339: Property 'connection' does not exist on type 'Navigator'.
+src/lib/ui/components/__tests__/Alert.spec.tsx(92,7): error TS2353: Object literal may only specify known properties, and 'effectiveType' does not exist in type 'NetworkTestConfig'.
+src/lib/ui/components/__tests__/Alert.spec.tsx(121,7): error TS2353: Object literal may only specify known properties, and 'effectiveType' does not exist in type 'NetworkTestConfig'.
+src/lib/ui/components/__tests__/Container.spec.tsx(51,36): error TS2339: Property 'connection' does not exist on type 'Navigator'.
+src/lib/ui/components/__tests__/Container.spec.tsx(51,56): error TS2304: Cannot find name 'NetworkInformation'.
+src/lib/ui/components/__tests__/Container.spec.tsx(130,7): error TS2353: Object literal may only specify known properties, and 'effectiveType' does not exist in type 'NetworkTestConfig'.
+src/lib/ui/components/__tests__/Container.spec.tsx(152,7): error TS2353: Object literal may only specify known properties, and 'effectiveType' does not exist in type 'NetworkTestConfig'.
+src/lib/ui/components/__tests__/Text.spec.tsx(57,36): error TS2339: Property 'connection' does not exist on type 'Navigator'.
+src/lib/ui/components/__tests__/Text.spec.tsx(142,7): error TS2353: Object literal may only specify known properties, and 'effectiveType' does not exist in type 'NetworkTestConfig'.
+src/lib/ui/components/__tests__/Text.spec.tsx(161,7): error TS2353: Object literal may only specify known properties, and 'effectiveType' does not exist in type 'NetworkTestConfig'.
+src/providers/app-provider.tsx(19,34): error TS2307: Cannot find module '../contexts/firebase-context' or its corresponding type declarations.
+src/test-utils/vitest-utils.ts(65,18): error TS2304: Cannot find name 'NetworkInformation'.
+src/test-utils/vitest-utils.ts(72,45): error TS2304: Cannot find name 'NetworkInformation'.
+src/test-utils/vitest-utils.ts(73,48): error TS2304: Cannot find name 'NetworkInformation'.
+src/test-utils/vitest-utils.ts(74,64): error TS2304: Cannot find name 'NetworkInformation'.
+src/testing/config/setup.ts(46,23): error TS7031: Binding element 'children' implicitly has an 'any' type.
+src/testing/config/setup.ts(65,24): error TS7031: Binding element 'children' implicitly has an 'any' type.
+src/testing/config/setup.ts(116,30): error TS7006: Parameter 'name' implicitly has an 'any' type.
+src/testing/config/setup.ts(118,16): error TS7031: Binding element 'children' implicitly has an 'any' type.
+src/testing/config/setup.ts(138,16): error TS7031: Binding element 'children' implicitly has an 'any' type.
+src/testing/config/setup.ts(139,18): error TS7031: Binding element 'children' implicitly has an 'any' type.
+src/testing/config/setup.ts(140,20): error TS7031: Binding element 'children' implicitly has an 'any' type.
+src/testing/config/setup.ts(141,16): error TS7031: Binding element 'children' implicitly has an 'any' type.
+src/testing/config/setup.ts(142,17): error TS7006: Parameter 'props' implicitly has an 'any' type.
+src/testing/config/setup.ts(155,15): error TS7031: Binding element 'children' implicitly has an 'any' type.
+src/testing/config/setup.ts(156,16): error TS7031: Binding element 'children' implicitly has an 'any' type.
+src/testing/config/setup.ts(157,14): error TS7031: Binding element 'children' implicitly has an 'any' type.
+src/testing/config/setup.ts(158,19): error TS7031: Binding element 'children' implicitly has an 'any' type.
+src/testing/config/setup.ts(159,19): error TS7031: Binding element 'children' implicitly has an 'any' type.
+src/testing/config/setup.ts(160,14): error TS7031: Binding element 'children' implicitly has an 'any' type.
+src/testing/config/setup.ts(161,15): error TS7031: Binding element 'children' implicitly has an 'any' type.
+src/testing/config/setup.ts(163,16): error TS7031: Binding element 'children' implicitly has an 'any' type.
+src/testing/config/setup.ts(164,18): error TS7031: Binding element 'children' implicitly has an 'any' type.
+src/testing/config/setup.ts(165,20): error TS7031: Binding element 'children' implicitly has an 'any' type.
+src/testing/config/setup.ts(166,16): error TS7031: Binding element 'children' implicitly has an 'any' type.
+src/testing/config/setup.ts(167,17): error TS7006: Parameter 'props' implicitly has an 'any' type.
+src/testing/config/setup.ts(169,15): error TS7031: Binding element 'children' implicitly has an 'any' type.
+src/testing/config/setup.ts(170,14): error TS7031: Binding element 'children' implicitly has an 'any' type.
+src/testing/config/setup.ts(177,15): error TS7031: Binding element 'children' implicitly has an 'any' type.
+src/testing/config/setup.ts(177,25): error TS7031: Binding element 'variant' implicitly has an 'any' type.
+src/testing/config/setup.ts(177,34): error TS7031: Binding element 'color' implicitly has an 'any' type.
+src/testing/config/setup.ts(177,41): error TS7031: Binding element 'title' implicitly has an 'any' type.
+src/testing/config/setup.ts(177,48): error TS7031: Binding element 'withCloseButton' implicitly has an 'any' type.
+src/testing/config/setup.ts(177,65): error TS7031: Binding element 'onClose' implicitly has an 'any' type.
+src/testing/config/setup.ts(177,74): error TS7031: Binding element 'radius' implicitly has an 'any' type.
+src/testing/config/setup.ts(177,82): error TS7031: Binding element 'networkAware' implicitly has an 'any' type.
+src/testing/config/setup.ts(182,38): error TS2339: Property 'connection' does not exist on type 'Navigator'.
+src/testing/config/setup.ts(182,58): error TS2304: Cannot find name 'NetworkInformation'.
+src/testing/config/setup.ts(192,9): error TS7053: Element implicitly has an 'any' type because expression of type '"data-network-quality"' can't be used to index type '{}'.
+  Property 'data-network-quality' does not exist on type '{}'.
+src/testing/config/setup.ts(193,23): error TS7053: Element implicitly has an 'any' type because expression of type '"data-data-saver"' can't be used to index type '{}'.
+  Property 'data-data-saver' does not exist on type '{}'.
+src/testing/config/setup.ts(221,16): error TS7031: Binding element 'children' implicitly has an 'any' type.
+src/testing/config/setup.ts(221,26): error TS7031: Binding element 'onClick' implicitly has an 'any' type.
+src/testing/config/setup.ts(221,35): error TS7031: Binding element 'variant' implicitly has an 'any' type.
+src/testing/config/setup.ts(221,44): error TS7031: Binding element 'size' implicitly has an 'any' type.
+src/testing/config/setup.ts(221,50): error TS7031: Binding element 'intent' implicitly has an 'any' type.
+src/testing/config/setup.ts(221,58): error TS7031: Binding element 'disabled' implicitly has an 'any' type.
+src/testing/config/setup.ts(238,19): error TS7031: Binding element 'children' implicitly has an 'any' type.
+src/testing/config/setup.ts(238,29): error TS7031: Binding element 'label' implicitly has an 'any' type.
+src/testing/config/setup.ts(238,36): error TS7031: Binding element 'description' implicitly has an 'any' type.
+src/testing/config/setup.ts(238,49): error TS7031: Binding element 'error' implicitly has an 'any' type.
+src/testing/config/setup.ts(238,56): error TS7031: Binding element 'required' implicitly has an 'any' type.
+src/testing/config/setup.ts(238,66): error TS7031: Binding element 'fieldType' implicitly has an 'any' type.
+src/testing/config/setup.ts(238,77): error TS7031: Binding element 'intent' implicitly has an 'any' type.
+src/testing/config/setup.ts(276,14): error TS7031: Binding element 'children' implicitly has an 'any' type.
+src/testing/config/setup.ts(282,16): error TS7031: Binding element 'children' implicitly has an 'any' type.
+src/testing/config/setup.ts(288,18): error TS7031: Binding element 'children' implicitly has an 'any' type.
+src/testing/config/setup.ts(294,14): error TS7031: Binding element 'children' implicitly has an 'any' type.
+src/testing/config/setup.ts(300,15): error TS7006: Parameter 'props' implicitly has an 'any' type.
+src/testing/config/setup.ts(311,22): error TS7006: Parameter 'value' implicitly has an 'any' type.
+src/testing/config/setup.ts(311,29): error TS7006: Parameter 'currency' implicitly has an 'any' type.
+src/testing/config/setup.ts(361,8): error TS2304: Cannot find name 'NetworkInformation'.
+src/testing/mocks/platform-apis.ts(12,47): error TS2304: Cannot find name 'NetworkInformation'.
+src/testing/mocks/platform-apis.ts(12,74): error TS2304: Cannot find name 'NetworkInformation'.
+src/testing/mocks/platform-apis.ts(19,45): error TS2304: Cannot find name 'NetworkInformation'.
+src/testing/mocks/platform-apis.ts(20,48): error TS2304: Cannot find name 'NetworkInformation'.
+src/testing/mocks/platform-apis.ts(21,64): error TS2304: Cannot find name 'NetworkInformation'.
+src/testing/mocks/platform-apis.ts(22,8): error TS2304: Cannot find name 'NetworkInformation'.
+src/testing/mocks/platform-apis.ts(38,11): error TS7022: 'tween' implicitly has type 'any' because it does not have a type annotation and is referenced directly or indirectly in its own initializer.
+src/testing/mocks/platform-apis.ts(40,20): error TS7024: Function implicitly has return type 'any' because it does not have a return type annotation and is referenced directly or indirectly in one of its return expressions.
+src/testing/mocks/platform-apis.ts(55,11): error TS7022: 'timeline' implicitly has type 'any' because it does not have a type annotation and is referenced directly or indirectly in its own initializer.
+src/testing/mocks/platform-apis.ts(57,17): error TS7024: Function implicitly has return type 'any' because it does not have a return type annotation and is referenced directly or indirectly in one of its return expressions.
+src/testing/types/vitest-augmentations.ts(26,16): error TS2345: Argument of type '((...args: TArgs) => TReturn) | undefined' is not assignable to parameter of type '(...args: TArgs) => TReturn'.
+  Type 'undefined' is not assignable to type '(...args: TArgs) => TReturn'.
+src/testing/types/vitest-augmentations.ts(48,54): error TS2304: Cannot find name 'NetworkInformation'.
+src/testing/types/vitest-augmentations.ts(48,81): error TS2304: Cannot find name 'NetworkInformation'.
+src/testing/types/vitest-augmentations.ts(55,45): error TS2304: Cannot find name 'NetworkInformation'.
+src/testing/types/vitest-augmentations.ts(56,48): error TS2304: Cannot find name 'NetworkInformation'.
+src/testing/types/vitest-augmentations.ts(57,64): error TS2304: Cannot find name 'NetworkInformation'.
+src/testing/types/vitest-augmentations.ts(58,8): error TS2304: Cannot find name 'NetworkInformation'.
+src/testing/utils/networkTesting.ts(59,52): error TS2304: Cannot find name 'NetworkInformation'.
+src/testing/utils/networkTesting.ts(75,27): error TS2339: Property 'effectiveType' does not exist on type 'NetworkTestConfig'.
+src/testing/utils/networkTesting.ts(76,22): error TS2339: Property 'downlink' does not exist on type 'NetworkTestConfig'.
+src/testing/utils/networkTesting.ts(77,17): error TS2339: Property 'rtt' does not exist on type 'NetworkTestConfig'.
+src/testing/utils/networkTesting.ts(78,22): error TS2339: Property 'saveData' does not exist on type 'NetworkTestConfig'.
+src/testing/utils/networkTesting.ts(94,32): error TS2339: Property 'effectiveType' does not exist on type 'NetworkTestConfig'.
+src/testing/utils/networkTesting.ts(95,27): error TS2339: Property 'downlink' does not exist on type 'NetworkTestConfig'.
+src/testing/utils/networkTesting.ts(96,22): error TS2339: Property 'rtt' does not exist on type 'NetworkTestConfig'.
+src/testing/utils/networkTesting.ts(97,27): error TS2339: Property 'saveData' does not exist on type 'NetworkTestConfig'.
+src/testing/utils/networkTesting.ts(136,78): error TS2304: Cannot find name 'NetworkInformation'.
+vitest.config.ts(4,22): error TS6053: File '/home/tarquin_stapa/fluxori/frontend/src/testing/types/index.d.ts' not found.
+vitest.config.ts(5,22): error TS6053: File '/home/tarquin_stapa/fluxori/frontend/src/testing/types/global.d.ts' not found.
+vitest.config.ts(6,22): error TS6053: File '/home/tarquin_stapa/fluxori/frontend/src/testing/types/testing.d.ts' not found.
+vitest.config.ts(7,22): error TS6053: File '/home/tarquin_stapa/fluxori/frontend/src/testing/types/vitest-mock.d.ts' not found.
+vitest.config.ts(8,22): error TS6053: File '/home/tarquin_stapa/fluxori/frontend/src/testing/types/testing-library.d.ts' not found.
+vitest.setup.ts(137,23): error TS7031: Binding element 'children' implicitly has an 'any' type.
+vitest.setup.ts(156,24): error TS7031: Binding element 'children' implicitly has an 'any' type.

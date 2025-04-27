@@ -19,9 +19,9 @@ import {
   FieldValue,
   Transaction,
   CollectionGroup,
-} from "@google-cloud/firestore";
-import { Severity } from "@google-cloud/logging";
-import { Storage } from "@google-cloud/storage";
+} from '@google-cloud/firestore';
+import { Severity } from '@google-cloud/logging';
+import { Storage } from '@google-cloud/storage';
 
 // Re-export Firestore Timestamp for consistency
 export { FirestoreTimestamp as Timestamp };
@@ -33,9 +33,9 @@ export interface FirestoreEntity {
   id: string;
   createdAt: Date | FirestoreTimestamp;
   updatedAt: Date | FirestoreTimestamp;
-  isDeleted?: boolean;
+  isDeleted: boolean;
   deletedAt?: Date | FirestoreTimestamp | null;
-  version?: number;
+  version: number;
   [key: string]: any;
 }
 
@@ -84,7 +84,7 @@ export interface FirestoreDataConverter<T> {
  * Result interface for batch write operations
  */
 export interface FirestoreBatchWriteResult {
-  status: "success" | "partial" | "error";
+  status: 'success' | 'partial' | 'error';
   successCount: number;
   errorCount: number;
   writtenCount?: number;
@@ -99,16 +99,16 @@ export interface FirestoreBatchWriteResult {
  * Query filter operator types
  */
 export type QueryFilterOperator =
-  | "=="
-  | "!="
-  | ">"
-  | ">="
-  | "<"
-  | "<="
-  | "array-contains"
-  | "array-contains-any"
-  | "in"
-  | "not-in";
+  | '=='
+  | '!='
+  | '>'
+  | '>='
+  | '<'
+  | '<='
+  | 'array-contains'
+  | 'array-contains-any'
+  | 'in'
+  | 'not-in';
 
 /**
  * Query filter definition
@@ -220,7 +220,7 @@ export interface ScheduledJob {
   schedule: string; // cron expression
   httpTarget: {
     uri: string;
-    httpMethod: "GET" | "POST" | "PUT" | "DELETE";
+    httpMethod: 'GET' | 'POST' | 'PUT' | 'DELETE';
     headers?: Record<string, string>;
     body?: string;
   };
@@ -264,11 +264,11 @@ export interface FirestoreDocument<T = any> {
 export function isFirestoreTimestamp(obj: any): obj is FirestoreTimestamp {
   return (
     obj &&
-    typeof obj === "object" &&
-    "seconds" in obj &&
-    "nanoseconds" in obj &&
-    typeof obj.seconds === "number" &&
-    typeof obj.nanoseconds === "number"
+    typeof obj === 'object' &&
+    'seconds' in obj &&
+    'nanoseconds' in obj &&
+    typeof obj.seconds === 'number' &&
+    typeof obj.nanoseconds === 'number'
   );
 }
 

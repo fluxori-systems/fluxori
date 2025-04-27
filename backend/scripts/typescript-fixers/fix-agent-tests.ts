@@ -1,17 +1,17 @@
 /**
  * TypeScript fixer for Agent Framework Tests
- * 
+ *
  * This script removes @ts-nocheck from agent framework tests by
  * properly typing Jest mocks and test objects.
  */
 
-import * as fs from 'fs';
-import * as path from 'path';
+import * as fs from "fs";
+import * as path from "path";
 
 // Define the path for our agent test file
 const agentServiceTestPath = path.resolve(
   __dirname,
-  '../../src/modules/agent-framework/test/agent.service.spec.ts'
+  "../../src/modules/agent-framework/test/agent.service.spec.ts",
 );
 
 // Create proper typings for Jest mocks
@@ -198,4 +198,6 @@ describe("AgentService", () => {
 // Write the updated file
 fs.writeFileSync(agentServiceTestPath, fixedAgentServiceTest);
 
-console.log('Successfully fixed TypeScript suppressions in agent.service.spec.ts');
+console.log(
+  "Successfully fixed TypeScript suppressions in agent.service.spec.ts",
+);

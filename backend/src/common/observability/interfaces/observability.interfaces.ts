@@ -43,6 +43,10 @@ export interface TraceContext {
 /**
  * Context added to all logs
  */
+export interface CustomLogFields {
+  [key: string]: string | number | boolean | undefined; // TODO: Refine allowed types
+}
+
 export interface LogContext {
   /**
    * Trace information for distributed tracing
@@ -72,7 +76,17 @@ export interface LogContext {
   /**
    * Custom dimensions for logs
    */
-  [key: string]: any;
+  customFields?: CustomLogFields;
+
+  /**
+   * Timestamp when the log was created
+   */
+  timestamp: Date;
+
+  /**
+   * Stack trace for errors
+   */
+  stack?: string;
 }
 
 /**
@@ -97,8 +111,28 @@ export interface StructuredLogEntry {
   /**
    * Additional data related to the log
    */
-  data?: Record<string, any>;
+  data?: StructuredLogData; // TODO: Refine StructuredLogData type
+}
 
+// Placeholder types for stricter type safety
+export type StructuredLogData = Record<
+  string,
+  string | number | boolean | undefined
+>; // TODO: Refine
+export type SpanAttributes = Record<
+  string,
+  string | number | boolean | undefined
+>; // TODO: Refine
+export type TraceAttributes = Record<
+  string,
+  string | number | boolean | undefined
+>; // TODO: Refine
+export type ComponentHealthDetails = Record<
+  string,
+  string | number | boolean | undefined
+>; // TODO: Refine
+
+export interface LogContext {
   /**
    * Timestamp when the log was created
    */
@@ -157,17 +191,17 @@ export interface Span {
   /**
    * Add attribute to span
    */
-  setAttribute(key: string, value: any): void;
+  setAttribute(key: string, value: string | number | boolean): void; // TODO: Refine allowed types;
 
   /**
    * Add multiple attributes to span
    */
-  setAttributes(attributes: Record<string, any>): void;
+  setAttributes(attributes: SpanAttributes): void; // TODO: Refine SpanAttributes type;
 
   /**
    * Add event to span
    */
-  addEvent(name: string, attributes?: Record<string, any>): void;
+  addEvent(name: string, attributes?: TraceAttributes): void; // TODO: Refine TraceAttributes type;
 
   /**
    * Set span status
@@ -329,7 +363,7 @@ export interface ComponentHealth {
   /**
    * Details about the component health
    */
-  details?: Record<string, any>;
+  details?: ComponentHealthDetails; // TODO: Refine ComponentHealthDetails type
 
   /**
    * Time taken to check health

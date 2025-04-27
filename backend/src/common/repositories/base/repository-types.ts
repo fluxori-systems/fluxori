@@ -23,6 +23,16 @@ import {
 /**
  * Base entity interface all models should implement, aligned with FirestoreEntity
  */
+export interface FirestoreEntityWithMetadata {
+  id: string;
+  createdAt: Date | Timestamp;
+  updatedAt: Date | Timestamp;
+  isDeleted: boolean;
+  deletedAt?: Date | Timestamp | null;
+  version: number;
+}
+
+// Deprecated: Use FirestoreEntityWithMetadata for new code
 export interface BaseEntity {
   id: string;
   createdAt: Date | Timestamp;
@@ -30,13 +40,12 @@ export interface BaseEntity {
   isDeleted?: boolean;
   deletedAt?: Date | Timestamp | null;
   version?: number;
-  [key: string]: any; // Allow additional properties to match FirestoreEntity
 }
 
 /**
  * Base repository interface that defines common operations
  */
-export interface Repository<T extends BaseEntity, K = string> {
+export interface Repository<T extends FirestoreEntityWithMetadata, K = string> {
   // Core CRUD operations
   findById(id: K, options?: FindByIdOptions): Promise<T | null>;
   findAll(options?: FindOptions<T>): Promise<T[]>;

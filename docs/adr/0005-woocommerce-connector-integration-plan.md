@@ -1,12 +1,15 @@
 # ADR 0005: WooCommerce Connector Integration Plan
 
 ## Status
+
 Proposed
 
 ## Context
+
 Fluxori platform needs a comprehensive integration with WooCommerce to serve South African e-commerce sellers. This ADR outlines the detailed integration plan for implementing the WooCommerce connector following our established connector architecture patterns.
 
 ## Decision
+
 We will implement a full-featured WooCommerce connector using WooCommerce REST API v3. The implementation will follow our existing marketplace connector architecture with South African optimizations for network resilience and performance.
 
 ## Detailed Implementation Plan
@@ -14,6 +17,7 @@ We will implement a full-featured WooCommerce connector using WooCommerce REST A
 ### 1. Connector Architecture
 
 #### 1.1 Module Structure
+
 ```
 backend/src/modules/connectors/
 ├── adapters/
@@ -28,6 +32,7 @@ backend/src/modules/connectors/
 ```
 
 #### 1.2 Authentication Approach
+
 WooCommerce uses OAuth 1.0a "one-legged" authentication. Our implementation will:
 
 1. Support both authentication methods:
@@ -38,6 +43,7 @@ WooCommerce uses OAuth 1.0a "one-legged" authentication. Our implementation will
 4. Implement signature validation with proper HMAC-SHA256 hashing
 
 #### 1.3 Error Management Strategy
+
 The connector will implement tiered error handling:
 
 1. API-level errors (400, 401, 403, 404, 500, etc.)
@@ -45,12 +51,14 @@ The connector will implement tiered error handling:
 3. South African-specific errors (load shedding detection, intermittent connectivity)
 
 Error handling will include:
+
 - Exponential backoff retry mechanism
 - Circuit breaker pattern to prevent cascading failures
 - Error categorization and reporting
 - South African load shedding detection and handling
 
 #### 1.4 Data Mapping Strategy
+
 A comprehensive mapping layer will be implemented to convert between WooCommerce's data model and our internal data model:
 
 1. WooCommerce Product → MarketplaceProduct
@@ -59,11 +67,13 @@ A comprehensive mapping layer will be implemented to convert between WooCommerce
 4. WooCommerce Variation → ProductVariation
 
 Maps will handle all data type conversions, including:
+
 - String price values to floating-point numbers
 - ISO date strings to Date objects
 - Nested objects and arrays
 
 #### 1.5 South African Network Optimizations
+
 Specific optimizations for South African network conditions:
 
 1. Adaptive timeout configuration based on network quality
@@ -74,6 +84,7 @@ Specific optimizations for South African network conditions:
 6. Batch operations where possible to reduce API calls
 
 #### 1.6 Multi-Tenant Strategy
+
 To support multiple WordPress-based sites:
 
 1. Store per-tenant configuration in Firestore
@@ -87,6 +98,7 @@ To support multiple WordPress-based sites:
 #### 2.1 Product and Variation Management
 
 ##### Key Endpoints:
+
 - List Products: GET `/wp-json/wc/v3/products`
 - Get Product: GET `/wp-json/wc/v3/products/[id]`
 - Create Product: POST `/wp-json/wc/v3/products`
@@ -96,6 +108,7 @@ To support multiple WordPress-based sites:
 - Update Variation: PUT `/wp-json/wc/v3/products/[id]/variations/[id]`
 
 ##### Implementation Approach:
+
 1. Create robust type definitions for all product-related endpoints
 2. Implement bidirectional mapping between WooCommerce and internal models
 3. Support batch operations for product and stock updates
@@ -106,6 +119,7 @@ To support multiple WordPress-based sites:
 #### 2.2 Order Processing and Fulfillment
 
 ##### Key Endpoints:
+
 - List Orders: GET `/wp-json/wc/v3/orders`
 - Get Order: GET `/wp-json/wc/v3/orders/[id]`
 - Update Order: PUT `/wp-json/wc/v3/orders/[id]`
@@ -113,6 +127,7 @@ To support multiple WordPress-based sites:
 - Order Refunds: POST `/wp-json/wc/v3/orders/[id]/refunds`
 
 ##### Implementation Approach:
+
 1. Implement order synchronization with pagination
 2. Support filtering by date, status, and customer
 3. Design fulfillment status mapping and updates
@@ -124,12 +139,14 @@ To support multiple WordPress-based sites:
 #### 2.3 Customer Data Access
 
 ##### Key Endpoints:
+
 - List Customers: GET `/wp-json/wc/v3/customers`
 - Get Customer: GET `/wp-json/wc/v3/customers/[id]`
 - Create Customer: POST `/wp-json/wc/v3/customers`
 - Update Customer: PUT `/wp-json/wc/v3/customers/[id]`
 
 ##### Implementation Approach:
+
 1. Implement customer data retrieval with privacy protections
 2. Support South African address format and postal codes
 3. Map customer data to internal customer model
@@ -139,12 +156,14 @@ To support multiple WordPress-based sites:
 #### 2.4 Webhook Configuration
 
 ##### Key Endpoints:
+
 - List Webhooks: GET `/wp-json/wc/v3/webhooks`
 - Create Webhook: POST `/wp-json/wc/v3/webhooks`
 - Update Webhook: PUT `/wp-json/wc/v3/webhooks/[id]`
 - Delete Webhook: DELETE `/wp-json/wc/v3/webhooks/[id]`
 
 ##### Implementation Approach:
+
 1. Create and register webhooks for key events
    - Order creation and updates
    - Product stock changes
@@ -157,11 +176,13 @@ To support multiple WordPress-based sites:
 #### 2.5 Tax Rate Management
 
 ##### Key Endpoints:
+
 - List Tax Rates: GET `/wp-json/wc/v3/taxes`
 - Create Tax Rate: POST `/wp-json/wc/v3/taxes`
 - Update Tax Rate: PUT `/wp-json/wc/v3/taxes/[id]`
 
 ##### Implementation Approach:
+
 1. Configure South African VAT rate (15%)
 2. Support tax classes for different product types
 3. Implement tax rate validation
@@ -233,10 +254,10 @@ export interface WooCommerceProduct {
   permalink: string;
   date_created: string;
   date_modified: string;
-  type: 'simple' | 'grouped' | 'external' | 'variable';
-  status: 'draft' | 'pending' | 'private' | 'publish';
+  type: "simple" | "grouped" | "external" | "variable";
+  status: "draft" | "pending" | "private" | "publish";
   featured: boolean;
-  catalog_visibility: 'visible' | 'catalog' | 'search' | 'hidden';
+  catalog_visibility: "visible" | "catalog" | "search" | "hidden";
   description: string;
   short_description: string;
   sku: string;
@@ -256,12 +277,12 @@ export interface WooCommerceProduct {
   download_expiry: number;
   external_url: string;
   button_text: string;
-  tax_status: 'taxable' | 'shipping' | 'none';
+  tax_status: "taxable" | "shipping" | "none";
   tax_class: string;
   manage_stock: boolean;
   stock_quantity: number | null;
-  stock_status: 'instock' | 'outofstock' | 'onbackorder';
-  backorders: 'no' | 'notify' | 'yes';
+  stock_status: "instock" | "outofstock" | "onbackorder";
+  backorders: "no" | "notify" | "yes";
   backorders_allowed: boolean;
   backordered: boolean;
   sold_individually: boolean;
@@ -346,6 +367,7 @@ export interface WooCommerceOrder {
 ### 5. Integration with Existing Systems
 
 #### 5.1 Leveraging Base Connector Architecture
+
 The WooCommerce connector will extend our existing BaseMarketplaceConnector class with these additional features:
 
 1. OAuth 1.0a authentication implementation
@@ -356,6 +378,7 @@ The WooCommerce connector will extend our existing BaseMarketplaceConnector clas
 #### 5.2 Integration Points
 
 ##### Inventory System Integration
+
 ```typescript
 public async syncInventory(products: ProductInventory[]): Promise<SyncResult> {
   // Map internal inventory model to WooCommerce stock updates
@@ -363,13 +386,14 @@ public async syncInventory(products: ProductInventory[]): Promise<SyncResult> {
     sku: product.sku,
     stockLevel: product.availableQuantity
   }));
-  
+
   // Use connector's updateStock method
   return this.woocommerceConnector.updateStock(stockUpdates);
 }
 ```
 
 ##### Order Management Integration
+
 ```typescript
 // Order webhook receiver
 @Post('/webhooks/woocommerce/orders')
@@ -379,7 +403,7 @@ async receiveOrderWebhook(
 ): Promise<void> {
   // Verify webhook signature
   this.woocommerceConnector.verifyWebhookSignature(payload, signature);
-  
+
   // Process order
   if (payload.topic === 'order.created') {
     const order = mapWooCommerceOrder(payload.data);
@@ -389,6 +413,7 @@ async receiveOrderWebhook(
 ```
 
 ##### Multi-Warehouse Integration
+
 ```typescript
 // Handle multi-warehouse stock updates
 async updateWarehouseStock(warehouseId: string, updates: StockUpdate[]): Promise<void> {
@@ -400,12 +425,13 @@ async updateWarehouseStock(warehouseId: string, updates: StockUpdate[]): Promise
     // locationId is ignored by WooCommerce but tracked internally
     locationId: warehouseId
   }));
-  
+
   await this.woocommerceConnector.updateStock(mappedUpdates);
 }
 ```
 
 #### 5.3 Credential Management
+
 WooCommerce API credentials will be securely stored and managed:
 
 1. Credentials stored in GCP Secret Manager
@@ -415,6 +441,7 @@ WooCommerce API credentials will be securely stored and managed:
 5. No credentials in code, config files, or logs
 
 #### 5.4 Observability Integration
+
 The connector will integrate with our observability framework:
 
 1. Custom metrics for API calls, errors, and latency
@@ -426,6 +453,7 @@ The connector will integrate with our observability framework:
 ### 6. Testing and Validation Strategy
 
 #### 6.1 Unit Testing
+
 1. Test all mapping functions between WooCommerce and internal models
 2. Test OAuth signature generation
 3. Test error handling and retry logic
@@ -433,6 +461,7 @@ The connector will integrate with our observability framework:
 5. Mock WooCommerce API responses for predictable tests
 
 #### 6.2 Integration Testing
+
 1. Test with WooCommerce API sandbox environment
 2. Validate all core operations (CRUD for products, orders, etc.)
 3. Test error conditions and rate limit handling
@@ -440,6 +469,7 @@ The connector will integrate with our observability framework:
 5. End-to-end flow testing for inventory and order synchronization
 
 #### 6.3 South African Network Testing
+
 1. Simulate variable network conditions
 2. Test with artificial latency and packet loss
 3. Simulate load shedding scenarios
@@ -449,6 +479,7 @@ The connector will integrate with our observability framework:
 ### 7. Implementation Phases
 
 #### Phase 1: Core Authentication and Product Operations
+
 - OAuth 1.0a authentication implementation
 - Basic error handling and retries
 - Product retrieval and mapping
@@ -456,6 +487,7 @@ The connector will integrate with our observability framework:
 - Unit tests for core functionality
 
 #### Phase 2: Order Management
+
 - Order retrieval and mapping
 - Order status updates
 - Order fulfillment operations
@@ -463,6 +495,7 @@ The connector will integrate with our observability framework:
 - Integration tests for order flows
 
 #### Phase 3: Advanced Features
+
 - Customer management
 - Webhook configuration
 - Tax rate management
@@ -470,6 +503,7 @@ The connector will integrate with our observability framework:
 - Performance optimization
 
 #### Phase 4: South African Optimizations
+
 - Network resilience features
 - Load shedding detection
 - Low-bandwidth mode
@@ -479,19 +513,23 @@ The connector will integrate with our observability framework:
 ## South African Market Considerations
 
 ### Network Resilience
+
 The WooCommerce connector will implement specific features for South African network conditions:
 
 1. **Load Shedding Detection and Handling**
+
    - Pattern recognition for power outage schedules
    - Automatic re-scheduling of non-critical operations
    - Graceful degradation during power outages
 
 2. **Adaptive Timeout Configuration**
+
    - Dynamic timeout values based on network quality
    - Longer initial timeouts for high-latency conditions
    - Per-operation timeout customization
 
 3. **Bandwidth Optimization**
+
    - Compression for request/response data
    - Minimization of payload sizes
    - Selective field retrieval to reduce data transfer
@@ -502,6 +540,7 @@ The WooCommerce connector will implement specific features for South African net
    - Priority-based operation scheduling
 
 ### South African VAT Compliance
+
 The connector will support South African tax requirements:
 
 1. Standard VAT rate configuration (15%)
@@ -510,6 +549,7 @@ The connector will support South African tax requirements:
 4. Proper tax calculation and reporting
 
 ### Multi-Warehouse Support
+
 To accommodate distributed South African operations:
 
 1. Aggregate stock across multiple warehouses
@@ -520,21 +560,26 @@ To accommodate distributed South African operations:
 ## Constraints and Limitations
 
 1. WooCommerce API variation between versions
+
    - Solution: Version detection and adaptation
 
 2. Limited batch operation support
+
    - Solution: Client-side batching with sequential processing
 
 3. WordPress performance under load
+
    - Solution: Request rate limiting and scheduling
 
 4. Network reliability in South Africa
+
    - Solution: Comprehensive retry and fallback mechanisms
 
 5. OAuth 1.0a complexity
    - Solution: Encapsulated authentication with robust testing
 
 ## References
+
 - [WooCommerce REST API Documentation](https://woocommerce.github.io/woocommerce-rest-api-docs/)
 - [OAuth 1.0a Specification](https://oauth.net/core/1.0a/)
 - [WordPress REST API Authentication](https://developer.wordpress.org/rest-api/using-the-rest-api/authentication/)

@@ -25,12 +25,24 @@ export enum InsightStatus {
   DISMISSED = 'dismissed',
 }
 
+// TODO: Replace InsightData with a more specific structure as requirements become clear
+export interface InsightData {
+  // Add concrete fields here as the data model matures
+  [key: string]: unknown; // Use unknown for strictness
+}
+
+// TODO: Replace InsightMetadata with a more specific structure as requirements become clear
+export interface InsightMetadata {
+  // Add concrete fields here as the metadata model matures
+  [key: string]: unknown; // Use unknown for strictness
+}
+
 export interface IInsight {
   organizationId: string;
   type: InsightType;
   title: string;
   description: string;
-  data: Record<string, any>;
+  data: InsightData;
   severity: InsightSeverity;
   status: InsightStatus;
   confidence: number;
@@ -51,7 +63,7 @@ export interface CreateInsightDto {
   type: InsightType;
   title: string;
   description: string;
-  data: Record<string, any>;
+  data: InsightData; // TODO: Refine fields as discovered
   severity: InsightSeverity;
   confidence: number;
   relatedEntityType?: string;
@@ -85,7 +97,7 @@ export interface InsightResponse {
   type: InsightType;
   title: string;
   description: string;
-  data: Record<string, any>;
+  data: InsightData; // TODO: Refine fields as discovered
   severity: InsightSeverity;
   status: InsightStatus;
   confidence: number;

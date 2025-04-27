@@ -1,175 +1,172 @@
 module.exports = {
-  parser: '@typescript-eslint/parser',
+  parser: "@typescript-eslint/parser",
   parserOptions: {
-    project: 'tsconfig.json',
+    project: "tsconfig.json",
     tsconfigRootDir: __dirname,
-    sourceType: 'module',
+    sourceType: "module",
   },
-  plugins: [
-    '@typescript-eslint/eslint-plugin',
-    'prettier',
-    'import'
-  ],
+  plugins: ["@typescript-eslint/eslint-plugin", "prettier", "import"],
   extends: [
-    'plugin:@typescript-eslint/recommended',
-    'plugin:prettier/recommended',
-    'plugin:import/recommended',
-    'plugin:import/typescript',
+    "plugin:@typescript-eslint/recommended",
+    "plugin:prettier/recommended",
+    "plugin:import/recommended",
+    "plugin:import/typescript",
   ],
   root: true,
   env: {
     node: true,
     jest: true,
   },
-  ignorePatterns: ['.eslintrc.js', 'dist/**/*', 'node_modules/**/*'],
+  ignorePatterns: [".eslintrc.js", "dist/**/*", "node_modules/**/*"],
   rules: {
-    '@typescript-eslint/interface-name-prefix': 'off',
-    '@typescript-eslint/explicit-function-return-type': 'off',
-    '@typescript-eslint/explicit-module-boundary-types': 'off',
-    '@typescript-eslint/no-explicit-any': 'warn',
-    '@typescript-eslint/no-unused-vars': ['warn', { 'argsIgnorePattern': '^_' }],
-    'prettier/prettier': 'warn',
-    'import/order': [
-      'warn',
+    "@typescript-eslint/interface-name-prefix": "off",
+    "@typescript-eslint/explicit-function-return-type": "off",
+    "@typescript-eslint/explicit-module-boundary-types": "off",
+    "@typescript-eslint/no-explicit-any": "warn",
+    "@typescript-eslint/no-unused-vars": ["warn", { argsIgnorePattern: "^_" }],
+    "prettier/prettier": "warn",
+    "import/order": [
+      "warn",
       {
-        'groups': [
-          'builtin',
-          'external',
-          'internal',
-          ['parent', 'sibling'],
-          'index',
-          'object',
-          'type'
+        groups: [
+          "builtin",
+          "external",
+          "internal",
+          ["parent", "sibling"],
+          "index",
+          "object",
+          "type",
         ],
-        'newlines-between': 'always',
-        'alphabetize': {
-          'order': 'asc',
-          'caseInsensitive': true
+        "newlines-between": "always",
+        alphabetize: {
+          order: "asc",
+          caseInsensitive: true,
         },
-        'pathGroups': [
+        pathGroups: [
           {
-            'pattern': '@nestjs/**',
-            'group': 'external',
-            'position': 'before'
+            pattern: "@nestjs/**",
+            group: "external",
+            position: "before",
           },
           {
-            'pattern': 'src/modules/**',
-            'group': 'internal',
-            'position': 'before'
+            pattern: "src/modules/**",
+            group: "internal",
+            position: "before",
           },
           {
-            'pattern': 'src/common/**',
-            'group': 'internal',
-            'position': 'before'
-          }
+            pattern: "src/common/**",
+            group: "internal",
+            position: "before",
+          },
         ],
-        'pathGroupsExcludedImportTypes': ['builtin']
-      }
+        pathGroupsExcludedImportTypes: ["builtin"],
+      },
     ],
-    'boundaries/element-types': [
-      'error',
+    "boundaries/element-types": [
+      "error",
       {
-        default: 'disallow',
+        default: "disallow",
         rules: [
           {
-            from: ['module'],
-            allow: ['module', 'common', 'config']
+            from: ["module"],
+            allow: ["module", "common", "config"],
           },
           {
-            from: ['controller'],
-            allow: ['service', 'dto', 'interface', 'common', 'guard']
+            from: ["controller"],
+            allow: ["service", "dto", "interface", "common", "guard"],
           },
           {
-            from: ['service'],
-            allow: ['repository', 'interface', 'common', 'model', 'utils']
+            from: ["service"],
+            allow: ["repository", "interface", "common", "model", "utils"],
           },
           {
-            from: ['repository'],
-            allow: ['model', 'interface', 'common', 'utils']
+            from: ["repository"],
+            allow: ["model", "interface", "common", "utils"],
           },
           {
-            from: ['common'],
-            allow: ['common']
-          }
-        ]
-      }
+            from: ["common"],
+            allow: ["common"],
+          },
+        ],
+      },
     ],
-    'boundaries/dependency-type': [
-      'error',
+    "boundaries/dependency-type": [
+      "error",
       {
-        type: 'element',
+        type: "element",
         types: {
-          'module': {
+          module: {
             module: true,
-            packageJson: false
+            packageJson: false,
           },
-          'controller': {
+          controller: {
             // Any file that has 'controller' in its name
-            modulePattern: '^.*/(?!index).*\\.controller\\.ts$',
+            modulePattern: "^.*/(?!index).*\\.controller\\.ts$",
             // ...or is in a controllers/ directory
-            pathPattern: '^src/(?:.*/)?controllers/(?!index)'
+            pathPattern: "^src/(?:.*/)?controllers/(?!index)",
           },
-          'service': {
-            modulePattern: '^.*/(?!index).*\\.service\\.ts$',
-            pathPattern: '^src/(?:.*/)?services/(?!index)'
+          service: {
+            modulePattern: "^.*/(?!index).*\\.service\\.ts$",
+            pathPattern: "^src/(?:.*/)?services/(?!index)",
           },
-          'repository': {
-            modulePattern: '^.*/(?!index).*\\.repository\\.ts$',
-            pathPattern: '^src/(?:.*/)?repositories/(?!index)'
+          repository: {
+            modulePattern: "^.*/(?!index).*\\.repository\\.ts$",
+            pathPattern: "^src/(?:.*/)?repositories/(?!index)",
           },
-          'interface': {
-            modulePattern: '^.*/(?!index).*\\.interface\\.ts$',
-            pathPattern: '^src/(?:.*/)?interfaces/(?!index)'
+          interface: {
+            modulePattern: "^.*/(?!index).*\\.interface\\.ts$",
+            pathPattern: "^src/(?:.*/)?interfaces/(?!index)",
           },
-          'model': {
-            modulePattern: '^.*/(?!index).*\\.model\\.ts$|^.*/(?!index).*\\.schema\\.ts$',
-            pathPattern: '^src/(?:.*/)?models/(?!index)'
+          model: {
+            modulePattern:
+              "^.*/(?!index).*\\.model\\.ts$|^.*/(?!index).*\\.schema\\.ts$",
+            pathPattern: "^src/(?:.*/)?models/(?!index)",
           },
-          'dto': {
-            modulePattern: '^.*/(?!index).*\\.dto\\.ts$',
-            pathPattern: '^src/(?:.*/)?dtos/(?!index)'
+          dto: {
+            modulePattern: "^.*/(?!index).*\\.dto\\.ts$",
+            pathPattern: "^src/(?:.*/)?dtos/(?!index)",
           },
-          'guard': {
-            modulePattern: '^.*/(?!index).*\\.guard\\.ts$',
-            pathPattern: '^src/(?:.*/)?guards/(?!index)'
+          guard: {
+            modulePattern: "^.*/(?!index).*\\.guard\\.ts$",
+            pathPattern: "^src/(?:.*/)?guards/(?!index)",
           },
-          'utils': {
-            modulePattern: '^.*/(?!index).*\\.utils\\.ts$',
-            pathPattern: '^src/(?:.*/)?utils/(?!index)'
+          utils: {
+            modulePattern: "^.*/(?!index).*\\.utils\\.ts$",
+            pathPattern: "^src/(?:.*/)?utils/(?!index)",
           },
-          'common': {
-            pathPattern: '^src/common/.*'
+          common: {
+            pathPattern: "^src/common/.*",
           },
-          'config': {
-            pathPattern: '^src/config/.*'
-          }
-        }
-      }
+          config: {
+            pathPattern: "^src/config/.*",
+          },
+        },
+      },
     ],
-    'boundaries/element-types': 'off',
-    'boundaries/dependency-type': 'off',
+    "boundaries/element-types": "off",
+    "boundaries/dependency-type": "off",
     // Temporarily disable import plugin rules to unblock slice cleanup
-    'import/no-cycle': 'off',
-    'import/no-unresolved': 'off',
-    'import/named': 'off',
-    'import/namespace': 'off',
-    'import/order': 'off',
-    'import/no-duplicates': 'off',
-    'import/export': 'off',
-    'import/no-restricted-paths': 'off',
+    "import/no-cycle": "off",
+    "import/no-unresolved": "off",
+    "import/named": "off",
+    "import/namespace": "off",
+    "import/order": "off",
+    "import/no-duplicates": "off",
+    "import/export": "off",
+    "import/no-restricted-paths": "off",
   },
   settings: {
-    'import/resolver': {
+    "import/resolver": {
       typescript: {
         alwaysTryTypes: true,
-        project: './tsconfig.json',
+        project: "./tsconfig.json",
       },
       node: {
-        extensions: ['.js', '.jsx', '.ts', '.tsx'],
+        extensions: [".js", ".jsx", ".ts", ".tsx"],
       },
     },
     boundaries: {
-      elements: {}
-    }
+      elements: {},
+    },
   },
 };

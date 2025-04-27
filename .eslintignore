@@ -1,0 +1,2 @@
+# Ignore template implementation files
+backend/src/templates/**

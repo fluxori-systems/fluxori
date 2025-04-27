@@ -26,10 +26,14 @@
     "lint": "npm run lint:backend && npm run lint:frontend",
     "lint:backend": "cd backend && npm run lint",
     "lint:frontend": "cd frontend && npm run lint",
+    "lint:boundaries": "eslint \"backend/src/**/*.ts\" --fix",
     "typecheck": "npm run typecheck:backend && npm run typecheck:frontend",
     "typecheck:backend": "cd backend && tsc --noEmit",
     "typecheck:frontend": "cd frontend && npm run typecheck",
     "prepare": "husky install",
+    "test:backend": "cd backend && npm test",
+    "test:frontend": "cd frontend && npm test",
+    "test": "npm run test:backend && npm run test:frontend",
     "smoke-test-dev": "bash scripts/smoke-test-dev.sh",
     "pre-commit": "lint-staged",
     "phase1:autofix": "node scripts/phase1-autofix-chunked.js",
@@ -37,6 +41,9 @@
     "phase2:auth": "npm run phase2:clean -- --slice=backend/src/modules/auth",
     "phase2:common": "npm run phase2:clean -- --slice=backend/src/common",
     "stub:audit": "node scripts/audit-stubs.js",
+    "phase4:discover": "node scripts/phase4-error-discovery.js",
+    "phase4:fix-trivial": "npm run lint:backend -- --fix && npm run lint:frontend -- --fix",
+    "phase4:analyze-deps": "npm run deps:graph && npm run deps:cross-module",
     "check-deps": "npm run deps:circular && npm run deps:validate",
     "adr:create": "cd scripts/adr && ./adr.sh create",
     "adr:update-index": "cd scripts/adr && ./adr.sh update-index",
@@ -54,6 +61,16 @@
     "backend",
     "frontend"
   ],
+  "lint-staged": {
+    "backend/src/**/*.{ts,tsx}": [
+      "npm run lint:backend -- --fix",
+      "npm run typecheck:backend"
+    ],
+    "frontend/**/*.{ts,tsx,js,jsx}": [
+      "npm run lint:frontend -- --fix",
+      "npm run typecheck:frontend"
+    ]
+  },
   "engines": {
     "node": ">=22",
     "npm": ">=8"
@@ -76,6 +93,9 @@
     "url": "https://github.com/fluxori/fluxori/issues"
   },
   "homepage": "https://github.com/fluxori/fluxori",
+  "resolutions": {
+    "@types/express": "4.17.21"
+  },
   "devDependencies": {
     "@types/jest": "^29.5.14",
     "@types/node": "^22.15.2",
@@ -86,6 +106,7 @@
     "dependency-cruiser": "^16.10.1",
     "husky": "^8.0.3",
     "lint-staged": "^15.1.0",
+    "prettier": "^3.5.3",
     "viz.js": "^2.1.2"
   }
 }

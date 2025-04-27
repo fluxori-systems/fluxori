@@ -19,6 +19,7 @@ npm run adr:html
 ```
 
 This will:
+
 1. Regenerate all dependency visualizations
 2. Generate an enhanced ADR index
 3. Render all ADRs to HTML with interactive visualizations

@@ -1,29 +1,29 @@
 /**
  * Product entity interfaces
  */
-import { TenantEntity } from '../core/entity.types';
+import { TenantEntity } from "../core/entity.types";
 
 /**
  * Product status enum
  */
 export enum ProductStatus {
-  ACTIVE = 'active',
-  INACTIVE = 'inactive',
-  DRAFT = 'draft',
-  ARCHIVED = 'archived',
-  OUT_OF_STOCK = 'out_of_stock',
-  DISCONTINUED = 'discontinued',
+  ACTIVE = "active",
+  INACTIVE = "inactive",
+  DRAFT = "draft",
+  ARCHIVED = "archived",
+  OUT_OF_STOCK = "out_of_stock",
+  DISCONTINUED = "discontinued",
 }
 
 /**
  * Product type enum
  */
 export enum ProductType {
-  PHYSICAL = 'physical',
-  DIGITAL = 'digital',
-  SERVICE = 'service',
-  BUNDLE = 'bundle',
-  SUBSCRIPTION = 'subscription',
+  PHYSICAL = "physical",
+  DIGITAL = "digital",
+  SERVICE = "service",
+  BUNDLE = "bundle",
+  SUBSCRIPTION = "subscription",
 }
 
 /**
@@ -120,44 +120,44 @@ export interface Product extends TenantEntity {
   categoryIds?: string[];
   categoryNames?: string[];
   status: ProductStatus;
-  
+
   // Media
   mainImageUrl?: string;
   additionalImageUrls?: string[];
-  
+
   // Pricing
   pricing: ProductPricing;
-  
+
   // Physical attributes
   dimensions?: ProductDimensions;
-  
+
   // Variants
   hasVariants: boolean;
   variants?: ProductVariant[];
-  
+
   // Inventory
   stockLevelThreshold?: StockLevelThreshold;
   stockQuantity: number;
   reservedQuantity: number;
   availableQuantity: number;
   defaultWarehouseId?: string;
-  
+
   // Supply chain
   suppliers?: ProductSupplier[];
   leadTimeInDays?: number;
   reorderPoint?: number;
   reorderQuantity?: number;
-  
+
   // Attributes and metadata
   attributes?: Record<string, string | number | boolean>;
   tags?: string[];
   metadata?: Record<string, any>;
-  
+
   // SEO
   seoTitle?: string;
   seoDescription?: string;
   seoKeywords?: string[];
-  
+
   // External IDs
   externalIds?: Record<string, string>;
 }
@@ -213,7 +213,7 @@ export interface CreateProductDto {
   pricing: ProductPricing;
   dimensions?: ProductDimensions;
   hasVariants: boolean;
-  variants?: Omit<ProductVariant, 'id'>[];
+  variants?: Omit<ProductVariant, "id">[];
   stockLevelThreshold?: StockLevelThreshold;
   stockQuantity?: number;
   defaultWarehouseId?: string;

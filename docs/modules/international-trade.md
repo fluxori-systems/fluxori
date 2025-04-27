@@ -10,7 +10,7 @@ The International Trade module provides functionality for managing international
 
 The module exposes the following components to the rest of the application:
 
-- **Public APIs**: 
+- **Public APIs**:
   - `InternationalTradeModule`: The main module for international trade functionality
   - Enums for shipment status tracking: `ShippingMethod`, `ShipmentStatus`, `CustomsStatus`, `ComplianceStatus`, `IncoTerm`
   - Core data interfaces: `IInternationalShipment`, `IHSCode`, `ITradeRestriction`, `IComplianceRequirement`
@@ -21,6 +21,7 @@ The module exposes the following components to the rest of the application:
 This module has dependencies on:
 
 - **Required Modules**:
+
   - None currently
 
 - **Optional Modules**:
@@ -50,14 +51,14 @@ Other modules should interact with this module through its public API:
 
 ```typescript
 // Import the entire module
-import { InternationalTradeModule } from 'src/modules/international-trade';
+import { InternationalTradeModule } from "src/modules/international-trade";
 
 // Import specific types
-import { 
+import {
   ShippingMethod,
   ShipmentStatus,
-  IInternationalShipment
-} from 'src/modules/international-trade';
+  IInternationalShipment,
+} from "src/modules/international-trade";
 ```
 
 ### Usage Examples
@@ -65,35 +66,37 @@ import {
 #### Creating a New International Shipment
 
 ```typescript
-import { Injectable } from '@nestjs/common';
+import { Injectable } from "@nestjs/common";
 import {
   CreateShipmentDto,
   ShippingMethod,
   IncoTerm,
-  ShipmentResponse
-} from 'src/modules/international-trade';
+  ShipmentResponse,
+} from "src/modules/international-trade";
 
 @Injectable()
 export class ShipmentService {
   // Inject necessary repositories when implemented
-  
-  async createShipment(shipmentData: CreateShipmentDto): Promise<ShipmentResponse> {
+
+  async createShipment(
+    shipmentData: CreateShipmentDto,
+  ): Promise<ShipmentResponse> {
     // Implementation for creating a shipment
     // This will be enhanced when the module is fully implemented
-    
+
     const newShipment = {
-      id: 'generated-id',
+      id: "generated-id",
       ...shipmentData,
       status: ShipmentStatus.DRAFT,
       customsStatus: CustomsStatus.NOT_STARTED,
       complianceStatus: ComplianceStatus.UNKNOWN,
       documents: [],
       createdAt: new Date(),
-      updatedAt: new Date()
+      updatedAt: new Date(),
     };
-    
+
     // When implemented, save to repository
-    
+
     return newShipment;
   }
 }
@@ -102,38 +105,38 @@ export class ShipmentService {
 #### Checking Trade Compliance
 
 ```typescript
-import { Injectable } from '@nestjs/common';
+import { Injectable } from "@nestjs/common";
 import {
   IComplianceRequirement,
-  IHSCode
-} from 'src/modules/international-trade';
+  IHSCode,
+} from "src/modules/international-trade";
 
 @Injectable()
 export class ComplianceService {
   // Inject necessary repositories when implemented
-  
+
   async checkProductCompliance(
     productId: string,
     hsCode: string,
     originCountry: string,
-    destinationCountry: string
+    destinationCountry: string,
   ): Promise<{
     isCompliant: boolean;
     requirements: IComplianceRequirement[];
     restrictions: ITradeRestriction[];
   }> {
     // This will be implemented when repositories and services are added
-    
+
     // Example implementation logic:
     // 1. Get HS code details
     // 2. Check for trade restrictions between countries
     // 3. Get compliance requirements for the destination country
     // 4. Determine if the product meets all requirements
-    
+
     return {
       isCompliant: true,
       requirements: [],
-      restrictions: []
+      restrictions: [],
     };
   }
 }
@@ -159,7 +162,7 @@ Currently, the International Trade module does not have specific configuration o
 When fully implemented, testing the International Trade module would include:
 
 ```typescript
-describe('InternationalTradeService', () => {
+describe("InternationalTradeService", () => {
   let service: InternationalTradeService;
   let shipmentRepository: MockShipmentRepository;
 
@@ -169,8 +172,8 @@ describe('InternationalTradeService', () => {
         InternationalTradeService,
         {
           provide: ShipmentRepository,
-          useClass: MockShipmentRepository
-        }
+          useClass: MockShipmentRepository,
+        },
       ],
     }).compile();
 
@@ -178,17 +181,19 @@ describe('InternationalTradeService', () => {
     shipmentRepository = module.get(ShipmentRepository);
   });
 
-  it('should create a shipment in draft status', async () => {
+  it("should create a shipment in draft status", async () => {
     const createDto: CreateShipmentDto = {
       // Test data
     };
-    
+
     const result = await service.createShipment(createDto);
-    
+
     expect(result.status).toBe(ShipmentStatus.DRAFT);
-    expect(shipmentRepository.create).toHaveBeenCalledWith(expect.objectContaining({
-      // Expected repository call
-    }));
+    expect(shipmentRepository.create).toHaveBeenCalledWith(
+      expect.objectContaining({
+        // Expected repository call
+      }),
+    );
   });
 });
 ```

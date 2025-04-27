@@ -5,13 +5,14 @@ This document outlines the step-by-step process to completely rebuild the UI com
 ## Pre-Migration Tasks
 
 1. **Backup the codebase**
+
    ```bash
    # Create a backup branch
    git checkout -b backup/pre-typescript-rebuild
    git add .
    git commit -m "Backup before TypeScript rebuild"
    git push origin backup/pre-typescript-rebuild
-   
+
    # Return to main branch
    git checkout main
    ```
@@ -24,12 +25,14 @@ This document outlines the step-by-step process to completely rebuild the UI com
 ## Phase 1: Setup New UI Library
 
 1. **Create the UI library structure**
+
    ```bash
    # Run the initialization script
    node scripts/rebuild-strategy/create-ui-lib.js
    ```
 
 2. **Implement core components**
+
    - Implement all components listed in component index file
    - Ensure proper TypeScript typing for all components
    - Add proper documentation for each component
@@ -41,10 +44,11 @@ This document outlines the step-by-step process to completely rebuild the UI com
 ## Phase 2: Migrate Component Usage
 
 1. **Update imports**
+
    ```bash
    # Install glob if not already installed
    npm install --save-dev glob
-   
+
    # Run the update-imports script
    node scripts/rebuild-strategy/update-imports.js
    ```
@@ -56,6 +60,7 @@ This document outlines the step-by-step process to completely rebuild the UI com
 ## Phase 3: Fix API Type Issues
 
 1. **Create proper API response types**
+
    - Define interfaces for all API responses
    - Implement type guards for API data
 
@@ -67,6 +72,7 @@ This document outlines the step-by-step process to completely rebuild the UI com
 ## Phase 4: Fix Chart.js Issues
 
 1. **Implement chart.js compatibility layer**
+
    - Create proper type definitions for chart configuration
    - Implement helper functions for type-safe chart usage
 
@@ -77,15 +83,18 @@ This document outlines the step-by-step process to completely rebuild the UI com
 ## Phase 5: Testing and Validation
 
 1. **Run TypeScript checks**
+
    ```bash
    npm run typecheck
    ```
 
 2. **Fix any remaining issues**
+
    - Address any TypeScript errors that remain
    - Add additional type definitions if needed
 
 3. **Test the application**
+
    ```bash
    npm run dev
    npm test
@@ -101,10 +110,12 @@ This document outlines the step-by-step process to completely rebuild the UI com
 ## Future Maintenance
 
 1. **Document the UI library**
+
    - Create a UI component documentation system
    - Add usage examples for each component
 
 2. **Set up linting rules**
+
    - Add ESLint rules to enforce proper TypeScript usage
    - Set up pre-commit hooks to prevent type errors
 
@@ -117,6 +128,7 @@ This document outlines the step-by-step process to completely rebuild the UI com
 If issues arise during the migration:
 
 1. **Revert to backup branch**
+
    ```bash
    git checkout backup/pre-typescript-rebuild
    ```

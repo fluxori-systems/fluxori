@@ -1,60 +1,68 @@
 /**
  * Integration Tests - Report Generator
- * 
+ *
  * Generates an HTML report from Jest test results for use in CI/CD environments.
  */
 
-const fs = require('fs-extra');
-const path = require('path');
-const chalk = require('chalk');
+const fs = require("fs-extra");
+const path = require("path");
+const chalk = require("chalk");
 
 // Configuration
 const config = {
-  junitReportPath: path.join(__dirname, 'reports', 'junit.xml'),
-  htmlReportPath: path.join(__dirname, 'reports', 'integration-test-report.html'),
-  dashboardReportPath: path.join(__dirname, 'reports', 'dashboard.html'),
+  junitReportPath: path.join(__dirname, "reports", "junit.xml"),
+  htmlReportPath: path.join(
+    __dirname,
+    "reports",
+    "integration-test-report.html",
+  ),
+  dashboardReportPath: path.join(__dirname, "reports", "dashboard.html"),
 };
 
 // Check if the JUnit report exists
 if (!fs.existsSync(config.junitReportPath)) {
-  console.error(chalk.red(`JUnit report not found at ${config.junitReportPath}`));
-  console.error(chalk.yellow('Make sure to run tests with the --ci flag'));
+  console.error(
+    chalk.red(`JUnit report not found at ${config.junitReportPath}`),
+  );
+  console.error(chalk.yellow("Make sure to run tests with the --ci flag"));
   process.exit(1);
 }
 
 // Read the JUnit report
-const junitXml = fs.readFileSync(config.junitReportPath, 'utf8');
+const junitXml = fs.readFileSync(config.junitReportPath, "utf8");
 
 // Parse the XML (simplified for demo)
 const parseJunitXml = (xml) => {
   // In a real implementation, use an XML parser
   // For this example, we'll just extract some basic information
-  
+
   const testsuites = xml.match(/<testsuites.*?>/);
-  const testsuitesAttr = testsuites ? testsuites[0].match(/tests="(\d+)" failures="(\d+)"/) : null;
-  
+  const testsuitesAttr = testsuites
+    ? testsuites[0].match(/tests="(\d+)" failures="(\d+)"/)
+    : null;
+
   const totalTests = testsuitesAttr ? parseInt(testsuitesAttr[1], 10) : 0;
   const failedTests = testsuitesAttr ? parseInt(testsuitesAttr[2], 10) : 0;
   const passedTests = totalTests - failedTests;
-  
+
   // Extract test cases
   const testCaseRegex = /<testcase.*?<\/testcase>/gs;
   const testCaseMatches = [...xml.matchAll(testCaseRegex)];
-  
-  const testCases = testCaseMatches.map(match => {
+
+  const testCases = testCaseMatches.map((match) => {
     const caseText = match[0];
     const nameMatch = caseText.match(/name="([^"]+)"/);
     const classNameMatch = caseText.match(/classname="([^"]+)"/);
     const timeMatch = caseText.match(/time="([^"]+)"/);
-    
-    const name = nameMatch ? nameMatch[1] : 'Unknown';
-    const className = classNameMatch ? classNameMatch[1] : 'Unknown';
+
+    const name = nameMatch ? nameMatch[1] : "Unknown";
+    const className = classNameMatch ? classNameMatch[1] : "Unknown";
     const time = timeMatch ? parseFloat(timeMatch[1]) : 0;
-    
+
     const failureMatch = caseText.match(/<failure.*?>(.*?)<\/failure>/s);
     const failed = !!failureMatch;
-    const failureMessage = failureMatch ? failureMatch[1] : '';
-    
+    const failureMessage = failureMatch ? failureMatch[1] : "";
+
     return {
       name,
       className,
@@ -63,7 +71,7 @@ const parseJunitXml = (xml) => {
       failureMessage,
     };
   });
-  
+
   return {
     totalTests,
     passedTests,
@@ -76,27 +84,29 @@ const testResults = parseJunitXml(junitXml);
 
 // Generate HTML report
 const generateHtmlReport = (results) => {
-  const passPercent = results.totalTests > 0 
-    ? Math.round((results.passedTests / results.totalTests) * 100) 
-    : 0;
-  
+  const passPercent =
+    results.totalTests > 0
+      ? Math.round((results.passedTests / results.totalTests) * 100)
+      : 0;
+
   // Group tests by class
   const testsByClass = {};
-  results.testCases.forEach(test => {
+  results.testCases.forEach((test) => {
     if (!testsByClass[test.className]) {
       testsByClass[test.className] = [];
     }
     testsByClass[test.className].push(test);
   });
-  
+
   // Calculate class-level statistics
-  const classStats = Object.keys(testsByClass).map(className => {
+  const classStats = Object.keys(testsByClass).map((className) => {
     const tests = testsByClass[className];
     const totalTests = tests.length;
-    const failedTests = tests.filter(t => t.failed).length;
+    const failedTests = tests.filter((t) => t.failed).length;
     const passedTests = totalTests - failedTests;
-    const passPercent = totalTests > 0 ? Math.round((passedTests / totalTests) * 100) : 0;
-    
+    const passPercent =
+      totalTests > 0 ? Math.round((passedTests / totalTests) * 100) : 0;
+
     return {
       className,
       totalTests,
@@ -105,7 +115,7 @@ const generateHtmlReport = (results) => {
       passPercent,
     };
   });
-  
+
   const html = `
 <!DOCTYPE html>
 <html lang="en">
@@ -227,7 +237,7 @@ const generateHtmlReport = (results) => {
       <div>Failed Tests</div>
     </div>
     <div class="summary-item">
-      <div class="summary-value ${passPercent >= 90 ? 'pass' : 'fail'}">${passPercent}%</div>
+      <div class="summary-value ${passPercent >= 90 ? "pass" : "fail"}">${passPercent}%</div>
       <div>Pass Rate</div>
     </div>
   </section>
@@ -235,7 +245,9 @@ const generateHtmlReport = (results) => {
   <section class="test-classes">
     <h2>Test Classes</h2>
     
-    ${classStats.map(cls => `
+    ${classStats
+      .map(
+        (cls) => `
       <div class="test-class">
         <div class="class-header" onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'none' ? 'block' : 'none'">
           <div>${cls.className} (${cls.passedTests}/${cls.totalTests})</div>
@@ -245,16 +257,22 @@ const generateHtmlReport = (results) => {
           <div class="progress-value" style="width: ${cls.passPercent}%"></div>
         </div>
         <div class="class-tests" style="display: none;">
-          ${testsByClass[cls.className].map(test => `
-            <div class="test-case ${test.failed ? 'test-failed' : 'test-passed'}">
+          ${testsByClass[cls.className]
+            .map(
+              (test) => `
+            <div class="test-case ${test.failed ? "test-failed" : "test-passed"}">
               <div class="test-name">${test.name}</div>
               <div class="test-time">${test.time.toFixed(3)}s</div>
-              ${test.failed ? `<div class="failure-message">${test.failureMessage}</div>` : ''}
+              ${test.failed ? `<div class="failure-message">${test.failureMessage}</div>` : ""}
             </div>
-          `).join('')}
+          `,
+            )
+            .join("")}
         </div>
       </div>
-    `).join('')}
+    `,
+      )
+      .join("")}
   </section>
   
   <footer class="footer">
@@ -273,17 +291,18 @@ const generateHtmlReport = (results) => {
 </body>
 </html>
   `;
-  
+
   return html;
 };
 
 // Generate dashboard report
 const generateDashboardReport = (results) => {
   // Simplified dashboard for demo
-  const passPercent = results.totalTests > 0 
-    ? Math.round((results.passedTests / results.totalTests) * 100) 
-    : 0;
-  
+  const passPercent =
+    results.totalTests > 0
+      ? Math.round((results.passedTests / results.totalTests) * 100)
+      : 0;
+
   const html = `
 <!DOCTYPE html>
 <html lang="en">
@@ -367,15 +386,15 @@ const generateDashboardReport = (results) => {
   <h1>Fluxori Integration Test Dashboard</h1>
   <p>Latest results from ${new Date().toLocaleString()}</p>
   
-  <div class="status ${results.failedTests === 0 ? 'pass' : 'fail'}">
-    ${results.failedTests === 0 ? '✓' : '✗'}
+  <div class="status ${results.failedTests === 0 ? "pass" : "fail"}">
+    ${results.failedTests === 0 ? "✓" : "✗"}
   </div>
   
-  <h2>${results.failedTests === 0 ? 'All Tests Passed' : 'Tests Failed'}</h2>
+  <h2>${results.failedTests === 0 ? "All Tests Passed" : "Tests Failed"}</h2>
   
   <div class="gauge">
     <div class="gauge-background"></div>
-    <div class="gauge-value" style="transform: rotate(${180 - (passPercent * 1.8)}deg)"></div>
+    <div class="gauge-value" style="transform: rotate(${180 - passPercent * 1.8}deg)"></div>
     <div class="gauge-center">${passPercent}%</div>
   </div>
   
@@ -402,7 +421,7 @@ const generateDashboardReport = (results) => {
 </body>
 </html>
   `;
-  
+
   return html;
 };
 
@@ -410,13 +429,15 @@ const generateDashboardReport = (results) => {
 try {
   const htmlReport = generateHtmlReport(testResults);
   fs.writeFileSync(config.htmlReportPath, htmlReport);
-  
+
   const dashboardReport = generateDashboardReport(testResults);
   fs.writeFileSync(config.dashboardReportPath, dashboardReport);
-  
+
   console.log(chalk.green(`HTML report generated: ${config.htmlReportPath}`));
-  console.log(chalk.green(`Dashboard generated: ${config.dashboardReportPath}`));
+  console.log(
+    chalk.green(`Dashboard generated: ${config.dashboardReportPath}`),
+  );
 } catch (error) {
-  console.error(chalk.red('Failed to generate report:'), error);
+  console.error(chalk.red("Failed to generate report:"), error);
   process.exit(1);
 }

@@ -1,57 +1,57 @@
 /**
  * Inventory entity interfaces
  */
-import { TenantEntity, UserAttributedEntity } from '../core/entity.types';
+import { TenantEntity, UserAttributedEntity } from "../core/entity.types";
 
 /**
  * Warehouse type enum
  */
 export enum WarehouseType {
-  OWNED = 'owned',
-  THIRD_PARTY = 'third_party',
-  FULFILLMENT_CENTER = 'fulfillment_center',
-  STORE = 'store',
-  DROPSHIP = 'dropship',
+  OWNED = "owned",
+  THIRD_PARTY = "third_party",
+  FULFILLMENT_CENTER = "fulfillment_center",
+  STORE = "store",
+  DROPSHIP = "dropship",
 }
 
 /**
  * Stock status enum
  */
 export enum StockStatus {
-  IN_STOCK = 'in_stock',
-  LOW_STOCK = 'low_stock',
-  OUT_OF_STOCK = 'out_of_stock',
-  OVERSTOCK = 'overstock',
+  IN_STOCK = "in_stock",
+  LOW_STOCK = "low_stock",
+  OUT_OF_STOCK = "out_of_stock",
+  OVERSTOCK = "overstock",
 }
 
 /**
  * Stock movement type enum
  */
 export enum StockMovementType {
-  STOCK_RECEIPT = 'stock_receipt',
-  SALE = 'sale',
-  RETURN = 'return',
-  ADJUSTMENT = 'adjustment',
-  TRANSFER = 'transfer',
-  STOCK_TAKE = 'stock_take',
+  STOCK_RECEIPT = "stock_receipt",
+  SALE = "sale",
+  RETURN = "return",
+  ADJUSTMENT = "adjustment",
+  TRANSFER = "transfer",
+  STOCK_TAKE = "stock_take",
 }
 
 /**
  * Stock movement reason enum
  */
 export enum StockMovementReason {
-  PURCHASE_ORDER = 'purchase_order',
-  CUSTOMER_ORDER = 'customer_order',
-  CUSTOMER_RETURN = 'customer_return',
-  DAMAGED = 'damaged',
-  LOST = 'lost',
-  FOUND = 'found',
-  INTERNAL_TRANSFER = 'internal_transfer',
-  INVENTORY_COUNT = 'inventory_count',
-  VENDOR_RETURN = 'vendor_return',
-  WRITE_OFF = 'write_off',
-  CORRECTION = 'correction',
-  OTHER = 'other',
+  PURCHASE_ORDER = "purchase_order",
+  CUSTOMER_ORDER = "customer_order",
+  CUSTOMER_RETURN = "customer_return",
+  DAMAGED = "damaged",
+  LOST = "lost",
+  FOUND = "found",
+  INTERNAL_TRANSFER = "internal_transfer",
+  INVENTORY_COUNT = "inventory_count",
+  VENDOR_RETURN = "vendor_return",
+  WRITE_OFF = "write_off",
+  CORRECTION = "correction",
+  OTHER = "other",
 }
 
 /**
@@ -89,12 +89,12 @@ export interface Warehouse extends TenantEntity {
   description?: string;
   isActive: boolean;
   isDefault: boolean;
-  
+
   // Contact information
   contactName?: string;
   contactEmail?: string;
   contactPhone?: string;
-  
+
   // Address
   address: {
     street?: string;
@@ -103,13 +103,13 @@ export interface Warehouse extends TenantEntity {
     postalCode?: string;
     country: string;
   };
-  
+
   // Geolocation
   geoLocation?: {
     latitude: number;
     longitude: number;
   };
-  
+
   // Operational details
   operatingHours?: {
     monday?: { open: string; close: string };
@@ -120,16 +120,16 @@ export interface Warehouse extends TenantEntity {
     saturday?: { open: string; close: string };
     sunday?: { open: string; close: string };
   };
-  
+
   // Capacity
   totalCapacity?: number;
   capacityUnit?: string;
   currentUtilization?: number;
-  
+
   // Integration details
   externalId?: string;
   externalSystem?: string;
-  
+
   // Metadata
   notes?: string;
   metadata?: Record<string, any>;
@@ -204,7 +204,7 @@ export interface InventoryCount extends UserAttributedEntity {
   description?: string;
   warehouseId: string;
   warehouseName: string;
-  status: 'draft' | 'in_progress' | 'completed' | 'cancelled';
+  status: "draft" | "in_progress" | "completed" | "cancelled";
   startDate: Date | string;
   endDate?: Date | string;
   completedById?: string;
@@ -229,7 +229,7 @@ export interface InventoryCountLine extends TenantEntity {
   actualQuantity: number;
   discrepancy: number;
   notes?: string;
-  status: 'pending' | 'counted' | 'verified' | 'adjusted';
+  status: "pending" | "counted" | "verified" | "adjusted";
   locationId?: string;
   locationName?: string;
   countedById?: string;

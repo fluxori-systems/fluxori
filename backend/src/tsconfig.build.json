@@ -1,0 +1,11 @@
+{
+  "files": [],
+  "references": [
+    { "path": "./tsconfig.json" },
+    { "path": "./tsconfig.auth.json" },
+    { "path": "./tsconfig.connectors.json" },
+    { "path": "./tsconfig.observability.json" },
+    { "path": "./tsconfig.storage.json" },
+    { "path": "./tsconfig.users.json" }
+  ]
+}

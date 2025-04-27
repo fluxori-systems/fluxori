@@ -10,7 +10,7 @@ Brief description of the module's purpose and main functionalities.
 
 List the components, services, and utilities this module exposes to the rest of the application:
 
-- **Public APIs**: 
+- **Public APIs**:
   - `ExampleService`: Describe the service purpose
   - `ExampleController`: Describe the controller purpose
   - `ExampleModel`: Describe the model purpose
@@ -22,7 +22,6 @@ List the direct dependencies this module has on other modules:
 - **Required Modules**:
   - `ModuleA`: Reason for dependency
   - `ModuleB`: Reason for dependency
-  
 - **Optional Modules**:
   - `ModuleC`: Reason for dependency and usage scenario
 
@@ -30,7 +29,7 @@ List the direct dependencies this module has on other modules:
 
 ```
 [Module Name]/
-├── controllers/             # HTTP endpoints 
+├── controllers/             # HTTP endpoints
 ├── services/                # Business logic
 ├── repositories/            # Data access
 ├── models/                  # Data structures
@@ -46,9 +45,9 @@ Describe how other modules should interact with this module:
 ### How to Import
 
 ```typescript
-import { ExampleService } from './modules/example/services/example.service';
+import { ExampleService } from "./modules/example/services/example.service";
 // OR
-import { ExampleService } from './modules/example';
+import { ExampleService } from "./modules/example";
 ```
 
 ### Usage Examples
@@ -72,8 +71,8 @@ Describe the typical data flow through this module:
 
 List any configuration options available for this module:
 
-| Option | Description | Default Value |
-|--------|-------------|---------------|
+| Option            | Description            | Default Value   |
+| ----------------- | ---------------------- | --------------- |
 | `example.setting` | Purpose of the setting | `default-value` |
 
 ## Testing

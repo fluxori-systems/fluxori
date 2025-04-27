@@ -1,6 +1,6 @@
-import { ChartType, ChartTypeRegistry, DefaultDataPoint } from 'chart.js';
+import { ChartType, ChartTypeRegistry, DefaultDataPoint } from "chart.js";
 
-import { ChartConnectionQuality } from '../hooks/useNetworkAwareChart';
+import { ChartConnectionQuality } from "../hooks/useNetworkAwareChart";
 
 // Chart data point interface for all chart data
 export interface ChartDataPoint {
@@ -10,10 +10,31 @@ export interface ChartDataPoint {
 // Custom animation options compatible with chart.js types
 export interface CustomAnimationOptions<TType extends ChartType = ChartType> {
   animations?: {
-    x?: { type?: string; easing?: string; delay?: number; duration?: number; from?: number; to?: number };
-    y?: { type?: string; easing?: string; delay?: number; duration?: number; from?: number; to?: number };
+    x?: {
+      type?: string;
+      easing?: string;
+      delay?: number;
+      duration?: number;
+      from?: number;
+      to?: number;
+    };
+    y?: {
+      type?: string;
+      easing?: string;
+      delay?: number;
+      duration?: number;
+      from?: number;
+      to?: number;
+    };
     radius?: { duration?: number; easing?: string; from?: number; to?: number };
-    tension?: { type?: string; easing?: string; delay?: number; duration?: number; from?: number; to?: number };
+    tension?: {
+      type?: string;
+      easing?: string;
+      delay?: number;
+      duration?: number;
+      from?: number;
+      to?: number;
+    };
   };
   duration?: number;
   easing?: string;
@@ -24,7 +45,9 @@ export interface CustomAnimationOptions<TType extends ChartType = ChartType> {
 }
 
 // Custom tooltip options compatible with chart.js types
-export interface CustomTooltipOptions<TType extends keyof ChartTypeRegistry = keyof ChartTypeRegistry> {
+export interface CustomTooltipOptions<
+  TType extends keyof ChartTypeRegistry = keyof ChartTypeRegistry,
+> {
   animationDuration?: number;
   animation?: {
     duration: number;
@@ -36,7 +59,7 @@ export interface CustomTooltipOptions<TType extends keyof ChartTypeRegistry = ke
 export interface ChartDataWithTypes<
   TType extends ChartType = ChartType,
   TData = DefaultDataPoint<TType>,
-  TLabel = string
+  TLabel = string,
 > {
   labels: TLabel[];
   datasets: Array<{
@@ -111,7 +134,7 @@ export interface NetworkAwareChartProps<T = ChartDataPoint> {
 }
 
 // Props for the NetworkAwareLineChart component
-export interface NetworkAwareLineChartProps<T = ChartDataPoint> 
+export interface NetworkAwareLineChartProps<T = ChartDataPoint>
   extends NetworkAwareChartProps<T> {
   // X-axis data key
   xAxisDataKey: string;
@@ -134,7 +157,7 @@ export interface NetworkAwareLineChartProps<T = ChartDataPoint>
 }
 
 // Props for the NetworkAwareBarChart component
-export interface NetworkAwareBarChartProps<T = ChartDataPoint> 
+export interface NetworkAwareBarChartProps<T = ChartDataPoint>
   extends NetworkAwareChartProps<T> {
   // X-axis data key
   xAxisDataKey: string;
@@ -155,7 +178,7 @@ export interface NetworkAwareBarChartProps<T = ChartDataPoint>
 }
 
 // Props for the NetworkAwarePieChart component
-export interface NetworkAwarePieChartProps<T = ChartDataPoint> 
+export interface NetworkAwarePieChartProps<T = ChartDataPoint>
   extends NetworkAwareChartProps<T> {
   // Name data key
   nameKey: string;

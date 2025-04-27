@@ -62,6 +62,7 @@ Dashboard: https://console.cloud.google.com/monitoring/dashboards?project=fluxor
 Visit the service URL in your browser to verify it's running properly.
 
 Add `/status` to the URL to check the system status:
+
 ```
 https://marketplace-scraper-xxxx-xx.a.run.app/status
 ```
@@ -85,4 +86,5 @@ Review the following documents that were created during deployment:
 ## Support
 
 If you encounter issues during deployment, contact:
+
 - DevOps Team: devops@fluxori.com

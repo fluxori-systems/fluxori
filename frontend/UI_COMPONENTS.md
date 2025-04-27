@@ -5,12 +5,12 @@ This document provides guidance on how to properly use our UI components to main
 ## Core Principles
 
 1. **Always use our UI library components** - never use Mantine components directly
-2. **Always use the 'use client' directive** in client components 
+2. **Always use the 'use client' directive** in client components
 3. **Always provide explicit types** for props and parameters
 4. **Always prefer modern prop names** over legacy ones
 5. **Use design tokens** for consistent styling
 6. **Leverage network-aware optimizations** for performance in South African markets
-7. **Track design token usage** for system-wide consistency 
+7. **Track design token usage** for system-wide consistency
 8. **Consider variable network conditions** when building UIs
 
 ## Enhanced Features
@@ -20,7 +20,8 @@ Our UI components have been enhanced with several important features:
 ### Shared Type System
 
 Components use standardized type interfaces:
-- `BaseComponentProps` - Core props shared across all components 
+
+- `BaseComponentProps` - Core props shared across all components
 - `AnimatableComponentProps` - Animation-related props
 - `Intent`, `Size`, `Radius`, `Spacing` - Standardized property types
 
@@ -47,6 +48,7 @@ interface AnimatableComponentProps {
 ### Design Token Integration
 
 Components automatically use our design system tokens:
+
 - Components map standard props to design tokens
 - Token usage tracking for analysis and optimization
 - Helper functions like `getColor()`, `getSpacing()`, etc.
@@ -54,6 +56,7 @@ Components automatically use our design system tokens:
 ### Network-Aware Optimizations
 
 Components intelligently adapt to network conditions:
+
 - Animations scale back or disable on slow connections
 - Layout complexity reduced on poor networks
 - Optimized for South African mobile networks (2G/3G support)
@@ -67,19 +70,19 @@ Components intelligently adapt to network conditions:
 
 Mantine v7 introduced several changes to prop naming for better consistency. Our UI library supports both modern and legacy props, but you should always use the modern ones.
 
-| Legacy Prop | Modern Prop | Description |
-|-------------|-------------|-------------|
-| `weight`    | `fw`        | Font weight |
-| `align`     | `ta`        | Text align  |
-| `color`     | `c`         | Text/component color |
-| `spacing`   | `gap`       | Space between elements |
-| `position`  | `justify`   | Horizontal alignment |
-| `leftIcon`  | `leftSection` | Left icon/content in a button |
-| `rightIcon` | `rightSection` | Right icon/content in a button |
-| `uppercase` | `tt="uppercase"` | Text transform |
-| `wrapLines` | `lineClamp` | Line clamping in Text components |
-| `underline` | `td="underline"` | Text decoration |
-| `italic`    | `fs="italic"` | Font style |
+| Legacy Prop | Modern Prop      | Description                      |
+| ----------- | ---------------- | -------------------------------- |
+| `weight`    | `fw`             | Font weight                      |
+| `align`     | `ta`             | Text align                       |
+| `color`     | `c`              | Text/component color             |
+| `spacing`   | `gap`            | Space between elements           |
+| `position`  | `justify`        | Horizontal alignment             |
+| `leftIcon`  | `leftSection`    | Left icon/content in a button    |
+| `rightIcon` | `rightSection`   | Right icon/content in a button   |
+| `uppercase` | `tt="uppercase"` | Text transform                   |
+| `wrapLines` | `lineClamp`      | Line clamping in Text components |
+| `underline` | `td="underline"` | Text decoration                  |
+| `italic`    | `fs="italic"`    | Font style                       |
 
 ## Component Usage
 
@@ -112,17 +115,17 @@ import { IconPlus } from '@tabler/icons-react';
 <Button leftSection={<IconPlus size={16} />} variant="filled">Click Me</Button>
 
 // ✅ With animation and intent
-<Button 
+<Button
   animated={true}
-  animationType="scale" 
+  animationType="scale"
   intent="primary"
 >
   Animated Button
 </Button>
 
 // ✅ Network-aware animation
-<Button 
-  animated={true} 
+<Button
+  animated={true}
   animationType="hover"
   // Will optimize for poor connections automatically
 >
@@ -147,8 +150,8 @@ import { Stack } from '@/lib/ui';
 </Stack>
 
 // ✅ With intent-based styling and network awareness
-<Stack 
-  gap="lg" 
+<Stack
+  gap="lg"
   intent="content"
   networkAware={true}
 >
@@ -203,7 +206,7 @@ import { Menu, Button } from '@/lib/ui';
 import { IconSettings } from '@tabler/icons-react';
 
 // ✅ With animation, intent, and modern props
-<Menu 
+<Menu
   animated={true}
   animationType="fade"
   intent="primary"
@@ -212,7 +215,7 @@ import { IconSettings } from '@tabler/icons-react';
     <Button>Open menu</Button>
   </Menu.Target>
   <Menu.Dropdown>
-    <Menu.Item 
+    <Menu.Item
       leftSection={<IconSettings size={14} />}
       intent="success"
     >
@@ -235,29 +238,27 @@ import { IconSettings } from '@tabler/icons-react';
 ### Tabs Component
 
 ```tsx
-'use client';
+"use client";
 
-import { Tabs } from '@/lib/ui';
+import { Tabs } from "@/lib/ui";
 
 // ✅ With animation and intent
-<Tabs 
-  defaultValue="tab1"
-  animated={true}
-  animationType="fade"
-  intent="primary"
->
+<Tabs defaultValue="tab1" animated={true} animationType="fade" intent="primary">
   <Tabs.List>
     <Tabs.Tab value="tab1">Tab 1</Tabs.Tab>
-    <Tabs.Tab value="tab2" intent="warning">Tab 2</Tabs.Tab>
+    <Tabs.Tab value="tab2" intent="warning">
+      Tab 2
+    </Tabs.Tab>
   </Tabs.List>
   <Tabs.Panel value="tab1">Content 1</Tabs.Panel>
   <Tabs.Panel value="tab2">Content 2</Tabs.Panel>
-</Tabs>
+</Tabs>;
 ```
 
 ## TypeScript Best Practices
 
 1. **Explicitly type all function parameters**
+
 ```tsx
 // ✅ Correct
 function handleClick(event: React.MouseEvent<HTMLButtonElement>): void {
@@ -271,6 +272,7 @@ function handleClick(event) {
 ```
 
 2. **Use type assertions sparingly and safely**
+
 ```tsx
 // ✅ Correct
 const user = response.data as User;
@@ -280,9 +282,14 @@ const user = response.data as any;
 ```
 
 3. **Define interfaces for component props using our shared types**
+
 ```tsx
 // ✅ Correct - leveraging our shared type system
-import { BaseComponentProps, AnimatableComponentProps, Intent } from '@/lib/ui/types';
+import {
+  BaseComponentProps,
+  AnimatableComponentProps,
+  Intent,
+} from "@/lib/ui/types";
 
 interface CardProps extends BaseComponentProps, AnimatableComponentProps {
   title: string;
@@ -291,7 +298,13 @@ interface CardProps extends BaseComponentProps, AnimatableComponentProps {
   intent?: Intent;
 }
 
-function Card({ title, description, image, intent = 'default', ...props }: CardProps): JSX.Element {
+function Card({
+  title,
+  description,
+  image,
+  intent = "default",
+  ...props
+}: CardProps): JSX.Element {
   // ...
 }
 ```
@@ -301,17 +314,17 @@ function Card({ title, description, image, intent = 'default', ...props }: CardP
 Use our test utilities for testing components with proper theme and animation context:
 
 ```tsx
-import { renderWithProviders } from '@/lib/ui/utils/test-utils';
-import { screen } from '@testing-library/react';
-import { Button } from '@/lib/ui';
+import { renderWithProviders } from "@/lib/ui/utils/test-utils";
+import { screen } from "@testing-library/react";
+import { Button } from "@/lib/ui";
 
-test('Button renders correctly', () => {
+test("Button renders correctly", () => {
   // Renders with ThemeProvider and proper animation context
   renderWithProviders(<Button>Test</Button>, {
-    motionMode: 'reduced' // Test with reduced animations
+    motionMode: "reduced", // Test with reduced animations
   });
-  
-  expect(screen.getByText('Test')).toBeInTheDocument();
+
+  expect(screen.getByText("Test")).toBeInTheDocument();
 });
 ```
 
@@ -352,12 +365,12 @@ Our core layout components (Stack, Grid, Container) include extensive support fo
 ### Network-Aware Container
 
 ```tsx
-'use client';
+"use client";
 
-import { Container } from '@/lib/ui';
+import { Container } from "@/lib/ui";
 
 // Network-aware container that adapts to connection quality
-<Container 
+<Container
   size="lg"
   intent="section"
   networkAware={true} // Will reduce width and padding on poor connections
@@ -365,18 +378,18 @@ import { Container } from '@/lib/ui';
 >
   <h2>Page Section</h2>
   <p>Content adapts to network conditions</p>
-</Container>
+</Container>;
 ```
 
 ### Network-Aware Grid
 
 ```tsx
-'use client';
+"use client";
 
-import { Grid } from '@/lib/ui';
+import { Grid } from "@/lib/ui";
 
 // Grid with network-aware responsive behavior
-<Grid 
+<Grid
   gutter="lg"
   networkAware={true} // Will reduce gutter on poor connections
 >
@@ -386,18 +399,16 @@ import { Grid } from '@/lib/ui';
   >
     Column content
   </Grid.Col>
-  <Grid.Col span={6}>
-    Column content
-  </Grid.Col>
-</Grid>
+  <Grid.Col span={6}>Column content</Grid.Col>
+</Grid>;
 ```
 
 ### Network-Aware Alert
 
 ```tsx
-'use client';
+"use client";
 
-import { Alert } from '@/lib/ui';
+import { Alert } from "@/lib/ui";
 
 // Alert with network-aware optimizations
 <Alert
@@ -407,9 +418,9 @@ import { Alert } from '@/lib/ui';
   intent="notification"
   networkAware={true} // Will adapt animations and styling for poor connections
 >
-  The application couldn't connect to the server.
-  Check your network connection and try again.
-</Alert>
+  The application couldn't connect to the server. Check your network connection
+  and try again.
+</Alert>;
 ```
 
 ### Network-Aware Form Fields
@@ -462,7 +473,7 @@ If you encounter TypeScript errors related to UI components:
 2. Ensure you're importing from our UI library (`@/lib/ui`) not directly from Mantine
 3. Verify you have added the 'use client' directive if using client components
 4. Check if you're using the shared types correctly (`BaseComponentProps`, etc.)
-5. Run the fix script: `npm run fix-mantine-props` 
+5. Run the fix script: `npm run fix-mantine-props`
 
 For more complex issues, refer to our [TypeScript Guide](./TYPESCRIPT_GUIDE.md) or ask for help in the #frontend-dev Slack channel.
 

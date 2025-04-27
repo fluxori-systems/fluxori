@@ -4,9 +4,9 @@
  * This repository handles all user data operations.
  */
 
-import { FirestoreService } from '../lib/firebase/firestore.service';
-import { AdvancedFilter } from '../types/core/entity.types';
-import { User, UserRole } from '../types/user/user.types';
+import { FirestoreService } from "../lib/firebase/firestore.service";
+import { AdvancedFilter } from "../types/core/entity.types";
+import { User, UserRole } from "../types/user/user.types";
 
 /**
  * Repository for User entities
@@ -17,7 +17,7 @@ export class UserRepository extends FirestoreService<User> {
    * Create UserRepository instance
    */
   constructor() {
-    super('users');
+    super("users");
   }
 
   /**
@@ -29,9 +29,9 @@ export class UserRepository extends FirestoreService<User> {
     try {
       // Find using a case-insensitive query if possible, or exact match
       const filters: AdvancedFilter[] = [
-        { field: 'email', operator: '==', value: email.toLowerCase() },
+        { field: "email", operator: "==", value: email.toLowerCase() },
       ];
-      
+
       // Mock implementation
       return null;
     } catch (error) {
@@ -48,27 +48,34 @@ export class UserRepository extends FirestoreService<User> {
    */
   async getUsersByOrganization(
     organizationId: string,
-    options?: { role?: UserRole; status?: string; search?: string }
+    options?: { role?: UserRole; status?: string; search?: string },
   ): Promise<User[]> {
     try {
       const filters: AdvancedFilter[] = [
-        { field: 'organizationId', operator: '==', value: organizationId },
+        { field: "organizationId", operator: "==", value: organizationId },
       ];
 
       // Add role filter if specified
       if (options?.role) {
-        filters.push({ field: 'role', operator: '==', value: options.role });
+        filters.push({ field: "role", operator: "==", value: options.role });
       }
 
       // Add status filter if specified
       if (options?.status) {
-        filters.push({ field: 'status', operator: '==', value: options.status });
+        filters.push({
+          field: "status",
+          operator: "==",
+          value: options.status,
+        });
       }
 
       // Mock implementation
       return [];
     } catch (error) {
-      console.error(`Error getting users by organization ${organizationId}:`, error);
+      console.error(
+        `Error getting users by organization ${organizationId}:`,
+        error,
+      );
       throw error;
     }
   }

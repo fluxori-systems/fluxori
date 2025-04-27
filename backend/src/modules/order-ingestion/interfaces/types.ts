@@ -1,4 +1,36 @@
 /**
+ * Placeholder for additional marketplace-specific order data.
+ * TODO: Add concrete fields as discovered.
+ */
+export interface OrderMarketplaceData {
+  // TODO: Add fields for marketplace-specific order data
+}
+
+/**
+ * Placeholder for order line item properties/customizations.
+ * TODO: Add concrete fields as discovered.
+ */
+export interface OrderLineItemProperties {
+  // TODO: Add fields for line item properties
+}
+
+/**
+ * Placeholder for marketplace order item properties.
+ * TODO: Add concrete fields as discovered.
+ */
+export interface MarketplaceOrderProperties {
+  // TODO: Add fields for marketplace order item properties
+}
+
+/**
+ * Placeholder for marketplace-specific options during order ingestion.
+ * TODO: Add concrete fields as discovered.
+ */
+export interface OrderMarketplaceSpecific {
+  // TODO: Add fields for marketplace-specific ingestion options
+}
+
+/**
  * Order model representing an order in the system
  */
 export interface Order {
@@ -96,7 +128,10 @@ export interface Order {
   /**
    * Additional marketplace-specific data
    */
-  marketplaceData?: Record<string, any>;
+  /**
+   * Additional marketplace-specific data
+   */
+  marketplaceData?: OrderMarketplaceData; // TODO: Refine fields as discovered
 
   /**
    * Organization ID that owns this order
@@ -276,7 +311,7 @@ export interface OrderLineItem {
   /**
    * Line item properties/customizations
    */
-  properties?: Record<string, any>;
+  properties?: OrderLineItemProperties; // TODO: Refine fields as discovered
 }
 
 /**
@@ -377,7 +412,7 @@ export interface MarketplaceOrder {
     discount?: number;
     image?: string;
     variantId?: string;
-    properties?: Record<string, any>;
+    properties?: MarketplaceOrderProperties; // TODO: Refine fields as discovered
   }[];
 
   /**
@@ -419,7 +454,6 @@ export interface MarketplaceOrder {
   /**
    * Additional information
    */
-  [key: string]: any;
 }
 
 /**
@@ -444,7 +478,7 @@ export interface OrderIngestionOptions {
   /**
    * Additional marketplace-specific options
    */
-  marketplaceSpecific?: Record<string, any>;
+  marketplaceSpecific?: OrderMarketplaceSpecific; // TODO: Refine fields as discovered
 }
 
 /**
@@ -482,7 +516,7 @@ export interface OrderIngestionResponse {
   errors: Array<{
     orderId?: string;
     message: string;
-    details?: any;
+    details?: unknown; // TODO: Replace with a stricter type
   }>;
 }
 

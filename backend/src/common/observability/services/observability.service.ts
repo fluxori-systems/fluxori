@@ -326,9 +326,12 @@ export class ObservabilityService implements IObservabilityService {
     ) {
       this.warn(`Slow HTTP request: ${method} ${path} took ${durationMs}ms`, {
         service: 'HttpMetrics',
-        request: { method, path, statusCode, durationMs },
         userId,
         organizationId,
+        timestamp: new Date(),
+        customFields: {
+          request: JSON.stringify({ method, path, statusCode, durationMs }),
+        },
       });
     }
   }
@@ -363,7 +366,10 @@ export class ObservabilityService implements IObservabilityService {
         `Slow DB operation: ${operation} on ${collection} took ${durationMs}ms`,
         {
           service: 'DatabaseMetrics',
-          database: { operation, collection, durationMs },
+          timestamp: new Date(),
+          customFields: {
+            database: JSON.stringify({ operation, collection, durationMs }),
+          },
         },
       );
     }
@@ -434,7 +440,16 @@ export class ObservabilityService implements IObservabilityService {
         `Slow AI request: ${operation} with ${model} took ${durationMs}ms`,
         {
           service: 'AIMetrics',
-          ai: { model, operation, durationMs, inputTokens, outputTokens },
+          timestamp: new Date(),
+          customFields: {
+            ai: JSON.stringify({
+              model,
+              operation,
+              durationMs,
+              inputTokens,
+              outputTokens,
+            }),
+          },
         },
       );
     }
@@ -464,9 +479,12 @@ export class ObservabilityService implements IObservabilityService {
       `Feature flag ${flag} evaluated: ${enabled ? 'enabled' : 'disabled'}`,
       {
         service: 'FeatureFlagMetrics',
-        featureFlag: { flag, enabled },
         userId,
         organizationId,
+        timestamp: new Date(),
+        customFields: {
+          featureFlag: JSON.stringify({ flag, enabled }),
+        },
       },
     );
   }

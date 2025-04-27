@@ -33,13 +33,13 @@ Each chart component accepts its specific props plus the following common props:
 ### Line Chart Example
 
 ```tsx
-import { NetworkAwareLineChart } from '../components/charts';
+import { NetworkAwareLineChart } from "../components/charts";
 
 // Sample data
 const lineData = [
-  { month: 'Jan', sales: 1000, revenue: 5000 },
-  { month: 'Feb', sales: 1500, revenue: 7500 },
-  { month: 'Mar', sales: 1200, revenue: 6000 },
+  { month: "Jan", sales: 1000, revenue: 5000 },
+  { month: "Feb", sales: 1500, revenue: 7500 },
+  { month: "Mar", sales: 1200, revenue: 6000 },
   // ...more data
 ];
 
@@ -48,7 +48,7 @@ return (
   <NetworkAwareLineChart
     data={lineData}
     xAxisDataKey="month"
-    yAxisDataKey={['sales', 'revenue']}
+    yAxisDataKey={["sales", "revenue"]}
     xAxisLabel="Month"
     yAxisLabel="Amount (R)"
     height={400}
@@ -62,13 +62,13 @@ return (
 ### Bar Chart Example
 
 ```tsx
-import { NetworkAwareBarChart } from '../components/charts';
+import { NetworkAwareBarChart } from "../components/charts";
 
 // Sample data
 const barData = [
-  { category: 'Electronics', sales: 4000, target: 3000 },
-  { category: 'Clothing', sales: 3000, target: 3500 },
-  { category: 'Furniture', sales: 2000, target: 2200 },
+  { category: "Electronics", sales: 4000, target: 3000 },
+  { category: "Clothing", sales: 3000, target: 3500 },
+  { category: "Furniture", sales: 2000, target: 2200 },
   // ...more data
 ];
 
@@ -77,7 +77,7 @@ return (
   <NetworkAwareBarChart
     data={barData}
     xAxisDataKey="category"
-    yAxisDataKey={['sales', 'target']}
+    yAxisDataKey={["sales", "target"]}
     xAxisLabel="Product Category"
     yAxisLabel="Sales (R1000)"
     height={400}
@@ -90,13 +90,13 @@ return (
 ### Pie Chart Example
 
 ```tsx
-import { NetworkAwarePieChart } from '../components/charts';
+import { NetworkAwarePieChart } from "../components/charts";
 
 // Sample data
 const pieData = [
-  { name: 'Electronics', value: 35 },
-  { name: 'Clothing', value: 25 },
-  { name: 'Furniture', value: 15 },
+  { name: "Electronics", value: 35 },
+  { name: "Clothing", value: 25 },
+  { name: "Furniture", value: 15 },
   // ...more data
 ];
 
@@ -146,21 +146,21 @@ Charts adapt based on four connection quality profiles:
 If you need to create a custom chart, you can use the `useNetworkAwareChart` hook to get the same network-aware optimizations:
 
 ```tsx
-import { useNetworkAwareChart } from '../components/charts';
-import { Chart } from 'chart.js/auto';
-import { useRef, useEffect } from 'react';
+import { useNetworkAwareChart } from "../components/charts";
+import { Chart } from "chart.js/auto";
+import { useRef, useEffect } from "react";
 
 function CustomNetworkAwareChart({ data, ...props }) {
   const chartRef = useRef(null);
   const chartInstance = useRef(null);
-  
+
   const {
     shouldSimplify,
     showTextAlternative,
     animation,
     profileConfig,
     getOptimizedData,
-    getDesignSystemColors
+    getDesignSystemColors,
   } = useNetworkAwareChart();
 
   // Get optimized data
@@ -170,43 +170,45 @@ function CustomNetworkAwareChart({ data, ...props }) {
   if (showTextAlternative) {
     return <TextAlternative />;
   }
-  
+
   useEffect(() => {
     if (!chartRef.current) return;
-    
+
     // Cleanup previous chart
     if (chartInstance.current) {
       chartInstance.current.destroy();
     }
-    
+
     // Create new chart with network-aware options
-    const ctx = chartRef.current.getContext('2d');
+    const ctx = chartRef.current.getContext("2d");
     chartInstance.current = new Chart(ctx, {
-      type: 'bar',
+      type: "bar",
       data: {
-        labels: optimizedData.map(d => d.label),
-        datasets: [{
-          data: optimizedData.map(d => d.value),
-          backgroundColor: getDesignSystemColors(1)[0]
-        }]
+        labels: optimizedData.map((d) => d.label),
+        datasets: [
+          {
+            data: optimizedData.map((d) => d.value),
+            backgroundColor: getDesignSystemColors(1)[0],
+          },
+        ],
       },
       options: {
         responsive: true,
         animation: {
           duration: animation.enabled ? animation.duration : 0,
-          easing: animation.easing
+          easing: animation.easing,
         },
         // Apply other network-aware settings
         scales: {
           x: {
             grid: {
-              display: profileConfig.showGrid
-            }
-          }
-        }
-      }
+              display: profileConfig.showGrid,
+            },
+          },
+        },
+      },
     });
-    
+
     return () => {
       if (chartInstance.current) {
         chartInstance.current.destroy();
@@ -216,7 +218,7 @@ function CustomNetworkAwareChart({ data, ...props }) {
 
   // Render custom chart with optimizations
   return (
-    <div style={{ width: '100%', height: '300px' }}>
+    <div style={{ width: "100%", height: "300px" }}>
       <canvas ref={chartRef}></canvas>
     </div>
   );
@@ -231,7 +233,7 @@ During development, you can force a specific connection quality to test how your
 <NetworkAwareLineChart
   data={lineData}
   xAxisDataKey="month"
-  yAxisDataKey={['sales', 'revenue']}
+  yAxisDataKey={["sales", "revenue"]}
   forceConnectionQuality="poor" // Try "high", "medium", "low", or "poor"
 />
 ```

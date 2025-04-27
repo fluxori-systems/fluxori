@@ -7,7 +7,7 @@ import {
   InsightType,
   InsightSeverity,
 } from '../interfaces/types';
-import { Insight } from '../models/insight.schema';
+import { Insight } from '../models/insight.schema'; // Insight now extends TenantEntity
 
 /**
  * Repository for Insight entities in Firestore

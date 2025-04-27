@@ -17,27 +17,35 @@ The tools listed below have been instrumental in achieving and maintaining this 
 ### Frontend TypeScript Validation
 
 1. **TypeScript Compiler Checks**
+
    ```bash
    cd frontend && npm run typecheck
    ```
+
    Runs the TypeScript compiler in `--noEmit` mode to check for type errors.
 
 2. **Continuous TypeScript Validation**
+
    ```bash
    cd frontend && npm run typecheck:watch
    ```
+
    Runs the TypeScript compiler in watch mode for real-time feedback.
 
 3. **ESLint with TypeScript Rules**
+
    ```bash
    cd frontend && npm run lint-ts
    ```
+
    Runs ESLint with TypeScript-specific rules.
 
 4. **TypeScript Error Report**
+
    ```bash
    cd frontend && npm run ts-error-report
    ```
+
    Generates a detailed report of TypeScript errors in the project.
 
 5. **Lint TypeScript**
@@ -76,6 +84,7 @@ npx husky add .husky/pre-commit "cd frontend && npx tsc --noEmit"
 The project includes VSCode settings and snippets for TypeScript:
 
 1. **Settings**:
+
    - `.vscode/settings.json`: Configures TypeScript validation, formatting, and error highlighting.
 
 2. **Snippets**:

@@ -1,0 +1,13 @@
+/**
+ * TS config for the ai-insights slice (Phase 2.3)
+ */
+{
+  "extends": "./tsconfig.base.json",
+  "include": [
+    "modules/ai-insights/**/*",
+    "common/**/*",
+    "config/firestore.config.ts",
+    "types/**/*"
+  ],
+  "exclude": ["**/*.spec.ts", "node_modules", "src/src/**/*"]
+}

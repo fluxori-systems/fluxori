@@ -7,10 +7,12 @@ During this session, we made significant progress on the Repository Refactoring 
 ### Completed Tasks
 
 1. **Updated Agent Framework Module Repositories**:
+
    - Migrated AgentConfigRepository, AgentConversationRepository, and ModelRegistryRepository to FirestoreBaseRepository
    - Updated import statements to use the public API
 
 2. **Updated Inventory Module Repositories**:
+
    - Migrated ProductRepository, WarehouseRepository, and StockMovementRepository to FirestoreBaseRepository
    - Updated import statements to use the public API
 
@@ -21,12 +23,14 @@ During this session, we made significant progress on the Repository Refactoring 
 ### Progress Summary
 
 We've now completed refactoring the following modules:
+
 - feature-flags ✅
-- inventory ✅ 
+- inventory ✅
 - buybox ✅
 - agent-framework ✅
 
 The following modules still need to be refactored:
+
 - rag-retrieval
 - ai-insights
 - marketplaces

@@ -4,14 +4,14 @@
  * This repository handles all product data operations.
  */
 
-import { TenantFirestoreService } from '../lib/firebase/firestore.service';
-import { QueryOptions } from '../types/core/entity.types';
-import { 
-  Product, 
-  ProductCategory, 
-  ProductBrand, 
-  ProductStatus 
-} from '../types/product/product.types';
+import { TenantFirestoreService } from "../lib/firebase/firestore.service";
+import { QueryOptions } from "../types/core/entity.types";
+import {
+  Product,
+  ProductCategory,
+  ProductBrand,
+  ProductStatus,
+} from "../types/product/product.types";
 
 /**
  * Repository for Product entities
@@ -21,7 +21,7 @@ export class ProductRepository extends TenantFirestoreService<Product> {
    * Create ProductRepository instance
    */
   constructor() {
-    super('products');
+    super("products");
   }
 
   /**
@@ -30,11 +30,14 @@ export class ProductRepository extends TenantFirestoreService<Product> {
    * @param sku Product SKU
    * @returns Product entity or null
    */
-  async getBySkuForOrganization(organizationId: string, sku: string): Promise<Product | null> {
+  async getBySkuForOrganization(
+    organizationId: string,
+    sku: string,
+  ): Promise<Product | null> {
     try {
       const products = await this.findWithFiltersForOrganization(
         organizationId,
-        [{ field: 'sku', operator: '==', value: sku }]
+        [{ field: "sku", operator: "==", value: sku }],
       );
 
       return products.length > 0 ? products[0] : null;
@@ -54,13 +57,19 @@ export class ProductRepository extends TenantFirestoreService<Product> {
   async getProductsByCategoryForOrganization(
     organizationId: string,
     categoryId: string,
-    options?: QueryOptions
+    options?: QueryOptions,
   ): Promise<Product[]> {
     try {
       return this.findWithFiltersForOrganization(
         organizationId,
-        [{ field: 'categoryIds', operator: 'array-contains', value: categoryId }],
-        options
+        [
+          {
+            field: "categoryIds",
+            operator: "array-contains",
+            value: categoryId,
+          },
+        ],
+        options,
       );
     } catch (error) {
       console.error(`Error getting products by category:`, error);
@@ -78,13 +87,13 @@ export class ProductRepository extends TenantFirestoreService<Product> {
   async getProductsByBrandForOrganization(
     organizationId: string,
     brandId: string,
-    options?: QueryOptions
+    options?: QueryOptions,
   ): Promise<Product[]> {
     try {
       return this.findWithFiltersForOrganization(
         organizationId,
-        [{ field: 'brandId', operator: '==', value: brandId }],
-        options
+        [{ field: "brandId", operator: "==", value: brandId }],
+        options,
       );
     } catch (error) {
       console.error(`Error getting products by brand:`, error);
@@ -102,13 +111,13 @@ export class ProductRepository extends TenantFirestoreService<Product> {
   async getProductsByStatusForOrganization(
     organizationId: string,
     status: ProductStatus,
-    options?: QueryOptions
+    options?: QueryOptions,
   ): Promise<Product[]> {
     try {
       return this.findWithFiltersForOrganization(
         organizationId,
-        [{ field: 'status', operator: '==', value: status }],
-        options
+        [{ field: "status", operator: "==", value: status }],
+        options,
       );
     } catch (error) {
       console.error(`Error getting products by status:`, error);
@@ -124,19 +133,22 @@ export class ProductRepository extends TenantFirestoreService<Product> {
    */
   async getLowStockProductsForOrganization(
     organizationId: string,
-    options?: QueryOptions
+    options?: QueryOptions,
   ): Promise<Product[]> {
     try {
       // First get products and then filter in-memory for low stock
       // Firestore doesn't support queries that compare fields against each other
-      const products = await this.getAllForOrganization(organizationId, options);
-      
-      return products.filter(product => {
+      const products = await this.getAllForOrganization(
+        organizationId,
+        options,
+      );
+
+      return products.filter((product) => {
         // Check if product has stock threshold defined
         if (product.stockLevelThreshold && product.stockLevelThreshold.low) {
           return product.availableQuantity <= product.stockLevelThreshold.low;
         }
-        
+
         // Default threshold if none defined
         return product.availableQuantity <= 5;
       });
@@ -155,7 +167,7 @@ export class ProductCategoryRepository extends TenantFirestoreService<ProductCat
    * Create ProductCategoryRepository instance
    */
   constructor() {
-    super('product_categories');
+    super("product_categories");
   }
 
   /**
@@ -164,11 +176,14 @@ export class ProductCategoryRepository extends TenantFirestoreService<ProductCat
    * @param slug Category slug
    * @returns ProductCategory entity or null
    */
-  async getBySlugForOrganization(organizationId: string, slug: string): Promise<ProductCategory | null> {
+  async getBySlugForOrganization(
+    organizationId: string,
+    slug: string,
+  ): Promise<ProductCategory | null> {
     try {
       const categories = await this.findWithFiltersForOrganization(
         organizationId,
-        [{ field: 'slug', operator: '==', value: slug }]
+        [{ field: "slug", operator: "==", value: slug }],
       );
 
       return categories.length > 0 ? categories[0] : null;
@@ -183,12 +198,13 @@ export class ProductCategoryRepository extends TenantFirestoreService<ProductCat
    * @param organizationId Organization ID
    * @returns Array of top-level category entities
    */
-  async getTopLevelCategoriesForOrganization(organizationId: string): Promise<ProductCategory[]> {
+  async getTopLevelCategoriesForOrganization(
+    organizationId: string,
+  ): Promise<ProductCategory[]> {
     try {
-      return this.findWithFiltersForOrganization(
-        organizationId,
-        [{ field: 'parentId', operator: '==', value: null }]
-      );
+      return this.findWithFiltersForOrganization(organizationId, [
+        { field: "parentId", operator: "==", value: null },
+      ]);
     } catch (error) {
       console.error(`Error getting top-level categories:`, error);
       throw error;
@@ -203,13 +219,12 @@ export class ProductCategoryRepository extends TenantFirestoreService<ProductCat
    */
   async getChildCategoriesForOrganization(
     organizationId: string,
-    parentId: string
+    parentId: string,
   ): Promise<ProductCategory[]> {
     try {
-      return this.findWithFiltersForOrganization(
-        organizationId,
-        [{ field: 'parentId', operator: '==', value: parentId }]
-      );
+      return this.findWithFiltersForOrganization(organizationId, [
+        { field: "parentId", operator: "==", value: parentId },
+      ]);
     } catch (error) {
       console.error(`Error getting child categories:`, error);
       throw error;
@@ -225,7 +240,7 @@ export class ProductBrandRepository extends TenantFirestoreService<ProductBrand>
    * Create ProductBrandRepository instance
    */
   constructor() {
-    super('product_brands');
+    super("product_brands");
   }
 
   /**
@@ -234,12 +249,14 @@ export class ProductBrandRepository extends TenantFirestoreService<ProductBrand>
    * @param slug Brand slug
    * @returns ProductBrand entity or null
    */
-  async getBySlugForOrganization(organizationId: string, slug: string): Promise<ProductBrand | null> {
+  async getBySlugForOrganization(
+    organizationId: string,
+    slug: string,
+  ): Promise<ProductBrand | null> {
     try {
-      const brands = await this.findWithFiltersForOrganization(
-        organizationId,
-        [{ field: 'slug', operator: '==', value: slug }]
-      );
+      const brands = await this.findWithFiltersForOrganization(organizationId, [
+        { field: "slug", operator: "==", value: slug },
+      ]);
 
       return brands.length > 0 ? brands[0] : null;
     } catch (error) {
@@ -253,12 +270,13 @@ export class ProductBrandRepository extends TenantFirestoreService<ProductBrand>
    * @param organizationId Organization ID
    * @returns Array of active brand entities
    */
-  async getActiveBrandsForOrganization(organizationId: string): Promise<ProductBrand[]> {
+  async getActiveBrandsForOrganization(
+    organizationId: string,
+  ): Promise<ProductBrand[]> {
     try {
-      return this.findWithFiltersForOrganization(
-        organizationId,
-        [{ field: 'isActive', operator: '==', value: true }]
-      );
+      return this.findWithFiltersForOrganization(organizationId, [
+        { field: "isActive", operator: "==", value: true },
+      ]);
     } catch (error) {
       console.error(`Error getting active brands:`, error);
       throw error;

@@ -8,19 +8,19 @@ import {
   FieldValue,
   Timestamp,
   QueryDocumentSnapshot,
+  WithFieldValue,
+  PartialWithFieldValue,
+  SetOptions,
+  FirestoreDataConverter,
 } from '@google-cloud/firestore';
 
 import {
   FirestoreEntity,
-  FirestoreDataConverter,
   isFirestoreTimestamp,
 } from '../../../types/google-cloud.types';
 
-// Define EntityConverter type directly here to avoid circular imports
-export type EntityConverter<T> = {
-  toFirestore(entity: T): DocumentData;
-  fromFirestore(snapshot: QueryDocumentSnapshot<DocumentData>): T;
-};
+// Use the Firestore SDK's FirestoreDataConverter<T> type directly for compatibility
+export type EntityConverter<T> = FirestoreDataConverter<T>;
 
 /**
  * Repository converter interface
@@ -36,37 +36,28 @@ export interface RepositoryConverter<T> {
  */
 export function createEntityConverter<
   T extends FirestoreEntity,
->(): EntityConverter<T> {
+>(): FirestoreDataConverter<T> {
   return {
-    /**
-     * Convert entity to Firestore data
-     */
-    toFirestore(entity: T): DocumentData {
-      const documentData: DocumentData = { ...entity };
-
-      // Convert dates to Firestore Timestamps
+    toFirestore(
+      modelObject: WithFieldValue<T> | PartialWithFieldValue<T>,
+      options?: SetOptions,
+    ): DocumentData {
+      const documentData: DocumentData = { ...modelObject };
       for (const [key, value] of Object.entries(
-        entity as Record<string, any>,
+        modelObject as Record<string, any>,
       )) {
         if (value instanceof Date) {
           documentData[key] = Timestamp.fromDate(value);
         }
       }
-
       return documentData;
     },
-
-    /**
-     * Convert Firestore document to entity
-     */
     fromFirestore(snapshot: QueryDocumentSnapshot<DocumentData>): T {
       const documentData = snapshot.data();
       const entity = {
         ...documentData,
         id: snapshot.id,
       } as T;
-
-      // Convert Firestore Timestamps to JavaScript Dates
       for (const [key, value] of Object.entries(
         entity as Record<string, any>,
       )) {
@@ -74,7 +65,6 @@ export function createEntityConverter<
           (entity as Record<string, any>)[key] = value.toDate();
         }
       }
-
       return entity;
     },
   };

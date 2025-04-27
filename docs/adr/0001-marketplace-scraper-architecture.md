@@ -15,6 +15,7 @@ Fluxori is building a Google Cloud Native competitive intelligence platform for 
 The initial focus is on Takealot (South Africa's largest online marketplace), with plans to expand to Amazon SA, Bob Shop, Makro, Loot, and incorporate historical data from Buck.cheap.
 
 This data collection framework will form the foundation for:
+
 - Product research capabilities for merchants
 - Comprehensive price tracking across marketplaces
 - Keyword analysis and search intelligence
@@ -24,12 +25,14 @@ This data collection framework will form the foundation for:
 ### Key Challenges
 
 1. **South African Market Peculiarities**:
+
    - Frequent load shedding (power outages) requiring resilient systems
    - Variable network connectivity and bandwidth limitations
    - Regional compliance considerations for data collection
    - South African marketplace-specific data structures and patterns
 
 2. **Technical Requirements**:
+
    - Need for a modular, extensible scraper framework supporting multiple marketplaces
    - Efficient use of SmartProxy Web Scraping API (Advanced plan with 82K requests/month)
    - Scalable Google Cloud Native architecture optimized for cost and performance
@@ -49,6 +52,7 @@ We will implement a modular South African Marketplace Data Collection Framework 
 ### Core Architecture Components
 
 1. **Marketplace Scraper Framework**:
+
    - Abstract base classes for consistent scraper implementation
    - Marketplace-specific adapters for each target e-commerce platform
    - SmartProxy client with authentication, rate limiting, and request optimization
@@ -56,6 +60,7 @@ We will implement a modular South African Marketplace Data Collection Framework 
    - Compliance-focused design with respect for robots.txt
 
 2. **Google Cloud Infrastructure**:
+
    - Cloud Run for scraper execution with auto-scaling
    - Firestore for structured data storage
    - Pub/Sub for task coordination and distribution
@@ -64,6 +69,7 @@ We will implement a modular South African Marketplace Data Collection Framework 
    - Error Reporting and Monitoring for observability
 
 3. **Data Processing Pipeline**:
+
    - Validation and cleaning services
    - Schema normalization across marketplaces
    - Price and availability history tracking
@@ -88,32 +94,32 @@ class MarketplaceScraper:
         self.proxy_client = proxy_client
         self.storage_client = storage_client
         self.logger = setup_structured_logging()
-    
+
     async def fetch_page(self, url, **params):
         """Fetch page content via SmartProxy with error handling and retries"""
         pass
-    
+
     async def extract_data(self, content, extractor_type):
         """Extract structured data from page content"""
         pass
-    
+
     async def save_data(self, data, collection_name):
         """Save extracted data to Firestore"""
         pass
-    
+
     async def check_robots_txt(self, domain):
         """Check if scraping is allowed by robots.txt"""
         pass
-    
+
     # Abstract methods to be implemented by specific marketplace scrapers
     async def discover_products(self):
         """Discover products from the marketplace"""
         raise NotImplementedError
-    
+
     async def extract_product_details(self, product_url):
         """Extract detailed product information"""
         raise NotImplementedError
-    
+
     async def search_products(self, keyword):
         """Search for products using a keyword"""
         raise NotImplementedError
@@ -123,22 +129,22 @@ class TakealotScraper(MarketplaceScraper):
     def __init__(self, proxy_client, storage_client):
         super().__init__(proxy_client, storage_client)
         self.base_url = "https://www.takealot.com"
-    
+
     async def discover_products(self):
         """Takealot-specific product discovery logic"""
         # Implementation for discovering products via categories, bestsellers, etc.
         pass
-    
+
     async def extract_product_details(self, product_url):
         """Takealot-specific product detail extraction"""
         # Implementation for extracting product details, specs, pricing, etc.
         pass
-    
+
     async def search_products(self, keyword):
         """Takealot-specific search implementation"""
         # Implementation for search results extraction
         pass
-    
+
     async def extract_search_suggestions(self, keyword_prefix):
         """Takealot-specific search suggestion extraction"""
         # Implementation for harvesting keyword suggestions
@@ -149,8 +155,8 @@ class TakealotScraper(MarketplaceScraper):
 
 ```python
 class SmartProxyClient:
-    def __init__(self, 
-                auth_token="VTAwMDAyNjAwNTY6UFdfMTYwYjliMDg0NzQ5NzU4Y2FiZjVmOTAyOTRkYTM4M2Vi", 
+    def __init__(self,
+                auth_token="VTAwMDAyNjAwNTY6UFdfMTYwYjliMDg0NzQ5NzU4Y2FiZjVmOTAyOTRkYTM4M2Vi",
                 base_url="https://scraper-api.smartproxy.com/v2",
                 region="south-africa"):
         self.auth_token = auth_token
@@ -159,18 +165,18 @@ class SmartProxyClient:
         self.session = aiohttp.ClientSession()
         self.request_count = 0
         self.monthly_limit = 82000  # Advanced plan limit
-    
+
     async def fetch_sync(self, url, **params):
         """Fetch content via SmartProxy synchronous API with SA IP address"""
         if not self._check_quota():
             raise QuotaExceededError("Monthly SmartProxy quota exceeded")
-        
+
         headers = {
             "Authorization": f"Basic {self.auth_token}",
             "Content-Type": "application/json",
             "Accept": "application/json"
         }
-        
+
         payload = {
             "url": url,
             "geo": "ZA",  # South Africa
@@ -179,18 +185,18 @@ class SmartProxyClient:
             "session_id": params.get("session_id", None),
             "successful_status_codes": params.get("successful_status_codes", None)
         }
-        
+
         # Add optional parameters if provided
         if params.get("headers"):
             payload["headers"] = params.get("headers")
-        
+
         if params.get("cookies"):
             payload["cookies"] = params.get("cookies")
-        
+
         try:
             async with self.session.post(
-                f"{self.base_url}/scrape", 
-                json=payload, 
+                f"{self.base_url}/scrape",
+                json=payload,
                 headers=headers
             ) as response:
                 self.request_count += 1
@@ -198,7 +204,7 @@ class SmartProxyClient:
         except Exception as e:
             self.logger.error(f"SmartProxy request failed: {str(e)}")
             raise
-    
+
     async def fetch_async(self, url, **params):
         """Create asynchronous scraping task"""
         headers = {
@@ -206,18 +212,18 @@ class SmartProxyClient:
             "Content-Type": "application/json",
             "Accept": "application/json"
         }
-        
+
         payload = {
             "url": url,
             "geo": "ZA",  # South Africa
             "device_type": params.get("device_type", "desktop"),
             "headless": params.get("headless", "html")
         }
-        
+
         try:
             async with self.session.post(
-                f"{self.base_url}/task", 
-                json=payload, 
+                f"{self.base_url}/task",
+                json=payload,
                 headers=headers
             ) as response:
                 self.request_count += 1
@@ -225,7 +231,7 @@ class SmartProxyClient:
         except Exception as e:
             self.logger.error(f"SmartProxy async task failed: {str(e)}")
             raise
-    
+
     async def fetch_batch(self, urls, **params):
         """Create batch scraping task for multiple URLs"""
         headers = {
@@ -233,7 +239,7 @@ class SmartProxyClient:
             "Content-Type": "application/json",
             "Accept": "application/json"
         }
-        
+
         tasks = []
         for url in urls:
             tasks.append({
@@ -242,11 +248,11 @@ class SmartProxyClient:
                 "device_type": params.get("device_type", "desktop"),
                 "headless": params.get("headless", "html")
             })
-        
+
         try:
             async with self.session.post(
-                f"{self.base_url}/task/batch", 
-                json={"tasks": tasks}, 
+                f"{self.base_url}/task/batch",
+                json={"tasks": tasks},
                 headers=headers
             ) as response:
                 self.request_count += len(urls)
@@ -254,26 +260,26 @@ class SmartProxyClient:
         except Exception as e:
             self.logger.error(f"SmartProxy batch task failed: {str(e)}")
             raise
-    
+
     def _check_quota(self):
         """Check if we're within our monthly quota"""
         return self.request_count < self.monthly_limit
-    
+
     async def get_quota_status(self):
         """Get current quota usage from SmartProxy API"""
         # Implementation for checking quota status
         pass
-    
+
     async def get_task_result(self, task_id):
         """Get result of an asynchronous task"""
         headers = {
             "Authorization": f"Basic {self.auth_token}",
             "Accept": "application/json"
         }
-        
+
         try:
             async with self.session.get(
-                f"{self.base_url}/task/{task_id}", 
+                f"{self.base_url}/task/{task_id}",
                 headers=headers
             ) as response:
                 return await response.json()
@@ -291,14 +297,14 @@ class MarketplaceDataRepository:
         self.products_collection = self.db.collection("marketplace_products")
         self.prices_collection = self.db.collection("product_prices")
         self.keywords_collection = self.db.collection("search_keywords")
-    
+
     async def save_product(self, product_data):
         """Save product data with efficient document structure"""
         product_ref = self.products_collection.document(product_data["product_id"])
-        
+
         # Check if product exists to determine if this is an update
         existing = await product_ref.get()
-        
+
         if existing.exists:
             # Update existing product with change tracking
             await product_ref.update({
@@ -319,10 +325,10 @@ class MarketplaceDataRepository:
                 "last_updated": firestore.SERVER_TIMESTAMP,
                 "update_count": 1
             })
-        
+
         # Always save current price as a new price point for historical tracking
         await self.save_price_point(product_data["product_id"], product_data["price"], product_data["marketplace"])
-    
+
     async def save_price_point(self, product_id, price_data, marketplace):
         """Save a price point in the historical price collection"""
         await self.prices_collection.add({
@@ -335,11 +341,11 @@ class MarketplaceDataRepository:
             "in_stock": price_data.get("in_stock", True),
             "timestamp": firestore.SERVER_TIMESTAMP
         })
-    
+
     async def save_search_results(self, keyword, results, marketplace):
         """Save search results with position tracking"""
         search_ref = self.keywords_collection.document(f"{marketplace}_{sanitize_key(keyword)}")
-        
+
         await search_ref.set({
             "keyword": keyword,
             "marketplace": marketplace,
@@ -393,16 +399,16 @@ scrapers = {
 def scrape_product(request):
     """Cloud Run HTTP handler for product scraping"""
     request_json = request.get_json(silent=True)
-    
+
     marketplace = request_json.get("marketplace", "takealot")
     product_id = request_json.get("product_id")
-    
+
     if not product_id:
         return jsonify({"error": "product_id is required"}), 400
-    
+
     if marketplace not in scrapers:
         return jsonify({"error": f"Unsupported marketplace: {marketplace}"}), 400
-    
+
     try:
         scraper = scrapers[marketplace]
         result = asyncio.run(scraper.extract_product_details(product_id))
@@ -414,16 +420,16 @@ def scrape_product(request):
 def scrape_search(request):
     """Cloud Run HTTP handler for search scraping"""
     request_json = request.get_json(silent=True)
-    
+
     marketplace = request_json.get("marketplace", "takealot")
     keyword = request_json.get("keyword")
-    
+
     if not keyword:
         return jsonify({"error": "keyword is required"}), 400
-    
+
     if marketplace not in scrapers:
         return jsonify({"error": f"Unsupported marketplace: {marketplace}"}), 400
-    
+
     try:
         scraper = scrapers[marketplace]
         result = asyncio.run(scraper.search_products(keyword))
@@ -436,13 +442,13 @@ def handle_pubsub_task(cloud_event):
     """Handle Pub/Sub message for background scraping tasks"""
     import base64
     import json
-    
+
     message = base64.b64decode(cloud_event.data["message"]["data"]).decode("utf-8")
     task_data = json.loads(message)
-    
+
     task_type = task_data.get("task_type")
     marketplace = task_data.get("marketplace", "takealot")
-    
+
     if task_type == "discover_products":
         asyncio.run(scrapers[marketplace].discover_products(
             category=task_data.get("category"),
@@ -468,7 +474,7 @@ class ScraperTaskDistributor:
     def __init__(self, publisher_client, topic_name):
         self.publisher = publisher_client
         self.topic_name = topic_name
-    
+
     async def schedule_product_discovery(self, marketplace, category=None, page=1, limit=50):
         """Schedule a product discovery task"""
         task_data = {
@@ -479,9 +485,9 @@ class ScraperTaskDistributor:
             "limit": limit,
             "scheduled_at": str(datetime.datetime.now())
         }
-        
+
         await self._publish_task(task_data)
-    
+
     async def schedule_product_update(self, marketplace, product_id):
         """Schedule a product update task"""
         task_data = {
@@ -490,9 +496,9 @@ class ScraperTaskDistributor:
             "product_id": product_id,
             "scheduled_at": str(datetime.datetime.now())
         }
-        
+
         await self._publish_task(task_data)
-    
+
     async def schedule_search(self, marketplace, keyword):
         """Schedule a search scraping task"""
         task_data = {
@@ -501,9 +507,9 @@ class ScraperTaskDistributor:
             "keyword": keyword,
             "scheduled_at": str(datetime.datetime.now())
         }
-        
+
         await self._publish_task(task_data)
-    
+
     async def _publish_task(self, task_data):
         """Publish a task to Pub/Sub"""
         try:
@@ -531,51 +537,51 @@ class MarketplaceDataProcessor:
             "bobshop": BobShopProductValidator(),
             "makro": MakroProductValidator()
         }
-    
+
     async def process_product(self, raw_product_data, marketplace):
         """Process raw product data through the pipeline"""
         # Step 1: Validate data against marketplace schema
         validator = self.schema_validators.get(marketplace)
         if not validator:
             raise ValueError(f"No validator available for marketplace: {marketplace}")
-        
+
         validated_data = await validator.validate(raw_product_data)
-        
+
         # Step 2: Normalize data to common schema
         normalized_data = await self.normalize_to_common_schema(validated_data, marketplace)
-        
+
         # Step 3: Enrich data with additional information
         enriched_data = await self.enrich_data(normalized_data)
-        
+
         # Step 4: Transform for specific use cases
         transformed_data = {
             "analytics": await self.transform_for_analytics(enriched_data),
             "search": await self.transform_for_search(enriched_data),
             "storage": await self.transform_for_storage(enriched_data)
         }
-        
+
         return transformed_data
-    
+
     async def normalize_to_common_schema(self, data, marketplace):
         """Normalize marketplace-specific data to common schema"""
         # Implementation for schema normalization
         pass
-    
+
     async def enrich_data(self, data):
         """Enrich data with additional information"""
         # Implementation for data enrichment
         pass
-    
+
     async def transform_for_analytics(self, data):
         """Transform data for analytics use cases"""
         # Implementation for analytics transformation
         pass
-    
+
     async def transform_for_search(self, data):
         """Transform data for search use cases"""
         # Implementation for search transformation
         pass
-    
+
     async def transform_for_storage(self, data):
         """Transform data for efficient storage"""
         # Implementation for storage transformation
@@ -654,7 +660,7 @@ collections/
 # Cloud Scheduler jobs for recurring tasks
 jobs:
   - name: takealot-daily-bestsellers
-    schedule: "0 0 * * *"  # Daily at midnight
+    schedule: "0 0 * * *" # Daily at midnight
     time_zone: "Africa/Johannesburg"
     target:
       type: pubsub
@@ -667,9 +673,9 @@ jobs:
             "category": "bestsellers",
             "limit": 100
           }
-  
+
   - name: takealot-product-updates
-    schedule: "0 */3 * * *"  # Every 3 hours
+    schedule: "0 */3 * * *" # Every 3 hours
     time_zone: "Africa/Johannesburg"
     target:
       type: pubsub
@@ -682,9 +688,9 @@ jobs:
             "strategy": "prioritized",
             "limit": 300
           }
-  
+
   - name: takealot-keyword-tracking
-    schedule: "0 6,18 * * *"  # Twice daily at 6 AM and 6 PM
+    schedule: "0 6,18 * * *" # Twice daily at 6 AM and 6 PM
     time_zone: "Africa/Johannesburg"
     target:
       type: pubsub
@@ -706,16 +712,19 @@ jobs:
 The Marketplace Data Collection framework will maintain strict boundaries between its components:
 
 1. **Scraper Framework**:
+
    - May only access SmartProxy client for external requests
    - May only access Storage layer through repository interfaces
    - Must not directly access analytics or presentation layers
 
 2. **Data Processing Pipeline**:
+
    - May only access data through Storage layer repositories
    - Must not directly access scrapers or external APIs
    - Must provide normalized data to consumers
 
 3. **Storage Layer**:
+
    - Must provide abstract repositories for data access
    - Must encapsulate Firestore implementation details
    - Must not contain business logic
@@ -771,17 +780,20 @@ The Marketplace Data Collection framework will maintain strict boundaries betwee
 ### Positive
 
 1. **Modularity and Extensibility**:
+
    - Clean separation of concerns enables adding new marketplaces easily
    - Abstract interfaces allow swapping implementations without affecting other components
    - Support for different data processing strategies as needs evolve
 
 2. **Cost Optimization**:
+
    - Efficient use of SmartProxy API through request optimization
    - Serverless architecture with Cloud Run minimizes infrastructure costs
    - Incremental updates reduce redundant data collection
    - Firestore schema designed for cost-efficient querying
 
 3. **South African Market Optimizations**:
+
    - Architecture accounts for load shedding and variable connectivity
    - Regional IP access through SmartProxy ensures accurate market data
    - Scheduling aligned with South African time zones and peak periods
@@ -795,14 +807,17 @@ The Marketplace Data Collection framework will maintain strict boundaries betwee
 ### Negative
 
 1. **API Quota Limitations**:
+
    - 82K monthly requests limits the breadth and frequency of data collection
    - Need for careful prioritization of what to scrape
 
 2. **Complexity**:
+
    - Multiple abstraction layers add development complexity
    - Need for comprehensive error handling across distributed components
 
 3. **Data Completeness Challenges**:
+
    - Some marketplaces may be difficult to scrape completely
    - Dynamic content may require sophisticated extraction techniques
 
@@ -813,16 +828,19 @@ The Marketplace Data Collection framework will maintain strict boundaries betwee
 ### Mitigation Strategies
 
 1. **Request Prioritization System**:
+
    - Machine learning to predict which products need updates
    - Prioritize high-volume searches and popular products
    - Adaptive scheduling based on historical price volatility
 
 2. **Comprehensive Testing**:
+
    - Automated testing with sample pages
    - Continuous validation of extraction patterns
    - Monitoring for extraction failures
 
 3. **Fallback Mechanisms**:
+
    - Alternative extraction methods when primary patterns fail
    - Graceful degradation for partial data
 
@@ -835,14 +853,17 @@ The Marketplace Data Collection framework will maintain strict boundaries betwee
 Compliance with this architecture will be validated through:
 
 1. **Dependency Validation**:
+
    - Static code analysis to enforce module boundaries
    - Regular dependency graph visualization and review
 
 2. **Code Reviews**:
+
    - Focus on separation of concerns
    - Validation of ethical scraping practices
 
 3. **Automated Testing**:
+
    - Unit tests for each component
    - Integration tests for end-to-end workflows
    - Simulated failure scenarios
@@ -857,11 +878,13 @@ Compliance with this architecture will be validated through:
 ### Load Shedding Resilience
 
 1. **Task Persistence and Recovery**:
+
    - Tasks survive service restarts
    - Idempotent operations allow safe retries
    - Transaction boundaries prevent partial updates
 
 2. **Scheduled Operation Windows**:
+
    - Align intensive operations with known power availability
    - Dynamic scheduling based on load shedding forecasts
    - Regional load shedding schedule awareness
@@ -874,6 +897,7 @@ Compliance with this architecture will be validated through:
 ### Network Resilience
 
 1. **Bandwidth Optimization**:
+
    - Compressed data transfer
    - Selective field updates
    - Batch operations to reduce request overhead
@@ -886,6 +910,7 @@ Compliance with this architecture will be validated through:
 ### South African Marketplace Peculiarities
 
 1. **Takealot-Specific Features**:
+
    - Daily Deals tracking
    - Promotion monitoring (e.g., Blue Dot Sale)
    - Club members' pricing
@@ -901,11 +926,13 @@ Compliance with this architecture will be validated through:
 ### 1. Traditional Web Scraping Without SmartProxy
 
 **Pros**:
+
 - No API quota limitations
 - Lower direct costs
 - More control over request patterns
 
 **Cons**:
+
 - Higher infrastructure complexity
 - IP blocking risks
 - More maintenance for crawler logic
@@ -914,11 +941,13 @@ Compliance with this architecture will be validated through:
 ### 2. Event-Driven vs. Scheduled Scraping
 
 **Pros of Event-Driven**:
+
 - More responsive to external triggers
 - Can react to marketplace events
 - Potentially more efficient use of quota
 
 **Cons of Event-Driven**:
+
 - More complex coordination
 - Harder to predict and budget quota usage
 - Risk of cascading events overwhelming system
@@ -926,11 +955,13 @@ Compliance with this architecture will be validated through:
 ### 3. Single Monolithic Service vs. Microservices
 
 **Pros of Monolithic**:
+
 - Simpler initial implementation
 - Easier debugging and state management
 - Lower operational overhead
 
 **Cons of Monolithic**:
+
 - Limited scaling flexibility
 - All-or-nothing deployment
 - Harder to maintain as complexity grows

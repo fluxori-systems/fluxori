@@ -36,6 +36,8 @@ interface UpdateBuyBoxStatusDto {
 /**
  * Controller for BuyBox monitoring endpoints
  */
+import { BuyBoxHistory } from '../models/buybox-history.schema';
+
 @Controller('api/buybox')
 export class BuyBoxController {
   private readonly logger = new Logger(BuyBoxController.name);
@@ -137,7 +139,7 @@ export class BuyBoxController {
     @Param('productId') productId: string,
     @Param('marketplaceId') marketplaceId: string,
     @Query('limit') limit?: number,
-  ): Promise<any[]> {
+  ): Promise<BuyBoxHistory[]> {
     const parsedLimit = limit ? parseInt(limit.toString(), 10) : 100;
 
     return this.buyBoxMonitoringService.getBuyBoxHistory(

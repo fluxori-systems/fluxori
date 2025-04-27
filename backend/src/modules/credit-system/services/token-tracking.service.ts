@@ -15,11 +15,12 @@ interface ChatMessage {
   name?: string;
   functionCall?: {
     name: string;
-    arguments: Record<string, any>;
+    arguments: CreditArguments; // TODO: Refine fields as discovered
   };
 }
 
 import { CreditSystemService } from './credit-system.service';
+import { CreditArguments } from '../interfaces/types';
 import { CreditUsageType } from '../interfaces/types';
 
 /**
@@ -148,12 +149,11 @@ export class TokenTrackingService {
         inputTokens: tokenUsage.input,
         outputTokens: tokenUsage.output,
         processingTime,
-        operationId: responseMetadata?.operationId,
         reservationId,
         success: true,
         metadata: {
           ...metadata,
-          responseMetadata,
+          // Optionally, you can extract and merge only allowed fields from responseMetadata here if needed
         },
       });
 

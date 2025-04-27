@@ -22,7 +22,7 @@ import {
   Logger,
 } from '@nestjs/common';
 
-import { FirebaseAuthGuard } from '../../../common/guards/firebase-auth.guard';
+import { FirebaseAuthGuard } from '../../auth';
 import { GetUser } from '../../auth/decorators/get-user.decorator';
 import {
   ProductMarketplaceMapping,
@@ -47,7 +47,7 @@ class SyncProductDto {
   /**
    * Product ID to sync
    */
-  productId: string;
+  productId!: string;
 
   /**
    * Optional variant IDs to sync
@@ -67,7 +67,7 @@ class ValidateProductDto {
   /**
    * Product ID to validate
    */
-  productId: string;
+  productId!: string;
 
   /**
    * Whether to include validation for variants
@@ -364,7 +364,7 @@ export class MarketplaceConnectorController {
 
     // Validate product for specified marketplace
     return this.validationService.validateProduct(
-      product as Product,
+      product,
       marketplaceId,
       variants,
     );
@@ -487,7 +487,9 @@ export class MarketplaceConnectorController {
     } else {
       // This is simplified - in a real application, you would use aggregation queries
       // Here we're just fetching all mappings which isn't efficient for large datasets
-      mappings = await this.mappingRepository.find({ tenantId: user.tenantId });
+      mappings = await this.mappingRepository.find({
+        filter: { tenantId: user.tenantId },
+      });
     }
 
     // Count mappings by status

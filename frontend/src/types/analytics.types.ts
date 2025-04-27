@@ -2,40 +2,40 @@
  * Types for analytics and reporting features
  */
 
-import { ProductStatus, ProductType } from './product/product.types';
+import { ProductStatus, ProductType } from "./product/product.types";
 
 /**
  * Time period for analytics data
  */
 export enum AnalyticsTimePeriod {
-  DAY = 'day',
-  WEEK = 'week',
-  MONTH = 'month',
-  QUARTER = 'quarter',
-  YEAR = 'year',
-  CUSTOM = 'custom',
+  DAY = "day",
+  WEEK = "week",
+  MONTH = "month",
+  QUARTER = "quarter",
+  YEAR = "year",
+  CUSTOM = "custom",
 }
 
 /**
  * Analytics data granularity
  */
 export enum AnalyticsGranularity {
-  HOUR = 'hour',
-  DAY = 'day',
-  WEEK = 'week',
-  MONTH = 'month',
+  HOUR = "hour",
+  DAY = "day",
+  WEEK = "week",
+  MONTH = "month",
 }
 
 /**
  * Network quality enumeration
  */
 export enum NetworkQuality {
-  EXCELLENT = 'excellent',
-  GOOD = 'good',
-  FAIR = 'fair',
-  POOR = 'poor',
-  CRITICAL = 'critical',
-  OFFLINE = 'offline',
+  EXCELLENT = "excellent",
+  GOOD = "good",
+  FAIR = "fair",
+  POOR = "poor",
+  CRITICAL = "critical",
+  OFFLINE = "offline",
 }
 
 /**
@@ -265,14 +265,14 @@ export interface InventoryPerformanceReport {
   period: AnalyticsTimePeriod;
   startDate: Date;
   endDate: Date;
-  
+
   // Inventory metrics
   outOfStockProducts: number;
   lowStockProducts: number;
   overstockedProducts: number;
   stockTurnoverRate: number;
   stockValueZAR: number;
-  
+
   // Pricing metrics
   averageProductPrice: number;
   priceDistribution: Array<{
@@ -281,7 +281,7 @@ export interface InventoryPerformanceReport {
   }>;
   productsWithoutPrices: number;
   productsWithSalePrices: number;
-  
+
   // Time series data
   stockLevelTrend: AnalyticsTimePoint[];
   pricingTrend: AnalyticsTimePoint[];
@@ -294,23 +294,23 @@ export interface NetworkPerformanceReport {
   period: AnalyticsTimePeriod;
   startDate: Date;
   endDate: Date;
-  
+
   // Load shedding metrics
   loadSheddingIncidents: number;
   loadSheddingDurationHours: number;
   loadSheddingStageDistribution: Record<number, number>; // key is stage, value is hours
-  
+
   // Network quality metrics
   networkQualityDistribution: Record<string, number>; // key is quality level, value is percentage
   requestSuccessRate: number;
   averageResponseTimeMs: number;
   bandwidthUsageMB: number;
-  
+
   // Operational resilience
   operationsCompletedDuringLoadShedding: number;
   operationsDeferredDuringLoadShedding: number;
   failedOperationsDuringLoadShedding: number;
-  
+
   // Time series data
   networkQualityTrend: AnalyticsTimePoint[];
   loadSheddingTrend: AnalyticsTimePoint[];
@@ -323,19 +323,19 @@ export interface AIFeatureUsageReport {
   period: AnalyticsTimePeriod;
   startDate: Date;
   endDate: Date;
-  
+
   // Feature usage counts
   totalAIFeaturesUsed: number;
   featureUsageBreakdown: Record<string, number>;
-  
+
   // Performance metrics
   averageProcessingTimeMs: Record<string, number>;
   successRateByFeature: Record<string, number>;
-  
+
   // Credit usage
   totalCreditsUsed: number;
   creditsUsedByFeature: Record<string, number>;
-  
+
   // Time series data
   dailyUsageTrend: AnalyticsTimePoint[];
   creditUsageTrend: AnalyticsTimePoint[];
@@ -349,15 +349,15 @@ export interface SouthAfricanMarketReport {
   vatCompliantProducts: number;
   vatNonCompliantProducts: number;
   totalVatCollectedZAR: number;
-  
+
   // Regulatory compliance
   icasaCompliantProducts: number;
   sabsCompliantProducts: number;
   nrcsCompliantProducts: number;
-  
+
   // Regional performance
   performanceByProvince: Record<string, number>;
-  
+
   // Load shedding impact
   loadSheddingImpactScore: number; // 0-100
   operationsPreventedByLoadShedding: number;

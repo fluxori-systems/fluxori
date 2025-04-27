@@ -1,6 +1,6 @@
 /**
  * Injection Tokens for Dependency Injection
- * 
+ *
  * This file defines tokens that can be used to inject dependencies
  * across module boundaries. These tokens represent interfaces rather
  * than concrete implementations, allowing for loose coupling between modules.

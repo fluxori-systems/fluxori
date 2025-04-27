@@ -6,7 +6,11 @@
 import { Injectable, Logger } from '@nestjs/common';
 
 import { FirestoreBaseRepository } from '../../../common/repositories/firestore-base.repository';
-import { B2BCustomer } from '../models/b2b/customer.model';
+import {
+  B2BCustomer,
+  B2BAccountType,
+  B2BCustomerStatus,
+} from '../models/b2b/customer.model';
 
 /**
  * Repository for B2B customers
@@ -32,15 +36,10 @@ export class B2BCustomerRepository extends FirestoreBaseRepository<B2BCustomer> 
     customerNumber: string,
     organizationId: string,
   ): Promise<B2BCustomer | null> {
-    const query = this.collection
-      .where('customerNumber', '==', customerNumber)
-      .where('organizationId', '==', organizationId)
-      .limit(1);
-
-    const snapshot = await this.executeQuery(query);
-    return snapshot.docs.length > 0
-      ? this.mapSnapshotToEntity(snapshot.docs[0])
-      : null;
+    // Use findOneBy with filter
+    return this.findOneBy('customerNumber', customerNumber, {
+      filter: { organizationId },
+    });
   }
 
   /**
@@ -53,12 +52,8 @@ export class B2BCustomerRepository extends FirestoreBaseRepository<B2BCustomer> 
     customerTierId: string,
     organizationId: string,
   ): Promise<B2BCustomer[]> {
-    const query = this.collection
-      .where('customerTierId', '==', customerTierId)
-      .where('organizationId', '==', organizationId);
-
-    const snapshot = await this.executeQuery(query);
-    return snapshot.docs.map((doc) => this.mapSnapshotToEntity(doc));
+    // Use find with filter
+    return this.find({ filter: { customerTierId, organizationId } });
   }
 
   /**
@@ -71,12 +66,17 @@ export class B2BCustomerRepository extends FirestoreBaseRepository<B2BCustomer> 
     customerGroupId: string,
     organizationId: string,
   ): Promise<B2BCustomer[]> {
-    const query = this.collection
-      .where('customerGroupIds', 'array-contains', customerGroupId)
-      .where('organizationId', '==', organizationId);
-
-    const snapshot = await this.executeQuery(query);
-    return snapshot.docs.map((doc) => this.mapSnapshotToEntity(doc));
+    // Use find with advancedFilters
+    return this.find({
+      filter: { organizationId },
+      advancedFilters: [
+        {
+          field: 'customerGroupIds',
+          operator: 'array-contains',
+          value: customerGroupId,
+        },
+      ],
+    });
   }
 
   /**
@@ -89,12 +89,10 @@ export class B2BCustomerRepository extends FirestoreBaseRepository<B2BCustomer> 
     accountType: string,
     organizationId: string,
   ): Promise<B2BCustomer[]> {
-    const query = this.collection
-      .where('accountType', '==', accountType)
-      .where('organizationId', '==', organizationId);
-
-    const snapshot = await this.executeQuery(query);
-    return snapshot.docs.map((doc) => this.mapSnapshotToEntity(doc));
+    // Use find with filter
+    return this.find({
+      filter: { accountType: accountType as B2BAccountType, organizationId },
+    });
   }
 
   /**
@@ -107,12 +105,10 @@ export class B2BCustomerRepository extends FirestoreBaseRepository<B2BCustomer> 
     status: string,
     organizationId: string,
   ): Promise<B2BCustomer[]> {
-    const query = this.collection
-      .where('status', '==', status)
-      .where('organizationId', '==', organizationId);
-
-    const snapshot = await this.executeQuery(query);
-    return snapshot.docs.map((doc) => this.mapSnapshotToEntity(doc));
+    // Use find with filter
+    return this.find({
+      filter: { status: status as B2BCustomerStatus, organizationId },
+    });
   }
 
   /**
@@ -125,12 +121,17 @@ export class B2BCustomerRepository extends FirestoreBaseRepository<B2BCustomer> 
     creditStatus: string,
     organizationId: string,
   ): Promise<B2BCustomer[]> {
-    const query = this.collection
-      .where('paymentInfo.creditStatus', '==', creditStatus)
-      .where('organizationId', '==', organizationId);
-
-    const snapshot = await this.executeQuery(query);
-    return snapshot.docs.map((doc) => this.mapSnapshotToEntity(doc));
+    // Use find with filter
+    return this.find({
+      filter: { organizationId },
+      advancedFilters: [
+        {
+          field: 'paymentInfo.creditStatus',
+          operator: '==',
+          value: creditStatus,
+        },
+      ],
+    });
   }
 
   /**
@@ -143,12 +144,8 @@ export class B2BCustomerRepository extends FirestoreBaseRepository<B2BCustomer> 
     marketRegion: string,
     organizationId: string,
   ): Promise<B2BCustomer[]> {
-    const query = this.collection
-      .where('marketRegion', '==', marketRegion)
-      .where('organizationId', '==', organizationId);
-
-    const snapshot = await this.executeQuery(query);
-    return snapshot.docs.map((doc) => this.mapSnapshotToEntity(doc));
+    // Use find with filter
+    return this.find({ filter: { marketRegion, organizationId } });
   }
 
   /**
@@ -161,11 +158,16 @@ export class B2BCustomerRepository extends FirestoreBaseRepository<B2BCustomer> 
     parentCompanyId: string,
     organizationId: string,
   ): Promise<B2BCustomer[]> {
-    const query = this.collection
-      .where('organizationalHierarchy.parentCompanyId', '==', parentCompanyId)
-      .where('organizationId', '==', organizationId);
-
-    const snapshot = await this.executeQuery(query);
-    return snapshot.docs.map((doc) => this.mapSnapshotToEntity(doc));
+    // Use find with filter
+    return this.find({
+      filter: { organizationId },
+      advancedFilters: [
+        {
+          field: 'organizationalHierarchy.parentCompanyId',
+          operator: '==',
+          value: parentCompanyId,
+        },
+      ],
+    });
   }
 }

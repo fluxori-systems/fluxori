@@ -33,11 +33,11 @@ export class MakroConnector extends BaseMarketplaceConnector {
   readonly connectorId: string = 'makro';
   readonly connectorName: string = 'Makro Seller API';
 
-  private apiClient: NetworkAwareClient;
+  private apiClient!: NetworkAwareClient;
   private baseUrl: string = 'https://seller-api.makro.co.za/v1';
-  private apiKey: string;
-  private sellerId: string;
-  private organizationId: string;
+  private apiKey!: string;
+  private sellerId!: string;
+  private organizationId!: string;
 
   constructor() {
     super('MakroConnector');

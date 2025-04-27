@@ -1,26 +1,26 @@
 /**
  * User entity interfaces
  */
-import { TenantEntity } from '../core/entity.types';
+import { TenantEntity } from "../core/entity.types";
 
 /**
  * User role enum
  */
 export enum UserRole {
-  ADMIN = 'admin',
-  MANAGER = 'manager',
-  USER = 'user',
-  GUEST = 'guest',
+  ADMIN = "admin",
+  MANAGER = "manager",
+  USER = "user",
+  GUEST = "guest",
 }
 
 /**
  * User status enum
  */
 export enum UserStatus {
-  ACTIVE = 'active',
-  INACTIVE = 'inactive',
-  SUSPENDED = 'suspended',
-  PENDING = 'pending',
+  ACTIVE = "active",
+  INACTIVE = "inactive",
+  SUSPENDED = "suspended",
+  PENDING = "pending",
 }
 
 /**
@@ -34,19 +34,19 @@ export interface User extends TenantEntity {
   phone?: string;
   role: UserRole;
   status: UserStatus;
-  
+
   // Auth related
   lastLogin?: Date | string;
   isEmailVerified?: boolean;
-  
+
   // Profile
   profilePictureUrl?: string;
   title?: string;
   department?: string;
-  
+
   // Preferences
   preferences?: {
-    theme?: 'light' | 'dark' | 'system';
+    theme?: "light" | "dark" | "system";
     language?: string;
     timezone?: string;
     dateFormat?: string;
@@ -57,11 +57,11 @@ export interface User extends TenantEntity {
     };
     dashboardLayout?: any;
   };
-  
+
   // Access control
   permissions?: string[];
   accessibleFeatures?: string[];
-  
+
   // System fields
   deviceTokens?: string[];
   metadata?: Record<string, any>;
@@ -123,5 +123,5 @@ export interface UserProfileUpdate {
   title?: string;
   department?: string;
   profilePictureUrl?: string;
-  preferences?: Partial<User['preferences']>;
+  preferences?: Partial<User["preferences"]>;
 }

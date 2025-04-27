@@ -21,16 +21,19 @@ We will implement the PIM module with a globally scalable architecture that prio
 ### Core Architecture Principles
 
 1. **Market-Agnostic Core with Market-Specific Extensions**:
+
    - Implement a robust, market-agnostic core PIM functionality
    - Create a plugin architecture for market-specific features
    - Use feature flags to enable/disable market-specific functionality
 
 2. **Internationalization by Design**:
+
    - Multi-currency support from day one
    - Localization infrastructure for all user-facing content
    - Flexible attribute system capable of handling region-specific requirements
 
 3. **Modular Marketplace Connectors**:
+
    - Abstract marketplace integration interfaces
    - Market-specific connector implementations
    - Standardized synchronization protocols
@@ -47,6 +50,7 @@ The PIM module will implement the following comprehensive set of features:
 #### Core PIM Functionality
 
 **Product Management**
+
 - Full CRUD operations for products
 - Rich product data model with extensive attributes
 - Product variants system with individual SKUs
@@ -56,6 +60,7 @@ The PIM module will implement the following comprehensive set of features:
 - Product filtering and search with performance optimization
 
 **Category Management**
+
 - Hierarchical category structure
 - Category inheritance for attributes
 - Category assignment for products
@@ -63,6 +68,7 @@ The PIM module will implement the following comprehensive set of features:
 - Category mapping to marketplace categories
 
 **Attribute System**
+
 - Dynamic attribute templates
 - Attribute inheritance from categories
 - Validation rules for attributes
@@ -70,6 +76,7 @@ The PIM module will implement the following comprehensive set of features:
 - Custom attribute types (text, number, boolean, select, etc.)
 
 **Media Management**
+
 - Multi-image support for products
 - Advanced image compression for variable bandwidth
 - Image ordering and primary image selection
@@ -79,11 +86,13 @@ The PIM module will implement the following comprehensive set of features:
 #### Marketplace Integration
 
 **Connector System**
+
 - Unified marketplace integration API
 - Support for Takealot (South African marketplace)
 - Support for other South African marketplaces
 
 **Synchronization**
+
 - Bidirectional synchronization with marketplaces
 - Conflict detection and resolution
 - Validation before synchronization
@@ -91,6 +100,7 @@ The PIM module will implement the following comprehensive set of features:
 - Error handling and retry mechanisms
 
 **Marketplace-Specific Features**
+
 - Takealot-specific categories and fields
 - South African marketplace compliance fields
 - Real-time validation against marketplace requirements
@@ -100,6 +110,7 @@ The PIM module will implement the following comprehensive set of features:
 #### AI-Powered Features
 
 **Content Enhancement**
+
 - AI-generated product descriptions
 - AI-assisted SEO optimization
 - Attribute extraction from product descriptions
@@ -107,6 +118,7 @@ The PIM module will implement the following comprehensive set of features:
 - Content translation and localization
 
 **Categorization**
+
 - AI-driven product classification
 - Automatic category suggestion
 - Confidence scoring for category matches
@@ -114,6 +126,7 @@ The PIM module will implement the following comprehensive set of features:
 - Category structure generation
 
 **Price Intelligence**
+
 - Dynamic pricing rules with formulas
 - Competitive price monitoring
 - Price recommendation engine
@@ -123,6 +136,7 @@ The PIM module will implement the following comprehensive set of features:
 #### South African Market Optimizations
 
 **Network Resilience**
+
 - Variable connection quality detection
 - Bandwidth-efficient operations
 - Network-aware UI components
@@ -130,6 +144,7 @@ The PIM module will implement the following comprehensive set of features:
 - Progressive loading for slow connections
 
 **Load Shedding Resilience**
+
 - Power outage detection and adaptation
 - Operation queueing during outages
 - Data caching for critical operations
@@ -137,6 +152,7 @@ The PIM module will implement the following comprehensive set of features:
 - Local storage with sync when power returns
 
 **South African Compliance**
+
 - 15% VAT handling and calculation
 - South African regulatory field support
 - ICASA/SABS/NRCS certification fields
@@ -144,6 +160,7 @@ The PIM module will implement the following comprehensive set of features:
 - South African province filtering
 
 **Multi-Warehouse Support**
+
 - Region-specific warehousing
 - Stock level tracking across warehouses
 - Regional fulfillment optimization
@@ -153,6 +170,7 @@ The PIM module will implement the following comprehensive set of features:
 #### Inventory Integration
 
 **Stock Management**
+
 - Product stock levels across warehouses
 - Stock movement history with audit trail
 - Low stock monitoring and alerting
@@ -160,6 +178,7 @@ The PIM module will implement the following comprehensive set of features:
 - Multi-warehouse stock initialization
 
 **Advanced Inventory Features**
+
 - Network-aware stock operations
 - Load shedding resilient stock management
 - Stock allocation optimization
@@ -169,6 +188,7 @@ The PIM module will implement the following comprehensive set of features:
 #### Analytics and Reporting
 
 **Product Analytics**
+
 - Catalog completeness metrics
 - Product performance tracking
 - Data quality reports
@@ -176,6 +196,7 @@ The PIM module will implement the following comprehensive set of features:
 - Category distribution reports
 
 **Export Capabilities**
+
 - Multi-format exports (CSV, XLSX, PDF, JSON)
 - Network-aware report generation
 - Bandwidth-efficient export options
@@ -183,6 +204,7 @@ The PIM module will implement the following comprehensive set of features:
 - Report bundling for efficiency
 
 **Visualizations**
+
 - Network-aware data visualizations
 - Product performance dashboards
 - Catalog health metrics
@@ -192,6 +214,7 @@ The PIM module will implement the following comprehensive set of features:
 #### Technical Implementation
 
 **Architecture**
+
 - Proper module boundaries (ADR-001)
 - Repository pattern implementation (ADR-002)
 - Service-controller structure
@@ -199,6 +222,7 @@ The PIM module will implement the following comprehensive set of features:
 - Type-safe interfaces for all components
 
 **Performance Optimization**
+
 - Caching strategies for frequent operations
 - Pagination for large data sets
 - Cursor-based query optimization
@@ -206,6 +230,7 @@ The PIM module will implement the following comprehensive set of features:
 - Query execution optimization
 
 **Error Handling**
+
 - Comprehensive error management
 - Network error resilience
 - Graceful degradation during issues
@@ -213,6 +238,7 @@ The PIM module will implement the following comprehensive set of features:
 - Error logging and monitoring
 
 **Testing**
+
 - Unit tests for core functionality
 - Integration tests with mock marketplaces
 - E2E testing for critical workflows
@@ -220,6 +246,7 @@ The PIM module will implement the following comprehensive set of features:
 - Performance testing with large catalogs
 
 **Documentation**
+
 - User guides for all features
 - API reference documentation
 - Troubleshooting guides
@@ -233,6 +260,7 @@ The PIM module will implement the following comprehensive set of features:
 ![PIM Module Dependencies](visualizations/pim-dependencies.svg)
 
 The PIM module has the following key dependencies:
+
 - Connectors Module for marketplace integration (Takealot, Bob Shop, Makro, etc.)
 - Agent Framework Module for AI-powered features (product descriptions, image analysis)
 - Credit System Module for AI usage tracking and allocation
@@ -243,6 +271,7 @@ The PIM module has the following key dependencies:
 - International Trade Module for cross-border trade functionality (bidirectional)
 
 **Integration Patterns**
+
 - Clear boundary enforcement
 - Public API access only
 - Event-driven communication
@@ -252,6 +281,7 @@ The PIM module has the following key dependencies:
 **User Experience Features**
 
 **UI Components**
+
 - Product management dashboard
 - Category tree editor
 - Attribute template manager
@@ -262,6 +292,7 @@ The PIM module has the following key dependencies:
 - Advanced search and filtering
 
 **Optimized Interactions**
+
 - Network-aware form submissions
 - Progressive enhancement based on connectivity
 - Load shedding indicator and mode
@@ -273,6 +304,7 @@ The PIM module has the following key dependencies:
 #### Core Components (Market-Agnostic)
 
 **Controllers**
+
 - ProductController
 - CategoryController
 - AttributeTemplateController
@@ -281,6 +313,7 @@ The PIM module has the following key dependencies:
 - ImportExportController
 
 **Services**
+
 - ProductService
 - CategoryService
 - AttributeTemplateService
@@ -289,6 +322,7 @@ The PIM module has the following key dependencies:
 - ImportExportService
 
 **Repositories**
+
 - ProductRepository
 - CategoryRepository
 - AttributeTemplateRepository
@@ -296,6 +330,7 @@ The PIM module has the following key dependencies:
 - MediaRepository
 
 **Models**
+
 - Product
 - Category
 - AttributeTemplate
@@ -306,6 +341,7 @@ The PIM module has the following key dependencies:
 #### Market-Specific Extensions
 
 **South African Market (Priority 1)**
+
 - LoadSheddingResilienceService
 - NetworkAwareStorageService
 - SouthAfricanVatService
@@ -313,16 +349,17 @@ The PIM module has the following key dependencies:
 - SouthAfricanComplianceService (ICASA, SABS, NRCS)
 
 **African Markets (Priority 2)**
+
 - RegionalWarehouseService
 - South African Marketplace Expansion
 - RegionalComplianceService
-
 
 ### Implementation Approach
 
 #### Phased Regional Rollout
 
 1. **Phase 1: South African Market (Months 1-3)**
+
    - Comprehensive South African optimizations
    - Full Takealot marketplace integration
    - South African compliance fields
@@ -345,7 +382,11 @@ The PIM module has the following key dependencies:
 // Market-agnostic interface
 export interface VatService {
   calculateVat(price: number, productType: string, date?: Date): VatCalculation;
-  removeVat(priceWithVat: number, productType: string, date?: Date): VatCalculation;
+  removeVat(
+    priceWithVat: number,
+    productType: string,
+    date?: Date,
+  ): VatCalculation;
 }
 
 // South African implementation
@@ -365,7 +406,7 @@ export class MarketContextService {
   getMarketContext(organizationId: string): MarketContext {
     // Return market context (region, country, regulations, etc.)
   }
-  
+
   isFeatureAvailable(feature: MarketFeature, context: MarketContext): boolean {
     // Determine if a market-specific feature is available in this context
   }
@@ -379,12 +420,15 @@ export class MarketContextService {
 export class PimFeatureService {
   constructor(
     private featureFlagService: FeatureFlagService,
-    private marketContextService: MarketContextService
+    private marketContextService: MarketContextService,
   ) {}
-  
+
   isMarketFeatureEnabled(feature: string, organizationId: string): boolean {
     const context = this.marketContextService.getMarketContext(organizationId);
-    return this.featureFlagService.isEnabled(`pim.${context.region}.${feature}`, organizationId);
+    return this.featureFlagService.isEnabled(
+      `pim.${context.region}.${feature}`,
+      organizationId,
+    );
   }
 }
 ```
@@ -392,6 +436,7 @@ export class PimFeatureService {
 ### South African Optimizations (Initial Priority)
 
 1. **Load Shedding Resilience**
+
    - Operation queueing during outages
    - Robust background processing with retry mechanisms
    - Client-side data persistence during outages
@@ -399,6 +444,7 @@ export class PimFeatureService {
    - Scheduled operations during predictable power availability
 
 2. **Network-Aware Components**
+
    - Bandwidth detection and adaptive responses
    - Progressive loading patterns for media and data
    - Compressed data transfers with configurable thresholds
@@ -414,18 +460,21 @@ export class PimFeatureService {
 ### Global Market Extensibility
 
 1. **Multi-Region Data Model**
+
    - Products with region-specific attributes
    - Regional pricing and availability
    - Country-specific compliance fields
    - Region-based visibility controls
 
 2. **International Marketplace Architecture**
+
    - Abstracted marketplace interface layer
    - Region-specific marketplace implementation
    - Standardized product transformation pipelines
    - Unified synchronization status tracking
 
 3. **Global Compliance Framework**
+
    - Extensible compliance rule engine
    - Region-specific compliance validators
    - Compliance status visualization
@@ -441,9 +490,9 @@ export class PimFeatureService {
    - Simple API for all modules to fetch rates:
      ```typescript
      const vatRate = await taxService.getCurrentRate({
-       country: 'ZA', 
-       taxType: 'VAT',
-       transactionDate: new Date()
+       country: "ZA",
+       taxType: "VAT",
+       transactionDate: new Date(),
      });
      ```
    - Automatic handling of pending rate changes:
@@ -461,41 +510,49 @@ PIM functions would benefit from a centralized approach for business rules and c
 The following PIM functions are identified as candidates for this approach:
 
 ### 1. Currency Exchange Rates
+
 - **Current challenge**: Manual updates for currency conversion rates
 - **Centralized solution**: Exchange rate service with automatic updates from financial APIs
 - **Benefits**: Accurate multi-currency pricing, historical rate tracking for reporting
 
 ### 2. Marketplace Requirements
+
 - **Current challenge**: Hard-coded field mappings and validation rules for each marketplace
 - **Centralized solution**: Configuration-driven marketplace requirement service
 - **Benefits**: Easily update when Amazon/Takealot/etc. change their specifications without code changes
 
 ### 3. Product Classification and Categorization
+
 - **Current challenge**: Static category trees and marketplace mappings
 - **Centralized solution**: Dynamic category mapping service with admin interface
 - **Benefits**: Update marketplace category mappings as they evolve, maintain consistent cross-marketplace categorization
 
 ### 4. Regulatory Compliance Rules
+
 - **Current challenge**: Fixed compliance fields by product type
 - **Centralized solution**: Compliance rule engine with configurable requirements
 - **Benefits**: Add/modify South African regulatory requirements (ICASA/SABS/NRCS) as they change
 
 ### 5. Load Shedding Schedules
+
 - **Current challenge**: Hard-coded load shedding handling
 - **Centralized solution**: Configurable schedule service with regional variations
 - **Benefits**: Adapt to South Africa's evolving power outage patterns across regions
 
 ### 6. Media Requirements
+
 - **Current challenge**: Fixed image specifications
 - **Centralized solution**: Configurable media requirement service
 - **Benefits**: Update image size/format requirements as marketplaces change their specifications
 
 ### 7. Shipping and Location Data
+
 - **Current challenge**: Static location and shipping zone definitions
 - **Centralized solution**: Location management service with postal code mapping
 - **Benefits**: Maintain accurate South African province mapping, add new fulfillment regions
 
 ### 8. Commission and Fee Structures
+
 - **Current challenge**: Hard-coded marketplace fee calculations
 - **Centralized solution**: Fee calculation service with rate tables
 - **Benefits**: Update as marketplace commission structures change
@@ -503,6 +560,7 @@ The following PIM functions are identified as candidates for this approach:
 ### Business Rules Engine Pattern
 
 Each of these services will follow a consistent pattern with:
+
 - Database storage for configuration
 - Version history with effective dates
 - Admin UI for updates
@@ -521,39 +579,45 @@ export class PimModule {
   static register(options?: Partial<PimModuleOptions>): DynamicModule {
     const defaultOptions = {
       // Default options supporting global deployment
-      defaultRegion: 'south-africa',
-      enabledRegions: ['south-africa'],
+      defaultRegion: "south-africa",
+      enabledRegions: ["south-africa"],
       regionalOptimizations: {
-        'south-africa': {
+        "south-africa": {
           enableLoadSheddingResilience: true,
           enableNetworkAwareComponents: true,
-          enableVatManagement: true
+          enableVatManagement: true,
         },
-        'africa': {
+        africa: {
           enableRegionalWarehousing: true,
-          enableCrossBorderCompliance: true
+          enableCrossBorderCompliance: true,
         },
-        'europe': {
+        europe: {
           enableEuVatCompliance: false,
-          enableCeMarkingValidation: false
-        }
+          enableCeMarkingValidation: false,
+        },
       },
-      ...options
+      ...options,
     };
-    
+
     return {
       module: PimModule,
-      imports: [/* dependencies */],
-      controllers: [/* controllers */],
+      imports: [
+        /* dependencies */
+      ],
+      controllers: [
+        /* controllers */
+      ],
       providers: [
         // Core providers
         // Region-specific providers based on enabledRegions
         {
-          provide: 'PIM_MODULE_OPTIONS',
-          useValue: defaultOptions
-        }
+          provide: "PIM_MODULE_OPTIONS",
+          useValue: defaultOptions,
+        },
       ],
-      exports: [/* exported components */]
+      exports: [
+        /* exported components */
+      ],
     };
   }
 }
@@ -567,16 +631,16 @@ export class VatServiceFactory {
   constructor(
     private southAfricanVatService: SouthAfricanVatService,
     private europeanVatService: EuropeanVatService,
-    private marketContextService: MarketContextService
+    private marketContextService: MarketContextService,
   ) {}
 
   getVatService(organizationId: string): VatService {
     const context = this.marketContextService.getMarketContext(organizationId);
-    
+
     switch (context.region) {
-      case 'south-africa':
+      case "south-africa":
         return this.southAfricanVatService;
-      case 'europe':
+      case "europe":
         return this.europeanVatService;
       default:
         // Default implementation or throw error
@@ -591,6 +655,7 @@ export class VatServiceFactory {
 ### Phase 1: Core Infrastructure and South African Market (Months 1-3)
 
 #### Month 1: Foundation
+
 - Define all interfaces, models, and DTOs
 - Create market abstraction layer
 - Implement base repositories with South African focus
@@ -598,12 +663,14 @@ export class VatServiceFactory {
 - Implement Centralized Tax Rate Service with South African VAT handling
 
 #### Month 2: South African Optimizations
+
 - Implement network-aware components
 - Add load shedding resilience
 - Develop Takealot marketplace connector
 - Create South African compliance validators
 
 #### Month 3: Core PIM Features
+
 - Complete CRUD operations for all entities
 - Implement import/export functionality
 - Add attribute system with validation
@@ -613,45 +680,51 @@ export class VatServiceFactory {
 ### Phase 2: African Expansion (Months 4-6)
 
 #### Month 4: Infrastructure Expansion
+
 - Implement regional warehouse support
 - Add multi-currency pricing
 - Develop cross-border trade features
 - Extend Centralized Tax Rate Service for African countries
 
 #### Month 5: South African Marketplace Expansion
+
 - Expand Takealot integration capabilities
 - Develop additional South African marketplace support
 - Implement country-specific validation rules
 - Create regional logistics optimizations
 
 #### Month 6: Regional Optimizations
+
 - Optimize for regional network conditions
 - Implement mobile-first features for regions with high mobile usage
 - Add regional payment method support
 - Develop local language support
 
-
 ## Cross-Cutting Concerns
 
 ### Internationalization and Localization
+
 - All user-facing text stored in translation files
 - Culture-specific formatting for dates, numbers, and currencies
 - Right-to-left (RTL) text support for future Middle Eastern expansion
 - Region-specific terminology variations
 
 ### Performance Optimization
+
 - Regional edge caching strategies
 - Location-based request routing
 - Market-specific performance benchmarks
 - Bandwidth-adaptive content delivery
 
 ### Security and Compliance
+
 - Region-specific data residency
 - Compliance with local data protection regulations
 - Market-specific product safety standards
 - Regional payment security standards
 
 ### Testing Strategy
+
 - Market-specific test suites
 - Network condition simulation for each target region
 - Load shedding simulation for South African market
@@ -661,6 +734,7 @@ export class VatServiceFactory {
 ## Consequences
 
 ### Positive
+
 - Scalable architecture capable of supporting global expansion
 - Prioritized South African optimizations for initial launch
 - Clear separation between core and market-specific functionality
@@ -668,18 +742,21 @@ export class VatServiceFactory {
 - Strong typing and validation across all markets
 
 ### Challenges
+
 - Increased complexity due to market abstraction layers
 - Higher initial development overhead for market-agnostic components
 - Need for extensive regional testing infrastructure
 - Potential performance impact from additional abstraction layers
 
 ### Mitigation Strategies
+
 - Feature flags to control functionality rollout by region
 - Lazy loading of market-specific components
 - Comprehensive automated testing for each market
 - Performance benchmarking for each regional implementation
 
 ## Validation Approach
+
 - Regular dependency graph analysis to ensure modularity
 - Market-specific integration testing
 - Simulated regional network and power conditions
@@ -687,6 +764,7 @@ export class VatServiceFactory {
 - Performance benchmarking against regional user expectations
 
 ## Success Metrics
+
 1. Product management performance under various regional conditions
 2. Marketplace synchronization success rates by region
 3. Time required to onboard new regional marketplaces
@@ -698,14 +776,18 @@ export class VatServiceFactory {
 ## Alternatives Considered
 
 ### 1. Market-Specific Module Implementations
+
 Creating entirely separate PIM modules for each market would provide maximum customization but would lead to significant code duplication and maintenance challenges.
 
 ### 2. South Africa Only with Future Refactoring
+
 Building exclusively for South Africa with plans to refactor later would enable faster initial delivery but would likely result in significant rework during expansion.
 
 ### 3. Generic Global Implementation
+
 Creating a generic implementation without market-specific optimizations would be simpler initially but would fail to address the unique challenges of the South African market for launch.
 
 ## Related ADRs
+
 - [ADR-001: Module Boundary Enforcement](ADR-001-module-boundary-enforcement.md)
 - [ADR-002: Repository Pattern Implementation](ADR-002-repository-pattern-implementation.md)

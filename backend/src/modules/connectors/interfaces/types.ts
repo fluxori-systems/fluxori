@@ -236,7 +236,8 @@ export interface ConnectorError extends Error {
   retryable: boolean;
 
   /** Original error object if this wraps another error */
-  originalError?: any;
+  // TODO: Refine originalError type as requirements become clear
+  originalError?: unknown;
 
   /** Additional error details */
   details?: any;

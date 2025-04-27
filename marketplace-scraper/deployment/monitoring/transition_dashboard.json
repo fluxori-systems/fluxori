@@ -1,0 +1,397 @@
+{
+  "displayName": "Quota Upgrade Transition Dashboard",
+  "mosaicLayout": {
+    "columns": 12,
+    "tiles": [
+      {
+        "width": 6,
+        "height": 4,
+        "widget": {
+          "title": "Quota Usage Trend - Last 7 Days",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "plotType": "LINE",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "filter": "metric.type=\"custom.googleapis.com/marketplace_scraper/quota_usage\" resource.type=\"global\"",
+                    "aggregation": {
+                      "perSeriesAligner": "ALIGN_MEAN",
+                      "crossSeriesReducer": "REDUCE_MEAN",
+                      "alignmentPeriod": "3600s"
+                    }
+                  }
+                }
+              }
+            ],
+            "thresholds": [
+              {
+                "value": 85,
+                "label": "Warning",
+                "color": "yellow"
+              },
+              {
+                "value": 97,
+                "label": "Critical",
+                "color": "red"
+              }
+            ],
+            "yAxis": {
+              "label": "Percentage",
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "width": 6,
+        "height": 4,
+        "widget": {
+          "title": "Daily Requests - Last 7 Days",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "plotType": "LINE",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "filter": "metric.type=\"custom.googleapis.com/marketplace_scraper/daily_requests\" resource.type=\"global\"",
+                    "aggregation": {
+                      "perSeriesAligner": "ALIGN_DELTA",
+                      "crossSeriesReducer": "REDUCE_SUM",
+                      "alignmentPeriod": "86400s"
+                    }
+                  }
+                }
+              }
+            ],
+            "thresholds": [
+              {
+                "value": 7200,
+                "label": "Daily Quota",
+                "color": "red"
+              }
+            ],
+            "yAxis": {
+              "label": "Requests",
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "width": 4,
+        "height": 3,
+        "widget": {
+          "title": "Transition Progress",
+          "scorecard": {
+            "timeSeriesQuery": {
+              "timeSeriesFilter": {
+                "filter": "metric.type=\"custom.googleapis.com/marketplace_scraper/transition_progress\" resource.type=\"global\"",
+                "aggregation": {
+                  "perSeriesAligner": "ALIGN_MEAN",
+                  "crossSeriesReducer": "REDUCE_MEAN",
+                  "alignmentPeriod": "60s"
+                }
+              }
+            },
+            "thresholds": [
+              {
+                "value": 50,
+                "color": "yellow"
+              },
+              {
+                "value": 90,
+                "color": "green"
+              }
+            ],
+            "sparkChartView": {
+              "sparkChartType": "SPARK_LINE"
+            }
+          }
+        }
+      },
+      {
+        "width": 4,
+        "height": 3,
+        "widget": {
+          "title": "Efficiency Score",
+          "scorecard": {
+            "timeSeriesQuery": {
+              "timeSeriesFilter": {
+                "filter": "metric.type=\"custom.googleapis.com/marketplace_scraper/quota_efficiency\" resource.type=\"global\"",
+                "aggregation": {
+                  "perSeriesAligner": "ALIGN_MEAN",
+                  "crossSeriesReducer": "REDUCE_MEAN",
+                  "alignmentPeriod": "3600s"
+                }
+              }
+            },
+            "thresholds": [
+              {
+                "value": 5,
+                "color": "yellow"
+              },
+              {
+                "value": 10,
+                "color": "green"
+              }
+            ],
+            "sparkChartView": {
+              "sparkChartType": "SPARK_LINE"
+            }
+          }
+        }
+      },
+      {
+        "width": 4,
+        "height": 3,
+        "widget": {
+          "title": "Data Freshness Score",
+          "scorecard": {
+            "timeSeriesQuery": {
+              "timeSeriesFilter": {
+                "filter": "metric.type=\"custom.googleapis.com/marketplace_scraper/data_freshness_score\" resource.type=\"global\"",
+                "aggregation": {
+                  "perSeriesAligner": "ALIGN_MEAN",
+                  "crossSeriesReducer": "REDUCE_MEAN",
+                  "alignmentPeriod": "3600s"
+                }
+              }
+            },
+            "thresholds": [
+              {
+                "value": 50,
+                "color": "yellow"
+              },
+              {
+                "value": 75,
+                "color": "green"
+              }
+            ],
+            "sparkChartView": {
+              "sparkChartType": "SPARK_LINE"
+            }
+          }
+        }
+      },
+      {
+        "width": 6,
+        "height": 4,
+        "widget": {
+          "title": "Marketplace Usage Distribution",
+          "pieChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "filter": "metric.type=\"custom.googleapis.com/marketplace_scraper/marketplace_usage\" resource.type=\"global\"",
+                    "aggregation": {
+                      "perSeriesAligner": "ALIGN_SUM",
+                      "crossSeriesReducer": "REDUCE_SUM",
+                      "alignmentPeriod": "86400s"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      },
+      {
+        "width": 6,
+        "height": 4,
+        "widget": {
+          "title": "Task Type Usage Distribution",
+          "pieChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "filter": "metric.type=\"custom.googleapis.com/marketplace_scraper/task_type_usage\" resource.type=\"global\"",
+                    "aggregation": {
+                      "perSeriesAligner": "ALIGN_SUM",
+                      "crossSeriesReducer": "REDUCE_SUM",
+                      "alignmentPeriod": "86400s"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      },
+      {
+        "width": 6,
+        "height": 4,
+        "widget": {
+          "title": "Hourly Request Rate by Marketplace",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "plotType": "STACKED_BAR",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "filter": "metric.type=\"custom.googleapis.com/marketplace_scraper/marketplace_requests\" resource.type=\"global\"",
+                    "aggregation": {
+                      "perSeriesAligner": "ALIGN_RATE",
+                      "crossSeriesReducer": "REDUCE_SUM",
+                      "alignmentPeriod": "3600s"
+                    }
+                  }
+                }
+              }
+            ],
+            "yAxis": {
+              "label": "Requests/hour",
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "width": 6,
+        "height": 4,
+        "widget": {
+          "title": "Data Freshness by Marketplace",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "plotType": "LINE",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "filter": "metric.type=\"custom.googleapis.com/marketplace_scraper/marketplace_freshness\" resource.type=\"global\"",
+                    "aggregation": {
+                      "perSeriesAligner": "ALIGN_MEAN",
+                      "crossSeriesReducer": "REDUCE_MEAN",
+                      "alignmentPeriod": "3600s"
+                    }
+                  }
+                }
+              }
+            ],
+            "yAxis": {
+              "label": "Hours",
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "width": 6,
+        "height": 4,
+        "widget": {
+          "title": "Error Rate by Marketplace",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "plotType": "LINE",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "filter": "metric.type=\"custom.googleapis.com/marketplace_scraper/error_rate\" resource.type=\"global\"",
+                    "aggregation": {
+                      "perSeriesAligner": "ALIGN_MEAN",
+                      "crossSeriesReducer": "REDUCE_MEAN",
+                      "alignmentPeriod": "3600s",
+                      "secondaryAggregation": {
+                        "perSeriesAligner": "ALIGN_NONE"
+                      }
+                    },
+                    "secondaryFilter": "metric.labels.marketplace=monitoring.regex.full_match(.*)"
+                  }
+                }
+              }
+            ],
+            "thresholds": [
+              {
+                "value": 0.1,
+                "label": "Warning",
+                "color": "yellow"
+              },
+              {
+                "value": 0.2,
+                "label": "Critical",
+                "color": "red"
+              }
+            ],
+            "yAxis": {
+              "label": "Error Rate",
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "width": 6,
+        "height": 4,
+        "widget": {
+          "title": "Scheduled Task Completions",
+          "xyChart": {
+            "chartOptions": {
+              "mode": "COLOR"
+            },
+            "dataSets": [
+              {
+                "plotType": "STACKED_BAR",
+                "timeSeriesQuery": {
+                  "timeSeriesFilter": {
+                    "filter": "metric.type=\"custom.googleapis.com/marketplace_scraper/scheduled_tasks_completed\" resource.type=\"global\"",
+                    "aggregation": {
+                      "perSeriesAligner": "ALIGN_DELTA",
+                      "crossSeriesReducer": "REDUCE_SUM",
+                      "alignmentPeriod": "3600s"
+                    }
+                  }
+                }
+              }
+            ],
+            "yAxis": {
+              "label": "Completed Tasks",
+              "scale": "LINEAR"
+            }
+          }
+        }
+      },
+      {
+        "width": 12,
+        "height": 2,
+        "widget": {
+          "title": "Transition Status",
+          "text": {
+            "content": "# Quota Upgrade Transition Status\n* Tracking 7-day transition from 82K to 216K monthly requests\n* Target allocations: Takealot (35%), Amazon (28%), Bob Shop (12%), Makro (12%), Loot (8%), Buck Cheap (5%)\n* Phase 1: Configuration Updates | Phase 2: Marketplace Adjustment | Phase 3: Task Optimization | Phase 4: Final Tuning"
+          }
+        }
+      },
+      {
+        "width": 12,
+        "height": 6,
+        "widget": {
+          "title": "Alerts & Incidents",
+          "alertChart": {
+            "name": "projects/fluxori-web-app/alertPolicies/*"
+          }
+        }
+      }
+    ]
+  }
+}

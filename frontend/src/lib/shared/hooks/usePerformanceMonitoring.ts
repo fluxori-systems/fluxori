@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
 /**
  * Hook for general UI performance monitoring
  */
 
-import { useCallback } from 'react';
+import { useCallback } from "react";
 
 interface PerformanceMonitoringConfig {
   /** Component name for tracking */
@@ -19,9 +19,9 @@ interface MetricOptions {
   /** Name of the metric */
   name?: string;
   /** Type of metric */
-  type?: 'render' | 'interaction' | 'animation' | 'network';
+  type?: "render" | "interaction" | "animation" | "network";
   /** Priority of the metric */
-  priority?: 'high' | 'medium' | 'low';
+  priority?: "high" | "medium" | "low";
 }
 
 export function usePerformanceMonitoring(config: PerformanceMonitoringConfig) {
@@ -30,66 +30,55 @@ export function usePerformanceMonitoring(config: PerformanceMonitoringConfig) {
     measureMountTime = false,
     measureRenderTime = false,
   } = config;
-  
+
   /**
    * Wrapper to measure function execution time
    */
   const measureExecutionTime = useCallback(
-    <T extends (...args: any[]) => any>(
-      fn: T,
-      options?: MetricOptions
-    ) => {
+    <T extends (...args: any[]) => any>(fn: T, options?: MetricOptions) => {
       return (...args: Parameters<T>): ReturnType<T> => {
         const start = performance.now();
         const result = fn(...args);
         const duration = performance.now() - start;
-        
+
         // Record this metric
-        recordMetric(
-          options?.name || 'executionTime',
-          duration,
-          options
-        );
-        
+        recordMetric(options?.name || "executionTime", duration, options);
+
         return result;
       };
     },
-    [componentName]
+    [componentName],
   );
-  
+
   /**
    * Record a performance metric
    */
   const recordMetric = useCallback(
-    (
-      metricName: string,
-      value: number,
-      options?: MetricOptions
-    ) => {
+    (metricName: string, value: number, options?: MetricOptions) => {
       // Log performance metrics to console in development
-      if (process.env.NODE_ENV !== 'production') {
+      if (process.env.NODE_ENV !== "production") {
         console.log(
           `[Performance] ${componentName} - ${metricName}: ${value.toFixed(2)}ms`,
-          options
+          options,
         );
       }
-      
+
       // Here we would also send metrics to a service like
       // Application Insights or a custom analytics endpoint
     },
-    [componentName]
+    [componentName],
   );
-  
+
   /**
    * Get the current timestamp
    */
   const now = useCallback(() => {
     return performance.now();
   }, []);
-  
+
   return {
     measureExecutionTime,
     recordMetric,
-    now
+    now,
   };
 }

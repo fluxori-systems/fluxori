@@ -317,7 +317,7 @@ export class TracingService implements ITracingService {
     span.end();
 
     // Export the span to the logger
-    const spanData = (span as SpanImpl).toJSON();
+    const spanData = span.toJSON();
     if (this.logger?.debug) {
       this.logger.debug('Span completed', {
         service: 'TracingService',

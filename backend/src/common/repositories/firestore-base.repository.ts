@@ -21,6 +21,7 @@ import {
   DocumentSnapshot,
   FieldValue,
   WithFieldValue,
+  FirestoreDataConverter,
 } from '@google-cloud/firestore';
 
 // Configuration service
@@ -68,13 +69,13 @@ import {
   validateEntityNotDeleted,
   validateBatchItems,
 } from './base';
-import { Repository, BaseEntity } from './base/repository-types';
+import { FirestoreEntityWithMetadata } from './base/repository-types';
 import { FirestoreConfigService } from '../../config/firestore.config';
 
 // GCP type definitions
+import { TenantEntity } from '../types/tenant-entity';
 import {
   FirestoreEntity,
-  TenantEntity,
   TypedCollectionReference,
   TypedDocumentReference,
   QueryOptions,
@@ -82,7 +83,6 @@ import {
   QueryFilterOperator,
   PaginatedResult,
   TransactionContext,
-  FirestoreDataConverter,
 } from '../../types/google-cloud.types';
 
 // Repository utilities
@@ -92,9 +92,11 @@ import {
  * Generic repository pattern for Firestore documents
  * TypeScript-compliant with proper interface implementation
  */
+import { Repository } from './base/repository-types';
+
 @Injectable()
 export abstract class FirestoreBaseRepository<
-  T extends BaseEntity,
+  T extends FirestoreEntityWithMetadata,
   K extends string = string,
 > implements Repository<T, K>
 {
@@ -144,7 +146,7 @@ export abstract class FirestoreBaseRepository<
     });
 
     // Create entity converter
-    this.converter = createEntityConverter<T>() as FirestoreDataConverter<T>;
+    this.converter = createEntityConverter<T>();
 
     // Get Firestore server timestamp
     this.serverTimestamp = FieldValue.serverTimestamp();
@@ -167,14 +169,14 @@ export abstract class FirestoreBaseRepository<
   protected get collection(): TypedCollectionReference<T> {
     return this.firestore
       .collection(this.collectionName)
-      .withConverter(this.converter) as TypedCollectionReference<T>;
+      .withConverter(this.converter);
   }
 
   /**
    * Get document reference by ID
    */
   protected getDocRef(id: K): TypedDocumentReference<T> {
-    return this.collection.doc(id as string) as TypedDocumentReference<T>;
+    return this.collection.doc(id as string);
   }
 
   /**
@@ -265,7 +267,7 @@ export abstract class FirestoreBaseRepository<
       if (options.filter) {
         for (const [field, value] of Object.entries(options.filter)) {
           if (value !== undefined) {
-            query = query.where(field, '==', value) as Query<T>;
+            query = query.where(field, '==', value);
           }
         }
       }
@@ -277,13 +279,13 @@ export abstract class FirestoreBaseRepository<
             String(filter.field),
             filter.operator,
             filter.value,
-          ) as Query<T>;
+          );
         }
       }
 
       // Skip soft-deleted documents by default
       if (this.useSoftDeletes && !options.includeDeleted) {
-        query = query.where('isDeleted', '==', false) as Query<T>;
+        query = query.where('isDeleted', '==', false);
       }
 
       // Apply query options
@@ -293,28 +295,28 @@ export abstract class FirestoreBaseRepository<
           query = query.orderBy(
             String(options.queryOptions.orderBy),
             options.queryOptions.direction || 'asc',
-          ) as Query<T>;
+          );
         }
 
         // Apply limit
         if (options.queryOptions.limit) {
-          query = query.limit(options.queryOptions.limit) as Query<T>;
+          query = query.limit(options.queryOptions.limit);
         }
 
         // Apply offset by implementing a cursor-based approach
         if (options.queryOptions.offset && options.queryOptions.offset > 0) {
           query = query.limit(
             (options.queryOptions.limit || 100) + options.queryOptions.offset,
-          ) as Query<T>;
+          );
         }
 
         // Apply cursor-based pagination
         if (options.queryOptions.startAfter) {
-          query = query.startAfter(options.queryOptions.startAfter) as Query<T>;
+          query = query.startAfter(options.queryOptions.startAfter);
         }
 
         if (options.queryOptions.endBefore) {
-          query = query.endBefore(options.queryOptions.endBefore) as Query<T>;
+          query = query.endBefore(options.queryOptions.endBefore);
         }
 
         // Apply field selection
@@ -338,7 +340,7 @@ export abstract class FirestoreBaseRepository<
       }
 
       // Extract documents
-      let results = querySnapshot.docs.map((doc) => doc.data() as T);
+      let results = querySnapshot.docs.map((doc) => doc.data());
 
       // Apply offset (since Firestore doesn't support native offset)
       if (options.queryOptions?.offset && options.queryOptions.offset > 0) {
@@ -392,7 +394,7 @@ export abstract class FirestoreBaseRepository<
       if (options.filter) {
         for (const [field, value] of Object.entries(options.filter)) {
           if (value !== undefined) {
-            query = query.where(field, '==', value) as Query<T>;
+            query = query.where(field, '==', value);
           }
         }
       }
@@ -404,13 +406,13 @@ export abstract class FirestoreBaseRepository<
             String(filter.field),
             filter.operator,
             filter.value,
-          ) as Query<T>;
+          );
         }
       }
 
       // Skip soft-deleted documents by default
       if (this.useSoftDeletes && !options.includeDeleted) {
-        query = query.where('isDeleted', '==', false) as Query<T>;
+        query = query.where('isDeleted', '==', false);
       }
 
       // Execute count query
@@ -468,20 +470,20 @@ export abstract class FirestoreBaseRepository<
       const docRef = this.getDocRef(docId as unknown as K);
 
       // Prepare entity data
-      let entityData: Record<string, any> = { ...data };
+      let entityData = { ...(data as Partial<T>) } as any;
 
       // Add timestamps and metadata
       if (options.useServerTimestamp) {
         entityData = applyServerTimestamps(
-          entityData,
+          entityData as any,
           this.serverTimestamp,
           true, // is new entity
-        );
+        ) as any;
       } else {
         entityData = applyClientTimestamps(
-          entityData,
+          entityData as any,
           true, // is new entity
-        );
+        ) as any;
       }
 
       // Add soft-delete flag
@@ -559,10 +561,10 @@ export abstract class FirestoreBaseRepository<
         }
 
         // Prepare update data
-        let updateData: Record<string, any> = { ...data };
+        let updateData = { ...(data as Partial<T>) } as any;
 
         // Update timestamp and version if needed
-        updateData.updatedAt = this.serverTimestamp;
+        (updateData as any).updatedAt = this.serverTimestamp;
 
         if (this.useVersioning && options.incrementVersion !== false) {
           updateData.version = (existingDoc.version || 0) + 1;
@@ -597,10 +599,10 @@ export abstract class FirestoreBaseRepository<
         }
 
         // Prepare update data
-        let updateData: Record<string, any> = { ...data };
+        let updateData = { ...(data as Partial<T>) } as any;
 
         // Update timestamp
-        updateData.updatedAt = new Date();
+        (updateData as any).updatedAt = new Date();
 
         // Update version if needed
         if (this.useVersioning && options.incrementVersion !== false) {
@@ -730,7 +732,7 @@ export abstract class FirestoreBaseRepository<
             const docRef = this.collection.doc();
 
             // Prepare entity data
-            let entityData: Record<string, any> = { ...item };
+            let entityData = { ...(item as Partial<T>) } as any;
 
             // Add timestamps and metadata
             if (options.useServerTimestamp) {
@@ -804,7 +806,7 @@ export abstract class FirestoreBaseRepository<
    */
   async runTransaction<R>(
     txFn: (transaction: Transaction) => Promise<R>,
-    options: {} = {},
+    options: object = {},
   ): Promise<R> {
     try {
       return await executeTransaction(
@@ -1158,10 +1160,10 @@ export abstract class FirestoreBaseRepository<
           }
 
           // Prepare update data
-          let updateData: Record<string, any> = { ...data };
+          let updateData = { ...(data as Partial<T>) } as any;
 
           // Update timestamp
-          updateData.updatedAt = this.serverTimestamp;
+          (updateData as any).updatedAt = this.serverTimestamp;
 
           // Update version if needed
           if (this.useVersioning && options.incrementVersion !== false) {
@@ -1214,10 +1216,10 @@ export abstract class FirestoreBaseRepository<
             const docRef = this.getDocRef(id as unknown as K);
 
             // Prepare update data
-            let updateData: Record<string, any> = { ...data };
+            let updateData = { ...(data as Partial<T>) } as any;
 
             // Update timestamp
-            updateData.updatedAt = new Date();
+            (updateData as any).updatedAt = new Date();
 
             // Update version if needed
             if (this.useVersioning && options.incrementVersion !== false) {

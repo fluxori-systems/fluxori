@@ -56,10 +56,11 @@ cd scripts/adr
 ```
 
 This will:
+
 1. Create a new ADR file with the next available number
 2. Generate dependency visualizations for the specified modules
 3. Update the ADR index
 
 ## Index
 
-*This section will be automatically populated with a list of ADRs*
+_This section will be automatically populated with a list of ADRs_

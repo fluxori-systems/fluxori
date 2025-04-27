@@ -1,4 +1,5 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { InsightMetadata } from '../interfaces/types';
 
 import { AIModelConfig } from '../models/ai-model-config.schema';
 import { AIModelConfigRepository } from '../repositories/ai-model-config.repository';
@@ -15,7 +16,7 @@ export interface CreateAIModelConfigDto {
   maxTokens: number;
   isDefault?: boolean;
   isEnabled?: boolean;
-  metadata?: Record<string, any>;
+  metadata?: InsightMetadata; // TODO: Refine fields as discovered
 }
 
 /**
@@ -29,7 +30,7 @@ export interface UpdateAIModelConfigDto {
   maxTokens?: number;
   isDefault?: boolean;
   isEnabled?: boolean;
-  metadata?: Record<string, any>;
+  metadata?: InsightMetadata; // TODO: Refine fields as discovered
 }
 
 /**
@@ -54,10 +55,13 @@ export class AIModelConfigService {
     );
 
     // Set defaults if not provided
-    const data: CreateAIModelConfigDto = {
+    const data: Omit<AIModelConfig, 'id' | 'createdAt' | 'updatedAt'> = {
       ...createDto,
       isDefault: createDto.isDefault || false,
       isEnabled: createDto.isEnabled !== undefined ? createDto.isEnabled : true,
+      isDeleted: false,
+      deletedAt: null,
+      version: 1,
     };
 
     // If this is set as default, clear other defaults

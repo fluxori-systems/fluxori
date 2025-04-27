@@ -33,6 +33,7 @@ The framework includes a robust SmartProxy client implementation with advanced f
 The framework is organized into several key components:
 
 1. **Core Framework** (`src/common/`)
+
    - Base scraper implementation
    - Enhanced SmartProxy client
    - Browser actions framework
@@ -42,11 +43,13 @@ The framework is organized into several key components:
    - Load shedding detection
 
 2. **Marketplace Implementations** (`src/marketplaces/`)
+
    - Takealot-specific implementation
    - Bob Shop (formerly Bid or Buy) implementation
    - Specialized extractors for products, search, and categories
 
 3. **Storage Layer** (`src/storage/`)
+
    - Firestore repository implementation
    - Schema definitions and validation
    - Caching for resilience
@@ -270,7 +273,7 @@ distributor.register_task_type("category_browsing", QuotaPriority.LOW)
 if distributor.check_quota("product_details"):
     # Perform the task
     # ...
-    
+
     # Record usage
     distributor.record_usage("product_details")
 ```
@@ -304,7 +307,7 @@ else:
         backoff_factor=adapted_params["backoff_factor"],
         timeout=adapted_params["timeout"]
     )
-    
+
     # Cache the response
     adapter.save_to_cache(cache_key, response)
 ```

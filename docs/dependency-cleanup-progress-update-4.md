@@ -7,6 +7,7 @@ As part of our ongoing work to clean up dependencies and enforce proper module b
 ### Completed Tasks
 
 1. **Updated Repository Imports**:
+
    - Fixed imports in feature-flags module repositories to use the public API:
      - FeatureFlagRepository
      - FeatureFlagAuditLogRepository
@@ -17,11 +18,13 @@ As part of our ongoing work to clean up dependencies and enforce proper module b
      - BuyBoxStatusRepository
 
 2. **Created Repository Refactoring Plan**:
+
    - Created a comprehensive plan for migrating all repositories
    - Documented differences between the two implementations
    - Added a checklist for repositories that still need to be migrated
 
 3. **Created Migration Tools**:
+
    - Added a new script to automate the migration process
    - Created utility functions to help with the transition
 
@@ -32,6 +35,7 @@ As part of our ongoing work to clean up dependencies and enforce proper module b
 ### Next Steps
 
 1. Continue migrating repositories in the following modules:
+
    - agent-framework
    - rag-retrieval
    - ai-insights
@@ -41,6 +45,7 @@ As part of our ongoing work to clean up dependencies and enforce proper module b
 2. Update services that might be affected by the repository changes
 
 3. Add module documentation for repositories:
+
    - Document the standard repository pattern
    - Document error handling best practices
    - Document transaction support

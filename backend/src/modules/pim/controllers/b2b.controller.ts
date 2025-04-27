@@ -23,7 +23,7 @@ import {
   Logger,
 } from '@nestjs/common';
 
-import { FirebaseAuthGuard } from '../../../common/guards/firebase-auth.guard';
+import { FirebaseAuthGuard } from '../../auth';
 import { CustomerContract, ContractStatus } from '../models/b2b/contract.model';
 import {
   CustomerTier,
@@ -154,13 +154,13 @@ export class B2BController {
    */
   @Get('customers')
   async findCustomers(
+    @Request() req: any,
     @Query('tierId') tierId?: string,
     @Query('groupId') groupId?: string,
     @Query('status') status?: B2BCustomerStatus,
     @Query('accountType') accountType?: B2BAccountType,
     @Query('creditStatus') creditStatus?: CreditStatus,
     @Query('marketRegion') marketRegion?: string,
-    @Request() req: any,
   ): Promise<B2BCustomer[]> {
     try {
       const organizationId = req.user.organizationId;
@@ -709,8 +709,8 @@ export class B2BController {
   @Get('customers/:customerId/orders')
   async getCustomerOrders(
     @Param('customerId') customerId: string,
-    @Query('status') status?: PurchaseOrderStatus,
     @Request() req: any,
+    @Query('status') status?: PurchaseOrderStatus,
   ): Promise<PurchaseOrder[]> {
     try {
       const organizationId = req.user.organizationId;

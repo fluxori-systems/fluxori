@@ -11,7 +11,7 @@ This guide provides instructions on how dependency management is enforced in the
 Dependency-cruiser is used to analyze and validate module dependencies:
 
 - **Configuration**: `.dependency-cruiser.js` in both backend and frontend
-- **Validation Rules**: 
+- **Validation Rules**:
   - No circular dependencies
   - No cross-module dependencies except through public APIs
   - No direct imports from common utilities
@@ -59,8 +59,8 @@ Every module should expose a clear public API through an index.ts file:
 
 ```typescript
 // src/modules/example/index.ts
-export { ExampleModule } from './example.module';
-export { ExampleService } from './services/example.service';
+export { ExampleModule } from "./example.module";
+export { ExampleService } from "./services/example.service";
 // ... other exports
 ```
 
@@ -72,10 +72,10 @@ Common utilities should be accessed through their public APIs:
 
 ```typescript
 // GOOD: Import from the public API
-import { UnifiedFirestoreRepository } from 'src/common/repositories';
+import { UnifiedFirestoreRepository } from "src/common/repositories";
 
 // BAD: Import directly from internal implementations
-import { UnifiedFirestoreRepository } from 'src/common/repositories/unified-firestore.repository';
+import { UnifiedFirestoreRepository } from "src/common/repositories/unified-firestore.repository";
 ```
 
 ### Auth Pattern
@@ -84,10 +84,10 @@ Authentication components should be accessed through the common auth module:
 
 ```typescript
 // GOOD: Import from common auth
-import { FirebaseAuthGuard, GetUser } from 'src/common/auth';
+import { FirebaseAuthGuard, GetUser } from "src/common/auth";
 
 // BAD: Import directly from auth module
-import { FirebaseAuthGuard } from 'src/modules/auth/guards/firebase-auth.guard';
+import { FirebaseAuthGuard } from "src/modules/auth/guards/firebase-auth.guard";
 ```
 
 ## Best Practices
@@ -98,10 +98,10 @@ Always use absolute imports from the src root:
 
 ```typescript
 // GOOD
-import { SomeService } from 'src/modules/some-module';
+import { SomeService } from "src/modules/some-module";
 
 // BAD
-import { SomeService } from '../../some-module/services/some.service';
+import { SomeService } from "../../some-module/services/some.service";
 ```
 
 ### 2. Export Carefully

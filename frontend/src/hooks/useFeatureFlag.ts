@@ -1,8 +1,8 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback, useMemo } from "react";
 
-import { useAuth } from './useAuth';
-import { featureFlagsApi } from '../api/feature-flags.api';
-import { Environment } from '../types/feature-flags/feature-flag.types';
+import { useAuth } from "./useAuth";
+import { featureFlagsApi } from "../api/feature-flags.api";
+import { Environment } from "../types/feature-flags/feature-flag.types";
 
 // Types for feature flag hooks
 export interface FeatureFlagContext {
@@ -25,7 +25,10 @@ export interface FeatureFlagResult {
 /**
  * Hook to check if a feature flag is enabled
  */
-export function useFeatureFlag(flagKey: string, additionalContext?: FeatureFlagContext): FeatureFlagResult {
+export function useFeatureFlag(
+  flagKey: string,
+  additionalContext?: FeatureFlagContext,
+): FeatureFlagResult {
   const [isEnabled, setIsEnabled] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<Error | null>(null);
@@ -57,7 +60,11 @@ export function useFeatureFlag(flagKey: string, additionalContext?: FeatureFlagC
       setIsEnabled(enabled);
       return enabled;
     } catch (err) {
-      setError(err instanceof Error ? err : new Error('Failed to fetch feature flag status'));
+      setError(
+        err instanceof Error
+          ? err
+          : new Error("Failed to fetch feature flag status"),
+      );
       setIsEnabled(false);
       return false;
     } finally {
@@ -84,8 +91,8 @@ export interface FeatureFlagsResult {
 }
 
 export function useFeatureFlags(
-  flagKeys: string[], 
-  additionalContext?: FeatureFlagContext
+  flagKeys: string[],
+  additionalContext?: FeatureFlagContext,
 ): FeatureFlagsResult {
   const [flags, setFlags] = useState<Record<string, boolean>>({});
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -114,10 +121,13 @@ export function useFeatureFlags(
       setIsLoading(true);
       setError(null);
 
-      const evaluationResults = await featureFlagsApi.evaluateBatch(flagKeys, context);
+      const evaluationResults = await featureFlagsApi.evaluateBatch(
+        flagKeys,
+        context,
+      );
 
       const results: Record<string, boolean> = {};
-      
+
       // Extract enabled status from each flag result
       Object.entries(evaluationResults).forEach(([key, value]) => {
         results[key] = value.enabled;
@@ -125,10 +135,12 @@ export function useFeatureFlags(
 
       setFlags(results);
     } catch (err) {
-      setError(err instanceof Error ? err : new Error('Failed to fetch feature flags'));
+      setError(
+        err instanceof Error ? err : new Error("Failed to fetch feature flags"),
+      );
       // Set all flags to false on error
       const errorFlags: Record<string, boolean> = {};
-      flagKeys.forEach(key => {
+      flagKeys.forEach((key) => {
         errorFlags[key] = false;
       });
       setFlags(errorFlags);

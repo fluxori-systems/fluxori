@@ -19,6 +19,7 @@ This document outlines the strategy for testing the dependency management tools 
 **Description:** Verify that the dependency graphs accurately represent the codebase structure.
 
 **Test Steps:**
+
 1. Run visualization commands on both backend and frontend
    ```bash
    # From root directory
@@ -45,14 +46,17 @@ This document outlines the strategy for testing the dependency management tools 
 **Description:** Verify that circular dependencies are correctly identified.
 
 **Test Steps:**
+
 1. Temporarily introduce a circular dependency in the backend:
+
    ```typescript
    // In src/modules/moduleA/services/serviceA.ts
-   import { ServiceB } from '../../moduleB/services/serviceB';
-   
+   import { ServiceB } from "../../moduleB/services/serviceB";
+
    // In src/modules/moduleB/services/serviceB.ts
-   import { ServiceA } from '../../moduleA/services/serviceA';
+   import { ServiceA } from "../../moduleA/services/serviceA";
    ```
+
 2. Run circular dependency check
    ```bash
    npm run deps:circular:backend
@@ -68,10 +72,11 @@ This document outlines the strategy for testing the dependency management tools 
 **Description:** Verify that ESLint rules enforce module boundaries.
 
 **Test Steps:**
+
 1. Temporarily introduce a boundary violation in the backend:
    ```typescript
    // In src/modules/moduleA/services/serviceA.ts
-   import { SomeInternalComponent } from '../../moduleB/internal/some-internal.component';
+   import { SomeInternalComponent } from "../../moduleB/internal/some-internal.component";
    ```
 2. Run lint check
    ```bash
@@ -85,11 +90,12 @@ This document outlines the strategy for testing the dependency management tools 
 **Description:** Verify that ESLint enforces the defined import order.
 
 **Test Steps:**
+
 1. Temporarily modify import order in a file:
    ```typescript
    // In any file, rearrange imports to violate order
-   import { something } from 'internal-module';
-   import { somethingElse } from 'external-module';
+   import { something } from "internal-module";
+   import { somethingElse } from "external-module";
    ```
 2. Run lint check and verify order violation is reported
 3. Fix the order and verify that the lint check passes
@@ -101,6 +107,7 @@ This document outlines the strategy for testing the dependency management tools 
 **Description:** Verify that TypeDoc generates comprehensive API documentation.
 
 **Test Steps:**
+
 1. Run documentation generation
    ```bash
    npm run docs:api
@@ -122,6 +129,7 @@ This document outlines the strategy for testing the dependency management tools 
 **Description:** Verify that the GitHub workflow runs correctly on code changes.
 
 **Test Steps:**
+
 1. Make a code change that introduces a dependency issue
 2. Commit and push to a feature branch
 3. Open a PR against the main branch
@@ -136,6 +144,7 @@ This document outlines the strategy for testing the dependency management tools 
 **Description:** Verify that the module documentation templates are usable for creating real documentation.
 
 **Test Steps:**
+
 1. Select a module that doesn't have documentation yet
 2. Use the template to create documentation for that module
 3. Verify that all sections of the template can be populated with relevant information
@@ -144,13 +153,13 @@ This document outlines the strategy for testing the dependency management tools 
 
 ## Test Schedule
 
-| Test Area | Frequency | Responsible |
-|-----------|-----------|-------------|
-| Dependency Visualization | Weekly | Architecture Team |
-| ESLint Rules | Continuous (CI) | All Developers |
-| TypeDoc | Before each release | Documentation Team |
-| GitHub Workflow | After workflow changes | DevOps Team |
-| Module Documentation | During feature development | Feature Developers |
+| Test Area                | Frequency                  | Responsible        |
+| ------------------------ | -------------------------- | ------------------ |
+| Dependency Visualization | Weekly                     | Architecture Team  |
+| ESLint Rules             | Continuous (CI)            | All Developers     |
+| TypeDoc                  | Before each release        | Documentation Team |
+| GitHub Workflow          | After workflow changes     | DevOps Team        |
+| Module Documentation     | During feature development | Feature Developers |
 
 ## Success Criteria
 
@@ -175,6 +184,7 @@ The dependency management testing strategy will be considered successful if:
 ## Reporting
 
 Test results should be documented in the following locations:
+
 - Dependency visualization: Save graphs to the project wiki
 - ESLint violations: Address during code review
 - Documentation quality: Track in documentation task board

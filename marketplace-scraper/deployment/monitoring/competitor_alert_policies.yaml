@@ -1,0 +1,99 @@
+displayName: "Competitor Alerts Processing Failure"
+documentation:
+  content: "Alert when the competitor alerts system fails to process alerts."
+  mimeType: "text/markdown"
+combiner: OR
+conditions:
+  - displayName: "Alert Processing Error Rate"
+    condition:
+      filter: 'metric.type="custom.googleapis.com/fluxori/competitor_alerts/error_rate" resource.type="global"'
+      aggregations:
+        - alignmentPeriod: 300s
+          perSeriesAligner: ALIGN_MEAN
+      comparison: COMPARISON_GT
+      thresholdValue: 0.05
+      duration: 300s
+      trigger:
+        count: 1
+alertStrategy:
+  autoClose: 1800s
+  notificationRateLimit:
+    period: 300s
+  notificationChannelNames:
+    - projects/fluxori-prod/notificationChannels/email-ops-team
+---
+displayName: "Competitor Alerts High Alert Rate"
+documentation:
+  content: "Alert when the rate of generated competitor alerts is significantly higher than normal."
+  mimeType: "text/markdown"
+combiner: OR
+conditions:
+  - displayName: "High Alert Generation Rate"
+    condition:
+      filter: 'metric.type="custom.googleapis.com/fluxori/competitor_alerts/generated_count" resource.type="global"'
+      aggregations:
+        - alignmentPeriod: 300s
+          perSeriesAligner: ALIGN_RATE
+          crossSeriesReducer: REDUCE_SUM
+          groupByFields:
+            - resource.label.*
+      comparison: COMPARISON_GT
+      thresholdValue: 100
+      duration: 300s
+      trigger:
+        count: 1
+alertStrategy:
+  autoClose: 1800s
+  notificationRateLimit:
+    period: 300s
+  notificationChannelNames:
+    - projects/fluxori-prod/notificationChannels/email-ops-team
+---
+displayName: "Critical Alert Generation"
+documentation:
+  content: "Alert when critical competitor alerts are generated."
+  mimeType: "text/markdown"
+combiner: OR
+conditions:
+  - displayName: "Critical Alerts"
+    condition:
+      filter: 'metric.type="custom.googleapis.com/fluxori/competitor_alerts/severity_distribution" resource.type="global" AND metric.label.severity="critical"'
+      aggregations:
+        - alignmentPeriod: 300s
+          perSeriesAligner: ALIGN_SUM
+      comparison: COMPARISON_GT
+      thresholdValue: 0
+      duration: 60s
+      trigger:
+        count: 1
+alertStrategy:
+  autoClose: 1800s
+  notificationRateLimit:
+    period: 300s
+  notificationChannelNames:
+    - projects/fluxori-prod/notificationChannels/email-ops-team
+    - projects/fluxori-prod/notificationChannels/sms-ops-team
+---
+displayName: "Slow Alert Processing"
+documentation:
+  content: "Alert when competitor alert processing is taking longer than expected."
+  mimeType: "text/markdown"
+combiner: OR
+conditions:
+  - displayName: "Slow Processing Time"
+    condition:
+      filter: 'metric.type="custom.googleapis.com/fluxori/competitor_alerts/processing_time" resource.type="global"'
+      aggregations:
+        - alignmentPeriod: 300s
+          perSeriesAligner: ALIGN_PERCENTILE_99
+      comparison: COMPARISON_GT
+      thresholdValue: 5000
+      duration: 300s
+      trigger:
+        count: 1
+alertStrategy:
+  autoClose: 1800s
+  notificationRateLimit:
+    period: 300s
+  notificationChannelNames:
+    - projects/fluxori-prod/notificationChannels/email-ops-team

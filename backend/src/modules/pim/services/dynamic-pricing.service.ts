@@ -610,7 +610,7 @@ export class DynamicPricingService {
               this.productService.findById(id, organizationId),
             ),
           )
-        ).filter((p) => p !== null) as Product[];
+        ).filter((p) => p !== null);
       } else if (rule.scope.applyToAll) {
         // If apply to all, get all products for the organization
         products = await this.productService.findAll({
@@ -688,8 +688,8 @@ export class DynamicPricingService {
         .filter((change) => change !== null)
         .sort(
           (a, b) =>
-            Math.abs(b!.priceChangePercentage) -
-            Math.abs(a!.priceChangePercentage),
+            Math.abs(b.priceChangePercentage) -
+            Math.abs(a.priceChangePercentage),
         ) as Array<{
         productId: string;
         productName: string;

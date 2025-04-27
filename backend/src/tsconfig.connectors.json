@@ -2,18 +2,18 @@
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
     "skipLibCheck": true,
-    "composite": true
+    "composite": true,
+    "baseUrl": "../"
   },
   "include": [
     "modules/connectors/**/*",
     "modules/auth/**/*",
     "modules/security/**/*",
+    "modules/feature-flags/**/*",
+    "modules/users/**/*",
     "common/**/*",
     "config/**/*",
     "types/**/*"
   ],
-  "exclude": [
-    "**/*.spec.ts",
-    "node_modules"
-  ]
+  "exclude": ["**/*.spec.ts", "node_modules"]
 }

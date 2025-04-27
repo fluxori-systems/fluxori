@@ -26,8 +26,7 @@ import {
   FirebaseAuthGuard,
   GetUser,
   DecodedFirebaseToken,
-  AuthUtils,
-} from 'src/common/auth';
+} from '@modules/auth';
 
 import { MarketplaceAdapterFactory } from '../services/marketplace-adapter.factory';
 

@@ -1,0 +1,14 @@
+/**
+ * TS config for the connectors slice (Phase 2.5)
+ * Limits compilation to connectors code and its direct dependencies.
+ */
+{
+  "extends": "./tsconfig.base.json",
+  "include": [
+    "src/modules/connectors/**/*",
+    "src/common/**/*",
+    "src/config/**/*",
+    "src/types/**/*"
+  ],
+  "exclude": ["**/*.spec.ts", "node_modules", "src/src/**/*"]
+}

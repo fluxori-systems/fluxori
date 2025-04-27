@@ -1,7 +1,7 @@
 /**
  * Types for Chart.js integration with Fluxori Design System
  * and South African market optimizations
- * 
+ *
  * This file replaces the former recharts.types.ts since we've
  * migrated from Recharts to Chart.js per commit 836af6a
  */
@@ -23,7 +23,7 @@ export interface NetworkAwareAnimationConfig {
 /**
  * Connection quality levels for chart optimization
  */
-export type ChartConnectionQuality = 'high' | 'medium' | 'low' | 'poor';
+export type ChartConnectionQuality = "high" | "medium" | "low" | "poor";
 
 /**
  * Network profile to chart configuration mapping
@@ -56,7 +56,10 @@ export interface NetworkProfileConfig {
 /**
  * Chart optimization configuration based on network conditions
  */
-export const CHART_NETWORK_PROFILES: Record<ChartConnectionQuality, NetworkProfileConfig> = {
+export const CHART_NETWORK_PROFILES: Record<
+  ChartConnectionQuality,
+  NetworkProfileConfig
+> = {
   high: {
     maxDataPoints: Infinity,
     showGrid: true,
@@ -68,7 +71,7 @@ export const CHART_NETWORK_PROFILES: Record<ChartConnectionQuality, NetworkProfi
     lineThickness: 2,
     pointRadius: 3,
     showReferenceLines: true,
-    maxAxisLabels: Infinity
+    maxAxisLabels: Infinity,
   },
   medium: {
     maxDataPoints: 100,
@@ -81,7 +84,7 @@ export const CHART_NETWORK_PROFILES: Record<ChartConnectionQuality, NetworkProfi
     lineThickness: 2,
     pointRadius: 2,
     showReferenceLines: true,
-    maxAxisLabels: 10
+    maxAxisLabels: 10,
   },
   low: {
     maxDataPoints: 50,
@@ -94,7 +97,7 @@ export const CHART_NETWORK_PROFILES: Record<ChartConnectionQuality, NetworkProfi
     lineThickness: 1.5,
     pointRadius: 1,
     showReferenceLines: false,
-    maxAxisLabels: 5
+    maxAxisLabels: 5,
   },
   poor: {
     maxDataPoints: 20,
@@ -107,8 +110,8 @@ export const CHART_NETWORK_PROFILES: Record<ChartConnectionQuality, NetworkProfi
     lineThickness: 1,
     pointRadius: 0,
     showReferenceLines: false,
-    maxAxisLabels: 3
-  }
+    maxAxisLabels: 3,
+  },
 };
 
 /**
@@ -121,7 +124,9 @@ export interface ChartDataPoint {
 /**
  * Props for the base NetworkAwareChart component
  */
-export interface NetworkAwareChartProps<T extends ChartDataPoint = ChartDataPoint> {
+export interface NetworkAwareChartProps<
+  T extends ChartDataPoint = ChartDataPoint,
+> {
   /** Chart data */
   data: T[];
   /** Chart height */
@@ -147,8 +152,9 @@ export interface NetworkAwareChartProps<T extends ChartDataPoint = ChartDataPoin
 /**
  * Props for the NetworkAwareLineChart component
  */
-export interface NetworkAwareLineChartProps<T extends ChartDataPoint = ChartDataPoint> 
-  extends NetworkAwareChartProps<T> {
+export interface NetworkAwareLineChartProps<
+  T extends ChartDataPoint = ChartDataPoint,
+> extends NetworkAwareChartProps<T> {
   /** X-axis data key */
   xAxisDataKey: string;
   /** Y-axis data key or keys (for multiple lines) */
@@ -172,8 +178,9 @@ export interface NetworkAwareLineChartProps<T extends ChartDataPoint = ChartData
 /**
  * Props for the NetworkAwareBarChart component
  */
-export interface NetworkAwareBarChartProps<T extends ChartDataPoint = ChartDataPoint> 
-  extends NetworkAwareChartProps<T> {
+export interface NetworkAwareBarChartProps<
+  T extends ChartDataPoint = ChartDataPoint,
+> extends NetworkAwareChartProps<T> {
   /** X-axis data key */
   xAxisDataKey: string;
   /** Y-axis data key or keys (for multiple bar series) */
@@ -195,8 +202,9 @@ export interface NetworkAwareBarChartProps<T extends ChartDataPoint = ChartDataP
 /**
  * Props for the NetworkAwarePieChart component
  */
-export interface NetworkAwarePieChartProps<T extends ChartDataPoint = ChartDataPoint> 
-  extends NetworkAwareChartProps<T> {
+export interface NetworkAwarePieChartProps<
+  T extends ChartDataPoint = ChartDataPoint,
+> extends NetworkAwareChartProps<T> {
   /** Name data key */
   nameKey: string;
   /** Value data key */
@@ -216,8 +224,9 @@ export interface NetworkAwarePieChartProps<T extends ChartDataPoint = ChartDataP
 /**
  * Props for the NetworkAwareAreaChart component
  */
-export interface NetworkAwareAreaChartProps<T extends ChartDataPoint = ChartDataPoint> 
-  extends NetworkAwareLineChartProps<T> {
+export interface NetworkAwareAreaChartProps<
+  T extends ChartDataPoint = ChartDataPoint,
+> extends NetworkAwareLineChartProps<T> {
   /** Whether areas should be stacked */
   stacked?: boolean;
 }
@@ -225,8 +234,9 @@ export interface NetworkAwareAreaChartProps<T extends ChartDataPoint = ChartData
 /**
  * Props for the NetworkAwareComposedChart component
  */
-export interface NetworkAwareComposedChartProps<T extends ChartDataPoint = ChartDataPoint> 
-  extends NetworkAwareChartProps<T> {
+export interface NetworkAwareComposedChartProps<
+  T extends ChartDataPoint = ChartDataPoint,
+> extends NetworkAwareChartProps<T> {
   /** X-axis data key */
   xAxisDataKey: string;
   /** Configuration for lines */

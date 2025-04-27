@@ -3,28 +3,39 @@
  * Creates a complete set of CSS variables for both light and dark modes
  */
 
-import { lightTheme, darkTheme } from '../tokens';
-import { DesignTokens, ColorPalette, ColorToken, SemanticColorToken } from '../types/tokens';
+import { lightTheme, darkTheme } from "../tokens";
+import {
+  DesignTokens,
+  ColorPalette,
+  ColorToken,
+  SemanticColorToken,
+} from "../types/tokens";
 
 /**
  * Converts camelCase to kebab-case
  */
 function toKebabCase(str: string): string {
-  return str.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase();
+  return str.replace(/([a-z0-9])([A-Z])/g, "$1-$2").toLowerCase();
 }
 
 /**
  * Flattens nested objects into CSS variable names
  */
-function flattenObject(obj: any, prefix = ''): Record<string, string> {
+function flattenObject(obj: any, prefix = ""): Record<string, string> {
   const result: Record<string, string> = {};
 
   for (const key in obj) {
     if (Object.prototype.hasOwnProperty.call(obj, key)) {
       const value = obj[key];
-      const newKey = prefix ? `${prefix}-${toKebabCase(key)}` : toKebabCase(key);
+      const newKey = prefix
+        ? `${prefix}-${toKebabCase(key)}`
+        : toKebabCase(key);
 
-      if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+      if (
+        typeof value === "object" &&
+        value !== null &&
+        !Array.isArray(value)
+      ) {
         Object.assign(result, flattenObject(value, newKey));
       } else {
         result[newKey] = value;
@@ -38,11 +49,14 @@ function flattenObject(obj: any, prefix = ''): Record<string, string> {
 /**
  * Process color tokens into CSS variables
  */
-function processColorTokens(colors: ColorPalette, prefix = ''): Record<string, string> {
+function processColorTokens(
+  colors: ColorPalette,
+  prefix = "",
+): Record<string, string> {
   const result: Record<string, string> = {};
 
   // Process primary and secondary colors
-  ['primary', 'secondary', 'neutral'].forEach((colorName) => {
+  ["primary", "secondary", "neutral"].forEach((colorName) => {
     const colorToken = colors[colorName as keyof typeof colors] as ColorToken;
     Object.entries(colorToken).forEach(([shade, value]) => {
       result[`${prefix}${colorName}-${shade}`] = value;
@@ -50,16 +64,21 @@ function processColorTokens(colors: ColorPalette, prefix = ''): Record<string, s
   });
 
   // Process semantic colors
-  ['success', 'warning', 'error', 'info'].forEach((colorName) => {
-    const semanticToken = colors[colorName as keyof typeof colors] as SemanticColorToken;
+  ["success", "warning", "error", "info"].forEach((colorName) => {
+    const semanticToken = colors[
+      colorName as keyof typeof colors
+    ] as SemanticColorToken;
     Object.entries(semanticToken).forEach(([variant, value]) => {
       result[`${prefix}${colorName}-${variant}`] = value;
     });
   });
 
   // Process background, text, and border colors
-  ['background', 'text', 'border'].forEach((category) => {
-    const categoryObj = colors[category as keyof typeof colors] as Record<string, string>;
+  ["background", "text", "border"].forEach((category) => {
+    const categoryObj = colors[category as keyof typeof colors] as Record<
+      string,
+      string
+    >;
     Object.entries(categoryObj).forEach(([name, value]) => {
       result[`${prefix}${category}-${name}`] = value;
     });
@@ -74,37 +93,37 @@ function processColorTokens(colors: ColorPalette, prefix = ''): Record<string, s
 export function generateCssVariables(): string {
   // Process light theme tokens
   const lightTokens: Record<string, string> = {
-    ...processColorTokens(lightTheme.colors, 'color-'),
-    ...flattenObject(lightTheme.typography, 'typography'),
-    ...flattenObject(lightTheme.spacing, 'spacing'),
-    ...flattenObject(lightTheme.radii, 'radius'),
-    ...flattenObject(lightTheme.shadows, 'shadow'),
-    ...flattenObject(lightTheme.zIndices, 'z-index'),
-    ...flattenObject(lightTheme.motion, 'motion'),
+    ...processColorTokens(lightTheme.colors, "color-"),
+    ...flattenObject(lightTheme.typography, "typography"),
+    ...flattenObject(lightTheme.spacing, "spacing"),
+    ...flattenObject(lightTheme.radii, "radius"),
+    ...flattenObject(lightTheme.shadows, "shadow"),
+    ...flattenObject(lightTheme.zIndices, "z-index"),
+    ...flattenObject(lightTheme.motion, "motion"),
   };
 
   // Process dark theme tokens
   const darkTokens: Record<string, string> = {
-    ...processColorTokens(darkTheme.colors, 'color-'),
+    ...processColorTokens(darkTheme.colors, "color-"),
   };
 
   // Create CSS variables string
-  let cssVariables = ':root {\n';
-  
+  let cssVariables = ":root {\n";
+
   // Add light theme variables
   Object.entries(lightTokens).forEach(([name, value]) => {
     cssVariables += `  --${name}: ${value};\n`;
   });
-  
-  cssVariables += '}\n\n';
-  
+
+  cssVariables += "}\n\n";
+
   // Add dark theme variables
   cssVariables += '[data-theme="dark"] {\n';
   Object.entries(darkTokens).forEach(([name, value]) => {
     cssVariables += `  --${name}: ${value};\n`;
   });
-  cssVariables += '}\n';
-  
+  cssVariables += "}\n";
+
   return cssVariables;
 }
 
@@ -113,10 +132,10 @@ export function generateCssVariables(): string {
  */
 export function generateUtilityClasses(): string {
   const { typography, spacing, radii } = lightTheme;
-  let utilityClasses = '';
+  let utilityClasses = "";
 
   // Typography utility classes
-  utilityClasses += '/* Typography utility classes */\n';
+  utilityClasses += "/* Typography utility classes */\n";
   Object.entries(typography.fontSizes).forEach(([size, value]) => {
     utilityClasses += `.text-${size} { font-size: var(--typography-font-sizes-${size}); }\n`;
   });
@@ -126,20 +145,20 @@ export function generateUtilityClasses(): string {
   });
 
   // Spacing utility classes
-  utilityClasses += '\n/* Spacing utility classes */\n';
+  utilityClasses += "\n/* Spacing utility classes */\n";
   Object.entries(spacing).forEach(([size, value]) => {
     utilityClasses += `.m-${size} { margin: var(--spacing-${size}); }\n`;
     utilityClasses += `.p-${size} { padding: var(--spacing-${size}); }\n`;
-    
+
     // Also add directional classes
-    ['t', 'r', 'b', 'l'].forEach(dir => {
-      utilityClasses += `.m${dir}-${size} { margin-${dir === 't' ? 'top' : dir === 'r' ? 'right' : dir === 'b' ? 'bottom' : 'left'}: var(--spacing-${size}); }\n`;
-      utilityClasses += `.p${dir}-${size} { padding-${dir === 't' ? 'top' : dir === 'r' ? 'right' : dir === 'b' ? 'bottom' : 'left'}: var(--spacing-${size}); }\n`;
+    ["t", "r", "b", "l"].forEach((dir) => {
+      utilityClasses += `.m${dir}-${size} { margin-${dir === "t" ? "top" : dir === "r" ? "right" : dir === "b" ? "bottom" : "left"}: var(--spacing-${size}); }\n`;
+      utilityClasses += `.p${dir}-${size} { padding-${dir === "t" ? "top" : dir === "r" ? "right" : dir === "b" ? "bottom" : "left"}: var(--spacing-${size}); }\n`;
     });
   });
 
   // Border radius utility classes
-  utilityClasses += '\n/* Border radius utility classes */\n';
+  utilityClasses += "\n/* Border radius utility classes */\n";
   Object.entries(radii).forEach(([size, value]) => {
     utilityClasses += `.rounded-${size} { border-radius: var(--radius-${size}); }\n`;
   });

@@ -231,11 +231,13 @@ The PIM system includes features to handle South African load shedding:
 ### Common Issues
 
 1. **Sync Failures**:
+
    - Check marketplace API credentials
    - Verify product data meets marketplace requirements
    - Check for required fields specific to each marketplace
 
 2. **Image Upload Issues**:
+
    - Reduce image size and resolution
    - Try uploading during stable connection periods
    - Use the "Optimize Images" feature
@@ -264,16 +266,16 @@ The PIM system includes features to handle South African load shedding:
 
 ## Keyboard Shortcuts
 
-| Shortcut      | Action                   |
-|---------------|--------------------------|
-| Ctrl+N        | New Product              |
-| Ctrl+S        | Save Product             |
-| Ctrl+D        | Duplicate Product        |
-| Ctrl+F        | Search Products          |
-| Ctrl+B        | Batch Operations         |
-| Ctrl+E        | Export Selected          |
-| Alt+1-5       | Switch between main tabs |
-| Shift+S       | Sync to Marketplace      |
+| Shortcut | Action                   |
+| -------- | ------------------------ |
+| Ctrl+N   | New Product              |
+| Ctrl+S   | Save Product             |
+| Ctrl+D   | Duplicate Product        |
+| Ctrl+F   | Search Products          |
+| Ctrl+B   | Batch Operations         |
+| Ctrl+E   | Export Selected          |
+| Alt+1-5  | Switch between main tabs |
+| Shift+S  | Sync to Marketplace      |
 
 ---
 

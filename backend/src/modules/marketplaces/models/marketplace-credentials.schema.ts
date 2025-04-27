@@ -3,7 +3,11 @@ import { FirestoreEntity, Timestamp } from '../../../types/google-cloud.types';
 /**
  * Marketplace credentials schema for Firestore
  */
-export interface MarketplaceCredential extends FirestoreEntity {
+import { FirestoreEntityWithMetadata } from '../../../common/repositories/base/repository-types';
+
+export interface MarketplaceCredential extends FirestoreEntityWithMetadata {
+  updatedAt: Date | Timestamp;
+  createdAt: Date | Timestamp;
   /** ID of the marketplace (e.g., 'amazon', 'takealot', 'shopify') */
   marketplaceId: string;
 

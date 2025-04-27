@@ -7,6 +7,7 @@ This document provides an overview of all implemented marketplace scrapers in th
 ### Implemented Scrapers
 
 1. **Buck.cheap Historical Price Data Scraper**
+
    - **Status**: Fully implemented
    - **Features**:
      - Historical price data extraction going back 2+ years
@@ -26,6 +27,7 @@ This document provides an overview of all implemented marketplace scrapers in th
      - Rich historical context for marketplace products
 
 2. **Takealot Scraper**
+
    - **Status**: Fully implemented
    - **Features**:
      - Product details extraction
@@ -43,7 +45,8 @@ This document provides an overview of all implemented marketplace scrapers in th
      - Efficient pagination support
      - Comprehensive data extraction
 
-2. **Amazon SA Scraper**
+3. **Amazon SA Scraper**
+
    - **Status**: Fully implemented
    - **Features**:
      - Product details extraction optimized for Amazon structure
@@ -59,7 +62,8 @@ This document provides an overview of all implemented marketplace scrapers in th
      - Good extraction success rate
      - Effective handling of Amazon's dynamic content
 
-3. **Bob Shop Scraper**
+4. **Bob Shop Scraper**
+
    - **Status**: Fully implemented
    - **Features**:
      - Product details extraction
@@ -73,7 +77,8 @@ This document provides an overview of all implemented marketplace scrapers in th
      - Reliable navigation of site structure
      - Effective data normalization
 
-4. **Makro Scraper**
+5. **Makro Scraper**
+
    - **Status**: Fully implemented
    - **Features**:
      - Product details extraction
@@ -88,7 +93,7 @@ This document provides an overview of all implemented marketplace scrapers in th
      - Reliable handling of complex HTML structure
      - Good extraction of promotional content
 
-5. **Loot Scraper**
+6. **Loot Scraper**
    - **Status**: Fully implemented
    - **Features**:
      - Product details extraction
@@ -132,13 +137,13 @@ This document provides an overview of all implemented marketplace scrapers in th
 ## Performance Metrics Summary
 
 | Marketplace | Template Support | Extraction Success Rate | JS Rendering Required | Complexity |
-|-------------|------------------|-------------------------|------------------------|------------|
-| Buck.cheap  | Low              | 90%+                    | Yes                    | High       |
-| Takealot    | High             | 95%+                    | Yes                    | High       |
-| Amazon SA   | Very High        | 90%+                    | Yes                    | Very High  |
-| Bob Shop    | Medium           | 85%+                    | Yes                    | Medium     |
-| Makro       | High             | 90%+                    | Yes                    | High       |
-| Loot        | High             | 95%+                    | Yes                    | Medium     |
+| ----------- | ---------------- | ----------------------- | --------------------- | ---------- |
+| Buck.cheap  | Low              | 90%+                    | Yes                   | High       |
+| Takealot    | High             | 95%+                    | Yes                   | High       |
+| Amazon SA   | Very High        | 90%+                    | Yes                   | Very High  |
+| Bob Shop    | Medium           | 85%+                    | Yes                   | Medium     |
+| Makro       | High             | 90%+                    | Yes                   | High       |
+| Loot        | High             | 95%+                    | Yes                   | Medium     |
 
 ## Next Steps
 

@@ -2,13 +2,15 @@ import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 
 import { FirestoreBaseRepository } from '../../../common/repositories';
 import { FirestoreConfigService } from '../../../config/firestore.config';
-import { User } from '../schemas/user.schema';
+import { User } from '../models/user.model'; // User model now imported from correct location
 
 /**
  * Repository for managing user entities in Firestore
  */
 @Injectable()
-export class UserRepository extends FirestoreBaseRepository<User> {
+export class UserRepository extends FirestoreBaseRepository<
+  User & FirestoreEntityWithMetadata
+> {
   protected readonly logger = new Logger(UserRepository.name);
   protected readonly collectionName = 'users';
 

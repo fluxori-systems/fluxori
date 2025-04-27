@@ -37,16 +37,16 @@ export interface ColorPalette {
   // Brand colors
   primary: ColorToken;
   secondary: ColorToken;
-  
+
   // Neutrals
   neutral: ColorToken;
-  
+
   // Semantic colors
   success: SemanticColorToken;
   warning: SemanticColorToken;
   error: SemanticColorToken;
   info: SemanticColorToken;
-  
+
   // Special colors
   background: {
     surface: string;
@@ -72,17 +72,17 @@ export interface ColorPalette {
  * Typography scale interface for font sizes
  */
 export interface FontSizeScale {
-  '2xs': string;
+  "2xs": string;
   xs: string;
   sm: string;
   md: string;
   lg: string;
   xl: string;
-  '2xl': string;
-  '3xl': string;
-  '4xl': string;
-  '5xl': string;
-  '6xl': string;
+  "2xl": string;
+  "3xl": string;
+  "4xl": string;
+  "5xl": string;
+  "6xl": string;
 }
 
 /**
@@ -154,17 +154,17 @@ export interface TypographySystem {
  * Spacing scale interface
  */
 export interface SpacingScale {
-  '3xs': string;
-  '2xs': string;
+  "3xs": string;
+  "2xs": string;
   xs: string;
   sm: string;
   md: string;
   lg: string;
   xl: string;
-  '2xl': string;
-  '3xl': string;
-  '4xl': string;
-  '5xl': string;
+  "2xl": string;
+  "3xl": string;
+  "4xl": string;
+  "5xl": string;
 }
 
 /**
@@ -189,7 +189,7 @@ export interface ShadowScale {
   md: string;
   lg: string;
   xl: string;
-  '2xl': string;
+  "2xl": string;
   inner: string;
 }
 
@@ -203,7 +203,7 @@ export interface ZIndexScale {
   30: number;
   40: number;
   50: number;
-  auto: 'auto';
+  auto: "auto";
 }
 
 /**
@@ -222,7 +222,7 @@ export interface DesignTokens {
     md: string;
     lg: string;
     xl: string;
-    '2xl': string;
+    "2xl": string;
   };
   motion: {
     durations: {
@@ -244,7 +244,7 @@ export interface DesignTokens {
 /**
  * Color mode type
  */
-export type ColorMode = 'light' | 'dark';
+export type ColorMode = "light" | "dark";
 
 /**
  * Theme context type

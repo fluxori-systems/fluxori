@@ -13,9 +13,8 @@
     "baseUrl": "./",
     "incremental": true,
     "skipLibCheck": true,
-    "strictNullChecks": true,
-    "noImplicitAny": true,
-    "strictBindCallApply": true,
+    // Enable full strict mode (includes strictNullChecks, noImplicitAny, strictBindCallApply, etc.)
+    "strict": true,
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
     "moduleResolution": "Node",
@@ -30,6 +29,13 @@
       "@shared/*": ["src/shared/*"]
     }
   },
-  "include": ["src/**/*"],
-  "exclude": ["src/templates/**/*", "ts_backup/**/*", "dist/migration-tools/**/*", "node_modules", "**/*.bak/**", "**/*.bak"]
+  "include": ["src/**/*", "test/**/*.ts"],
+  "exclude": [
+    "src/templates/**/*",
+    "ts_backup/**/*",
+    "dist/migration-tools/**/*",
+    "node_modules",
+    "**/*.bak/**",
+    "**/*.bak"
+  ]
 }

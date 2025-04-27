@@ -18,7 +18,7 @@ import {
 import { LoggingInterceptor } from '../../../common/observability/interceptors/logging.interceptor';
 import { TracingInterceptor } from '../../../common/observability/interceptors/tracing.interceptor';
 import { GetUser } from '../../auth/decorators/get-user.decorator';
-import { FirebaseAuthGuard } from '../../auth/guards/firebase-auth.guard';
+import { FirebaseAuthGuard } from '../../auth';
 import { Category } from '../models/category.model';
 import { Product } from '../models/product.model';
 import { CategoryService } from '../services/category.service';
@@ -243,7 +243,7 @@ export class AnalyticsController {
       for (const product of products) {
         if (product.categories && product.categories.length > 0) {
           // Count primary category (first in the list)
-          const primaryCategoryId = product.categories[0].categoryId;
+          const primaryCategoryId = product.categories[0].id;
           const count = categoryCounts.get(primaryCategoryId) || 0;
           categoryCounts.set(primaryCategoryId, count + 1);
         }

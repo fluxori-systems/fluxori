@@ -91,7 +91,7 @@ export class EmbeddingService {
       await this.clearDefaultProviders(data.organizationId);
     }
 
-    return this.embeddingProviderRepository.create(data as any);
+    return this.embeddingProviderRepository.create(data);
   }
 
   /**

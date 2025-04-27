@@ -1,0 +1,16 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "skipLibCheck": true,
+    "composite": true
+  },
+  "include": [
+    "src/modules/users/**/*",
+    "src/common/decorators/**/*",
+    "src/common/guards/**/*",
+    "src/common/auth/**/*",
+    "src/common/utils/**/*",
+    "src/config/**/*"
+  ],
+  "exclude": ["**/*.spec.ts", "node_modules"]
+}

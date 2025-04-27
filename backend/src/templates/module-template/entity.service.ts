@@ -29,9 +29,9 @@ export interface UpdateEntityDto {
 @Injectable()
 export class EntityService {
   private readonly logger = new Logger(EntityService.name);
-  
+
   constructor(private readonly entityRepository: EntityRepository) {}
-  
+
   /**
    * Create a new entity
    * @param createEntityDto Entity creation data
@@ -39,16 +39,16 @@ export class EntityService {
    */
   async create(createEntityDto: CreateEntityDto): Promise<Entity> {
     this.logger.log(`Creating new entity with name: ${createEntityDto.name}`);
-    
+
     // Set defaults if not provided
     const data: CreateEntityDto = {
       ...createEntityDto,
       status: createEntityDto.status || 'active',
     };
-    
+
     return this.entityRepository.create(data);
   }
-  
+
   /**
    * Find entity by ID
    * @param id Entity ID
@@ -56,15 +56,15 @@ export class EntityService {
    */
   async findById(id: string): Promise<Entity> {
     const entity = await this.entityRepository.findById(id);
-    
+
     if (!entity) {
       this.logger.warn(`Entity with ID ${id} not found`);
       throw new NotFoundException(`Entity with ID ${id} not found`);
     }
-    
+
     return entity;
   }
-  
+
   /**
    * Find all entities for an organization
    * @param organizationId Organization ID
@@ -73,7 +73,7 @@ export class EntityService {
   async findByOrganization(organizationId: string): Promise<Entity[]> {
     return this.entityRepository.findByOrganization(organizationId);
   }
-  
+
   /**
    * Update an entity
    * @param id Entity ID
@@ -82,16 +82,16 @@ export class EntityService {
    */
   async update(id: string, updateEntityDto: UpdateEntityDto): Promise<Entity> {
     this.logger.log(`Updating entity with ID: ${id}`);
-    
+
     const updated = await this.entityRepository.update(id, updateEntityDto);
-    
+
     if (!updated) {
       throw new NotFoundException(`Entity with ID ${id} not found`);
     }
-    
+
     return updated;
   }
-  
+
   /**
    * Delete an entity (soft delete)
    * @param id Entity ID
@@ -99,16 +99,16 @@ export class EntityService {
    */
   async delete(id: string): Promise<boolean> {
     this.logger.log(`Deleting entity with ID: ${id}`);
-    
+
     const deleted = await this.entityRepository.delete(id);
-    
+
     if (!deleted) {
       throw new NotFoundException(`Entity with ID ${id} not found`);
     }
-    
+
     return true;
   }
-  
+
   /**
    * Change entity status
    * @param id Entity ID
@@ -117,7 +117,7 @@ export class EntityService {
    */
   async setStatus(id: string, status: 'active' | 'inactive'): Promise<Entity> {
     this.logger.log(`Setting entity ${id} status to: ${status}`);
-    
+
     if (status === 'active') {
       return this.entityRepository.setActive(id);
     } else {

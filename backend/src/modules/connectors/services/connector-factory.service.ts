@@ -4,6 +4,7 @@
  * This service is responsible for creating, caching, and managing connector instances.
  * It serves as the primary entry point for obtaining connector instances throughout the application.
  */
+import { ConnectorHealth } from '../interfaces/connector-health';
 
 import { Injectable, Logger, OnModuleDestroy } from '@nestjs/common';
 
@@ -191,7 +192,8 @@ export class ConnectorFactoryService implements OnModuleDestroy {
    * Get health status for all active connectors
    */
   async getConnectorsHealth() {
-    const health: Record<string, any> = {};
+    // TODO: Refine ConnectorHealth type as requirements become clear
+    const health: Record<string, ConnectorHealth> = {};
 
     for (const [key, connector] of this.connectors.entries()) {
       try {

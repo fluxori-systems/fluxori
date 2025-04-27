@@ -23,8 +23,14 @@ interface QuerySnapshot<T> {
 interface QueryConstraint {}
 
 // Use real imports for types needed by the app
-import { firestore } from './config';
-import { BaseEntity, TenantEntity, PaginatedResponse, QueryOptions, AdvancedFilter } from '../../types/core/entity.types';
+import { firestore } from "./config";
+import {
+  BaseEntity,
+  TenantEntity,
+  PaginatedResponse,
+  QueryOptions,
+  AdvancedFilter,
+} from "../../types/core/entity.types";
 
 /**
  * Firestore data service for all collections
@@ -59,7 +65,10 @@ export class FirestoreService<T extends BaseEntity> {
    * @param organizationId The organization ID
    * @returns Updated query constraints
    */
-  protected addTenantFilter(constraints: QueryConstraint[], organizationId?: string): QueryConstraint[] {
+  protected addTenantFilter(
+    constraints: QueryConstraint[],
+    organizationId?: string,
+  ): QueryConstraint[] {
     if (organizationId) {
       constraints.push({} as QueryConstraint);
     }
@@ -92,7 +101,7 @@ export class FirestoreService<T extends BaseEntity> {
    * @returns Array of typed entities
    */
   protected convertToEntities(snapshot: QuerySnapshot<any>): T[] {
-    return snapshot.docs.map(doc => {
+    return snapshot.docs.map((doc) => {
       const data = doc.data();
       return {
         ...data,
@@ -110,10 +119,10 @@ export class FirestoreService<T extends BaseEntity> {
    */
   protected prepareForFirestore(entity: Partial<T>): any {
     const prepared = { ...entity };
-    
+
     // Remove the id field as it's stored in the document reference
     delete prepared.id;
-    
+
     return prepared;
   }
 
@@ -158,7 +167,7 @@ export class FirestoreService<T extends BaseEntity> {
       // Mock implementation
       return [];
     } catch (error) {
-      console.error('Error getting all documents:', error);
+      console.error("Error getting all documents:", error);
       throw error;
     }
   }
@@ -169,7 +178,10 @@ export class FirestoreService<T extends BaseEntity> {
    * @param organizationId Optional organization ID for multi-tenancy
    * @returns Paginated response of document entities
    */
-  async getPaginated(options?: QueryOptions, organizationId?: string): Promise<PaginatedResponse<T>> {
+  async getPaginated(
+    options?: QueryOptions,
+    organizationId?: string,
+  ): Promise<PaginatedResponse<T>> {
     try {
       // Mock implementation
       return {
@@ -184,7 +196,7 @@ export class FirestoreService<T extends BaseEntity> {
         },
       };
     } catch (error) {
-      console.error('Error getting paginated documents:', error);
+      console.error("Error getting paginated documents:", error);
       throw error;
     }
   }
@@ -199,13 +211,13 @@ export class FirestoreService<T extends BaseEntity> {
   async findWithFilters(
     filters: AdvancedFilter[],
     options?: QueryOptions,
-    organizationId?: string
+    organizationId?: string,
   ): Promise<T[]> {
     try {
       // Mock implementation
       return [];
     } catch (error) {
-      console.error('Error finding documents with filters:', error);
+      console.error("Error finding documents with filters:", error);
       throw error;
     }
   }
@@ -216,7 +228,7 @@ export class FirestoreService<T extends BaseEntity> {
    * @param customId Optional custom document ID
    * @returns Created document entity
    */
-  async create(data: Omit<T, 'id'>, customId?: string): Promise<T> {
+  async create(data: Omit<T, "id">, customId?: string): Promise<T> {
     try {
       // Mock implementation
       return {
@@ -226,7 +238,7 @@ export class FirestoreService<T extends BaseEntity> {
         updatedAt: new Date(),
       } as unknown as T;
     } catch (error) {
-      console.error('Error creating document:', error);
+      console.error("Error creating document:", error);
       throw error;
     }
   }
@@ -293,16 +305,16 @@ export class FirestoreService<T extends BaseEntity> {
    */
   async batchOperation(
     operations: Array<{
-      type: 'create' | 'update' | 'delete';
+      type: "create" | "update" | "delete";
       id?: string;
       data?: Partial<T>;
-    }>
+    }>,
   ): Promise<boolean> {
     try {
       // Mock implementation
       return true;
     } catch (error) {
-      console.error('Error performing batch operation:', error);
+      console.error("Error performing batch operation:", error);
       throw error;
     }
   }
@@ -313,13 +325,13 @@ export class FirestoreService<T extends BaseEntity> {
    * @returns Success status
    */
   async withTransaction<R>(
-    updateFunction: (transaction: any) => Promise<R>
+    updateFunction: (transaction: any) => Promise<R>,
   ): Promise<R> {
     try {
       // Mock implementation
       return {} as R;
     } catch (error) {
-      console.error('Error performing transaction:', error);
+      console.error("Error performing transaction:", error);
       throw error;
     }
   }
@@ -328,7 +340,9 @@ export class FirestoreService<T extends BaseEntity> {
 /**
  * Tenant-aware Firestore service for multi-tenant collections
  */
-export class TenantFirestoreService<T extends TenantEntity> extends FirestoreService<T> {
+export class TenantFirestoreService<
+  T extends TenantEntity,
+> extends FirestoreService<T> {
   /**
    * Create a new TenantFirestoreService instance
    * @param collectionName The name of the Firestore collection
@@ -345,7 +359,7 @@ export class TenantFirestoreService<T extends TenantEntity> extends FirestoreSer
    */
   async getAllForOrganization(
     organizationId: string,
-    options?: QueryOptions
+    options?: QueryOptions,
   ): Promise<T[]> {
     return this.getAll(options, organizationId);
   }
@@ -358,7 +372,7 @@ export class TenantFirestoreService<T extends TenantEntity> extends FirestoreSer
    */
   async getPaginatedForOrganization(
     organizationId: string,
-    options?: QueryOptions
+    options?: QueryOptions,
   ): Promise<PaginatedResponse<T>> {
     return this.getPaginated(options, organizationId);
   }
@@ -372,13 +386,16 @@ export class TenantFirestoreService<T extends TenantEntity> extends FirestoreSer
    */
   async createForOrganization(
     organizationId: string,
-    data: Omit<T, 'id' | 'organizationId'>,
-    customId?: string
+    data: Omit<T, "id" | "organizationId">,
+    customId?: string,
   ): Promise<T> {
-    return this.create({
-      ...data,
-      organizationId,
-    } as unknown as Omit<T, 'id'>, customId);
+    return this.create(
+      {
+        ...data,
+        organizationId,
+      } as unknown as Omit<T, "id">,
+      customId,
+    );
   }
 
   /**
@@ -391,7 +408,7 @@ export class TenantFirestoreService<T extends TenantEntity> extends FirestoreSer
   async findWithFiltersForOrganization(
     organizationId: string,
     filters: AdvancedFilter[],
-    options?: QueryOptions
+    options?: QueryOptions,
   ): Promise<T[]> {
     return this.findWithFilters(filters, options, organizationId);
   }

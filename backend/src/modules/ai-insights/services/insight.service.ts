@@ -32,6 +32,9 @@ export class InsightService {
       ...createInsightDto,
       status: InsightStatus.NEW,
       generatedAt: new Date(),
+      isDeleted: false,
+      deletedAt: null,
+      version: 1,
     };
 
     return this.insightRepository.create(data);

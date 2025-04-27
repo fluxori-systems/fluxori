@@ -33,7 +33,8 @@ export class AuthService {
    */
   async validateUser(loginDto: LoginDto): Promise<User> {
     try {
-      const { email, password } = loginDto;
+      // Extract email; password is verified by FirebaseAuthService internally
+      const { email } = loginDto;
 
       // Check if user exists in our database
       const user = await this.userRepository.findByEmail(email);

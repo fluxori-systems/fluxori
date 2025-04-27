@@ -6,7 +6,7 @@ import {
 } from '../../../common/repositories';
 import { FirestoreConfigService } from '../../../config/firestore.config';
 import { WarehouseType } from '../interfaces/types';
-import { Warehouse } from '../models/warehouse.schema';
+import { Warehouse } from '../models/warehouse.schema'; // Warehouse now extends TenantEntity
 
 /**
  * Repository for Warehouse entities

@@ -85,7 +85,7 @@ class SeoOptimizationDto {
   /**
    * Product ID to optimize
    */
-  productId: string;
+  productId!: string;
 }
 
 /**
@@ -95,7 +95,7 @@ class AttributeExtractionDto {
   /**
    * Unstructured product text to extract attributes from
    */
-  productText: string;
+  productText!: string;
 
   /**
    * Product category for context (optional)

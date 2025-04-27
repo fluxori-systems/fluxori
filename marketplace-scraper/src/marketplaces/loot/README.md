@@ -47,14 +47,14 @@ async def extract_product():
     # Initialize dependencies
     proxy_client = SmartProxyClient()
     storage_client = MarketplaceDataRepository()
-    
+
     # Create scraper
     loot_scraper = LootScraper(proxy_client, storage_client)
-    
+
     # Extract product details
     product_url = "https://www.loot.co.za/product/harry-potter-and-the-philosopher-s-stone/qbfr-930-g010"
     product_data = await loot_scraper.extract_product_details(product_url)
-    
+
     return product_data
 ```
 
@@ -63,14 +63,14 @@ async def extract_product():
 ```python
 async def search_products():
     # Initialize scraper (see above)
-    
+
     # Search for products
     search_results = await loot_scraper.search_products(
         keyword="smartphone",
         page=1,
         limit=20
     )
-    
+
     return search_results
 ```
 
@@ -79,10 +79,10 @@ async def search_products():
 ```python
 async def extract_deals():
     # Initialize scraper (see above)
-    
+
     # Get daily deals
     deals = await loot_scraper.extract_daily_deals()
-    
+
     return deals
 ```
 
@@ -91,13 +91,13 @@ async def extract_deals():
 ```python
 async def discover_by_category():
     # Initialize scraper (see above)
-    
+
     # Discover products in a category
     products = await loot_scraper.discover_products_by_category(
         category_slug="electronics-5",
         max_pages=3
     )
-    
+
     return products
 ```
 

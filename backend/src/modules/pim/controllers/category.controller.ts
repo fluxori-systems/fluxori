@@ -48,6 +48,12 @@ export class CategoryController {
     @GetUser() user: User,
   ): Promise<Category> {
     const organizationId = user.organizationId;
+    if (!organizationId) {
+      throw new HttpException(
+        'Missing organizationId for user',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
     const category = await this.categoryService.getCategoryById(
       id,
       organizationId,
@@ -161,7 +167,12 @@ export class CategoryController {
     @GetUser() user: User,
   ): Promise<Category> {
     const organizationId = user.organizationId;
-
+    if (!organizationId) {
+      throw new HttpException(
+        'Missing organizationId for user',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
     // Ensure user can only update their organization's categories
     updateCategoryDto.organizationId = organizationId;
 
@@ -188,7 +199,12 @@ export class CategoryController {
     @GetUser() user: User,
   ): Promise<void> {
     const organizationId = user.organizationId;
-
+    if (!organizationId) {
+      throw new HttpException(
+        'Missing organizationId for user',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
     const category = await this.categoryService.getCategoryById(
       id,
       organizationId,
@@ -215,6 +231,12 @@ export class CategoryController {
     @GetUser() user: User,
   ): Promise<CategoryNode[]> {
     const organizationId = user.organizationId;
+    if (!organizationId) {
+      throw new HttpException(
+        'Missing organizationId for user',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
     return await this.categoryService.getCategoryTree(
       organizationId,
       rootOnly,
@@ -231,6 +253,12 @@ export class CategoryController {
   @Get('roots')
   async getRootCategories(@GetUser() user: User): Promise<Category[]> {
     const organizationId = user.organizationId;
+    if (!organizationId) {
+      throw new HttpException(
+        'Missing organizationId for user',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
     return await this.categoryService.getRootCategories(organizationId);
   }
 
@@ -247,6 +275,12 @@ export class CategoryController {
     @GetUser() user: User,
   ): Promise<Category[]> {
     const organizationId = user.organizationId;
+    if (!organizationId) {
+      throw new HttpException(
+        'Missing organizationId for user',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
     return await this.categoryService.getChildCategories(
       organizationId,
       parentId,
@@ -266,6 +300,12 @@ export class CategoryController {
     @GetUser() user: User,
   ): Promise<Category[]> {
     const organizationId = user.organizationId;
+    if (!organizationId) {
+      throw new HttpException(
+        'Missing organizationId for user',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
     return await this.categoryService.getCategoriesByMarketplace(
       organizationId,
       marketplaceId,
@@ -285,6 +325,12 @@ export class CategoryController {
     @GetUser() user: User,
   ): Promise<Category[]> {
     const organizationId = user.organizationId;
+    if (!organizationId) {
+      throw new HttpException(
+        'Missing organizationId for user',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
     return await this.categoryService.getCategoryPath(organizationId, id);
   }
 
@@ -301,7 +347,12 @@ export class CategoryController {
     @GetUser() user: User,
   ): Promise<Array<OperationResult<Category>>> {
     const organizationId = user.organizationId;
-
+    if (!organizationId) {
+      throw new HttpException(
+        'Missing organizationId for user',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
     // Enforce organization ID for security
     operations = operations.map((op) => ({
       ...op,
@@ -327,6 +378,12 @@ export class CategoryController {
     @GetUser() user: User,
   ): Promise<Array<OperationResult>> {
     const organizationId = user.organizationId;
+    if (!organizationId) {
+      throw new HttpException(
+        'Missing organizationId for user',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
     return await this.categoryService.bulkDeleteCategories(
       organizationId,
       body.categoryIds,
@@ -347,6 +404,12 @@ export class CategoryController {
     @GetUser() user: User,
   ): Promise<Category[]> {
     const organizationId = user.organizationId;
+    if (!organizationId) {
+      throw new HttpException(
+        'Missing organizationId for user',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
     return await this.categoryService.reorderCategories(
       organizationId,
       body.parentId,

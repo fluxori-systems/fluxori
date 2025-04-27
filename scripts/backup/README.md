@@ -25,23 +25,34 @@ The backup configuration is defined in the `backup-and-restore.js` file:
 
 ```javascript
 const CONFIG = {
-  backupBucket: 'fluxori-backups',        // Destination bucket for backups
-  backupPrefix: 'scheduled-backups',       // Folder prefix in the bucket
-  backupRetentionDays: 30,                 // How many days to keep backups
+  backupBucket: "fluxori-backups", // Destination bucket for backups
+  backupPrefix: "scheduled-backups", // Folder prefix in the bucket
+  backupRetentionDays: 30, // How many days to keep backups
   regions: {
-    main: 'africa-south1',                 // Primary region (Johannesburg)
-    fallback: 'europe-west4'               // Fallback region (Netherlands)
+    main: "africa-south1", // Primary region (Johannesburg)
+    fallback: "europe-west4", // Fallback region (Netherlands)
   },
   services: {
     firestore: {
-      collections: ['users', 'organizations', 'products', 'orders', 'insights', 'documents'],
-      backupDir: 'firestore'
+      collections: [
+        "users",
+        "organizations",
+        "products",
+        "orders",
+        "insights",
+        "documents",
+      ],
+      backupDir: "firestore",
     },
     storage: {
-      buckets: ['fluxori-user-uploads', 'fluxori-public-assets', 'fluxori-documents'],
-      backupDir: 'storage'
-    }
-  }
+      buckets: [
+        "fluxori-user-uploads",
+        "fluxori-public-assets",
+        "fluxori-documents",
+      ],
+      backupDir: "storage",
+    },
+  },
 };
 ```
 

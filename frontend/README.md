@@ -45,13 +45,13 @@ This is the frontend application for Fluxori, a comprehensive e-commerce operati
 
 ```tsx
 // Route-level protection (whole page)
-import RouteGuard from '@/components/auth/route-guard';
+import RouteGuard from "@/components/auth/route-guard";
 
 export default function ProtectedPage() {
   return (
-    <RouteGuard 
-      requiredRole="admin" 
-      requiredPermissions={['settings:write']} 
+    <RouteGuard
+      requiredRole="admin"
+      requiredPermissions={["settings:write"]}
       redirectTo="/login"
     >
       <AdminContent />
@@ -60,14 +60,17 @@ export default function ProtectedPage() {
 }
 
 // Component-level protection (UI elements)
-import PermissionGuard from '@/components/auth/permission-guard';
+import PermissionGuard from "@/components/auth/permission-guard";
 
 export function MyComponent() {
   return (
     <>
       <Content />
-      
-      <PermissionGuard permission="users:write" fallback={<RestrictedMessage />}>
+
+      <PermissionGuard
+        permission="users:write"
+        fallback={<RestrictedMessage />}
+      >
         <AdminControls />
       </PermissionGuard>
     </>
@@ -75,16 +78,16 @@ export function MyComponent() {
 }
 
 // Hooks-based access control (conditional rendering)
-import { useAuth } from '@/hooks/useAuth';
+import { useAuth } from "@/hooks/useAuth";
 
 export function MyComponent() {
   const { hasPermission, isAdmin, hasRole } = useAuth();
-  
+
   return (
     <>
-      {hasPermission('inventory:read') && <InventoryData />}
+      {hasPermission("inventory:read") && <InventoryData />}
       {isAdmin && <AdminPanel />}
-      {hasRole('manager') && <ManagerTools />}
+      {hasRole("manager") && <ManagerTools />}
     </>
   );
 }
@@ -101,21 +104,24 @@ export function MyComponent() {
 ### Installation
 
 1. Clone the repository:
+
    ```bash
    git clone https://github.com/yourusername/fluxori.git
    cd fluxori/frontend
    ```
 
 2. Install dependencies:
+
    ```bash
    npm install
    ```
 
 3. Copy the environment variables file and configure it:
+
    ```bash
    cp .env.local.example .env.local
    ```
-   
+
    Edit `.env.local` with your Firebase project configuration.
 
 4. Start the development server:
@@ -138,11 +144,13 @@ The application will be available at http://localhost:3000.
 For local development, you can use Firebase emulators to simulate Firebase services:
 
 1. Install Firebase tools:
+
    ```bash
    npm install -g firebase-tools
    ```
 
 2. Initialize Firebase in your project:
+
    ```bash
    firebase init emulators
    ```
@@ -150,6 +158,7 @@ For local development, you can use Firebase emulators to simulate Firebase servi
 3. Configure emulators for Authentication, Firestore, and Storage.
 
 4. Start the emulators:
+
    ```bash
    firebase emulators:start
    ```
@@ -211,16 +220,12 @@ Our components extend Mantine with specialized features:
 Import components from our UI library:
 
 ```tsx
-import { Button, Card, Text, Container } from '@/lib/ui';
+import { Button, Card, Text, Container } from "@/lib/ui";
 
 // Example usage with design system tokens and animation
-<Button 
-  intent="primary" 
-  animated 
-  radius="md"
->
+<Button intent="primary" animated radius="md">
   Click Me
-</Button>
+</Button>;
 ```
 
 ### 4. Available Component Types
@@ -286,7 +291,7 @@ Custom ESLint rules enforce proper Mantine UI usage and Next.js best practices:
 A typed UI component library is available at `/src/lib/ui-components`. Use these components to ensure proper typing:
 
 ```tsx
-import { Text, Button, Group } from '@/lib/ui-components';
+import { Text, Button, Group } from "@/lib/ui-components";
 ```
 
 ### 4. Pre-commit Hooks

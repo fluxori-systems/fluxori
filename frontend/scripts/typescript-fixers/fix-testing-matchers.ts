@@ -1,18 +1,18 @@
 /**
  * TypeScript fixer for jest-dom matchers with Vitest
- * 
+ *
  * This script creates proper type declarations for jest-dom
  * matchers when used with Vitest. It solves the common problem
  * where TypeScript doesn't recognize matchers like toBeInTheDocument()
  * and toHaveAttribute() in test files, requiring @ts-expect-error.
  */
 
-import * as fs from 'fs';
-import * as path from 'path';
+import * as fs from "fs";
+import * as path from "path";
 
 // Define the path for our global augmentation file
-const typesDir = path.resolve(__dirname, '../../src/types');
-const targetFile = path.join(typesDir, 'vitest-matchers.d.ts');
+const typesDir = path.resolve(__dirname, "../../src/types");
+const targetFile = path.join(typesDir, "vitest-matchers.d.ts");
 
 // Ensure the directory exists
 if (!fs.existsSync(typesDir)) {
@@ -117,40 +117,42 @@ declare global {
 fs.writeFileSync(targetFile, typeDeclaration);
 
 // Update tsconfig.json to include the new types file
-const tsconfigPath = path.resolve(__dirname, '../../tsconfig.json');
+const tsconfigPath = path.resolve(__dirname, "../../tsconfig.json");
 let tsconfig;
 
 try {
-  const tsconfigContent = fs.readFileSync(tsconfigPath, 'utf8');
+  const tsconfigContent = fs.readFileSync(tsconfigPath, "utf8");
   tsconfig = JSON.parse(tsconfigContent);
-  
+
   // Make sure we have a types array
   if (!tsconfig.compilerOptions) {
     tsconfig.compilerOptions = {};
   }
-  
+
   if (!tsconfig.compilerOptions.types) {
     tsconfig.compilerOptions.types = [];
   }
-  
+
   // Add our file to the types if it's not already there
-  const relativePath = './src/types/vitest-matchers';
+  const relativePath = "./src/types/vitest-matchers";
   if (!tsconfig.compilerOptions.types.includes(relativePath)) {
     tsconfig.compilerOptions.types.push(relativePath);
-    
+
     // Write back the updated config
     fs.writeFileSync(tsconfigPath, JSON.stringify(tsconfig, null, 2));
   }
-  
-  console.log('Successfully created vitest-matchers.d.ts and updated tsconfig.json');
+
+  console.log(
+    "Successfully created vitest-matchers.d.ts and updated tsconfig.json",
+  );
 } catch (error) {
-  console.error('Error updating tsconfig.json:', error);
+  console.error("Error updating tsconfig.json:", error);
 }
 
 // Fix the test files to remove @ts-expect-error comments
 const testDirs = [
-  path.resolve(__dirname, '../../src/lib/ui/components/__tests__'),
-  path.resolve(__dirname, '../../src/components/__tests__'),
+  path.resolve(__dirname, "../../src/lib/ui/components/__tests__"),
+  path.resolve(__dirname, "../../src/components/__tests__"),
   // Add other test directories as needed
 ];
 
@@ -160,16 +162,21 @@ for (const dir of testDirs) {
     console.log(`Skipping non-existent directory: ${dir}`);
     continue;
   }
-  
-  const files = fs.readdirSync(dir).filter(file => file.endsWith('.spec.tsx') || file.endsWith('.test.tsx'));
-  
+
+  const files = fs
+    .readdirSync(dir)
+    .filter((file) => file.endsWith(".spec.tsx") || file.endsWith(".test.tsx"));
+
   for (const file of files) {
     const filePath = path.join(dir, file);
-    let content = fs.readFileSync(filePath, 'utf8');
-    
+    let content = fs.readFileSync(filePath, "utf8");
+
     // Replace all @ts-expect-error comments for jest-dom matchers
-    const updatedContent = content.replace(/\/\/ @ts-expect-error.*jest-dom\s*\n/g, '');
-    
+    const updatedContent = content.replace(
+      /\/\/ @ts-expect-error.*jest-dom\s*\n/g,
+      "",
+    );
+
     if (content !== updatedContent) {
       fs.writeFileSync(filePath, updatedContent);
       console.log(`Fixed TypeScript suppressions in: ${filePath}`);
@@ -177,4 +184,4 @@ for (const dir of testDirs) {
   }
 }
 
-console.log('TypeScript fixing for testing library matchers completed!');
+console.log("TypeScript fixing for testing library matchers completed!");

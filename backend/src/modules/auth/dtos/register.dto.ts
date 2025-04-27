@@ -23,7 +23,7 @@ export class RegisterDto {
   })
   @IsString()
   @IsNotEmpty({ message: 'Name is required' })
-  name: string;
+  name!: string;
 
   @ApiProperty({
     description: 'User email address',
@@ -31,7 +31,7 @@ export class RegisterDto {
   })
   @IsEmail({}, { message: 'Please provide a valid email address' })
   @IsNotEmpty({ message: 'Email is required' })
-  email: string;
+  email!: string;
 
   @ApiProperty({
     description: 'User password',
@@ -45,7 +45,7 @@ export class RegisterDto {
     message:
       'Password must contain at least one lowercase letter, one uppercase letter, one number, and one special character',
   })
-  password: string;
+  password!: string;
 
   @ApiPropertyOptional({
     description: 'User role',

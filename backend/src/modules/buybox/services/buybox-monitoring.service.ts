@@ -35,6 +35,8 @@ export interface CompetitorListing {
 /**
  * Service for BuyBox monitoring operations
  */
+import { BuyBoxHistory } from '../models/buybox-history.schema';
+
 @Injectable()
 export class BuyBoxMonitoringService {
   private readonly logger = new Logger(BuyBoxMonitoringService.name);
@@ -144,10 +146,7 @@ export class BuyBoxMonitoringService {
     // Create or update status
     if (status) {
       // Update existing status
-      status = (await this.buyBoxStatusRepository.update(
-        status.id,
-        statusData,
-      )) as BuyBoxStatus;
+      status = await this.buyBoxStatusRepository.update(status.id, statusData);
     } else {
       // Create new status
       status = await this.buyBoxStatusRepository.create(
@@ -209,7 +208,7 @@ export class BuyBoxMonitoringService {
     productId: string,
     marketplaceId: string,
     limit: number = 100,
-  ): Promise<any[]> {
+  ): Promise<BuyBoxHistory[]> {
     return this.buyBoxHistoryRepository.findByProductAndMarketplace(
       productId,
       marketplaceId,

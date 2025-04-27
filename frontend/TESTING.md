@@ -48,11 +48,11 @@ src/
 Use the `renderWithProviders` utility to ensure components have access to all necessary contexts:
 
 ```tsx
-import { renderWithProviders } from '../../../testing/utils/render';
+import { renderWithProviders } from "../../../testing/utils/render";
 
-test('renders component', () => {
+test("renders component", () => {
   const { getByText } = renderWithProviders(<MyComponent />);
-  expect(getByText('Hello')).toBeInTheDocument();
+  expect(getByText("Hello")).toBeInTheDocument();
 });
 ```
 
@@ -61,19 +61,17 @@ test('renders component', () => {
 For components that adapt to network conditions, use the network testing utilities:
 
 ```tsx
-import { setupNetworkConditions } from '../../../testing/utils/networkTesting';
+import { setupNetworkConditions } from "../../../testing/utils/networkTesting";
 
-test('optimizes for slow networks', () => {
+test("optimizes for slow networks", () => {
   const { cleanup } = setupNetworkConditions({
-    preset: 'POOR', // Preset for South African rural networks
+    preset: "POOR", // Preset for South African rural networks
   });
-  
+
   try {
     // Test component with poor network conditions
-    const { getByTestId } = renderWithProviders(
-      <NetworkAwareComponent />
-    );
-    expect(getByTestId('component')).toHaveAttribute('data-optimized', 'true');
+    const { getByTestId } = renderWithProviders(<NetworkAwareComponent />);
+    expect(getByTestId("component")).toHaveAttribute("data-optimized", "true");
   } finally {
     cleanup(); // Always clean up network mocks
   }
@@ -92,16 +90,16 @@ For components that use hooks, create simplified mock implementations:
 
 ```tsx
 // GOOD: Mock at the module level with a simplified implementation
-vi.mock('../Component', () => ({
+vi.mock("../Component", () => ({
   Component: (props) => (
     <div data-testid="mocked-component" {...props}>
       {props.children}
     </div>
-  )
+  ),
 }));
 
 // Then import the mocked component
-import { Component } from '../Component';
+import { Component } from "../Component";
 ```
 
 ### Simplified Network-Aware Testing
@@ -110,23 +108,23 @@ For components that adapt to network conditions:
 
 ```tsx
 // Mock a component with network awareness
-vi.mock('../NetworkAwareComponent', () => ({
+vi.mock("../NetworkAwareComponent", () => ({
   NetworkAwareComponent: (props) => {
     // Check connection quality
     const connection = navigator.connection || {};
     const isSlowConnection = (connection.downlink || 10) < 2;
-    
+
     // Return simplified component with appropriate attributes
     return (
-      <div 
+      <div
         data-testid="network-component"
-        data-optimized={isSlowConnection ? 'true' : undefined}
+        data-optimized={isSlowConnection ? "true" : undefined}
         {...props}
       >
         {props.children}
       </div>
     );
-  }
+  },
 }));
 ```
 
@@ -135,28 +133,28 @@ vi.mock('../NetworkAwareComponent', () => ({
 Each test file should follow this structure:
 
 ```tsx
-'use client'; // Required for React component tests
+"use client"; // Required for React component tests
 
-import React from 'react';
-import { describe, test, expect, vi } from 'vitest';
-import { renderWithProviders } from '../../../../testing/utils/render';
+import React from "react";
+import { describe, test, expect, vi } from "vitest";
+import { renderWithProviders } from "../../../../testing/utils/render";
 
 // Mock component if it uses hooks
-vi.mock('../ComponentName', () => ({
+vi.mock("../ComponentName", () => ({
   ComponentName: (props) => {
     // Simplified implementation
     return <div {...props}>{props.children}</div>;
-  }
+  },
 }));
 
 // Import component after mocking
-import { ComponentName } from '../ComponentName';
+import { ComponentName } from "../ComponentName";
 
-describe('ComponentName', () => {
-  test('basic functionality', () => {
+describe("ComponentName", () => {
+  test("basic functionality", () => {
     // Test implementation
   });
-  
+
   // Additional test cases...
 });
 ```

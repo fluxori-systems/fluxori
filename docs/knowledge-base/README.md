@@ -39,7 +39,7 @@ The knowledge base has been implemented as a collection of Markdown files, organ
 
 - [South African Marketplaces Guide](/docs/knowledge-base/marketplace/south-african-marketplaces.md): Specific information for integrating with popular South African online marketplaces
 
-### Inventory Management 
+### Inventory Management
 
 - [Inventory Reports Explained](/docs/knowledge-base/inventory/inventory-reports-explained.md): Guide to understanding inventory reports and metrics
 
@@ -88,6 +88,6 @@ When contributing to the knowledge base, please follow these guidelines:
 
 ## Deployment
 
-The knowledge base is deployed as part of the Fluxori platform and is accessible from within the application as well as through direct links. 
+The knowledge base is deployed as part of the Fluxori platform and is accessible from within the application as well as through direct links.
 
 The knowledge base Markdown files are processed at build time and served as HTML, with proper navigation and styling to match the Fluxori user interface.

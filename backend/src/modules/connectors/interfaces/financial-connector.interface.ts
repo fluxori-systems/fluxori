@@ -19,26 +19,30 @@ export interface OrganizationEntity {
   id: string;
   externalId: string;
   name: string;
-  [key: string]: any;
+  // TODO: Replace with explicit fields as requirements become clear
+  [key: string]: unknown;
 }
 
 export interface ContactEntity {
   id: string;
   externalId: string;
   name: string;
-  [key: string]: any;
+  // TODO: Replace with explicit fields as requirements become clear
+  [key: string]: unknown;
 }
 
 export interface InvoiceEntity {
   id: string;
   externalId: string;
-  [key: string]: any;
+  // TODO: Replace with explicit fields as requirements become clear
+  [key: string]: unknown;
 }
 
 export interface PaymentEntity {
   id: string;
   externalId: string;
-  [key: string]: any;
+  // TODO: Replace with explicit fields as requirements become clear
+  [key: string]: unknown;
 }
 
 export interface TaxRateEntity {
@@ -46,7 +50,8 @@ export interface TaxRateEntity {
   externalId: string;
   name: string;
   rate: number;
-  [key: string]: any;
+  // TODO: Replace with explicit fields as requirements become clear
+  [key: string]: unknown;
 }
 
 /**

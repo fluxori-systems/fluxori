@@ -42,20 +42,20 @@ export class YourService {
   async doSomething() {
     // Log something
     this.observability.log('Operation started', 'YourService');
-    
+
     // Create a trace
     const span = this.observability.startTrace('your-operation');
-    
+
     try {
       // Perform your operation
       const result = await this.performOperation();
-      
+
       // Record a metric
       this.observability.incrementCounter('your.operation.count');
-      
+
       // End the span
       span.end();
-      
+
       return result;
     } catch (error) {
       // Record error
@@ -81,7 +81,7 @@ observability.log('Order processed', {
   service: 'OrderService',
   userId: order.userId,
   organizationId: order.organizationId,
-  data: { orderId: order.id, total: order.total }
+  data: { orderId: order.id, total: order.total },
 });
 
 // Error logging
@@ -98,16 +98,16 @@ try {
 // Start a new trace
 const span = observability.startTrace('process-order', {
   orderId: order.id,
-  userId: user.id
+  userId: user.id,
 });
 
 // Add more attributes
 span.setAttribute('orderValue', order.total);
 
 // Record events
-span.addEvent('payment-processed', { 
+span.addEvent('payment-processed', {
   provider: 'stripe',
-  amount: order.total 
+  amount: order.total,
 });
 
 // Handle errors
@@ -126,7 +126,7 @@ span.end();
 const result = await observability.traceFunction(
   'validate-inventory',
   () => this.inventoryService.validateStock(items),
-  span // parent span
+  span, // parent span
 );
 ```
 
@@ -140,7 +140,7 @@ observability.incrementCounter('order.items.count', order.items.length);
 // Record gauges
 observability.recordGauge('inventory.stock.level', stockLevel, {
   productId: product.id,
-  warehouseId: warehouse.id
+  warehouseId: warehouse.id,
 });
 
 // Record distributions (for timings, sizes, etc.)
@@ -148,18 +148,13 @@ observability.recordDistribution('order.processing.time', processingTimeMs);
 
 // Using timers
 const stopTimer = observability.startTimer('inventory.check.duration', {
-  warehouseId: warehouse.id
+  warehouseId: warehouse.id,
 });
 // ... perform inventory check
 stopTimer(); // This will record the duration
 
 // Track database operations
-observability.trackDatabaseOperation(
-  'query',
-  'products',
-  queryTimeMs,
-  success
-);
+observability.trackDatabaseOperation('query', 'products', queryTimeMs, success);
 
 // Track AI model usage
 observability.trackAIModelUsage(
@@ -169,7 +164,7 @@ observability.trackAIModelUsage(
   outputTokens,
   durationMs,
   creditCost,
-  organizationId
+  organizationId,
 );
 ```
 
@@ -184,14 +179,14 @@ observability.registerHealthCheck('database.connection', async () => {
       component: 'database.connection',
       status: 'healthy',
       details: { latency: pingTimeMs },
-      timestamp: new Date()
+      timestamp: new Date(),
     };
   } catch (error) {
     return {
       component: 'database.connection',
       status: 'unhealthy',
       details: { error: error.message },
-      timestamp: new Date()
+      timestamp: new Date(),
     };
   }
 });
@@ -211,18 +206,22 @@ The Observability module provides the following interceptors that can be applied
 
 ```typescript
 // In main.ts to apply globally
-import { TracingInterceptor, MetricsInterceptor, LoggingInterceptor } from './common/observability';
+import {
+  TracingInterceptor,
+  MetricsInterceptor,
+  LoggingInterceptor,
+} from './common/observability';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  
+
   // Apply interceptors globally
   app.useGlobalInterceptors(
     app.get(TracingInterceptor),
     app.get(MetricsInterceptor),
-    app.get(LoggingInterceptor)
+    app.get(LoggingInterceptor),
   );
-  
+
   await app.listen(3000);
 }
 ```
@@ -240,30 +239,30 @@ ObservabilityModule.registerWithOptions({
     logLevel: 'log',
     sanitizeLogs: true,
     useJsonFormat: true,
-    debugSamplingRate: 0.05
+    debugSamplingRate: 0.05,
   },
   tracing: {
     enabled: true,
     defaultSamplingRate: 1.0,
     pathSamplingRates: {
       '^/api/health': 0.1,
-      '^/api/metrics': 0.1
+      '^/api/metrics': 0.1,
     },
     includeRequestBodies: false,
-    includeResponseBodies: false
+    includeResponseBodies: false,
   },
   metrics: {
     enabled: true,
     registerDefaultMetrics: true,
     metricPrefix: 'fluxori.',
-    collectionInterval: 60000
+    collectionInterval: 60000,
   },
   health: {
     enabled: true,
     registerDefaultHealthChecks: true,
     healthCheckInterval: 60000,
-    exposeDetails: false
-  }
+    exposeDetails: false,
+  },
 });
 ```
 

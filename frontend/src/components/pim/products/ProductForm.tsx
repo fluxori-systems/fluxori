@@ -1,55 +1,62 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 
-import { useRouter } from 'next/navigation';
+import { useRouter } from "next/navigation";
 
-import { api } from '../../../api/apiClient';
-import { useNetworkStatus, useImageUpload } from '../../../hooks';
-import { 
-  Product, 
-  ProductStatus, 
-  ProductType, 
-  CreateProductDto, 
-  UpdateProductDto, 
-  ProductCategory
-} from '../../../types/product/product.types';
+import { api } from "../../../api/apiClient";
+import { useNetworkStatus, useImageUpload } from "../../../hooks";
+import {
+  Product,
+  ProductStatus,
+  ProductType,
+  CreateProductDto,
+  UpdateProductDto,
+  ProductCategory,
+} from "../../../types/product/product.types";
 
 interface ProductFormProps {
   productId?: string; // If provided, we're editing an existing product
   initialData?: Product; // Optional initial data for the form
 }
 
-export default function ProductForm({ productId, initialData }: ProductFormProps) {
+export default function ProductForm({
+  productId,
+  initialData,
+}: ProductFormProps) {
   const router = useRouter();
   const { isOnline, connectionQuality } = useNetworkStatus();
-  const { uploadImage, isUploading, error: imageUploadError } = useImageUpload();
-  
+  const {
+    uploadImage,
+    isUploading,
+    error: imageUploadError,
+  } = useImageUpload();
+
   // Form state
   const [formData, setFormData] = useState<CreateProductDto>({
-    sku: '',
-    name: '',
-    description: '',
+    sku: "",
+    name: "",
+    description: "",
     type: ProductType.PHYSICAL,
     status: ProductStatus.DRAFT,
     categoryIds: [],
     pricing: {
       basePrice: 0,
-      currency: 'ZAR',
+      currency: "ZAR",
     },
     hasVariants: false,
     stockQuantity: 0,
     attributes: {},
     tags: [],
   });
-  
+
   // UI state
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [imageSrc, setImageSrc] = useState<string | null>(null);
   const [categories, setCategories] = useState<ProductCategory[]>([]);
-  
+
   // Load product data if editing
   useEffect(() => {
     const initializeForm = async () => {
@@ -58,7 +65,7 @@ export default function ProductForm({ productId, initialData }: ProductFormProps
         setFormData({
           sku: initialData.sku,
           name: initialData.name,
-          description: initialData.description || '',
+          description: initialData.description || "",
           type: initialData.type,
           status: initialData.status,
           categoryIds: initialData.categoryIds || [],
@@ -69,30 +76,32 @@ export default function ProductForm({ productId, initialData }: ProductFormProps
           attributes: initialData.attributes || {},
           tags: initialData.tags || [],
         });
-        
+
         if (initialData.mainImageUrl) {
           setImageSrc(initialData.mainImageUrl);
         }
-        
+
         setLoading(false);
         return;
       }
-      
+
       // If productId is provided but no initialData, load the product
       if (productId) {
         if (!isOnline) {
-          setError('Cannot load product while offline. Please check your connection.');
+          setError(
+            "Cannot load product while offline. Please check your connection.",
+          );
           setLoading(false);
           return;
         }
-        
+
         try {
           const product = await api.pim.getProduct(productId);
-          
+
           setFormData({
             sku: product.sku,
             name: product.name,
-            description: product.description || '',
+            description: product.description || "",
             type: product.type,
             status: product.status,
             categoryIds: product.categoryIds || [],
@@ -103,41 +112,45 @@ export default function ProductForm({ productId, initialData }: ProductFormProps
             attributes: product.attributes || {},
             tags: product.tags || [],
           });
-          
+
           if (product.mainImageUrl) {
             setImageSrc(product.mainImageUrl);
           }
         } catch (err) {
-          console.error('Failed to load product:', err);
-          setError('Failed to load product. Please try again later.');
+          console.error("Failed to load product:", err);
+          setError("Failed to load product. Please try again later.");
         }
       }
-      
+
       setLoading(false);
     };
-    
+
     const loadCategories = async () => {
       if (!isOnline) {
         return;
       }
-      
+
       try {
         const categoryData = await api.pim.getCategories();
         setCategories(categoryData);
       } catch (err) {
-        console.error('Failed to load categories:', err);
+        console.error("Failed to load categories:", err);
       }
     };
-    
+
     Promise.all([initializeForm(), loadCategories()]);
   }, [productId, initialData, isOnline]);
-  
+
   // Handle form field changes
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >,
+  ) => {
     const { name, value } = e.target;
-    
-    if (name.startsWith('pricing.')) {
-      const pricingField = name.split('.')[1];
+
+    if (name.startsWith("pricing.")) {
+      const pricingField = name.split(".")[1];
       setFormData({
         ...formData,
         pricing: {
@@ -152,14 +165,14 @@ export default function ProductForm({ productId, initialData }: ProductFormProps
       });
     }
   };
-  
+
   // Handle numeric field changes
   const handleNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     const numericValue = parseFloat(value) || 0;
-    
-    if (name.startsWith('pricing.')) {
-      const pricingField = name.split('.')[1];
+
+    if (name.startsWith("pricing.")) {
+      const pricingField = name.split(".")[1];
       setFormData({
         ...formData,
         pricing: {
@@ -174,7 +187,7 @@ export default function ProductForm({ productId, initialData }: ProductFormProps
       });
     }
   };
-  
+
   // Handle checkbox changes
   const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, checked } = e.target;
@@ -183,25 +196,25 @@ export default function ProductForm({ productId, initialData }: ProductFormProps
       [name]: checked,
     });
   };
-  
+
   // Handle image upload
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files || e.target.files.length === 0) {
       return;
     }
-    
+
     const file = e.target.files[0];
-    
+
     try {
       // Use the uploadImage hook to handle the upload with network-aware optimization
       const result = await uploadImage(file, {
-        path: 'products',
-        filename: `${formData.sku || 'product'}-${Date.now()}`,
+        path: "products",
+        filename: `${formData.sku || "product"}-${Date.now()}`,
         compress: true,
         networkAware: true,
         useWebP: true,
       });
-      
+
       if (result?.url) {
         setImageSrc(result.url);
         // If we're editing a product, update the mainImageUrl field
@@ -213,101 +226,107 @@ export default function ProductForm({ productId, initialData }: ProductFormProps
         } else {
           // Otherwise just update the form data with the mainImageUrl
           setFormData({
-            ...formData as CreateProductDto,
+            ...(formData as CreateProductDto),
             mainImageUrl: result.url,
           } as CreateProductDto);
         }
       }
     } catch (err) {
-      console.error('Failed to upload image:', err);
-      setError('Failed to upload image. Please try again.');
+      console.error("Failed to upload image:", err);
+      setError("Failed to upload image. Please try again.");
     }
   };
-  
+
   // Handle multi-select for categories
   const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedOptions = Array.from(e.target.selectedOptions).map(option => option.value);
+    const selectedOptions = Array.from(e.target.selectedOptions).map(
+      (option) => option.value,
+    );
     setFormData({
       ...formData,
       categoryIds: selectedOptions,
     });
   };
-  
+
   // Handle tags input
   const handleTagsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const tags = e.target.value.split(',').map(tag => tag.trim());
+    const tags = e.target.value.split(",").map((tag) => tag.trim());
     setFormData({
       ...formData,
       tags,
     });
   };
-  
+
   // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!isOnline) {
-      setError('Cannot save product while offline. Please check your connection.');
+      setError(
+        "Cannot save product while offline. Please check your connection.",
+      );
       return;
     }
-    
+
     setSaving(true);
     setError(null);
-    
+
     try {
       // Update or create product
       if (productId) {
         await api.pim.updateProduct(productId, formData as UpdateProductDto);
       } else {
-        const newProduct = await api.pim.createProduct(formData as CreateProductDto);
+        const newProduct = await api.pim.createProduct(
+          formData as CreateProductDto,
+        );
         // Redirect to the edit page for the new product
         router.push(`/products/${newProduct.id}/edit`);
         return; // Return early to prevent the redirect below
       }
-      
+
       // Redirect to the products list
-      router.push('/products');
+      router.push("/products");
     } catch (err) {
-      console.error('Failed to save product:', err);
-      setError('Failed to save product. Please check your inputs and try again.');
+      console.error("Failed to save product:", err);
+      setError(
+        "Failed to save product. Please check your inputs and try again.",
+      );
     } finally {
       setSaving(false);
     }
   };
-  
+
   // Handle form cancellation
   const handleCancel = () => {
-    router.push('/products');
+    router.push("/products");
   };
-  
+
   // Loading state
   if (loading) {
     return <div className="p-4 text-center">Loading product data...</div>;
   }
-  
+
   return (
     <div className="max-w-4xl mx-auto p-4">
       <h1 className="text-2xl font-bold mb-6">
-        {productId ? 'Edit Product' : 'Create New Product'}
+        {productId ? "Edit Product" : "Create New Product"}
       </h1>
-      
+
       {error && (
-        <div className="mb-6 p-4 bg-red-100 text-red-800 rounded">
-          {error}
-        </div>
+        <div className="mb-6 p-4 bg-red-100 text-red-800 rounded">{error}</div>
       )}
-      
+
       {!isOnline && (
         <div className="mb-6 p-4 bg-yellow-100 text-yellow-800 rounded">
           You are currently offline. Changes cannot be saved.
         </div>
       )}
-      
+
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Basic Information */}
         <div className="bg-white rounded shadow p-6">
           <h2 className="text-xl font-semibold mb-4">Basic Information</h2>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label className="block text-gray-700 mb-2" htmlFor="sku">
@@ -323,7 +342,7 @@ export default function ProductForm({ productId, initialData }: ProductFormProps
                 className="w-full px-4 py-2 border rounded"
               />
             </div>
-            
+
             <div>
               <label className="block text-gray-700 mb-2" htmlFor="name">
                 Product Name <span className="text-red-500">*</span>
@@ -339,7 +358,7 @@ export default function ProductForm({ productId, initialData }: ProductFormProps
               />
             </div>
           </div>
-          
+
           <div className="mt-4">
             <label className="block text-gray-700 mb-2" htmlFor="description">
               Description
@@ -347,13 +366,13 @@ export default function ProductForm({ productId, initialData }: ProductFormProps
             <textarea
               id="description"
               name="description"
-              value={formData.description || ''}
+              value={formData.description || ""}
               onChange={handleChange}
               rows={4}
               className="w-full px-4 py-2 border rounded"
             />
           </div>
-          
+
           <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
               <label className="block text-gray-700 mb-2" htmlFor="type">
@@ -374,7 +393,7 @@ export default function ProductForm({ productId, initialData }: ProductFormProps
                 <option value={ProductType.SUBSCRIPTION}>Subscription</option>
               </select>
             </div>
-            
+
             <div>
               <label className="block text-gray-700 mb-2" htmlFor="status">
                 Status <span className="text-red-500">*</span>
@@ -395,7 +414,7 @@ export default function ProductForm({ productId, initialData }: ProductFormProps
                 <option value={ProductStatus.DISCONTINUED}>Discontinued</option>
               </select>
             </div>
-            
+
             <div>
               <label className="block text-gray-700 mb-2" htmlFor="hasVariants">
                 Has Variants
@@ -414,14 +433,17 @@ export default function ProductForm({ productId, initialData }: ProductFormProps
             </div>
           </div>
         </div>
-        
+
         {/* Pricing */}
         <div className="bg-white rounded shadow p-6">
           <h2 className="text-xl font-semibold mb-4">Pricing</h2>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div>
-              <label className="block text-gray-700 mb-2" htmlFor="pricing.basePrice">
+              <label
+                className="block text-gray-700 mb-2"
+                htmlFor="pricing.basePrice"
+              >
                 Base Price <span className="text-red-500">*</span>
               </label>
               <input
@@ -436,9 +458,12 @@ export default function ProductForm({ productId, initialData }: ProductFormProps
                 className="w-full px-4 py-2 border rounded"
               />
             </div>
-            
+
             <div>
-              <label className="block text-gray-700 mb-2" htmlFor="pricing.salePrice">
+              <label
+                className="block text-gray-700 mb-2"
+                htmlFor="pricing.salePrice"
+              >
                 Sale Price
               </label>
               <input
@@ -447,20 +472,23 @@ export default function ProductForm({ productId, initialData }: ProductFormProps
                 type="number"
                 min="0"
                 step="0.01"
-                value={formData.pricing?.salePrice || ''}
+                value={formData.pricing?.salePrice || ""}
                 onChange={handleNumberChange}
                 className="w-full px-4 py-2 border rounded"
               />
             </div>
-            
+
             <div>
-              <label className="block text-gray-700 mb-2" htmlFor="pricing.currency">
+              <label
+                className="block text-gray-700 mb-2"
+                htmlFor="pricing.currency"
+              >
                 Currency <span className="text-red-500">*</span>
               </label>
               <select
                 id="pricing.currency"
                 name="pricing.currency"
-                value={formData.pricing?.currency || 'ZAR'}
+                value={formData.pricing?.currency || "ZAR"}
                 onChange={handleChange}
                 required
                 className="w-full px-4 py-2 border rounded"
@@ -477,10 +505,13 @@ export default function ProductForm({ productId, initialData }: ProductFormProps
               </select>
             </div>
           </div>
-          
+
           <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-gray-700 mb-2" htmlFor="pricing.taxRate">
+              <label
+                className="block text-gray-700 mb-2"
+                htmlFor="pricing.taxRate"
+              >
                 Tax Rate (%)
               </label>
               <input
@@ -489,22 +520,25 @@ export default function ProductForm({ productId, initialData }: ProductFormProps
                 type="number"
                 min="0"
                 step="0.01"
-                value={formData.pricing?.taxRate || ''}
+                value={formData.pricing?.taxRate || ""}
                 onChange={handleNumberChange}
                 className="w-full px-4 py-2 border rounded"
                 placeholder="15"
               />
             </div>
-            
+
             <div>
-              <label className="block text-gray-700 mb-2" htmlFor="pricing.taxCode">
+              <label
+                className="block text-gray-700 mb-2"
+                htmlFor="pricing.taxCode"
+              >
                 Tax Code
               </label>
               <input
                 id="pricing.taxCode"
                 name="pricing.taxCode"
                 type="text"
-                value={formData.pricing?.taxCode || ''}
+                value={formData.pricing?.taxCode || ""}
                 onChange={handleChange}
                 className="w-full px-4 py-2 border rounded"
                 placeholder="e.g., VAT"
@@ -512,11 +546,11 @@ export default function ProductForm({ productId, initialData }: ProductFormProps
             </div>
           </div>
         </div>
-        
+
         {/* Categories */}
         <div className="bg-white rounded shadow p-6">
           <h2 className="text-xl font-semibold mb-4">Categories</h2>
-          
+
           <div>
             <label className="block text-gray-700 mb-2" htmlFor="categoryIds">
               Select Categories
@@ -529,25 +563,30 @@ export default function ProductForm({ productId, initialData }: ProductFormProps
               onChange={handleCategoryChange}
               className="w-full px-4 py-2 border rounded h-32"
             >
-              {categories.map(category => (
+              {categories.map((category) => (
                 <option key={category.id} value={category.id}>
-                  {category.path && category.path.length > 0 
-                    ? category.path.join(' > ') + ' > ' + category.name 
+                  {category.path && category.path.length > 0
+                    ? category.path.join(" > ") + " > " + category.name
                     : category.name}
                 </option>
               ))}
             </select>
-            <p className="text-sm text-gray-500 mt-1">Hold Ctrl (or Cmd) to select multiple categories</p>
+            <p className="text-sm text-gray-500 mt-1">
+              Hold Ctrl (or Cmd) to select multiple categories
+            </p>
           </div>
         </div>
-        
+
         {/* Inventory */}
         <div className="bg-white rounded shadow p-6">
           <h2 className="text-xl font-semibold mb-4">Inventory</h2>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-gray-700 mb-2" htmlFor="stockQuantity">
+              <label
+                className="block text-gray-700 mb-2"
+                htmlFor="stockQuantity"
+              >
                 Stock Quantity
               </label>
               <input
@@ -563,19 +602,19 @@ export default function ProductForm({ productId, initialData }: ProductFormProps
             </div>
           </div>
         </div>
-        
+
         {/* Images */}
         <div className="bg-white rounded shadow p-6">
           <h2 className="text-xl font-semibold mb-4">Images</h2>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label className="block text-gray-700 mb-2">Main Image</label>
               <div className="border rounded p-4 flex items-center justify-center bg-gray-100 h-40">
                 {imageSrc ? (
-                  <img 
-                    src={imageSrc} 
-                    alt="Product" 
+                  <img
+                    src={imageSrc}
+                    alt="Product"
                     className="max-h-full max-w-full object-contain"
                   />
                 ) : (
@@ -583,7 +622,7 @@ export default function ProductForm({ productId, initialData }: ProductFormProps
                 )}
               </div>
             </div>
-            
+
             <div>
               <label className="block text-gray-700 mb-2">Upload Image</label>
               <input
@@ -597,23 +636,26 @@ export default function ProductForm({ productId, initialData }: ProductFormProps
                 <div className="mt-2 text-blue-500">Uploading image...</div>
               )}
               {imageUploadError && (
-                <div className="mt-2 text-red-500">{imageUploadError.message}</div>
+                <div className="mt-2 text-red-500">
+                  {imageUploadError.message}
+                </div>
               )}
               <p className="text-sm text-gray-500 mt-1">
-                {connectionQuality === 'poor' || connectionQuality === 'critical'
-                  ? 'Low connection quality detected. Images will be highly compressed.'
-                  : connectionQuality === 'fair'
-                  ? 'Fair connection quality. Images will be moderately compressed.'
-                  : 'Good connection quality. Images will be optimized for quality.'}
+                {connectionQuality === "poor" ||
+                connectionQuality === "critical"
+                  ? "Low connection quality detected. Images will be highly compressed."
+                  : connectionQuality === "fair"
+                    ? "Fair connection quality. Images will be moderately compressed."
+                    : "Good connection quality. Images will be optimized for quality."}
               </p>
             </div>
           </div>
         </div>
-        
+
         {/* Tags */}
         <div className="bg-white rounded shadow p-6">
           <h2 className="text-xl font-semibold mb-4">Tags</h2>
-          
+
           <div>
             <label className="block text-gray-700 mb-2" htmlFor="tags">
               Tags (comma separated)
@@ -622,14 +664,14 @@ export default function ProductForm({ productId, initialData }: ProductFormProps
               id="tags"
               name="tags"
               type="text"
-              value={(formData.tags || []).join(', ')}
+              value={(formData.tags || []).join(", ")}
               onChange={handleTagsChange}
               className="w-full px-4 py-2 border rounded"
               placeholder="e.g., featured, new, sale"
             />
           </div>
         </div>
-        
+
         {/* Form Actions */}
         <div className="flex justify-end space-x-4">
           <button
@@ -640,13 +682,13 @@ export default function ProductForm({ productId, initialData }: ProductFormProps
           >
             Cancel
           </button>
-          
+
           <button
             type="submit"
             className="px-4 py-2 bg-blue-500 text-white rounded disabled:bg-blue-300"
             disabled={saving || !isOnline}
           >
-            {saving ? 'Saving...' : 'Save Product'}
+            {saving ? "Saving..." : "Save Product"}
           </button>
         </div>
       </form>

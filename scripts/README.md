@@ -52,6 +52,7 @@ npm run test:inventory
 ```
 
 Available test commands:
+
 - `npm run test` - Run all tests with default configuration
 - `npm run test:dev` - Run tests against development environment
 - `npm run test:staging` - Run tests against staging environment
@@ -75,6 +76,7 @@ export REGION=africa-south1
 ```
 
 Key security features:
+
 - IAM best practices
 - Cloud Armor protection
 - Secret management
@@ -99,6 +101,7 @@ export BILLING_ACCOUNT_ID=your-billing-account
 ```
 
 Key cost optimization features:
+
 - Budget alerts
 - Cloud Run auto-scaling
 - Firestore optimizations

@@ -9,6 +9,11 @@ import {
   TokenCountResult,
 } from '../interfaces/model-adapter.interface';
 import { ModelRegistryEntry, AgentErrorType } from '../interfaces/types';
+import {
+  VertexAIClientConfig,
+  VertexAIRequestOptions,
+  VertexAIFunctionArguments,
+} from '../interfaces/vertex-ai.types';
 
 // Note: This is a partial implementation. In real code, you would import and use the actual Vertex AI client
 // For reference, this is how the import would look
@@ -20,21 +25,17 @@ import { ModelRegistryEntry, AgentErrorType } from '../interfaces/types';
 @Injectable()
 export class VertexAIModelAdapter implements ModelAdapter {
   private readonly logger = new Logger(VertexAIModelAdapter.name);
-  private vertexClient: any; // This would be a properly typed client in real implementation
-  private projectId: string;
-  private location: string;
+  private vertexClient: unknown; // TODO: Define VertexAIClient type as implementation is integrated
+  private projectId!: string;
+  private location!: string;
   private initialized = false;
 
   /**
    * Initialize the adapter with configuration
    * @param config Configuration for Vertex AI
    */
-  async initialize(config: {
-    projectId: string;
-    location?: string;
-    apiEndpoint?: string;
-    credentials?: Record<string, any>;
-  }): Promise<void> {
+  async initialize(config: VertexAIClientConfig): Promise<void> {
+    // TODO: Refine VertexAIClientConfig fields as discovered
     try {
       this.projectId = config.projectId;
       this.location = config.location || 'europe-west4'; // Default to European region
@@ -413,7 +414,8 @@ export class VertexAIModelAdapter implements ModelAdapter {
    */
   private mapRequestOptions(
     options?: ModelRequestOptions,
-  ): Record<string, any> {
+  ): VertexAIRequestOptions {
+    // TODO: Refine VertexAIRequestOptions structure
     if (!options) return {};
 
     return {
@@ -459,34 +461,51 @@ export class VertexAIModelAdapter implements ModelAdapter {
    * @param error Original error
    * @returns Formatted error
    */
-  private formatError(error: any): Error {
-    // Determine error type based on error message or status
-    let errorType = AgentErrorType.EXECUTION_ERROR;
+  private formatError(error: unknown): Error {
+    // Type guard to check if error is an object with message/code properties
+    const isErrorWithProps = (
+      err: unknown,
+    ): err is { message?: string; code?: number } => {
+      return (
+        typeof err === 'object' &&
+        err !== null &&
+        ('message' in err || 'code' in err)
+      );
+    };
 
-    if (
-      error.message?.includes('Authentication failed') ||
-      error.message?.includes('Permission denied') ||
-      error.code === 403
-    ) {
-      errorType = AgentErrorType.AUTHORIZATION_ERROR;
-    } else if (
-      error.message?.includes('model not found') ||
-      error.message?.includes('model is not available') ||
-      error.code === 404
-    ) {
-      errorType = AgentErrorType.MODEL_UNAVAILABLE;
-    } else if (
-      error.message?.includes('exceeded quota') ||
-      error.message?.includes('rate limit') ||
-      error.code === 429
-    ) {
-      errorType = AgentErrorType.RATE_LIMIT_EXCEEDED;
-    } else if (error.message?.includes('token limit')) {
-      errorType = AgentErrorType.TOKEN_LIMIT_EXCEEDED;
+    let errorType = AgentErrorType.EXECUTION_ERROR;
+    let message = 'Unknown error';
+    let code: number | undefined = undefined;
+
+    if (isErrorWithProps(error)) {
+      message = error.message ?? message;
+      code = error.code;
+
+      if (
+        error.message?.includes('Authentication failed') ||
+        error.message?.includes('Permission denied') ||
+        error.code === 403
+      ) {
+        errorType = AgentErrorType.AUTHORIZATION_ERROR;
+      } else if (
+        error.message?.includes('model not found') ||
+        error.message?.includes('model is not available') ||
+        error.code === 404
+      ) {
+        errorType = AgentErrorType.MODEL_UNAVAILABLE;
+      } else if (
+        error.message?.includes('exceeded quota') ||
+        error.message?.includes('rate limit') ||
+        error.code === 429
+      ) {
+        errorType = AgentErrorType.RATE_LIMIT_EXCEEDED;
+      } else if (error.message?.includes('token limit')) {
+        errorType = AgentErrorType.TOKEN_LIMIT_EXCEEDED;
+      }
     }
 
     const formattedError = new Error(
-      `Vertex AI error (${errorType}): ${error.message || 'Unknown error'}`,
+      `Vertex AI error (${errorType}): ${message}`,
     );
     (formattedError as any).type = errorType;
     (formattedError as any).originalError = error;
@@ -519,7 +538,7 @@ export class VertexAIModelAdapter implements ModelAdapter {
     finishReason: 'stop' | 'length' | 'function_call' | 'content_filter';
     functionCall?: {
       name: string;
-      arguments: Record<string, any>;
+      arguments: VertexAIFunctionArguments; // TODO: Refine VertexAIFunctionArguments structure
     };
   } {
     // Check if prompt seems to be requesting a function call

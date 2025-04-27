@@ -1,3 +1,9 @@
+# CI & Quality Checks
+
+[![Lint & Type-Check](https://github.com/fluxori/fluxori/actions/workflows/typescript-validation.yml/badge.svg)](https://github.com/fluxori/fluxori/actions/workflows/typescript-validation.yml)
+[![Tests](https://github.com/fluxori/fluxori/actions/workflows/test.yml/badge.svg)](https://github.com/fluxori/fluxori/actions/workflows/test.yml)
+[![Dependency Checks](https://github.com/fluxori/fluxori/actions/workflows/dependency-checks.yml/badge.svg)](https://github.com/fluxori/fluxori/actions/workflows/dependency-checks.yml)
+
 # Fluxori - E-commerce Operations Platform
 
 ## Overview
@@ -23,6 +29,7 @@ Fluxori is a comprehensive e-commerce operations platform optimized for South Af
 ## Technology Stack
 
 ### Backend
+
 - **Framework**: NestJS v11 on Google Cloud Run
 - **Language**: TypeScript v5.4
 - **Database**: Google Firestore (Native mode)
@@ -34,6 +41,7 @@ Fluxori is a comprehensive e-commerce operations platform optimized for South Af
 - **Infrastructure**: Terraform-managed GCP resources
 
 ### Frontend
+
 - **Framework**: Next.js v15 with App Router
 - **UI Library**: React v19
 - **Styling**: Mantine UI v7
@@ -43,7 +51,33 @@ Fluxori is a comprehensive e-commerce operations platform optimized for South Af
 - **Animation**: GSAP v3 with custom motion design principles
 - **Testing**: Vitest, React Testing Library, Cypress
 
+## Developer Setup
+
+1. Install all dependencies
+   - `npm run deps:install`
+2. Prepare Git hooks
+   - `npm run prepare` (installs Husky)
+3. Local checks
+   - Lint: `npm run lint`
+   - Boundaries: `npm run lint:boundaries`
+   - Type-check: `npm run typecheck`
+   - Tests: `npm test` (runs Jest in both backend & frontend)
+   - Dependency validation: `npm run deps:validate`
+4. On commit & push
+   - **Pre-commit** (via Husky): runs `npx lint-staged` to auto-fix lint errors and type-check only staged files
+   - **Pre-push** (via Husky): runs full test suite (`npm test`), then lint (`npm run lint && npm run lint:boundaries`) and type-check (`npm run typecheck`)
+
+## Troubleshooting Lint & Type-Check
+
+If your commit or push fails due to lint or type-check errors:
+
+- Run `npm run lint` to see detailed ESLint errors and automatically fix (`--fix`) where possible.
+- Run `npm run typecheck` to see TypeScript compilation errors; fix missing types or mismatched signatures.
+- To auto-fix staged files only, use `npx lint-staged` directly.
+- For full test failures, inspect the failing test output and update or fix the test or code.
+
 ### Marketplace Data Collection
+
 - **Language**: Python v3.11
 - **Scraping Framework**: Custom SmartProxy integration with template support (95.4% success rate)
 - **Browser Automation**: Advanced browser actions framework for complex web interactions
@@ -55,7 +89,7 @@ Fluxori is a comprehensive e-commerce operations platform optimized for South Af
   - amazon_reviews: Reviews and ratings extraction (94.3% success rate)
   - amazon_search: Search results with position tracking (92.8% success rate)
   - amazon_bestsellers: Bestseller tracking by category (95.1% success rate)
-- **South African Optimizations**: 
+- **South African Optimizations**:
   - Regional IP geo-targeting for authentic market data
   - Network adaptations for variable connectivity
   - Enhanced caching during load shedding periods
@@ -81,7 +115,7 @@ Fluxori is built on a modern cloud-native architecture using Google Cloud Platfo
 - [Knowledge Base](docs/knowledge-base/index.md) - FAQs and troubleshooting
 - [Disaster Recovery](DISASTER_RECOVERY.md) - Disaster recovery procedures
 - [Deployment Guide](DEPLOYMENT.md) - Deployment instructions
-- [Architecture Decision Records](docs/adr/README.md) - Architectural decisions with dependency visualizations 
+- [Architecture Decision Records](docs/adr/README.md) - Architectural decisions with dependency visualizations
 - [ADR Process](docs/adr-process.md) - Process for creating and maintaining ADRs
 - [Dependency Management](docs/dependency-management.md) - Module dependency management
 - [Module Dependencies](backend/module-dependencies.svg) - Visual representation of module relationships
@@ -93,8 +127,8 @@ Fluxori is built on a modern cloud-native architecture using Google Cloud Platfo
 
 ## Getting Started
 
--### Prerequisites
--
+## -### Prerequisites
+
 - Node.js v22+
 - NPM v8+
 - Google Cloud SDK
@@ -102,10 +136,10 @@ Fluxori is built on a modern cloud-native architecture using Google Cloud Platfo
 - Docker
 - Python v3.11+ (for marketplace data collection)
 
-
 ### Smoke Test in Dev Environment
 
 To validate the full platform locally under Node.js 22:
+
 ```bash
 npm run smoke-test-dev
 ```
@@ -151,6 +185,7 @@ See [DEPLOYMENT.md](DEPLOYMENT.md) for detailed deployment instructions.
 - Use GCP best practices for security and reliability
 - Document architectural decisions with ADRs that include dependency visualizations
 - Respect module boundaries as defined in ADRs and enforced by dependency-cruiser
+- Enforce module boundaries via `npm run lint:boundaries` and `eslint-plugin-boundaries` per [ADR-001](docs/adr/ADR-001-module-boundary-enforcement.md)
 
 ## Project Structure
 

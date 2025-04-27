@@ -1,21 +1,24 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 
-import { useService, useServiceContext } from '../../shared/providers/service-provider';
-import { 
+import {
+  useService,
+  useServiceContext,
+} from "../../shared/providers/service-provider";
+import {
   IAnimationService,
-  useAnimationService as useSharedAnimationService
-} from '../../shared/services/animation-service.interface';
+  useAnimationService as useSharedAnimationService,
+} from "../../shared/services/animation-service.interface";
 import {
   IConnectionService,
   useConnectionService as useSharedConnectionService,
-  ConnectionQualityResult
-} from '../../shared/services/connection-service.interface';
-import { SERVICE_KEYS } from '../../shared/services/service-registry';
-import { MotionMode } from '../../shared/types/motion-types';
-import { defaultAnimationService } from '../services/animation-service.impl';
-import { defaultConnectionService } from '../services/connection-service.impl';
+  ConnectionQualityResult,
+} from "../../shared/services/connection-service.interface";
+import { SERVICE_KEYS } from "../../shared/services/service-registry";
+import { MotionMode } from "../../shared/types/motion-types";
+import { defaultAnimationService } from "../services/animation-service.impl";
+import { defaultConnectionService } from "../services/connection-service.impl";
 
 /**
  * Hook to access the animation service
@@ -52,19 +55,19 @@ export function useConnectionService(): IConnectionService {
 export function useConnectionQuality(): ConnectionQualityResult {
   const connectionService = useConnectionService();
   const [quality, setQuality] = useState<ConnectionQualityResult>(
-    connectionService.getConnectionQuality()
+    connectionService.getConnectionQuality(),
   );
-  
+
   useEffect(() => {
     // Subscribe to connection quality changes
     const unsubscribe = connectionService.subscribeToConnectionChanges(
-      (newQuality) => setQuality(newQuality)
+      (newQuality) => setQuality(newQuality),
     );
-    
+
     // Unsubscribe when component unmounts
     return unsubscribe;
   }, [connectionService]);
-  
+
   return quality;
 }
 
@@ -85,21 +88,21 @@ export function useMotionMode(): [MotionMode, (mode: MotionMode) => void] {
   const animationService = useAnimationService();
   const connectionService = useConnectionService();
   const [mode, setMode] = useState<MotionMode>(
-    animationService.getMotionMode() as MotionMode
+    animationService.getMotionMode() as MotionMode,
   );
-  
+
   const updateMode = (newMode: MotionMode) => {
     setMode(newMode);
-    
+
     // Update services
-    if ('setMotionMode' in animationService) {
+    if ("setMotionMode" in animationService) {
       (animationService as any).setMotionMode(newMode);
     }
-    
-    if ('setMotionMode' in connectionService) {
+
+    if ("setMotionMode" in connectionService) {
       (connectionService as any).setMotionMode(newMode);
     }
   };
-  
+
   return [mode, updateMode];
 }

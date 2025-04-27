@@ -1,6 +1,6 @@
 /**
  * Type declarations for Navigator extensions used in testing
- * 
+ *
  * Note: This file should be imported before other navigator extensions
  * to ensure consistent global type definitions.
  */

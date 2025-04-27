@@ -6,27 +6,39 @@
  * - Firestore database
  * - Authentication
  * - Storage
- * 
+ *
  * The configuration is optimized for the South African region.
  */
 
 // Mock Firebase implementations to fix TypeScript errors
 class FirebaseApp {
-  static initialize() { return new FirebaseApp(); }
+  static initialize() {
+    return new FirebaseApp();
+  }
 }
 
 class FirebaseAuth {
-  static getAuth() { return new FirebaseAuth(); }
-  onAuthStateChanged() { return () => {}; }
-  getIdToken() { return Promise.resolve('mock-token'); }
+  static getAuth() {
+    return new FirebaseAuth();
+  }
+  onAuthStateChanged() {
+    return () => {};
+  }
+  getIdToken() {
+    return Promise.resolve("mock-token");
+  }
 }
 
 class FirebaseFirestore {
-  static getFirestore() { return new FirebaseFirestore(); }
+  static getFirestore() {
+    return new FirebaseFirestore();
+  }
 }
 
 class FirebaseStorage {
-  static getStorage() { return new FirebaseStorage(); }
+  static getStorage() {
+    return new FirebaseStorage();
+  }
 }
 
 /**
@@ -52,7 +64,7 @@ export function initializeFirebase() {
   const db = FirebaseFirestore.getFirestore();
   const auth = FirebaseAuth.getAuth();
   const storage = FirebaseStorage.getStorage();
-  
+
   return { app, db, auth, storage };
 }
 

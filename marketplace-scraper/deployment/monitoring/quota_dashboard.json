@@ -1,0 +1,263 @@
+{
+  "displayName": "Marketplace Scraper Quota Dashboard",
+  "gridLayout": {
+    "columns": 12,
+    "widgets": [
+      {
+        "title": "Monthly Quota Usage",
+        "xyChart": {
+          "chartOptions": {
+            "mode": "COLOR"
+          },
+          "dataSets": [
+            {
+              "plotType": "LINE",
+              "timeSeriesQuery": {
+                "timeSeriesFilter": {
+                  "filter": "metric.type=\"custom.googleapis.com/marketplace_scraper/quota_usage\" resource.type=\"global\"",
+                  "aggregation": {
+                    "perSeriesAligner": "ALIGN_MEAN",
+                    "crossSeriesReducer": "REDUCE_MEAN",
+                    "alignmentPeriod": "60s"
+                  }
+                }
+              }
+            }
+          ],
+          "thresholds": [
+            {
+              "value": 85,
+              "label": "Warning",
+              "color": "yellow"
+            },
+            {
+              "value": 97,
+              "label": "Critical",
+              "color": "red"
+            }
+          ],
+          "yAxis": {
+            "label": "Percentage",
+            "scale": "LINEAR"
+          }
+        },
+        "width": 6,
+        "height": 4,
+        "x": 0,
+        "y": 0
+      },
+      {
+        "title": "Daily Quota Usage",
+        "xyChart": {
+          "chartOptions": {
+            "mode": "COLOR"
+          },
+          "dataSets": [
+            {
+              "plotType": "LINE",
+              "timeSeriesQuery": {
+                "timeSeriesFilter": {
+                  "filter": "metric.type=\"custom.googleapis.com/marketplace_scraper/daily_quota_usage\" resource.type=\"global\"",
+                  "aggregation": {
+                    "perSeriesAligner": "ALIGN_MEAN",
+                    "crossSeriesReducer": "REDUCE_MEAN",
+                    "alignmentPeriod": "60s"
+                  }
+                }
+              }
+            }
+          ],
+          "thresholds": [
+            {
+              "value": 90,
+              "label": "High",
+              "color": "yellow"
+            }
+          ],
+          "yAxis": {
+            "label": "Percentage",
+            "scale": "LINEAR"
+          }
+        },
+        "width": 6,
+        "height": 4,
+        "x": 6,
+        "y": 0
+      },
+      {
+        "title": "Requests Per Hour",
+        "xyChart": {
+          "chartOptions": {
+            "mode": "COLOR"
+          },
+          "dataSets": [
+            {
+              "plotType": "LINE",
+              "timeSeriesQuery": {
+                "timeSeriesFilter": {
+                  "filter": "metric.type=\"custom.googleapis.com/marketplace_scraper/requests_per_hour\" resource.type=\"global\"",
+                  "aggregation": {
+                    "perSeriesAligner": "ALIGN_RATE",
+                    "crossSeriesReducer": "REDUCE_SUM",
+                    "alignmentPeriod": "3600s"
+                  }
+                }
+              }
+            }
+          ],
+          "thresholds": [
+            {
+              "value": 300,
+              "label": "High Rate",
+              "color": "yellow"
+            }
+          ],
+          "yAxis": {
+            "label": "Requests/hour",
+            "scale": "LINEAR"
+          }
+        },
+        "width": 6,
+        "height": 4,
+        "x": 0,
+        "y": 4
+      },
+      {
+        "title": "Quota Efficiency Score",
+        "xyChart": {
+          "chartOptions": {
+            "mode": "COLOR"
+          },
+          "dataSets": [
+            {
+              "plotType": "LINE",
+              "timeSeriesQuery": {
+                "timeSeriesFilter": {
+                  "filter": "metric.type=\"custom.googleapis.com/marketplace_scraper/quota_efficiency\" resource.type=\"global\"",
+                  "aggregation": {
+                    "perSeriesAligner": "ALIGN_MEAN",
+                    "crossSeriesReducer": "REDUCE_MEAN",
+                    "alignmentPeriod": "3600s"
+                  }
+                }
+              }
+            }
+          ],
+          "thresholds": [
+            {
+              "value": 0.6,
+              "label": "Low Efficiency",
+              "color": "yellow"
+            }
+          ],
+          "yAxis": {
+            "label": "Data points per request",
+            "scale": "LINEAR"
+          }
+        },
+        "width": 6,
+        "height": 4,
+        "x": 6,
+        "y": 4
+      },
+      {
+        "title": "Priority Usage Breakdown",
+        "pieChart": {
+          "chartOptions": {
+            "mode": "COLOR"
+          },
+          "dataSets": [
+            {
+              "timeSeriesQuery": {
+                "timeSeriesFilter": {
+                  "filter": "metric.type=\"custom.googleapis.com/marketplace_scraper/priority_usage\" resource.type=\"global\"",
+                  "aggregation": {
+                    "perSeriesAligner": "ALIGN_MEAN",
+                    "crossSeriesReducer": "REDUCE_SUM",
+                    "alignmentPeriod": "86400s"
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "width": 4,
+        "height": 4,
+        "x": 0,
+        "y": 8
+      },
+      {
+        "title": "Marketplace Usage Breakdown",
+        "pieChart": {
+          "chartOptions": {
+            "mode": "COLOR"
+          },
+          "dataSets": [
+            {
+              "timeSeriesQuery": {
+                "timeSeriesFilter": {
+                  "filter": "metric.type=\"custom.googleapis.com/marketplace_scraper/marketplace_usage\" resource.type=\"global\"",
+                  "aggregation": {
+                    "perSeriesAligner": "ALIGN_MEAN",
+                    "crossSeriesReducer": "REDUCE_SUM",
+                    "alignmentPeriod": "86400s"
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "width": 4,
+        "height": 4,
+        "x": 4,
+        "y": 8
+      },
+      {
+        "title": "Task Type Usage Breakdown",
+        "pieChart": {
+          "chartOptions": {
+            "mode": "COLOR"
+          },
+          "dataSets": [
+            {
+              "timeSeriesQuery": {
+                "timeSeriesFilter": {
+                  "filter": "metric.type=\"custom.googleapis.com/marketplace_scraper/task_type_usage\" resource.type=\"global\"",
+                  "aggregation": {
+                    "perSeriesAligner": "ALIGN_MEAN",
+                    "crossSeriesReducer": "REDUCE_SUM",
+                    "alignmentPeriod": "86400s"
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "width": 4,
+        "height": 4,
+        "x": 8,
+        "y": 8
+      },
+      {
+        "title": "Marketplace Scraper Status",
+        "text": {
+          "content": "# SmartProxy Quota\n* Monthly Quota: 216,000 requests\n* Daily Quota: 7,200 requests\n* Warning Threshold: 85%\n* Critical Threshold: 97%\n\n# Efficiency Target\n* > 10 data points per request\n\n# Priority Allocations\n* CRITICAL: 35%\n* HIGH: 35%\n* MEDIUM: 20%\n* LOW: 5%\n* BACKGROUND: 5%"
+        },
+        "width": 6,
+        "height": 4,
+        "x": 0,
+        "y": 12
+      },
+      {
+        "title": "Quota Alerts",
+        "alertChart": {
+          "name": "projects/fluxori-web-app/alertPolicies/quota_alert"
+        },
+        "width": 6,
+        "height": 4,
+        "x": 6,
+        "y": 12
+      }
+    ]
+  }
+}

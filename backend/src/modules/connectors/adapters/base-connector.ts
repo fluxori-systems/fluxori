@@ -34,7 +34,7 @@ export abstract class BaseConnector
   implements IConnector, IErrorHandlingConnector
 {
   protected logger: Logger;
-  protected credentials: ConnectorCredentials;
+  protected credentials!: ConnectorCredentials;
   protected _isInitialized = false;
   protected _connectionStatus: ConnectionStatus = {
     connected: false,
@@ -438,7 +438,7 @@ export abstract class BaseConnector
       (e) =>
         e?.timestamp instanceof Date &&
         now - e.timestamp.getTime() < recentErrorsTimeWindow,
-    ) as ConnectorError[];
+    );
 
     const recentErrorCount = recentErrors.length;
     const networkErrors = recentErrors.filter(
@@ -682,9 +682,9 @@ export abstract class BaseConnector
 
     // Create enhanced error with all required properties
     class ConnectorErrorImpl extends Error implements ConnectorError {
-      type: ConnectorErrorType;
+      type!: ConnectorErrorType;
       statusCode?: number;
-      retryable: boolean;
+      retryable!: boolean;
       originalError?: any;
       details?: any;
       timestamp: Date;

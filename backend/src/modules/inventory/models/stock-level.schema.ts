@@ -2,6 +2,7 @@
  * Stock Level Schema
  */
 import { FirestoreEntity } from '../../../types/google-cloud.types';
+import { InventoryMetadata } from '../interfaces/types';
 
 /**
  * Stock Level entity for Firestore
@@ -33,5 +34,6 @@ export interface StockLevel extends FirestoreEntity {
   expiryDate?: Date;
   serialNumbers?: string[];
   notes?: string;
-  metadata?: Record<string, any>;
+  // TODO: Refine metadata type as requirements become clear
+  metadata?: InventoryMetadata; // TODO: Refine fields as discovered
 }

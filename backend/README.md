@@ -42,9 +42,11 @@ The backend is built on top of the following Google Cloud services:
    npm install
    ```
 3. Set up environment variables:
+
    ```
    cp .env.example .env
    ```
+
    Then edit `.env` with your Google Cloud project details.
 
 4. Run the application:

@@ -19,7 +19,7 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 
-import { FirebaseAuthGuard } from '../../../common/guards/firebase-auth.guard';
+import { FirebaseAuthGuard } from '../../auth';
 import { GetUser } from '../../auth/decorators/get-user.decorator';
 import {
   ComplianceFrameworkService,
@@ -34,20 +34,20 @@ import {
  * DTO for creating a compliance rule
  */
 class CreateComplianceRuleDto {
-  name: string;
-  description: string;
-  category: ComplianceCategory;
-  authority: ComplianceAuthority;
-  regionCodes: string[];
-  productTypes: string[];
-  requiredAttributes: string[];
-  validationRules: any[];
-  severity: 'critical' | 'high' | 'medium' | 'low';
+  name!: string;
+  description!: string;
+  category!: ComplianceCategory;
+  authority!: ComplianceAuthority;
+  regionCodes!: string[];
+  productTypes!: string[];
+  requiredAttributes!: string[];
+  validationRules!: any[];
+  severity!: 'critical' | 'high' | 'medium' | 'low';
   exemptionCriteria?: string;
   references?: string[];
-  effectiveDate: Date;
+  effectiveDate!: Date;
   expirationDate?: Date;
-  version: string;
+  version!: string;
 }
 
 /**
@@ -74,7 +74,7 @@ class UpdateComplianceRuleDto {
  * DTO for updating a compliance status
  */
 class UpdateComplianceStatusDto {
-  status: ComplianceStatus;
+  status!: ComplianceStatus;
   notes?: string;
 }
 

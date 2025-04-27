@@ -1,0 +1,30 @@
+src/modules/pim/controllers/regional-configuration.controller.ts(115,25): error TS1109: Expression expected.
+src/modules/pim/controllers/regional-configuration.controller.ts(115,34): error TS1011: An element access expression should take an argument.
+src/modules/pim/controllers/regional-configuration.controller.ts(116,29): error TS1109: Expression expected.
+src/modules/pim/controllers/regional-configuration.controller.ts(116,38): error TS1011: An element access expression should take an argument.
+src/modules/pim/controllers/regional-configuration.controller.ts(117,16): error TS1109: Expression expected.
+src/modules/pim/controllers/regional-configuration.controller.ts(118,18): error TS1109: Expression expected.
+src/modules/pim/controllers/regional-configuration.controller.ts(119,20): error TS1109: Expression expected.
+src/modules/pim/controllers/regional-configuration.controller.ts(120,19): error TS1109: Expression expected.
+src/modules/pim/controllers/regional-configuration.controller.ts(121,29): error TS1109: Expression expected.
+src/modules/pim/controllers/regional-configuration.controller.ts(122,3): error TS1128: Declaration or statement expected.
+src/modules/pim/controllers/regional-configuration.controller.ts(123,16): error TS1109: Expression expected.
+src/modules/pim/controllers/regional-configuration.controller.ts(124,16): error TS1109: Expression expected.
+src/modules/pim/controllers/regional-configuration.controller.ts(125,18): error TS1109: Expression expected.
+src/modules/pim/controllers/regional-configuration.controller.ts(126,20): error TS1109: Expression expected.
+src/modules/pim/controllers/regional-configuration.controller.ts(127,19): error TS1109: Expression expected.
+src/modules/pim/controllers/regional-configuration.controller.ts(128,3): error TS1128: Declaration or statement expected.
+src/modules/pim/controllers/regional-configuration.controller.ts(129,26): error TS1109: Expression expected.
+src/modules/pim/controllers/regional-configuration.controller.ts(130,28): error TS1109: Expression expected.
+src/modules/pim/controllers/regional-configuration.controller.ts(130,37): error TS1011: An element access expression should take an argument.
+src/modules/pim/controllers/regional-configuration.controller.ts(131,27): error TS1109: Expression expected.
+src/modules/pim/controllers/regional-configuration.controller.ts(131,36): error TS1011: An element access expression should take an argument.
+src/modules/pim/controllers/regional-configuration.controller.ts(132,26): error TS1109: Expression expected.
+src/modules/pim/controllers/regional-configuration.controller.ts(132,35): error TS1011: An element access expression should take an argument.
+src/modules/pim/controllers/regional-configuration.controller.ts(133,27): error TS1109: Expression expected.
+src/modules/pim/controllers/regional-configuration.controller.ts(134,3): error TS1128: Declaration or statement expected.
+src/modules/pim/controllers/regional-configuration.controller.ts(135,14): error TS1109: Expression expected.
+src/modules/pim/controllers/regional-configuration.controller.ts(136,32): error TS1005: ',' expected.
+src/modules/pim/controllers/regional-configuration.controller.ts(137,35): error TS1011: An element access expression should take an argument.
+src/modules/pim/controllers/regional-configuration.controller.ts(137,36): error TS1005: ',' expected.
+src/modules/pim/controllers/regional-configuration.controller.ts(139,1): error TS1128: Declaration or statement expected.

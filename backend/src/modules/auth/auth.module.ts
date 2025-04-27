@@ -3,7 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 
 import { FirestoreConfigService } from '../../config/firestore.config';
-import { UserRepository } from '../../users/repositories/user.repository';
+import { UserRepository } from '../users/repositories/user.repository';
 
 import { AuthController } from './controllers/auth.controller';
 import { FirebaseAuthGuard } from './guards/firebase-auth.guard';

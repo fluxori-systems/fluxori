@@ -1,38 +1,38 @@
 /**
  * Organization entity interfaces
  */
-import { BaseEntity } from '../core/entity.types';
+import { BaseEntity } from "../core/entity.types";
 
 /**
  * Organization subscription plan
  */
 export enum SubscriptionPlan {
-  FREE = 'free',
-  STARTER = 'starter',
-  BUSINESS = 'business',
-  ENTERPRISE = 'enterprise',
+  FREE = "free",
+  STARTER = "starter",
+  BUSINESS = "business",
+  ENTERPRISE = "enterprise",
 }
 
 /**
  * Organization status
  */
 export enum OrganizationStatus {
-  ACTIVE = 'active',
-  INACTIVE = 'inactive',
-  SUSPENDED = 'suspended',
-  PENDING = 'pending',
+  ACTIVE = "active",
+  INACTIVE = "inactive",
+  SUSPENDED = "suspended",
+  PENDING = "pending",
 }
 
 /**
  * Industry sector
  */
 export enum IndustrySector {
-  RETAIL = 'retail',
-  WHOLESALE = 'wholesale',
-  MANUFACTURING = 'manufacturing',
-  SERVICES = 'services',
-  TECHNOLOGY = 'technology',
-  OTHER = 'other',
+  RETAIL = "retail",
+  WHOLESALE = "wholesale",
+  MANUFACTURING = "manufacturing",
+  SERVICES = "services",
+  TECHNOLOGY = "technology",
+  OTHER = "other",
 }
 
 /**
@@ -48,11 +48,11 @@ export interface Organization extends BaseEntity {
   status: OrganizationStatus;
   plan: SubscriptionPlan;
   industry?: IndustrySector;
-  
+
   // Logo and branding
   logoUrl?: string;
   brandColor?: string;
-  
+
   // Address
   address?: {
     street?: string;
@@ -61,7 +61,7 @@ export interface Organization extends BaseEntity {
     postalCode?: string;
     country?: string;
   };
-  
+
   // Billing
   billing?: {
     contactName?: string;
@@ -70,16 +70,16 @@ export interface Organization extends BaseEntity {
     vatNumber?: string;
     companyRegistrationNumber?: string;
   };
-  
+
   // South Africa specific
   bbbeeLevel?: number;
   bbbeeVerificationId?: string;
-  
+
   // Metadata
   settings?: Record<string, any>;
   metadata?: Record<string, any>;
   userCount?: number;
-  
+
   // Feature flags and limits
   featureFlags?: {
     enableAI?: boolean;
@@ -89,7 +89,7 @@ export interface Organization extends BaseEntity {
     enableMarketplaceIntegration?: boolean;
     [key: string]: boolean | undefined;
   };
-  
+
   limits?: {
     maxUsers?: number;
     maxProducts?: number;
@@ -111,7 +111,7 @@ export interface OrganizationInvitation extends BaseEntity {
   invitedByName: string;
   token: string;
   expiresAt: Date | string;
-  status: 'pending' | 'accepted' | 'declined' | 'expired';
+  status: "pending" | "accepted" | "declined" | "expired";
 }
 
 /**
@@ -151,7 +151,7 @@ export interface UpdateOrganizationDto {
   name?: string;
   description?: string;
   website?: string;
-  email?: string; 
+  email?: string;
   phone?: string;
   industry?: IndustrySector;
   logoUrl?: string;

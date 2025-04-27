@@ -3,9 +3,9 @@ name: TypeScript Validation
 on:
   pull_request:
     paths:
-      - 'frontend/**/*.ts'
-      - 'frontend/**/*.tsx'
-      - 'backend/**/*.ts'
+      - "frontend/**/*.ts"
+      - "frontend/**/*.tsx"
+      - "backend/**/*.ts"
 
 jobs:
   typescript-check:
@@ -15,17 +15,27 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18'
-          cache: 'npm'
-      
+          node-version: "18"
+          cache: "npm"
+
       - name: Install Frontend Dependencies
         run: cd frontend && npm ci
-      
+
+      - name: Lint (Frontend)
+        run: |
+          cd frontend
+          npx eslint "src/**/*.{ts,tsx}" --max-warnings=0
+
       - name: TypeScript Check (Frontend)
         run: cd frontend && npx tsc --noEmit
-      
+
       - name: Install Backend Dependencies
         run: cd backend && npm ci
-      
+
+      - name: Lint (Backend)
+        run: |
+          cd backend
+          npx eslint "src/**/*.ts" --max-warnings=0
+
       - name: TypeScript Check (Backend)
         run: cd backend && npx tsc --noEmit

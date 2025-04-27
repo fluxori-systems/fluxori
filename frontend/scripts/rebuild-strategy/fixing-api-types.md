@@ -5,10 +5,12 @@ This document provides guidelines for fixing API-related TypeScript errors in th
 ## Common API Type Issues
 
 1. **Missing parameter types**
+
    - Function parameters without explicit type annotations
    - Example: `getSignedUploadUrl: async (params) => { ... }`
 
 2. **Unknown API response types**
+
    - Using `any` or `unknown` for API responses
    - Example: `return await client.get<any[]>('/files', { params });`
 
@@ -56,23 +58,35 @@ Implement a type-safe API client that uses the defined types:
 
 ```typescript
 // src/lib/api/client.ts
-import axios, { AxiosInstance } from 'axios';
-import { FileMetadata, SignedUrlRequest, SignedUrlResponse } from './types/storage';
+import axios, { AxiosInstance } from "axios";
+import {
+  FileMetadata,
+  SignedUrlRequest,
+  SignedUrlResponse,
+} from "./types/storage";
 
 export function createApiClient(): AxiosInstance {
   // Implementation details...
 }
 
 export const storageApi = {
-  getSignedUploadUrl: async (params: SignedUrlRequest): Promise<SignedUrlResponse> => {
+  getSignedUploadUrl: async (
+    params: SignedUrlRequest,
+  ): Promise<SignedUrlResponse> => {
     const client = createApiClient();
-    const response = await client.post<SignedUrlResponse>('/files/signed-url', params);
+    const response = await client.post<SignedUrlResponse>(
+      "/files/signed-url",
+      params,
+    );
     return response;
   },
-  
-  getFiles: async (params: { entityType?: string; entityId?: string }): Promise<FileMetadata[]> => {
+
+  getFiles: async (params: {
+    entityType?: string;
+    entityId?: string;
+  }): Promise<FileMetadata[]> => {
     const client = createApiClient();
-    const response = await client.get<FileMetadata[]>('/files', { params });
+    const response = await client.get<FileMetadata[]>("/files", { params });
     return response;
   },
   // Other methods...
@@ -85,23 +99,20 @@ Implement type guards to safely handle API responses:
 
 ```typescript
 // src/lib/api/guards.ts
-import { FileMetadata } from './types/storage';
+import { FileMetadata } from "./types/storage";
 
 export function isFileMetadata(data: unknown): data is FileMetadata {
   return (
-    typeof data === 'object' &&
+    typeof data === "object" &&
     data !== null &&
-    'id' in data &&
-    'fileName' in data &&
-    'contentType' in data
+    "id" in data &&
+    "fileName" in data &&
+    "contentType" in data
   );
 }
 
 export function isFileMetadataArray(data: unknown): data is FileMetadata[] {
-  return (
-    Array.isArray(data) &&
-    (data.length === 0 || isFileMetadata(data[0]))
-  );
+  return Array.isArray(data) && (data.length === 0 || isFileMetadata(data[0]));
 }
 ```
 
@@ -112,13 +123,13 @@ Update components to use the type-safe API client and proper type assertions:
 ```tsx
 // Before
 const fetchFiles = async () => {
-  const files = await api.storage.getFiles({ entityType: 'product' });
+  const files = await api.storage.getFiles({ entityType: "product" });
   setFiles(files); // Type error: files has unknown type
 };
 
 // After
 const fetchFiles = async () => {
-  const files = await storageApi.getFiles({ entityType: 'product' });
+  const files = await storageApi.getFiles({ entityType: "product" });
   // No type error because files is properly typed as FileMetadata[]
   setFiles(files);
 };
@@ -127,14 +138,17 @@ const fetchFiles = async () => {
 ## Implementation Steps
 
 1. **Create type definition files**
+
    - Create separate files for different API domains (storage, auth, etc.)
    - Define interfaces for all request and response types
 
 2. **Implement type-safe API client**
+
    - Create a new API client that uses the defined types
    - Add proper return types to all API methods
 
 3. **Add type guards**
+
    - Create type guards for runtime type checking
    - Use these guards when working with API responses
 
@@ -147,6 +161,7 @@ const fetchFiles = async () => {
 After implementing these changes:
 
 1. **Run TypeScript check**
+
    ```bash
    npm run typecheck
    ```

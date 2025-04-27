@@ -11,6 +11,7 @@ AI credits are the currency used to access Fluxori's AI-powered features. These 
 ### Why does Fluxori use a credit system?
 
 The credit system allows us to:
+
 1. Provide transparent pricing for AI features
 2. Give you control over your AI usage and costs
 3. Ensure fair distribution of compute resources
@@ -20,14 +21,14 @@ The credit system allows us to:
 
 Credit consumption varies by feature:
 
-| Feature | Credits per Use | Description |
-|---------|----------------|-------------|
-| Daily Market Trend Report | 50 | Comprehensive analysis of market trends relevant to your products |
-| Product Pricing Recommendation | 15 | AI-generated optimal price point for a single product |
-| Inventory Restock Prediction | 25 | When and how much to restock for a product |
-| Bulk Pricing Optimization | 100 | Optimize pricing for your entire catalog |
-| Custom AI Query | 10-50 | Varies based on complexity of the query |
-| Competitor Analysis | 75 | Analysis of competitor pricing and strategies |
+| Feature                        | Credits per Use | Description                                                       |
+| ------------------------------ | --------------- | ----------------------------------------------------------------- |
+| Daily Market Trend Report      | 50              | Comprehensive analysis of market trends relevant to your products |
+| Product Pricing Recommendation | 15              | AI-generated optimal price point for a single product             |
+| Inventory Restock Prediction   | 25              | When and how much to restock for a product                        |
+| Bulk Pricing Optimization      | 100             | Optimize pricing for your entire catalog                          |
+| Custom AI Query                | 10-50           | Varies based on complexity of the query                           |
+| Competitor Analysis            | 75              | Analysis of competitor pricing and strategies                     |
 
 ## Managing Your Credits
 

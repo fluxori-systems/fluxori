@@ -27,6 +27,7 @@ import {
   CreditTransaction,
   CreditUsageLog,
   CreditUsageRequest,
+  CreditSystemMetadata,
 } from '../interfaces/types';
 import { CreditSystemService } from '../services/credit-system.service';
 import { TokenTrackingService } from '../services/token-tracking.service';
@@ -38,13 +39,13 @@ interface CreateAllocationDto {
   userId?: string;
   resetDate?: string; // ISO date string
   expirationDate?: string; // ISO date string
-  metadata?: Record<string, any>;
+  metadata?: CreditSystemMetadata; // TODO: Refine fields as discovered
 }
 
 interface AddCreditsDto {
   allocationId: string;
   amount: number;
-  metadata?: Record<string, any>;
+  metadata?: CreditSystemMetadata; // TODO: Refine fields as discovered
 }
 
 interface RecordUsageDto extends CreditUsageRequest {}

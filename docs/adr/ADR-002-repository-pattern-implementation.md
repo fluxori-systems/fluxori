@@ -40,7 +40,7 @@ We will implement the following structure:
 export interface BaseRepository<T, K> {
   findById(id: K): Promise<T | null>;
   findAll(): Promise<T[]>;
-  create(data: Omit<T, 'id'>): Promise<T>;
+  create(data: Omit<T, "id">): Promise<T>;
   update(id: K, data: Partial<T>): Promise<T>;
   delete(id: K): Promise<void>;
   // Additional methods for transactions, caching, etc.
@@ -53,11 +53,14 @@ export class FirestoreBaseRepository<T, K> implements BaseRepository<T, K> {
 
 // Module-specific repository
 @Injectable()
-export class ProductRepository extends FirestoreBaseRepository<Product, string> {
+export class ProductRepository extends FirestoreBaseRepository<
+  Product,
+  string
+> {
   constructor() {
-    super('products');
+    super("products");
   }
-  
+
   // Additional product-specific methods
 }
 ```
@@ -73,6 +76,7 @@ The current repository structure shows inconsistent implementation patterns:
 ![Repository Dependencies](visualizations/adr-002-repository-pattern-implementation.svg)
 
 The visualization highlights:
+
 - Inconsistent inheritance patterns
 - Direct access to database services rather than through repositories
 - Missing repository implementations in some modules
@@ -108,6 +112,7 @@ To ensure proper implementation of the repository pattern, we will enforce the f
 ```
 
 Additional rules:
+
 1. All repositories must extend the base repository classes
 2. Repositories must be properly typed with entity interfaces
 3. Services, not controllers, should access repositories
@@ -138,11 +143,13 @@ Additional rules:
 Compliance will be validated through:
 
 1. **Automated Analysis**:
+
    - ESLint rules to enforce repository pattern usage
    - Dependency-cruiser rules to prevent improper dependencies
    - TypeScript interfaces to ensure type compliance
 
 2. **Code Review**:
+
    - Code reviewers will check for proper repository pattern usage
    - Repository implementations will be reviewed for consistency
 

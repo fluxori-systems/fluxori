@@ -1,6 +1,14 @@
 /**
  * Repricing Rule Schema
  */
+
+/**
+ * Placeholder for Buybox repricing rule metadata. TODO: Add concrete fields as discovered.
+ */
+export interface BuyBoxRepricingMetadata {
+  // TODO: Add concrete metadata fields here as they are discovered in the codebase
+}
+
 import { FirestoreEntity } from '../../../types/google-cloud.types';
 import { PricingRuleOperation } from '../interfaces/types';
 
@@ -8,6 +16,8 @@ import { PricingRuleOperation } from '../interfaces/types';
  * Repricing Rule entity for Firestore
  */
 export interface RepricingRule extends FirestoreEntity {
+  version: number; // Ensure always present for FirestoreEntityWithMetadata compliance
+  isDeleted: boolean; // Ensure always present for FirestoreEntityWithMetadata compliance
   organizationId: string;
   name: string;
   description?: string;
@@ -49,5 +59,6 @@ export interface RepricingRule extends FirestoreEntity {
   executionCount: number;
   successCount: number;
   failureCount: number;
-  metadata?: Record<string, any>;
+  // TODO: Refine BuyBoxRepricingMetadata as requirements become clear
+  metadata?: BuyBoxRepricingMetadata;
 }

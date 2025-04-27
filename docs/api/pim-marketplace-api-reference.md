@@ -27,9 +27,11 @@ GET /mappings/product/:productId
 Retrieves all marketplace mappings for a specific product.
 
 **Path Parameters:**
+
 - `productId` (string, required): The ID of the product
 
 **Response:**
+
 ```json
 [
   {
@@ -58,13 +60,16 @@ GET /mappings/marketplace/:marketplaceId?page=0&pageSize=20
 Retrieves product mappings for a specific marketplace with pagination.
 
 **Path Parameters:**
+
 - `marketplaceId` (string, required): The marketplace ID (e.g., `takealot`, `bob-shop`, `makro`)
 
 **Query Parameters:**
+
 - `page` (number, optional): Page number (0-based, defaults to 0)
 - `pageSize` (number, optional): Number of items per page (defaults to 20)
 
 **Response:**
+
 ```json
 [
   {
@@ -93,9 +98,11 @@ GET /mappings/:mappingId
 Retrieves a specific marketplace mapping.
 
 **Path Parameters:**
+
 - `mappingId` (string, required): The mapping ID
 
 **Response:**
+
 ```json
 {
   "id": "mapping-id",
@@ -122,6 +129,7 @@ POST /mappings
 Creates a new marketplace mapping.
 
 **Request Body:**
+
 ```json
 {
   "productId": "product-id",
@@ -135,6 +143,7 @@ Creates a new marketplace mapping.
 ```
 
 **Response:**
+
 ```json
 {
   "id": "mapping-id",
@@ -161,9 +170,11 @@ PUT /mappings/:mappingId
 Updates an existing marketplace mapping.
 
 **Path Parameters:**
+
 - `mappingId` (string, required): The mapping ID
 
 **Request Body:**
+
 ```json
 {
   "marketplaceProductId": "TAKEALOT-124",
@@ -175,6 +186,7 @@ Updates an existing marketplace mapping.
 ```
 
 **Response:**
+
 ```json
 {
   "id": "mapping-id",
@@ -201,9 +213,11 @@ DELETE /mappings/:mappingId
 Deletes a marketplace mapping.
 
 **Path Parameters:**
+
 - `mappingId` (string, required): The mapping ID
 
 **Response:**
+
 ```json
 {
   "id": "mapping-id"
@@ -221,9 +235,11 @@ POST /sync/:marketplaceId
 Synchronizes a product to a specific marketplace.
 
 **Path Parameters:**
+
 - `marketplaceId` (string, required): The marketplace ID (e.g., `takealot`, `bob-shop`, `makro`)
 
 **Request Body:**
+
 ```json
 {
   "productId": "product-id",
@@ -233,6 +249,7 @@ Synchronizes a product to a specific marketplace.
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -254,9 +271,11 @@ POST /validate/:marketplaceId
 Validates a product for a specific marketplace.
 
 **Path Parameters:**
+
 - `marketplaceId` (string, required): The marketplace ID (e.g., `takealot`, `bob-shop`, `makro`)
 
 **Request Body:**
+
 ```json
 {
   "productId": "product-id",
@@ -265,6 +284,7 @@ Validates a product for a specific marketplace.
 ```
 
 **Response:**
+
 ```json
 {
   "valid": true,
@@ -302,19 +322,18 @@ GET /needs-sync/:marketplaceId?thresholdHours=24&limit=100
 Retrieves a list of product IDs that need to be synchronized to a marketplace.
 
 **Path Parameters:**
+
 - `marketplaceId` (string, required): The marketplace ID (e.g., `takealot`, `bob-shop`, `makro`)
 
 **Query Parameters:**
+
 - `thresholdHours` (number, optional): The number of hours threshold (defaults to 24)
 - `limit` (number, optional): The maximum number of products to return (defaults to 100)
 
 **Response:**
+
 ```json
-[
-  "product-id-1",
-  "product-id-2",
-  "product-id-3"
-]
+["product-id-1", "product-id-2", "product-id-3"]
 ```
 
 #### Sync Stock for Product
@@ -326,9 +345,11 @@ POST /sync-stock/:productId
 Synchronizes stock levels for a product to all connected marketplaces.
 
 **Path Parameters:**
+
 - `productId` (string, required): The product ID
 
 **Request Body:**
+
 ```json
 {
   "stockLevel": 50
@@ -336,6 +357,7 @@ Synchronizes stock levels for a product to all connected marketplaces.
 ```
 
 **Response:**
+
 ```json
 [
   {
@@ -364,9 +386,11 @@ POST /sync-price/:productId
 Synchronizes price for a product to all connected marketplaces.
 
 **Path Parameters:**
+
 - `productId` (string, required): The product ID
 
 **Request Body:**
+
 ```json
 {
   "price": 99.99
@@ -374,6 +398,7 @@ Synchronizes price for a product to all connected marketplaces.
 ```
 
 **Response:**
+
 ```json
 [
   {
@@ -402,9 +427,11 @@ GET /stats?marketplaceId=takealot
 Retrieves marketplace statistics.
 
 **Query Parameters:**
+
 - `marketplaceId` (string, optional): Filter by marketplace ID
 
 **Response:**
+
 ```json
 {
   "totalMappings": 150,
@@ -429,17 +456,19 @@ POST /bob-shop/auction
 Creates a new auction for a product on Bob Shop (formerly Bidorbuy).
 
 **Request Body:**
+
 ```json
 {
   "productId": "product-id",
-  "startPrice": 50.00,
-  "reservePrice": 75.00,
+  "startPrice": 50.0,
+  "reservePrice": 75.0,
   "duration": 7,
   "startTime": "2025-04-15T12:00:00Z"
 }
 ```
 
 **Response:**
+
 ```json
 {
   "auctionId": "auction-id",
@@ -447,8 +476,8 @@ Creates a new auction for a product on Bob Shop (formerly Bidorbuy).
   "status": "scheduled",
   "startTime": "2025-04-15T12:00:00Z",
   "endTime": "2025-04-22T12:00:00Z",
-  "startPrice": 50.00,
-  "reservePrice": 75.00,
+  "startPrice": 50.0,
+  "reservePrice": 75.0,
   "currentBid": null,
   "bidCount": 0
 }
@@ -463,9 +492,11 @@ GET /bob-shop/auction/:auctionId
 Retrieves the status of an auction.
 
 **Path Parameters:**
+
 - `auctionId` (string, required): The auction ID
 
 **Response:**
+
 ```json
 {
   "auctionId": "auction-id",
@@ -473,9 +504,9 @@ Retrieves the status of an auction.
   "status": "active",
   "startTime": "2025-04-15T12:00:00Z",
   "endTime": "2025-04-22T12:00:00Z",
-  "startPrice": 50.00,
-  "reservePrice": 75.00,
-  "currentBid": 80.00,
+  "startPrice": 50.0,
+  "reservePrice": 75.0,
+  "currentBid": 80.0,
   "bidCount": 5,
   "timeRemaining": 259200, // seconds
   "highestBidder": "bidder-username"
@@ -493,9 +524,11 @@ GET /makro/store-pickup/:productId
 Checks if a product is eligible for store pickup at Makro stores.
 
 **Path Parameters:**
+
 - `productId` (string, required): The product ID
 
 **Response:**
+
 ```json
 {
   "eligible": true,
@@ -525,6 +558,7 @@ POST /makro/promotion
 Adds a product to a Makro promotion.
 
 **Request Body:**
+
 ```json
 {
   "productId": "product-id",
@@ -537,6 +571,7 @@ Adds a product to a Makro promotion.
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,

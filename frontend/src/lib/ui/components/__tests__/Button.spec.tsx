@@ -1,14 +1,14 @@
 // @vitest-environment jsdom
-import '@testing-library/jest-dom';
-'use client';
+import "@testing-library/jest-dom";
+("use client");
 
-import React from 'react';
+import React from "react";
 
-import * as TestingLibrary from '@testing-library/react';
-import { describe, test, expect, vi } from 'vitest';
+import * as TestingLibrary from "@testing-library/react";
+import { describe, test, expect, vi } from "vitest";
 
-import { Assertions } from '../../../../testing/utils/assertions';
-import { renderWithProviders } from '../../../../testing/utils/render';
+import { Assertions } from "../../../../testing/utils/assertions";
+import { renderWithProviders } from "../../../../testing/utils/render";
 
 // Define Button prop interface to ensure type safety
 interface ButtonProps {
@@ -18,33 +18,35 @@ interface ButtonProps {
   size?: string;
   intent?: string;
   disabled?: boolean;
-  'data-testid'?: string;
+  "data-testid"?: string;
   [key: string]: any;
 }
 
 // Mock the Button component to avoid actual React hooks usage in tests
-vi.mock('../Button', () => ({
+vi.mock("../Button", () => ({
   Button: (props: ButtonProps) => {
-    const { 
-      children, 
+    const {
+      children,
       onClick,
-      variant = 'default',
-      size = 'medium',
-      intent = 'primary',
+      variant = "default",
+      size = "medium",
+      intent = "primary",
       disabled = false,
-      'data-testid': testId = 'button',
+      "data-testid": testId = "button",
       ...rest
     } = props;
-    
+
     // Build className
     const className = [
-      'flx-button',
+      "flx-button",
       `flx-button-${variant}`,
       `flx-button-size-${size}`,
       `flx-button-intent-${intent}`,
-      disabled ? 'flx-button-disabled' : ''
-    ].filter(Boolean).join(' ');
-    
+      disabled ? "flx-button-disabled" : "",
+    ]
+      .filter(Boolean)
+      .join(" ");
+
     return (
       <button
         type="button"
@@ -60,120 +62,120 @@ vi.mock('../Button', () => ({
         {children}
       </button>
     );
-  }
+  },
 }));
 
 // Import the mocked version
-import { Button } from '../Button';
+import { Button } from "../Button";
 
-describe('Button Component', () => {
-  test('renders button with default props', () => {
-    const { getByTestId } = renderWithProviders(
-      <Button>Click me</Button>
-    );
-    
-    const button = getByTestId('button');
-    
+describe("Button Component", () => {
+  test("renders button with default props", () => {
+    const { getByTestId } = renderWithProviders(<Button>Click me</Button>);
+
+    const button = getByTestId("button");
+
     Assertions.inDocument(button);
-    Assertions.hasAttribute(button, 'data-variant', 'default');
-    Assertions.hasAttribute(button, 'data-size', 'medium');
-    Assertions.hasAttribute(button, 'data-intent', 'primary');
+    Assertions.hasAttribute(button, "data-variant", "default");
+    Assertions.hasAttribute(button, "data-size", "medium");
+    Assertions.hasAttribute(button, "data-intent", "primary");
     Assertions.isNotDisabled(button);
   });
-  
-  test('renders different button variants', () => {
+
+  test("renders different button variants", () => {
     const { getByTestId, rerender } = renderWithProviders(
-      <Button variant="outline">Outline Button</Button>
+      <Button variant="outline">Outline Button</Button>,
     );
-    
-    let button = getByTestId('button');
-    
-    Assertions.hasAttribute(button, 'data-variant', 'outline');
-    
+
+    let button = getByTestId("button");
+
+    Assertions.hasAttribute(button, "data-variant", "outline");
+
     rerender(<Button variant="text">Text Button</Button>);
-    button = getByTestId('button');
-    
-    Assertions.hasAttribute(button, 'data-variant', 'text');
-    
+    button = getByTestId("button");
+
+    Assertions.hasAttribute(button, "data-variant", "text");
+
     rerender(<Button variant="filled">Filled Button</Button>);
-    button = getByTestId('button');
-    
-    Assertions.hasAttribute(button, 'data-variant', 'filled');
+    button = getByTestId("button");
+
+    Assertions.hasAttribute(button, "data-variant", "filled");
   });
-  
-  test('handles different intent colors', () => {
+
+  test("handles different intent colors", () => {
     const { getByTestId, rerender } = renderWithProviders(
-      <Button intent="success">Success Button</Button>
+      <Button intent="success">Success Button</Button>,
     );
-    
-    let button = getByTestId('button');
-    
-    Assertions.hasAttribute(button, 'data-intent', 'success');
-    
+
+    let button = getByTestId("button");
+
+    Assertions.hasAttribute(button, "data-intent", "success");
+
     rerender(<Button intent="error">Error Button</Button>);
-    button = getByTestId('button');
-    
-    Assertions.hasAttribute(button, 'data-intent', 'error');
-    
+    button = getByTestId("button");
+
+    Assertions.hasAttribute(button, "data-intent", "error");
+
     rerender(<Button intent="warning">Warning Button</Button>);
-    button = getByTestId('button');
-    
-    Assertions.hasAttribute(button, 'data-intent', 'warning');
+    button = getByTestId("button");
+
+    Assertions.hasAttribute(button, "data-intent", "warning");
   });
-  
-  test('handles click events', () => {
+
+  test("handles click events", () => {
     const handleClick = vi.fn();
-    
+
     const { getByTestId } = renderWithProviders(
-      <Button onClick={handleClick}>Clickable Button</Button>
+      <Button onClick={handleClick}>Clickable Button</Button>,
     );
-    
-    const button = getByTestId('button');
+
+    const button = getByTestId("button");
     TestingLibrary.fireEvent.click(button);
-    
+
     expect(handleClick).toHaveBeenCalledTimes(1);
   });
-  
-  test('respects disabled state', () => {
+
+  test("respects disabled state", () => {
     const handleClick = vi.fn();
-    
+
     const { getByTestId } = renderWithProviders(
-      <Button onClick={handleClick} disabled>Disabled Button</Button>
+      <Button onClick={handleClick} disabled>
+        Disabled Button
+      </Button>,
     );
-    
-    const button = getByTestId('button');
-    
+
+    const button = getByTestId("button");
+
     Assertions.isDisabled(button);
-    
+
     TestingLibrary.fireEvent.click(button);
     expect(handleClick).not.toHaveBeenCalled();
   });
-  
-  test('applies appropriate size classes', () => {
+
+  test("applies appropriate size classes", () => {
     const { getByTestId, rerender } = renderWithProviders(
-      <Button size="small">Small Button</Button>
+      <Button size="small">Small Button</Button>,
     );
-    
-    let button = getByTestId('button');
-    
-    Assertions.hasAttribute(button, 'data-size', 'small');
-    
+
+    let button = getByTestId("button");
+
+    Assertions.hasAttribute(button, "data-size", "small");
+
     rerender(<Button size="large">Large Button</Button>);
-    button = getByTestId('button');
-    
-    Assertions.hasAttribute(button, 'data-size', 'large');
+    button = getByTestId("button");
+
+    Assertions.hasAttribute(button, "data-size", "large");
   });
-  
-  test('passes additional attributes to button element', () => {
+
+  test("passes additional attributes to button element", () => {
     const { getByTestId } = renderWithProviders(
       <Button aria-label="Custom Button" data-custom="test-value">
         Custom Attributes
-      </Button>
+      </Button>,
     );
-    
-    const button = getByTestId('button');
-    
-    Assertions.hasAttribute(button, 'aria-label', 'Custom Button');
-    Assertions.hasAttribute(button, 'data-custom', 'test-value');
+
+    const button = getByTestId("button");
+
+    Assertions.hasAttribute(button, "aria-label", "Custom Button");
+    Assertions.hasAttribute(button, "data-custom", "test-value");
   });
 });

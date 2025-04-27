@@ -1,4 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
+import { InsightMetadata } from '../interfaces/types';
 
 import { FirestoreBaseRepository } from '../../../common/repositories/firestore-base.repository';
 import { FirestoreConfigService } from '../../../config/firestore.config';
@@ -7,14 +8,16 @@ import { FirestoreEntity } from '../../../types/google-cloud.types';
 /**
  * Credit Transaction entity for Firestore
  */
-interface CreditTransaction extends FirestoreEntity {
+import { FirestoreEntityWithMetadata } from '../../../common/repositories/base/repository-types';
+
+interface CreditTransaction extends FirestoreEntityWithMetadata {
   organizationId: string;
   userId: string;
   amount: number;
   balance: number;
   type: 'purchase' | 'usage' | 'refund' | 'expiration' | 'bonus';
   description: string;
-  metadata?: Record<string, any>;
+  metadata?: InsightMetadata; // TODO: Refine fields as discovered
   relatedEntityId?: string;
   relatedEntityType?: string;
 }
@@ -22,7 +25,7 @@ interface CreditTransaction extends FirestoreEntity {
 /**
  * Credit Balance entity for Firestore
  */
-interface CreditBalance extends FirestoreEntity {
+interface CreditBalance extends FirestoreEntityWithMetadata {
   organizationId: string;
   currentBalance: number;
   lifetimeCredits: number;
@@ -119,7 +122,7 @@ export interface AddCreditsDto {
   amount: number;
   type: 'purchase' | 'bonus';
   description: string;
-  metadata?: Record<string, any>;
+  metadata?: InsightMetadata; // TODO: Refine fields as discovered
 }
 
 /**
@@ -132,7 +135,7 @@ export interface UseCreditsDto {
   description: string;
   relatedEntityId?: string;
   relatedEntityType?: string;
-  metadata?: Record<string, any>;
+  metadata?: InsightMetadata; // TODO: Refine fields as discovered
 }
 
 /**
@@ -179,6 +182,9 @@ export class CreditSystemService {
             lifetimeCredits: 0,
             lifetimeUsage: 0,
             lastUpdated: new Date(),
+            isDeleted: false,
+            deletedAt: null,
+            version: 1,
           });
         }
 
@@ -197,6 +203,9 @@ export class CreditSystemService {
           currentBalance: newBalance,
           lifetimeCredits: newLifetimeCredits,
           lastUpdated: new Date(),
+          isDeleted: false,
+          deletedAt: null,
+          version: 1,
         });
 
         // Create transaction record
@@ -211,6 +220,9 @@ export class CreditSystemService {
           type: addCreditsDto.type,
           description: addCreditsDto.description,
           metadata: addCreditsDto.metadata,
+          isDeleted: false,
+          deletedAt: null,
+          version: 1,
         };
 
         const transactionCollectionName =
@@ -291,6 +303,9 @@ export class CreditSystemService {
           relatedEntityId: useCreditsDto.relatedEntityId,
           relatedEntityType: useCreditsDto.relatedEntityType,
           metadata: useCreditsDto.metadata,
+          isDeleted: false,
+          deletedAt: null,
+          version: 1,
         };
 
         const transactionCollectionName =

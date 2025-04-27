@@ -3,18 +3,26 @@
  * This file provides utilities for testing with Vitest
  */
 
-import React from 'react';
+import React from "react";
 
-import { render } from '@testing-library/react';
-import { vi } from 'vitest';
+import { render } from "@testing-library/react";
+import { vi } from "vitest";
 
 // Theme Provider mock (using a regular function to avoid JSX in .ts files)
-export const MockThemeProvider = ({ children }: {children: React.ReactNode}) => {
+export const MockThemeProvider = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
   return React.createElement(React.Fragment, null, children);
 };
 
 // Motion Provider mock (using a regular function to avoid JSX in .ts files)
-export const MockMotionProvider = ({ children }: {children: React.ReactNode}) => {
+export const MockMotionProvider = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
   return React.createElement(React.Fragment, null, children);
 };
 
@@ -22,10 +30,10 @@ export const MockMotionProvider = ({ children }: {children: React.ReactNode}) =>
 export function renderWithProviders(ui: React.ReactElement) {
   return render(
     React.createElement(
-      MockThemeProvider, 
-      null, 
-      React.createElement(MockMotionProvider, null, ui)
-    )
+      MockThemeProvider,
+      null,
+      React.createElement(MockMotionProvider, null, ui),
+    ),
   );
 }
 
@@ -36,32 +44,44 @@ export function createMatchMediaMock(matches = false) {
     matches: boolean;
     media: string;
     onchange: null | ((this: MediaQueryList, ev: MediaQueryListEvent) => any);
-    addListener: (callback: (this: MediaQueryList, ev: MediaQueryListEvent) => any) => void;
-    removeListener: (callback: (this: MediaQueryList, ev: MediaQueryListEvent) => any) => void;
-    addEventListener: (type: string, listener: EventListenerOrEventListenerObject) => void;
-    removeEventListener: (type: string, listener: EventListenerOrEventListenerObject) => void;
+    addListener: (
+      callback: (this: MediaQueryList, ev: MediaQueryListEvent) => any,
+    ) => void;
+    removeListener: (
+      callback: (this: MediaQueryList, ev: MediaQueryListEvent) => any,
+    ) => void;
+    addEventListener: (
+      type: string,
+      listener: EventListenerOrEventListenerObject,
+    ) => void;
+    removeEventListener: (
+      type: string,
+      listener: EventListenerOrEventListenerObject,
+    ) => void;
     dispatchEvent: (event: Event) => boolean;
   }
-  
-  return vi.fn().mockImplementation((query: string): MockedMediaQueryList => ({
-    matches,
-    media: query,
-    onchange: null,
-    addListener: vi.fn(),
-    removeListener: vi.fn(),
-    addEventListener: vi.fn(),
-    removeEventListener: vi.fn(),
-    dispatchEvent: vi.fn(),
-  }));
+
+  return vi.fn().mockImplementation(
+    (query: string): MockedMediaQueryList => ({
+      matches,
+      media: query,
+      onchange: null,
+      addListener: vi.fn(),
+      removeListener: vi.fn(),
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+      dispatchEvent: vi.fn(),
+    }),
+  );
 }
 
 // Create navigator connection mock
 export function createNavigatorConnectionMock({
-  effectiveType = '4g',
+  effectiveType = "4g",
   downlink = 10,
   rtt = 50,
   saveData = false,
-  metered = false
+  metered = false,
 } = {}): Partial<NetworkInformation> {
   return {
     effectiveType,
@@ -69,23 +89,27 @@ export function createNavigatorConnectionMock({
     rtt,
     saveData,
     onchange: undefined, // Changed null to undefined
-    addEventListener: vi.fn() as unknown as NetworkInformation['addEventListener'],
-    removeEventListener: vi.fn() as unknown as NetworkInformation['removeEventListener'],
-    dispatchEvent: vi.fn().mockReturnValue(true) as unknown as NetworkInformation['dispatchEvent'],
+    addEventListener:
+      vi.fn() as unknown as NetworkInformation["addEventListener"],
+    removeEventListener:
+      vi.fn() as unknown as NetworkInformation["removeEventListener"],
+    dispatchEvent: vi
+      .fn()
+      .mockReturnValue(true) as unknown as NetworkInformation["dispatchEvent"],
   };
 }
 
 // Create mock for animation-related browser APIs
 export function setupAnimationMocks() {
   // Mock requestAnimationFrame
-  global.requestAnimationFrame = callback => {
+  global.requestAnimationFrame = (callback) => {
     setTimeout(callback, 0);
     return 0;
   };
 
   // Mock performance.now()
   if (!window.performance) {
-    Object.defineProperty(window, 'performance', {
+    Object.defineProperty(window, "performance", {
       value: { now: () => Date.now() },
       writable: true,
     });
@@ -100,7 +124,7 @@ export function setupAnimationMocks() {
     cleanup: () => {
       // Reset mocks if needed
       vi.resetAllMocks();
-    }
+    },
   };
 }
 
@@ -110,8 +134,8 @@ export const customMatchers = {
     const pass = received.classList.contains(`variant-${variant}`);
     return {
       pass,
-      message: () => 
-        pass 
+      message: () =>
+        pass
           ? `Expected element not to have variant ${variant}`
           : `Expected element to have variant ${variant}`,
     };
@@ -120,8 +144,8 @@ export const customMatchers = {
     const pass = received.classList.contains(`intent-${intent}`);
     return {
       pass,
-      message: () => 
-        pass 
+      message: () =>
+        pass
           ? `Expected element not to have intent ${intent}`
           : `Expected element to have intent ${intent}`,
     };
@@ -133,16 +157,16 @@ export function setupTest() {
   const mediaMatchMock = createMatchMediaMock();
   const originalMatchMedia = window.matchMedia;
   const animationMocks = setupAnimationMocks();
-  
+
   // Setup mocks
-  Object.defineProperty(window, 'matchMedia', {
+  Object.defineProperty(window, "matchMedia", {
     writable: true,
     value: mediaMatchMock,
   });
-  
+
   // Return cleanup function
   return () => {
-    Object.defineProperty(window, 'matchMedia', {
+    Object.defineProperty(window, "matchMedia", {
       writable: true,
       value: originalMatchMedia,
     });

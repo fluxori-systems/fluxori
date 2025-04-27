@@ -1,6 +1,7 @@
 // Dependencies for notifications module
 // Using Google Cloud services
 
+import { NotificationData } from './types';
 // Export the interfaces and types needed by this module
 export interface INotificationDocument {
   id: string;
@@ -11,7 +12,7 @@ export interface INotificationDocument {
   type: string;
   status: string;
   priority: string;
-  data?: any;
+  data?: NotificationData; // TODO: Refine fields as discovered
   scheduledAt?: Date;
   createdAt: Date;
   updatedAt: Date;

@@ -39,14 +39,10 @@ The Fluxori Design System is a set of design tokens, components, and utilities t
 Wrap your application in the ThemeProvider:
 
 ```tsx
-import { ThemeProvider } from '@/lib/design-system';
+import { ThemeProvider } from "@/lib/design-system";
 
 export default function Layout({ children }) {
-  return (
-    <ThemeProvider defaultColorMode="light">
-      {children}
-    </ThemeProvider>
-  );
+  return <ThemeProvider defaultColorMode="light">{children}</ThemeProvider>;
 }
 ```
 
@@ -55,17 +51,19 @@ export default function Layout({ children }) {
 Access design tokens using the useDesignTokens hook:
 
 ```tsx
-import { useDesignTokens } from '@/lib/design-system';
+import { useDesignTokens } from "@/lib/design-system";
 
 function MyComponent() {
   const { color, fontSize, spacing } = useDesignTokens();
-  
+
   return (
-    <div style={{
-      color: color('text.primary'),
-      fontSize: fontSize('md'),
-      padding: spacing('md'),
-    }}>
+    <div
+      style={{
+        color: color("text.primary"),
+        fontSize: fontSize("md"),
+        padding: spacing("md"),
+      }}
+    >
       Styled using design tokens
     </div>
   );
@@ -77,14 +75,14 @@ function MyComponent() {
 Toggle between light and dark modes:
 
 ```tsx
-import { useTheme } from '@/lib/design-system';
+import { useTheme } from "@/lib/design-system";
 
 function ThemeToggle() {
   const { colorMode, toggleColorMode } = useTheme();
-  
+
   return (
     <button onClick={toggleColorMode}>
-      Switch to {colorMode === 'light' ? 'Dark' : 'Light'} Mode
+      Switch to {colorMode === "light" ? "Dark" : "Light"} Mode
     </button>
   );
 }
@@ -95,20 +93,18 @@ function ThemeToggle() {
 Create responsive interfaces:
 
 ```tsx
-import { useBreakpoint, useResponsiveValue } from '@/lib/design-system';
+import { useBreakpoint, useResponsiveValue } from "@/lib/design-system";
 
 function ResponsiveComponent() {
-  const isMobile = useBreakpoint('md', 'down');
+  const isMobile = useBreakpoint("md", "down");
   const padding = useResponsiveValue({
-    base: '8px',
-    md: '16px',
-    lg: '32px',
+    base: "8px",
+    md: "16px",
+    lg: "32px",
   });
-  
+
   return (
-    <div style={{ padding }}>
-      {isMobile ? 'Mobile View' : 'Desktop View'}
-    </div>
+    <div style={{ padding }}>{isMobile ? "Mobile View" : "Desktop View"}</div>
   );
 }
 ```

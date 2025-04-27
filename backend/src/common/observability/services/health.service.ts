@@ -1,4 +1,4 @@
-import os from 'os';
+import * as os from 'os';
 
 import { Injectable, Inject, Optional, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';

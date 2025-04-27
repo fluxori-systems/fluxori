@@ -12,36 +12,47 @@ The common repository module provides a unified interface for database access, m
 
 ```typescript
 // Import all needed repository components from the common repository module
-import { 
+import {
   UnifiedFirestoreRepository,
   equalTo,
   paginatedQuery,
   organizationFilters,
-  createRepositoryOptions
-} from 'src/common/repositories';
+  createRepositoryOptions,
+} from "src/common/repositories";
 
 @Injectable()
-export class MyRepository extends UnifiedFirestoreRepository<MyEntity> implements OnModuleInit {
+export class MyRepository
+  extends UnifiedFirestoreRepository<MyEntity>
+  implements OnModuleInit
+{
   protected readonly logger = new Logger(MyRepository.name);
 
   constructor(firestoreConfigService: FirestoreConfigService) {
-    super(firestoreConfigService, 'my_collection', createRepositoryOptions({
-      enableCache: true,
-      cacheTTLMs: 300000, // 5 minutes
-      useSoftDeletes: true
-    }));
+    super(
+      firestoreConfigService,
+      "my_collection",
+      createRepositoryOptions({
+        enableCache: true,
+        cacheTTLMs: 300000, // 5 minutes
+        useSoftDeletes: true,
+      }),
+    );
   }
 
-  async findByOrganization(organizationId: string, page = 1, pageSize = 20): Promise<MyEntity[]> {
+  async findByOrganization(
+    organizationId: string,
+    page = 1,
+    pageSize = 20,
+  ): Promise<MyEntity[]> {
     return this.find({
-      ...paginatedQuery(page, pageSize, 'createdAt', 'desc'),
-      advancedFilters: organizationFilters(organizationId)
+      ...paginatedQuery(page, pageSize, "createdAt", "desc"),
+      advancedFilters: organizationFilters(organizationId),
     });
   }
 
   async findByName(name: string): Promise<MyEntity | null> {
     const items = await this.find({
-      advancedFilters: [equalTo('name', name)]
+      advancedFilters: [equalTo("name", name)],
     });
     return items.length > 0 ? items[0] : null;
   }
@@ -66,13 +77,13 @@ Helper functions for creating common query patterns:
 
 ```typescript
 // Simple equality filter
-const filter = equalTo('field', value);
+const filter = equalTo("field", value);
 
 // Greater than filter
-const filter = greaterThan('field', value);
+const filter = greaterThan("field", value);
 
 // Less than filter
-const filter = lessThan('field', value);
+const filter = lessThan("field", value);
 
 // Pagination query
 const query = paginatedQuery(page, pageSize, orderBy, direction);
@@ -92,21 +103,24 @@ Helper for creating standard repository options:
 const options = createRepositoryOptions({
   enableCache: true,
   cacheTTLMs: 300000,
-  useSoftDeletes: true
+  useSoftDeletes: true,
 });
 ```
 
 ## Best Practices
 
 1. **Always use the common repository module**
+
    - Import from `src/common/repositories` instead of directly from internal modules
    - This ensures consistent usage and simplifies future refactoring
 
 2. **Use the helper functions**
+
    - Use the provided helper functions for common operations
    - This improves code readability and ensures consistent patterns
 
 3. **Standardize repository interfaces**
+
    - Use consistent method names and parameters across repositories
    - Follow the patterns established in the base repository classes
 

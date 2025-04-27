@@ -35,15 +35,18 @@ Backups are stored in a dedicated GCS bucket (`fluxori-backups`) in the primary 
 
 Recovery steps for when a single service is experiencing issues:
 
-1. **Assess Impact**: 
+1. **Assess Impact**:
+
    - Identify the affected service through Cloud Monitoring alerts
    - Verify impact on system functionality
    - Check logs in Cloud Logging
 
 2. **Containment**:
+
    - If necessary, disable the affected service through load balancer configuration
 
 3. **Recovery**:
+
    - For Cloud Run services:
      ```bash
      # Rollback to previous revision
@@ -67,18 +70,21 @@ Recovery steps for when a single service is experiencing issues:
 Recovery steps for Firestore data corruption or accidental data deletion:
 
 1. **Assess Impact**:
+
    - Determine scope of data loss/corruption
    - Identify affected collections and documents
 
 2. **Stop Data Modifications**:
+
    - If necessary, temporarily block write access to affected collections
 
 3. **Recovery**:
+
    ```bash
    # List available backups
    cd /scripts/backup
    npm run list-backups
-   
+
    # Restore specific collections
    node backup-and-restore.js \
      --action=restore \
@@ -97,15 +103,17 @@ Recovery steps for Firestore data corruption or accidental data deletion:
 Recovery steps for Cloud Storage data loss:
 
 1. **Assess Impact**:
+
    - Determine affected buckets and files
    - Check versioning history if available
 
 2. **Recovery**:
+
    ```bash
    # List available backups
    cd /scripts/backup
    npm run list-backups
-   
+
    # Restore specific buckets
    node backup-and-restore.js \
      --action=restore \
@@ -124,10 +132,12 @@ Recovery steps for Cloud Storage data loss:
 Recovery steps for a total outage in the primary region (africa-south1):
 
 1. **Declare Disaster**:
+
    - Notify the disaster recovery team
    - Start tracking actions in the incident management system
 
 2. **Activate Failover Region**:
+
    - Update DNS to point to failover endpoints
    - Execute region failover script:
      ```bash
@@ -136,6 +146,7 @@ Recovery steps for a total outage in the primary region (africa-south1):
      ```
 
 3. **Restore Data**:
+
    ```bash
    # Restore data to failover project/region
    cd /scripts/backup
@@ -157,10 +168,12 @@ Recovery steps for a total outage in the primary region (africa-south1):
 Recovery steps for situations where a misconfiguration is deployed:
 
 1. **Assess Impact**:
+
    - Identify affected infrastructure components
    - Check Terraform state history
 
 2. **Recovery**:
+
    ```bash
    # Revert to previous working Terraform state
    cd /terraform
@@ -252,16 +265,19 @@ node backup-and-restore.js --action=restore --target=all --project=fluxori-dr \
 ## Post-Recovery Procedures
 
 1. **Validate System Integrity**:
+
    - Run full integration test suite
    - Verify data consistency
    - Check all service endpoints
 
 2. **Performance Evaluation**:
+
    - Monitor system performance
    - Check for latency issues, especially for South African users
    - Verify SLO compliance
 
 3. **Documentation and Review**:
+
    - Document incident timeline and response
    - Conduct post-mortem analysis
    - Update recovery plan based on learnings
@@ -301,11 +317,13 @@ Test results are documented and used to improve the recovery process.
 ### Essential GCP Resources
 
 - **Project IDs**:
+
   - Production: fluxori-prod
   - Staging: fluxori-staging
   - DR: fluxori-dr
 
 - **Service Accounts**:
+
   - Backup: fluxori-backup-sa@fluxori-prod.iam.gserviceaccount.com
   - DR: fluxori-dr-sa@fluxori-dr.iam.gserviceaccount.com
 

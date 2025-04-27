@@ -15,8 +15,8 @@ import {
   FirebaseAuthGuard,
   GetUser,
   DecodedFirebaseToken,
-  AuthUtils,
-} from 'src/common/auth';
+} from '@modules/auth';
+// import { AuthUtils } from '../../modules/auth'; // Uncomment if AuthUtils is public API
 
 import {
   CreateConversationRequest,
@@ -53,7 +53,8 @@ export class AgentController {
   ) {
     try {
       // Ensure the user is working with their own data using our auth utilities
-      if (!AuthUtils.isOwner(user, createRequest.userId)) {
+      // Inline AuthUtils.isOwner logic: ensure user is working with their own data
+      if (user.sub !== createRequest.userId) {
         throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
       }
 
@@ -86,7 +87,7 @@ export class AgentController {
   @Post('messages')
   async sendMessage(
     @Body() messageRequest: SendMessageRequest,
-    @GetUser() user: any,
+    @GetUser() user: DecodedFirebaseToken, // TODO: Refine user type further if needed,
   ): Promise<AgentResponse> {
     try {
       // Ensure the user is working with their own data
@@ -113,7 +114,7 @@ export class AgentController {
   @Get('conversations/:id')
   async getConversation(
     @Param('id') id: string,
-    @GetUser() user: any,
+    @GetUser() user: DecodedFirebaseToken, // TODO: Refine user type further if needed,
   ): Promise<ConversationResponse> {
     try {
       return this.agentService.getConversation(id, user.uid);
@@ -140,7 +141,7 @@ export class AgentController {
   async listConversations(
     @Query('organizationId') organizationId: string,
     @Query('limit') limit = 20,
-    @GetUser() user: any,
+    @GetUser() user: DecodedFirebaseToken, // TODO: Refine user type further if needed,
   ): Promise<ConversationResponse[]> {
     try {
       return this.agentService.listUserConversations(
@@ -244,7 +245,7 @@ export class AgentController {
   async archiveOldConversations(
     @Query('organizationId') organizationId: string,
     @Query('keepActive') keepActive = 10,
-    @GetUser() user: any,
+    @GetUser() user: DecodedFirebaseToken, // TODO: Refine user type further if needed,
   ): Promise<{ archivedCount: number }> {
     try {
       const archivedCount = await this.agentService.archiveOldConversations(

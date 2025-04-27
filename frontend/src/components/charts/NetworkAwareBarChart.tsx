@@ -1,12 +1,15 @@
-'use client';
+"use client";
 
-import React, { useRef, useEffect, useMemo } from 'react';
+import React, { useRef, useEffect, useMemo } from "react";
 
-import { Chart, registerables } from 'chart.js';
+import { Chart, registerables } from "chart.js";
 
-import { useNetworkAwareChart } from '../../hooks/useNetworkAwareChart';
-import { Text } from '../../lib/ui/components/Text';
-import { NetworkAwareBarChartProps, ChartDataPoint } from '../../types/chart.types';
+import { useNetworkAwareChart } from "../../hooks/useNetworkAwareChart";
+import { Text } from "../../lib/ui/components/Text";
+import {
+  NetworkAwareBarChartProps,
+  ChartDataPoint,
+} from "../../types/chart.types";
 
 // Register Chart.js components
 Chart.register(...registerables);
@@ -21,7 +24,7 @@ export function NetworkAwareBarChart<T extends ChartDataPoint>({
   yAxisDataKey,
   colors,
   height = 300,
-  width = '100%',
+  width = "100%",
   responsive = true,
   margin = { top: 10, right: 30, left: 0, bottom: 30 },
   xAxisLabel,
@@ -29,11 +32,11 @@ export function NetworkAwareBarChart<T extends ChartDataPoint>({
   stacked = false,
   radius = 0,
   showDataLabels = false,
-  noDataText = 'No data available',
+  noDataText = "No data available",
   textAlternative,
   forceConnectionQuality,
   hideOnPoorConnection = false,
-  className
+  className,
 }: NetworkAwareBarChartProps<T>) {
   // Get network-aware chart configuration
   const {
@@ -42,12 +45,12 @@ export function NetworkAwareBarChart<T extends ChartDataPoint>({
     animation,
     profileConfig,
     getOptimizedData,
-    getDesignSystemColors
+    getDesignSystemColors,
   } = useNetworkAwareChart(forceConnectionQuality);
 
   // Reference to the canvas element
   const chartRef = useRef<HTMLCanvasElement | null>(null);
-  
+
   // Reference to the chart instance
   const chartInstance = useRef<Chart | null>(null);
 
@@ -79,14 +82,14 @@ export function NetworkAwareBarChart<T extends ChartDataPoint>({
     }
 
     // Extract labels and datasets from optimizedData
-    const labels = optimizedData.map(item => String(item[xAxisDataKey]));
-    
+    const labels = optimizedData.map((item) => String(item[xAxisDataKey]));
+
     // Create datasets for each y-axis key
     const datasets = yKeys.map((key, index) => ({
       label: String(key),
-      data: optimizedData.map(item => Number(item[key])),
+      data: optimizedData.map((item) => Number(item[key])),
       backgroundColor: chartColors[index % chartColors.length],
-      borderColor: 'var(--color-background-card)',
+      borderColor: "var(--color-background-card)",
       borderWidth: 1,
       borderRadius: shouldSimplify ? 0 : radius,
       barPercentage: 0.8,
@@ -94,10 +97,10 @@ export function NetworkAwareBarChart<T extends ChartDataPoint>({
     }));
 
     // Create chart instance
-    const ctx = chartRef.current.getContext('2d');
+    const ctx = chartRef.current.getContext("2d");
     if (ctx) {
       chartInstance.current = new Chart(ctx, {
-        type: 'bar',
+        type: "bar",
         data: { labels, datasets },
         options: {
           responsive: true,
@@ -107,7 +110,7 @@ export function NetworkAwareBarChart<T extends ChartDataPoint>({
             easing: animation.easing,
           } as const,
           interaction: {
-            mode: 'index',
+            mode: "index",
             intersect: false,
           },
           scales: {
@@ -115,64 +118,64 @@ export function NetworkAwareBarChart<T extends ChartDataPoint>({
               stacked: stacked,
               title: {
                 display: Boolean(xAxisLabel),
-                text: xAxisLabel || '',
-                color: 'var(--color-text-secondary)',
+                text: xAxisLabel || "",
+                color: "var(--color-text-secondary)",
                 font: {
                   size: 12,
                 },
               },
               grid: {
                 display: profileConfig.showGrid,
-                color: 'var(--color-border-light)',
+                color: "var(--color-border-light)",
                 drawOnChartArea: true,
               },
               ticks: {
                 maxRotation: shouldSimplify ? 0 : 45,
                 autoSkip: true,
                 maxTicksLimit: profileConfig.maxAxisLabels,
-                color: 'var(--color-text-secondary)',
+                color: "var(--color-text-secondary)",
                 font: {
                   size: 12,
                 },
               },
               border: {
-                color: 'var(--color-border-default)',
-              }
+                color: "var(--color-border-default)",
+              },
             },
             y: {
               stacked: stacked,
               title: {
                 display: Boolean(yAxisLabel),
-                text: yAxisLabel || '',
-                color: 'var(--color-text-secondary)',
+                text: yAxisLabel || "",
+                color: "var(--color-text-secondary)",
                 font: {
                   size: 12,
                 },
               },
               grid: {
                 display: profileConfig.showGrid,
-                color: 'var(--color-border-light)',
+                color: "var(--color-border-light)",
                 drawOnChartArea: true,
               },
               ticks: {
                 autoSkip: true,
                 maxTicksLimit: profileConfig.maxAxisLabels,
-                color: 'var(--color-text-secondary)',
+                color: "var(--color-text-secondary)",
                 font: {
                   size: 12,
                 },
               },
               border: {
-                color: 'var(--color-border-default)',
-              }
+                color: "var(--color-border-default)",
+              },
             },
           },
           plugins: {
             legend: {
               display: !shouldSimplify || !profileConfig.simplifiedLegend,
-              position: 'bottom',
+              position: "bottom",
               labels: {
-                color: 'var(--color-text-primary)',
+                color: "var(--color-text-primary)",
                 font: {
                   size: 12,
                 },
@@ -182,8 +185,8 @@ export function NetworkAwareBarChart<T extends ChartDataPoint>({
             },
             tooltip: {
               enabled: profileConfig.showTooltips,
-              backgroundColor: 'var(--color-background-card)',
-              borderColor: 'var(--color-border-default)',
+              backgroundColor: "var(--color-background-card)",
+              borderColor: "var(--color-border-default)",
               borderWidth: 1,
               cornerRadius: 4,
               bodyFont: {
@@ -191,10 +194,10 @@ export function NetworkAwareBarChart<T extends ChartDataPoint>({
               },
               titleFont: {
                 size: 12,
-                weight: 'normal',
+                weight: "normal",
               },
-              titleColor: 'var(--color-text-secondary)',
-              bodyColor: 'var(--color-text-primary)',
+              titleColor: "var(--color-text-secondary)",
+              bodyColor: "var(--color-text-primary)",
               padding: 8,
             },
             // Data labels are implemented via a Chart.js plugin, in a real implementation
@@ -212,17 +215,17 @@ export function NetworkAwareBarChart<T extends ChartDataPoint>({
       }
     };
   }, [
-    optimizedData, 
-    xAxisDataKey, 
-    yKeys, 
-    chartColors, 
-    xAxisLabel, 
+    optimizedData,
+    xAxisDataKey,
+    yKeys,
+    chartColors,
+    xAxisLabel,
     yAxisLabel,
     radius,
-    stacked, 
-    shouldSimplify, 
-    profileConfig, 
-    animation
+    stacked,
+    shouldSimplify,
+    profileConfig,
+    animation,
   ]);
 
   // If there's no data, show a message
@@ -231,13 +234,13 @@ export function NetworkAwareBarChart<T extends ChartDataPoint>({
       <div
         style={{
           height,
-          width: responsive ? '100%' : width,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          backgroundColor: 'var(--color-background-surface)',
-          borderRadius: 'var(--radius-md)',
-          padding: 'var(--spacing-md)'
+          width: responsive ? "100%" : width,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          backgroundColor: "var(--color-background-surface)",
+          borderRadius: "var(--radius-md)",
+          padding: "var(--spacing-md)",
         }}
         className={className}
       >
@@ -247,38 +250,40 @@ export function NetworkAwareBarChart<T extends ChartDataPoint>({
   }
 
   // If we should show text alternative or hide on poor connection
-  if ((showTextAlternative && textAlternative) || 
-      (hideOnPoorConnection && profileConfig.maxDataPoints <= 20)) {
+  if (
+    (showTextAlternative && textAlternative) ||
+    (hideOnPoorConnection && profileConfig.maxDataPoints <= 20)
+  ) {
     return (
       <div
         style={{
           height,
-          width: responsive ? '100%' : width,
-          display: 'flex',
-          flexDirection: 'column',
-          backgroundColor: 'var(--color-background-surface)',
-          borderRadius: 'var(--radius-md)',
-          padding: 'var(--spacing-md)'
+          width: responsive ? "100%" : width,
+          display: "flex",
+          flexDirection: "column",
+          backgroundColor: "var(--color-background-surface)",
+          borderRadius: "var(--radius-md)",
+          padding: "var(--spacing-md)",
         }}
         className={className}
       >
-        <Text size="sm" style={{ marginBottom: 'var(--spacing-sm)' }}>
-          {textAlternative || 'Chart visualization simplified to save data.'}
+        <Text size="sm" style={{ marginBottom: "var(--spacing-sm)" }}>
+          {textAlternative || "Chart visualization simplified to save data."}
         </Text>
         <div
           style={{
-            display: 'flex',
-            flexWrap: 'wrap',
-            gap: 'var(--spacing-sm)'
+            display: "flex",
+            flexWrap: "wrap",
+            gap: "var(--spacing-sm)",
           }}
         >
           {yKeys.map((key, index) => (
-            <div 
-              key={key as string} 
-              style={{ 
-                display: 'flex', 
-                alignItems: 'center', 
-                gap: 4 
+            <div
+              key={key as string}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 4,
               }}
             >
               <div
@@ -286,7 +291,7 @@ export function NetworkAwareBarChart<T extends ChartDataPoint>({
                   width: 12,
                   height: 12,
                   backgroundColor: chartColors[index],
-                  borderRadius: 2
+                  borderRadius: 2,
                 }}
               />
               <Text size="xs">{key as string}</Text>
@@ -299,13 +304,13 @@ export function NetworkAwareBarChart<T extends ChartDataPoint>({
 
   // Return the chart
   return (
-    <div 
-      style={{ 
-        height, 
-        width: responsive ? '100%' : width,
-        position: 'relative',
+    <div
+      style={{
+        height,
+        width: responsive ? "100%" : width,
+        position: "relative",
         padding: `${margin.top}px ${margin.right}px ${margin.bottom}px ${margin.left}px`,
-      }} 
+      }}
       className={className}
     >
       <canvas ref={chartRef}></canvas>

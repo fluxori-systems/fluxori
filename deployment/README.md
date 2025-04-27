@@ -11,6 +11,7 @@ To deploy the entire system, run:
 ```
 
 This script will handle the complete deployment process, including:
+
 - Setting up GCP infrastructure
 - Configuring Firestore database
 - Building and deploying the application
@@ -33,16 +34,19 @@ All components are deployed to the **africa-south1** (Johannesburg) region for o
 ## Key Features
 
 1. **South African Market Optimizations**
+
    - Load shedding detection and adaptation
    - Regional deployment for lower latency
    - South African timezone scheduling
 
 2. **Quota Management**
+
    - Conservative quota usage (82K requests/month)
    - Priority-based allocation
    - Circuit breaker for quota protection
 
 3. **Monitoring & Alerting**
+
    - Comprehensive dashboard
    - Email alerts for critical issues
    - Daily status reports
@@ -71,4 +75,5 @@ All components are deployed to the **africa-south1** (Johannesburg) region for o
 ## Support
 
 For any issues with the deployment, contact:
+
 - DevOps Team: devops@fluxori.com

@@ -7,16 +7,18 @@ The Dashboard Layout System provides a comprehensive solution for building data-
 ### DashboardLayout
 
 The top-level container for a dashboard that manages:
+
 - Information density controls (compact/comfortable)
 - Layout persistence
 - Section collapsing state
 - Network-aware optimizations
 
 ```tsx
-<DashboardLayout 
-  showDensityControls={true} 
+<DashboardLayout
+  showDensityControls={true}
   defaultDensity="comfortable"
-  networkAware={true}>
+  networkAware={true}
+>
   {/* Dashboard sections and content */}
 </DashboardLayout>
 ```
@@ -30,7 +32,8 @@ Organizes related dashboard cards with collapsible headers:
   id="kpi-section"
   title="Key Performance Indicators"
   description="Overview of critical metrics"
-  collapsible={true}>
+  collapsible={true}
+>
   {/* Section content */}
 </DashboardSection>
 ```
@@ -58,7 +61,8 @@ Base card component with consistent styling and behavior:
   description="Optional description"
   type="metric"
   refreshInterval={30000}
-  onRefresh={() => fetchNewData()}>
+  onRefresh={() => fetchNewData()}
+>
   {/* Card content */}
 </DashboardCard>
 ```
@@ -138,7 +142,7 @@ The Dashboard Layout System includes comprehensive optimizations for South Afric
           format="$0,0"
         />
       </DashboardGrid.Col>
-      
+
       <DashboardGrid.Col span={{ xs: 12, sm: 6, md: 3 }}>
         <MetricCard
           id="orders"
@@ -150,7 +154,7 @@ The Dashboard Layout System includes comprehensive optimizations for South Afric
       </DashboardGrid.Col>
     </DashboardGrid>
   </DashboardSection>
-  
+
   <DashboardSection id="charts-section" title="Performance Charts">
     <DashboardGrid columns={12} gap="md">
       <DashboardGrid.Col span={{ xs: 12, lg: 8 }}>
@@ -162,7 +166,7 @@ The Dashboard Layout System includes comprehensive optimizations for South Afric
           showLegend={true}
         />
       </DashboardGrid.Col>
-      
+
       <DashboardGrid.Col span={{ xs: 12, sm: 6, lg: 4 }}>
         <ChartCard
           id="category-chart"
@@ -180,15 +184,18 @@ The Dashboard Layout System includes comprehensive optimizations for South Afric
 ## Best Practices
 
 1. **Network-Aware Development**:
+
    - Always enable `networkAware` prop on components
    - Provide text alternatives for charts
    - Test with the ConnectionQualitySimulator
 
 2. **Responsive Design**:
+
    - Use responsive span values in Grid.Col components
    - Test across all breakpoints
 
 3. **Performance Optimization**:
+
    - Lazy-load non-critical dashboard sections
    - Keep refresh intervals reasonable (30s minimum)
    - Use appropriate card types for the data

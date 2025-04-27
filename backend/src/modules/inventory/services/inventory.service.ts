@@ -5,6 +5,8 @@ import {
   ConflictException,
 } from '@nestjs/common';
 
+import { InventoryMetadata } from '../interfaces/types';
+
 import {
   IProduct,
   IProductService,
@@ -59,7 +61,7 @@ export interface CreateProductDto {
   reorderQuantity?: number;
   attributes?: Record<string, string | number | boolean>;
   tags?: string[];
-  metadata?: Record<string, any>;
+  metadata?: InventoryMetadata; // TODO: Refine fields as discovered
   seoTitle?: string;
   seoDescription?: string;
   seoKeywords?: string[];
@@ -96,7 +98,7 @@ export interface UpdateProductDto {
   reorderQuantity?: number;
   attributes?: Record<string, string | number | boolean>;
   tags?: string[];
-  metadata?: Record<string, any>;
+  metadata?: InventoryMetadata; // TODO: Refine fields as discovered
   seoTitle?: string;
   seoDescription?: string;
   seoKeywords?: string[];

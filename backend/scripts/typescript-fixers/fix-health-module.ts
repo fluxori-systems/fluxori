@@ -1,18 +1,21 @@
 /**
  * TypeScript fixer for NestJS Health Module
- * 
+ *
  * This script creates fixed versions of the health module files that
- * currently use @ts-nocheck suppressions, properly typing all the 
+ * currently use @ts-nocheck suppressions, properly typing all the
  * interfaces and dependencies.
  */
 
-import * as fs from 'fs';
-import * as path from 'path';
+import * as fs from "fs";
+import * as path from "path";
 
 // Define the paths for our files
-const healthDir = path.resolve(__dirname, '../../src/health');
-const firestoreHealthIndicatorPath = path.join(healthDir, 'firestore-health.indicator.ts');
-const healthControllerPath = path.join(healthDir, 'health.controller.ts');
+const healthDir = path.resolve(__dirname, "../../src/health");
+const firestoreHealthIndicatorPath = path.join(
+  healthDir,
+  "firestore-health.indicator.ts",
+);
+const healthControllerPath = path.join(healthDir, "health.controller.ts");
 
 // Replace @ts-nocheck in firestore-health.indicator.ts
 const firestoreHealthIndicatorContent = `/**
@@ -340,6 +343,8 @@ export class HealthController {
 fs.writeFileSync(firestoreHealthIndicatorPath, firestoreHealthIndicatorContent);
 fs.writeFileSync(healthControllerPath, healthControllerContent);
 
-console.log('Successfully fixed TypeScript suppressions in health module files:');
-console.log('- firestore-health.indicator.ts');
-console.log('- health.controller.ts');
+console.log(
+  "Successfully fixed TypeScript suppressions in health module files:",
+);
+console.log("- firestore-health.indicator.ts");
+console.log("- health.controller.ts");

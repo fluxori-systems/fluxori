@@ -1,6 +1,45 @@
 /**
  * Types for the Inventory module
  */
+
+/**
+ * Placeholder for inventory metadata fields.
+ * TODO: Add concrete fields as discovered.
+ */
+export interface InventoryMetadata {
+  /** Source of inventory data (e.g., manual, import, integration) */
+  source?: string;
+  /** Batch or lot number if applicable */
+  batchNumber?: string;
+  /** Timestamp for when this metadata was created or updated */
+  updatedAt?: Date;
+  /** User or system that last updated this record */
+  updatedBy?: string;
+  /** Arbitrary notes or audit info */
+  notes?: string;
+  /** Custom fields for future extensibility */
+  customFields?: Record<string, unknown>;
+  /** Add further fields as real usage emerges */
+}
+
+/**
+ * Placeholder for warehouse integration config fields.
+ * TODO: Add concrete fields as discovered.
+ */
+export interface WarehouseIntegrationConfig {
+  /** Name of the integration provider (e.g., 3PL, ERP) */
+  provider: string;
+  /** External warehouse ID in the integration system */
+  externalWarehouseId?: string;
+  /** API credentials or configuration options */
+  apiConfig?: Record<string, unknown>;
+  /** Last sync timestamp */
+  lastSyncedAt?: Date;
+  /** Is integration active? */
+  isActive: boolean;
+  /** Add further fields as real usage emerges */
+}
+
 import { FirestoreEntity } from '../../../types/google-cloud.types';
 
 /**

@@ -4,8 +4,12 @@ import {
   NotFoundException,
   ConflictException,
 } from '@nestjs/common';
-
-import { WarehouseType, WarehouseLocation } from '../interfaces/types';
+import {
+  InventoryMetadata,
+  WarehouseIntegrationConfig,
+  WarehouseType,
+  WarehouseLocation,
+} from '../interfaces/types';
 import { Warehouse } from '../models/warehouse.schema';
 import { WarehouseRepository } from '../repositories/warehouse.repository';
 
@@ -47,10 +51,10 @@ export interface CreateWarehouseDto {
   capacityUnit?: string;
   externalId?: string;
   integrationProvider?: string;
-  integrationConfig?: Record<string, any>;
+  integrationConfig?: WarehouseIntegrationConfig; // TODO: Refine fields as discovered
   notes?: string;
   tags?: string[];
-  metadata?: Record<string, any>;
+  metadata?: InventoryMetadata; // TODO: Refine fields as discovered
 }
 
 /**
@@ -88,10 +92,10 @@ export interface UpdateWarehouseDto {
   capacityUnit?: string;
   externalId?: string;
   integrationProvider?: string;
-  integrationConfig?: Record<string, any>;
+  integrationConfig?: WarehouseIntegrationConfig; // TODO: Refine fields as discovered
   notes?: string;
   tags?: string[];
-  metadata?: Record<string, any>;
+  metadata?: InventoryMetadata; // TODO: Refine fields as discovered
 }
 
 /**

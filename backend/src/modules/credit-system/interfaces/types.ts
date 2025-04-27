@@ -1,6 +1,73 @@
 /**
  * Types for the Credit System module
  */
+
+/**
+ * Placeholder for Credit Alert arguments. TODO: Add concrete fields as discovered.
+ */
+export interface CreditAlertArguments {
+  // TODO: Add concrete argument fields here
+}
+
+/**
+ * Placeholder for Credit Alert message. TODO: Add concrete fields as discovered.
+ */
+export interface CreditAlertMessage {
+  // TODO: Add concrete message fields here
+}
+
+/**
+ * Placeholder for Credit System metadata fields. TODO: Add concrete fields as discovered.
+ */
+export interface CreditSystemMetadata {
+  /** Source of credit operation (e.g., manual, automated, migration) */
+  source?: string;
+  /** Who/what triggered the operation */
+  actor?: string;
+  /** Timestamp for metadata creation/update */
+  updatedAt?: Date;
+  /** Operation type or subtype (e.g., "allocation", "usage", "refund") */
+  operationType?: string;
+  /** Arbitrary notes or audit info */
+  notes?: string;
+  /** Custom fields for extensibility */
+  customFields?: Record<string, unknown>;
+  /** Add further fields as real usage emerges */
+}
+
+/**
+ * Placeholder for Credit System arguments fields. TODO: Add concrete fields as discovered.
+ */
+export interface CreditArguments {
+  /** Model involved in the credit operation */
+  modelId: string;
+  /** Model provider (e.g., OpenAI, Vertex) */
+  modelProvider: string;
+  /** Number of input tokens */
+  inputTokens: number;
+  /** Number of output tokens */
+  outputTokens: number;
+  /** Operation type (e.g., usage, allocation, reservation) */
+  operationType: string;
+  /** Contextual information (organization, user, etc.) */
+  context?: {
+    organizationId?: string;
+    userId?: string;
+    environment?: string;
+    [key: string]: unknown;
+  };
+  /** Additional arguments as needed */
+  [key: string]: unknown;
+  /** Add further fields as real usage emerges */
+}
+
+/**
+ * Placeholder for Credit System message fields. TODO: Add concrete fields as discovered.
+ */
+export interface CreditMessage {
+  // TODO: Add concrete message fields here as they are discovered in the codebase
+}
+
 import { FirestoreEntity } from '../../../types/google-cloud.types';
 
 /**
@@ -29,6 +96,8 @@ export enum CreditUsageType {
  * Credit allocation entity stored in Firestore
  */
 export interface CreditAllocation extends FirestoreEntity {
+  isDeleted: boolean; // Ensure always present for FirestoreEntityWithMetadata compliance
+  version: number; // Ensure always present for FirestoreEntityWithMetadata compliance
   organizationId: string;
   userId?: string;
   modelType: CreditModelType;
@@ -37,13 +106,16 @@ export interface CreditAllocation extends FirestoreEntity {
   resetDate?: Date;
   expirationDate?: Date;
   isActive: boolean;
-  metadata?: Record<string, any>;
+  // TODO: Refine metadata type as requirements become clear
+  metadata?: CreditSystemMetadata;
 }
 
 /**
  * Credit usage transaction entity stored in Firestore
  */
 export interface CreditTransaction extends FirestoreEntity {
+  isDeleted: boolean; // Ensure always present for FirestoreEntityWithMetadata compliance
+  version: number; // Ensure always present for FirestoreEntityWithMetadata compliance
   organizationId: string;
   userId?: string;
   amount: number;
@@ -57,7 +129,8 @@ export interface CreditTransaction extends FirestoreEntity {
   operationId?: string;
   resourceId?: string;
   resourceType?: string;
-  metadata?: Record<string, any>;
+  // TODO: Refine metadata type as requirements become clear
+  metadata?: CreditSystemMetadata;
 }
 
 /**
@@ -78,13 +151,16 @@ export interface CreditUsageLog extends FirestoreEntity {
   errorMessage?: string;
   resourceId?: string;
   resourceType?: string;
-  metadata?: Record<string, any>;
+  // TODO: Refine metadata type as requirements become clear
+  metadata?: CreditSystemMetadata;
 }
 
 /**
  * Credit pricing tier entity stored in Firestore
  */
 export interface CreditPricingTier extends FirestoreEntity {
+  isDeleted: boolean; // Ensure always present for FirestoreEntityWithMetadata compliance
+  version: number; // Ensure always present for FirestoreEntityWithMetadata compliance
   modelId: string;
   modelProvider: string;
   displayName: string;
@@ -111,22 +187,23 @@ export interface CreditUsageStats extends FirestoreEntity {
   periodEnd: Date;
   totalCreditsUsed: number;
   totalTokens: number;
-  usageByModel: {
-    [modelId: string]: {
+  usageByModel: Record<
+    string,
+    {
       inputTokens: number;
       outputTokens: number;
       creditsUsed: number;
-    };
-  };
-  usageByType: {
-    [type in CreditUsageType]?: number;
-  };
+    }
+  >;
+  usageByType: Partial<Record<CreditUsageType, number>>; // More precise than {[type in CreditUsageType]?: number;}
 }
 
 /**
  * Credit reservation entity stored in Firestore
  */
 export interface CreditReservation extends FirestoreEntity {
+  isDeleted: boolean; // Ensure always present for FirestoreEntityWithMetadata compliance
+  version: number; // Ensure always present for FirestoreEntityWithMetadata compliance
   organizationId: string;
   userId?: string;
   operationId: string;
@@ -134,7 +211,8 @@ export interface CreditReservation extends FirestoreEntity {
   usageType: CreditUsageType;
   status: 'pending' | 'confirmed' | 'released' | 'expired';
   expirationDate: Date;
-  metadata?: Record<string, any>;
+  // TODO: Refine metadata type as requirements become clear
+  metadata?: CreditSystemMetadata;
 }
 
 /**
@@ -152,6 +230,14 @@ export interface CreditAlert extends FirestoreEntity {
   lastTriggeredAt?: Date;
   createdBy: string;
   notificationChannels: string[];
+  /**
+   * Arguments for the credit alert. TODO: Refine fields as discovered.
+   */
+  arguments: CreditAlertArguments;
+  /**
+   * Messages related to the credit alert. TODO: Refine fields as discovered.
+   */
+  messages: CreditAlertMessage[];
   isActive: boolean;
 }
 
@@ -178,7 +264,8 @@ export interface CreditCheckRequest {
   modelId: string;
   usageType: CreditUsageType;
   operationId?: string;
-  metadata?: Record<string, any>;
+  // TODO: Refine metadata type as requirements become clear
+  metadata?: CreditSystemMetadata;
 }
 
 /**
@@ -210,7 +297,8 @@ export interface CreditUsageRequest {
   resourceType?: string;
   success: boolean;
   errorMessage?: string;
-  metadata?: Record<string, any>;
+  // TODO: Refine metadata type as requirements become clear
+  metadata?: CreditSystemMetadata;
 }
 
 /**

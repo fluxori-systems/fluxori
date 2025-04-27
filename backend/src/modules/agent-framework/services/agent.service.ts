@@ -101,6 +101,10 @@ export class AgentService {
         metadata: request.metadata || {},
         isActive: true,
         tags: [],
+        // FirestoreEntityWithMetadata required fields
+        isDeleted: false,
+        deletedAt: null,
+        version: 1,
       });
 
       // If there's an initial message, generate an agent response

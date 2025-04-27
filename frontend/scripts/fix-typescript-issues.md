@@ -17,14 +17,17 @@ This guide outlines how TypeScript errors were fixed in the Fluxori frontend.
 The main TypeScript errors in the codebase that have now been resolved fell into these categories:
 
 1. **UI Component Prop Type Mismatches (≈80% of errors)**
+
    - Properties missing from Mantine component types
    - Incompatible prop types between old and new Mantine versions
 
 2. **API Client Type Issues (≈10% of errors)**
+
    - Missing parameter types
    - API response type assertions
 
 3. **Chart.js Configuration Type Issues (≈5% of errors)**
+
    - Incompatible animation configuration
    - Unknown properties in tooltip options
 

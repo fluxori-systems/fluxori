@@ -1,9 +1,6 @@
 /**
- * Base Connector Interface
- *
- * Interface for all connector implementations that provides a consistent
- * way to interact with external APIs, with special support for South African
- * network conditions like load shedding and mobile network optimizations.
+ * Core Connector Interfaces for Integration Modules (Regenerated, Strict)
+ * Strictly typed and documented for use across all connectors (marketplace, financial, etc.)
  */
 
 import {
@@ -21,17 +18,13 @@ import {
 export interface IConnector {
   /** Unique identifier for this connector type */
   readonly connectorId: string;
-
   /** Human-readable name for this connector */
   readonly connectorName: string;
-
   /** Whether the connector has been initialized */
   isInitialized: boolean;
-
   /** Current connection status */
   connectionStatus: ConnectionStatus;
-
-  /** Current network status with SA-specific information */
+  /** Current network status */
   networkStatus: NetworkStatus;
 
   /**
@@ -41,7 +34,7 @@ export interface IConnector {
   initialize(credentials: ConnectorCredentials): Promise<void>;
 
   /**
-   * Test connection to the API
+   * Test the connection
    */
   testConnection(): Promise<ConnectionStatus>;
 
@@ -65,7 +58,7 @@ export interface IConnector {
   close(): Promise<void>;
 
   /**
-   * Check current network status with SA-specific information
+   * Check current network status
    */
   checkNetworkStatus(): Promise<NetworkStatus>;
 
@@ -76,7 +69,7 @@ export interface IConnector {
 }
 
 /**
- * Interface for connectors with error handling capabilities
+ * Interface for connectors that support error history management.
  */
 export interface IErrorHandlingConnector {
   /**
@@ -86,7 +79,7 @@ export interface IErrorHandlingConnector {
 }
 
 /**
- * Generic marketplace connector interface for e-commerce platforms
+ * Marketplace connector interface, generic for product/order types.
  */
 export interface IMarketplaceConnector<TProduct, TOrder, TAcknowledgment>
   extends IConnector {

@@ -1,6 +1,13 @@
 // Using interface-based schema for Firestore compatibility
 
 /**
+ * Metadata for FeatureFlagAuditLog (TODO: add concrete fields as discovered)
+ */
+export interface FeatureFlagAuditLogMetadata {
+  // TODO: Add concrete metadata fields here as they are discovered in the codebase
+}
+
+/**
  * Feature Flag Audit Log Schema structure
  * This schema definition provides documentation for the feature flag audit log structure
  * used in the Firestore database.
@@ -14,12 +21,12 @@ export interface FeatureFlagAuditLogSchema {
   timestamp: Date;
   changes: Array<{
     field: string;
-    oldValue: any;
-    newValue: any;
+    oldValue: unknown;
+    newValue: unknown;
   }>;
 
   // Optional fields
-  metadata?: Record<string, any>;
+  metadata?: FeatureFlagAuditLogMetadata;
 
   // Firestore standard fields - added automatically
   id?: string;

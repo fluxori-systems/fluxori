@@ -14,6 +14,7 @@ The Marketplace Scraper is deployed on Google Cloud Platform with the following 
 - **Secret Manager**: Securely stores API credentials
 
 The system is designed for:
+
 - **Load Shedding Resilience**: Can detect and adapt to power outages
 - **Quota Management**: Stays within 82K monthly request limit (2,700 daily)
 - **Self-Healing**: Automatically recovers from most error conditions
@@ -29,14 +30,14 @@ The system is designed for:
 
 ### Key API Endpoints
 
-| Endpoint | Purpose | Authentication | Example |
-|----------|---------|----------------|---------|
-| `/status` | Check system status | None | `curl https://marketplace-scraper-[HASH]-uc.a.run.app/status` |
-| `/quota` | Check quota status | None | `curl https://marketplace-scraper-[HASH]-uc.a.run.app/quota` |
-| `/health` | Health check | None | `curl https://marketplace-scraper-[HASH]-uc.a.run.app/health` |
-| `/daily-summary` | Get daily stats | None | `curl https://marketplace-scraper-[HASH]-uc.a.run.app/daily-summary` |
-| `/tasks/execute` | Execute a task | Service account | See examples below |
-| `/tasks/schedule` | Schedule tasks | Service account | See examples below |
+| Endpoint          | Purpose             | Authentication  | Example                                                              |
+| ----------------- | ------------------- | --------------- | -------------------------------------------------------------------- |
+| `/status`         | Check system status | None            | `curl https://marketplace-scraper-[HASH]-uc.a.run.app/status`        |
+| `/quota`          | Check quota status  | None            | `curl https://marketplace-scraper-[HASH]-uc.a.run.app/quota`         |
+| `/health`         | Health check        | None            | `curl https://marketplace-scraper-[HASH]-uc.a.run.app/health`        |
+| `/daily-summary`  | Get daily stats     | None            | `curl https://marketplace-scraper-[HASH]-uc.a.run.app/daily-summary` |
+| `/tasks/execute`  | Execute a task      | Service account | See examples below                                                   |
+| `/tasks/schedule` | Schedule tasks      | Service account | See examples below                                                   |
 
 ## Daily Operations
 
@@ -77,26 +78,26 @@ The system maintains a conservative quota allocation to ensure it stays within t
 
 ### Quota Distribution
 
-| Priority Level | Allocation | Monthly Requests | Purpose |
-|----------------|------------|------------------|---------|
-| CRITICAL | 40% | 32,800 | Price monitoring, emergency tasks |
-| HIGH | 30% | 24,600 | Product details updates, daily deals |
-| MEDIUM | 20% | 16,400 | Category browsing, search monitoring |
-| LOW | 5% | 4,100 | Suggestion extraction, background tasks |
-| BACKGROUND | 5% | 4,100 | Maintenance, cleanup |
+| Priority Level | Allocation | Monthly Requests | Purpose                                 |
+| -------------- | ---------- | ---------------- | --------------------------------------- |
+| CRITICAL       | 40%        | 32,800           | Price monitoring, emergency tasks       |
+| HIGH           | 30%        | 24,600           | Product details updates, daily deals    |
+| MEDIUM         | 20%        | 16,400           | Category browsing, search monitoring    |
+| LOW            | 5%         | 4,100            | Suggestion extraction, background tasks |
+| BACKGROUND     | 5%         | 4,100            | Maintenance, cleanup                    |
 
 ### Daily Distribution
 
 On a daily basis, the system allocates approximately 2,700 requests distributed across task types:
 
-| Task Type | Daily Allocation | Purpose |
-|-----------|------------------|---------|
-| Product refreshes | ~1,350 (50%) | Keep product data current |
-| Daily deals | ~270 (10%) | Monitor deals 3x daily |
-| Category browsing | ~540 (20%) | Discover new products |
-| Search monitoring | ~270 (10%) | Track search results for keywords |
-| Suggestions | ~135 (5%) | Extract search suggestions |
-| System tasks | ~135 (5%) | Health checks, load shedding detection |
+| Task Type         | Daily Allocation | Purpose                                |
+| ----------------- | ---------------- | -------------------------------------- |
+| Product refreshes | ~1,350 (50%)     | Keep product data current              |
+| Daily deals       | ~270 (10%)       | Monitor deals 3x daily                 |
+| Category browsing | ~540 (20%)       | Discover new products                  |
+| Search monitoring | ~270 (10%)       | Track search results for keywords      |
+| Suggestions       | ~135 (5%)        | Extract search suggestions             |
+| System tasks      | ~135 (5%)        | Health checks, load shedding detection |
 
 ### Checking Quota Status
 
@@ -106,6 +107,7 @@ curl https://marketplace-scraper-[HASH]-uc.a.run.app/quota
 ```
 
 Example response:
+
 ```json
 {
   "monthly_quota": {
@@ -128,7 +130,7 @@ Example response:
       "allocation": 0.4,
       "limit": 32800,
       "usage_percentage": 9.97
-    },
+    }
     // Additional priorities...
   }
 }
@@ -169,11 +171,13 @@ curl https://marketplace-scraper-[HASH]-uc.a.run.app/status | jq '.scheduler.loa
 ### 1. Quota Exceeded
 
 **Symptoms**:
+
 - Tasks being rejected with "Quota exceeded" errors
 - High quota usage in monitoring dashboard
 - Quota-related alert emails
 
 **Solutions**:
+
 ```bash
 # Temporarily reduce task frequency
 curl -X POST "https://marketplace-scraper-[HASH]-uc.a.run.app/tasks/execute" \
@@ -193,10 +197,12 @@ curl -X POST "https://marketplace-scraper-[HASH]-uc.a.run.app/tasks/execute" \
 ### 2. Persistent Load Shedding Detection
 
 **Symptoms**:
+
 - System remains in load shedding mode for >12 hours
 - Normal tasks not resuming despite power restoration
 
 **Solutions**:
+
 ```bash
 # Reset load shedding detection manually
 curl -X POST "https://marketplace-scraper-[HASH]-uc.a.run.app/tasks/execute" \
@@ -212,6 +218,7 @@ curl -X POST "https://marketplace-scraper-[HASH]-uc.a.run.app/tasks/execute" \
 ### 3. High Error Rates
 
 **Symptoms**:
+
 - Error rates >20% in monitoring dashboard
 - Alert emails about failed tasks
 - Fewer successful data points collected
@@ -219,12 +226,14 @@ curl -X POST "https://marketplace-scraper-[HASH]-uc.a.run.app/tasks/execute" \
 **Solutions**:
 
 First, diagnose the issue:
+
 ```bash
 # Check recent errors
 gcloud logging read "resource.type=cloud_run_revision AND resource.labels.service_name=marketplace-scraper AND severity>=ERROR" --limit=20
 ```
 
 Common resolutions:
+
 ```bash
 # Restart the service if errors persist
 gcloud run services update marketplace-scraper --region=africa-south1 --clear-env-vars
@@ -241,11 +250,13 @@ echo -n "NEW_TOKEN_HERE" | gcloud secrets versions add smartproxy-auth-token --d
 ### 4. Service Unavailable
 
 **Symptoms**:
+
 - 5xx responses from service endpoints
 - Alert emails about service inactivity
 - No tasks being executed
 
 **Solutions**:
+
 ```bash
 # Check Cloud Run service status
 gcloud run services describe marketplace-scraper --region=africa-south1
@@ -364,13 +375,13 @@ For issues that cannot be resolved using this guide:
 
 The system has the following automatic maintenance tasks:
 
-| Task | Schedule | Purpose |
-|------|----------|---------|
-| Quota redistribution | Daily at 00:00 | Rebalances quota across task types |
-| Cache cleanup | Daily at 03:00 | Purges expired cache entries |
-| Data aggregation | Daily at 04:00 | Aggregates detailed metrics |
-| Backup creation | Daily at 01:00 | Creates Firestore data backups |
-| Health check | Every 5 minutes | Verifies system functionality |
+| Task                 | Schedule        | Purpose                            |
+| -------------------- | --------------- | ---------------------------------- |
+| Quota redistribution | Daily at 00:00  | Rebalances quota across task types |
+| Cache cleanup        | Daily at 03:00  | Purges expired cache entries       |
+| Data aggregation     | Daily at 04:00  | Aggregates detailed metrics        |
+| Backup creation      | Daily at 01:00  | Creates Firestore data backups     |
+| Health check         | Every 5 minutes | Verifies system functionality      |
 
 ## Data Quality Monitoring
 

@@ -1,0 +1,9 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "skipLibCheck": true,
+    "composite": true
+  },
+  "include": ["modules/auth/**/*", "modules/users/**/*", "config/**/*"],
+  "exclude": ["**/*.spec.ts", "node_modules", "src/src/**/*"]
+}

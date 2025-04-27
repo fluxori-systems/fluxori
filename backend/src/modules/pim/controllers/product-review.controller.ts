@@ -22,7 +22,7 @@ import {
   ApiBody,
 } from '@nestjs/swagger';
 
-import { FirebaseAuthGuard } from '../../../common/auth/firebase-auth.guard';
+import { FirebaseAuthGuard } from '../../auth';
 import {
   ProductReview,
   ProductReviewStatus,
@@ -39,7 +39,7 @@ class CreateReviewDto {
   /**
    * Product ID
    */
-  productId: string;
+  productId!: string;
 
   /**
    * Product variant ID (if applicable)
@@ -49,17 +49,17 @@ class CreateReviewDto {
   /**
    * Rating (1-5 stars)
    */
-  rating: number;
+  rating!: number;
 
   /**
    * Review title
    */
-  title: string;
+  title!: string;
 
   /**
    * Review content
    */
-  content: string;
+  content!: string;
 
   /**
    * Pros/positive points (optional)
@@ -79,7 +79,7 @@ class CreateReviewDto {
   /**
    * Reviewer name
    */
-  reviewerName: string;
+  reviewerName!: string;
 
   /**
    * Reviewer email (optional)
@@ -169,7 +169,7 @@ class ModerationUpdateDto {
   /**
    * New status
    */
-  status: ProductReviewStatus;
+  status!: ProductReviewStatus;
 
   /**
    * Moderation notes
@@ -184,7 +184,7 @@ class MerchantResponseDto {
   /**
    * Response content
    */
-  content: string;
+  content!: string;
 }
 
 /**
@@ -194,7 +194,7 @@ class ImportReviewsDto {
   /**
    * Reviews to import
    */
-  reviews: Array<{
+  reviews!: Array<{
     productId: string;
     variantId?: string;
     rating: number;
@@ -207,7 +207,7 @@ class ImportReviewsDto {
     reviewerEmail?: string;
     location?: string;
     isVerifiedPurchase: boolean;
-    status?: ProductReviewStatus;
+    status: ProductReviewStatus;
     source: ReviewSource;
     marketplaceSource?: {
       name: string;
@@ -219,6 +219,9 @@ class ImportReviewsDto {
     submittedDate?: Date;
     featureRatings?: Record<string, number>;
     tags?: string[];
+    helpfulCount?: number;
+    notHelpfulCount?: number;
+    reportCount?: number;
   }>;
 }
 
@@ -454,9 +457,11 @@ export class ProductReviewController {
       const organizationId = req.user.organizationId;
 
       // Get network quality to adapt response size
-      const networkQuality = await this.storageService.assessNetworkQuality();
+      const networkQuality = await this.storageService.getNetworkQuality();
       const loadSheddingStatus =
         await this.loadSheddingService.getCurrentStatus();
+
+      // Adjust limits based on network conditions
 
       // Adjust limits based on network conditions
       let adjustedLimit = limit ? Number(limit) : 10;
@@ -464,18 +469,19 @@ export class ProductReviewController {
 
       // Reduce page size during load shedding or poor network
       if (
-        loadSheddingStatus.currentStage > 2 ||
+        (loadSheddingStatus.currentStage !== undefined &&
+          loadSheddingStatus.currentStage > 2) ||
         networkQuality.quality === 'low'
       ) {
         adjustedLimit = Math.min(adjustedLimit, 5);
       }
-
-      return await this.reviewService.getPublicReviewsForProduct(
+      const reviews = await this.reviewService.getPublicReviewsForProduct(
         productId,
         organizationId,
         adjustedLimit,
         adjustedOffset,
       );
+      return reviews;
     } catch (error) {
       this.logger.error(
         `Error getting public reviews: ${error.message}`,
@@ -831,15 +837,27 @@ export class ProductReviewController {
       const loadSheddingStatus =
         await this.loadSheddingService.getCurrentStatus();
 
-      if (loadSheddingStatus.currentStage > 3) {
+      if (
+        loadSheddingStatus.currentStage !== undefined &&
+        loadSheddingStatus.currentStage > 3
+      ) {
         throw new HttpException(
           'Import operation unavailable during severe load shedding (Stage 4+)',
           HttpStatus.SERVICE_UNAVAILABLE,
         );
       }
 
+      // Ensure all imported reviews include required service fields with defaults
+      const reviewsWithCounts = dto.reviews.map((r) => ({
+        ...r,
+        helpfulCount: r.helpfulCount ?? 0,
+        notHelpfulCount: r.notHelpfulCount ?? 0,
+        reportCount: r.reportCount ?? 0,
+        submittedDate: r.submittedDate ?? new Date(),
+      }));
+
       return await this.reviewService.importReviews(
-        dto.reviews,
+        reviewsWithCounts,
         organizationId,
         userId,
       );

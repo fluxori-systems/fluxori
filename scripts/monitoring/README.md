@@ -36,6 +36,7 @@ npm run setup-health-checks -- --project=your-project-id --env=dev|staging|prod 
 ```
 
 Options:
+
 - `--project`: (Required) GCP project ID
 - `--env`: (Optional) Environment (dev, staging, prod). Default: dev
 - `--region`: (Optional) Region. Default: africa-south1
@@ -50,6 +51,7 @@ npm run monitor-credits -- --project=your-project-id --env=dev|staging|prod [--d
 ```
 
 Options:
+
 - `--project`: (Required) GCP project ID
 - `--env`: (Optional) Environment (dev, staging, prod). Default: dev
 - `--dry-run`: (Optional) Run in dry run mode (no metrics will be written)
@@ -64,6 +66,7 @@ npm run create-dashboard -- --project=your-project-id --env=dev|staging|prod --t
 ```
 
 Options:
+
 - `--project`: (Required) GCP project ID
 - `--env`: (Optional) Environment (dev, staging, prod). Default: dev
 - `--type`: (Optional) Dashboard type. Can be 'all', 'system', 'ai', or 'network'. Default: all

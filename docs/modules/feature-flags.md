@@ -10,7 +10,7 @@ The Feature Flags module provides a flexible system for dynamically enabling or 
 
 The module exposes the following components to the rest of the application:
 
-- **Public APIs**: 
+- **Public APIs**:
   - `FeatureFlagsModule`: The main module for feature flag functionality
   - `FeatureFlagService`: Core service for checking and managing feature flags
   - `FeatureFlagCacheService`: Service for caching feature flags for performance
@@ -24,6 +24,7 @@ The module exposes the following components to the rest of the application:
 This module has dependencies on:
 
 - **Required Modules**:
+
   - None - The module is designed to be a foundational module
 
 - **Optional Modules**:
@@ -59,13 +60,13 @@ Other modules should interact with this module through its public API:
 
 ```typescript
 // Import the entire module
-import { FeatureFlagsModule } from 'src/modules/feature-flags';
+import { FeatureFlagsModule } from "src/modules/feature-flags";
 
 // Import specific components
-import { 
-  FeatureFlagService, 
-  FeatureFlagCacheService 
-} from 'src/modules/feature-flags';
+import {
+  FeatureFlagService,
+  FeatureFlagCacheService,
+} from "src/modules/feature-flags";
 ```
 
 ### Usage Examples
@@ -73,24 +74,24 @@ import {
 #### Checking if a Feature is Enabled
 
 ```typescript
-import { Injectable } from '@nestjs/common';
-import { FeatureFlagService } from 'src/modules/feature-flags';
+import { Injectable } from "@nestjs/common";
+import { FeatureFlagService } from "src/modules/feature-flags";
 
 @Injectable()
 export class SomeService {
   constructor(private readonly featureFlagService: FeatureFlagService) {}
-  
+
   async performAction(userId: string, organizationId: string): Promise<void> {
     // Check if a feature is enabled with context
     const isNewFeatureEnabled = await this.featureFlagService.isEnabled(
-      'new-pricing-algorithm',
+      "new-pricing-algorithm",
       {
         userId,
         organizationId,
-        environment: 'production'
-      }
+        environment: "production",
+      },
     );
-    
+
     if (isNewFeatureEnabled) {
       // Use new algorithm
     } else {
@@ -103,39 +104,42 @@ export class SomeService {
 #### Evaluating Multiple Flags at Once
 
 ```typescript
-import { Injectable } from '@nestjs/common';
-import { 
-  FeatureFlagService, 
-  FlagEvaluationContext 
-} from 'src/modules/feature-flags';
+import { Injectable } from "@nestjs/common";
+import {
+  FeatureFlagService,
+  FlagEvaluationContext,
+} from "src/modules/feature-flags";
 
 @Injectable()
 export class UiStateService {
   constructor(private readonly featureFlagService: FeatureFlagService) {}
-  
-  async getUiState(userId: string, organizationId: string): Promise<Record<string, any>> {
+
+  async getUiState(
+    userId: string,
+    organizationId: string,
+  ): Promise<Record<string, any>> {
     const context: FlagEvaluationContext = {
       userId,
       organizationId,
-      environment: 'production'
+      environment: "production",
     };
-    
+
     // Evaluate multiple flags in a batch
     const featureFlags = await this.featureFlagService.evaluateFlags(
       [
-        'new-dashboard-ui',
-        'advanced-analytics',
-        'ai-recommendations',
-        'beta-features'
+        "new-dashboard-ui",
+        "advanced-analytics",
+        "ai-recommendations",
+        "beta-features",
       ],
-      context
+      context,
     );
-    
+
     return {
-      showNewDashboard: featureFlags['new-dashboard-ui'].enabled,
-      enableAdvancedAnalytics: featureFlags['advanced-analytics'].enabled,
-      showAiRecommendations: featureFlags['ai-recommendations'].enabled,
-      enableBetaFeatures: featureFlags['beta-features'].enabled
+      showNewDashboard: featureFlags["new-dashboard-ui"].enabled,
+      enableAdvancedAnalytics: featureFlags["advanced-analytics"].enabled,
+      showAiRecommendations: featureFlags["ai-recommendations"].enabled,
+      enableBetaFeatures: featureFlags["beta-features"].enabled,
     };
   }
 }
@@ -156,18 +160,18 @@ The typical data flow through the Feature Flags module:
 
 The Feature Flags module supports the following configuration options:
 
-| Option | Description | Default Value |
-|--------|-------------|---------------|
-| `feature-flags.cache-ttl` | Time to live for cached flags (seconds) | `300` |
-| `feature-flags.default-state` | Default state when flag is not found | `false` |
-| `feature-flags.audit-log-retention` | Days to retain audit logs | `90` |
+| Option                              | Description                             | Default Value |
+| ----------------------------------- | --------------------------------------- | ------------- |
+| `feature-flags.cache-ttl`           | Time to live for cached flags (seconds) | `300`         |
+| `feature-flags.default-state`       | Default state when flag is not found    | `false`       |
+| `feature-flags.audit-log-retention` | Days to retain audit logs               | `90`          |
 
 ## Testing
 
 The Feature Flags module can be tested as follows:
 
 ```typescript
-describe('FeatureFlagService', () => {
+describe("FeatureFlagService", () => {
   let service: FeatureFlagService;
   let repository: MockFeatureFlagRepository;
   let cacheService: MockFeatureFlagCacheService;
@@ -178,12 +182,12 @@ describe('FeatureFlagService', () => {
         FeatureFlagService,
         {
           provide: FeatureFlagRepository,
-          useClass: MockFeatureFlagRepository
+          useClass: MockFeatureFlagRepository,
         },
         {
           provide: FeatureFlagCacheService,
-          useClass: MockFeatureFlagCacheService
-        }
+          useClass: MockFeatureFlagCacheService,
+        },
       ],
     }).compile();
 
@@ -192,18 +196,18 @@ describe('FeatureFlagService', () => {
     cacheService = module.get(FeatureFlagCacheService);
   });
 
-  it('should return flag state from cache when available', async () => {
+  it("should return flag state from cache when available", async () => {
     // Setup
-    const flag = 'test-flag';
-    const context = { userId: 'user1' };
+    const flag = "test-flag";
+    const context = { userId: "user1" };
     cacheService.get.mockResolvedValue(true);
-    
+
     // Execute
     const result = await service.isEnabled(flag, context);
-    
+
     // Verify
     expect(result).toBe(true);
-    expect(cacheService.get).toHaveBeenCalledWith('test-flag:user1');
+    expect(cacheService.get).toHaveBeenCalledWith("test-flag:user1");
     expect(repository.findByKey).not.toHaveBeenCalled();
   });
 });

@@ -12,7 +12,7 @@ import {
   HttpException,
 } from '@nestjs/common';
 
-import { FirebaseAuthGuard } from '../../../common/guards/firebase-auth.guard';
+import { FirebaseAuthGuard } from '../../auth';
 import { GetUser } from '../../auth/decorators/get-user.decorator';
 import { OperationResult } from '../interfaces/types';
 import {

@@ -45,10 +45,8 @@ describe('AfricanTaxFrameworkService', () => {
     service = module.get<AfricanTaxFrameworkService>(
       AfricanTaxFrameworkService,
     );
-    taxRateService = module.get(TaxRateService) as jest.Mocked<TaxRateService>;
-    taxRateRepository = module.get(
-      TaxRateRepository,
-    ) as jest.Mocked<TaxRateRepository>;
+    taxRateService = module.get(TaxRateService);
+    taxRateRepository = module.get(TaxRateRepository);
   });
 
   it('should be defined', () => {

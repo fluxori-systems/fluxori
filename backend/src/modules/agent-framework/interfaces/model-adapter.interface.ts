@@ -4,6 +4,84 @@
 import { ModelRegistryEntry, AgentError } from './types';
 
 /**
+ * Placeholder for Adapter parameters fields. TODO: Add concrete fields as discovered.
+ */
+export interface AdapterParameters {
+  // TODO: Add concrete parameters fields here as they are discovered in the codebase
+}
+
+/**
+ * Placeholder for Adapter arguments fields. TODO: Add concrete fields as discovered.
+ */
+export interface AdapterArguments {
+  // TODO: Add concrete arguments fields here as they are discovered in the codebase
+}
+
+/**
+ * Placeholder for Adapter metadata fields. TODO: Add concrete fields as discovered.
+ */
+export interface AdapterMetadata {
+  // TODO: Add concrete metadata fields here as they are discovered in the codebase
+}
+
+/**
+ * Placeholder for Adapter config fields. TODO: Add concrete fields as discovered.
+ */
+
+/**
+ * AdapterConfig defines configuration for all supported model adapters.
+ * As new providers are added, extend this interface with their config types.
+ */
+export interface AdapterConfig {
+  /**
+   * Configuration for Vertex AI adapter (optional)
+   */
+  'vertex-ai'?: VertexAIClientConfig;
+  // Add future providers here as:
+  // '<provider-name>'?: <ProviderConfigType>;
+
+  /**
+   * Fallback for not-yet-typed providers (to be removed as concrete types are added)
+   */
+  [provider: string]: unknown;
+}
+
+/**
+ * Placeholder for Vertex AI Client Config
+ * TODO: Refine fields as requirements become clear
+ */
+export interface VertexAIClientConfig {
+  projectId: string;
+  location: string;
+  apiEndpoint?: string;
+  credentials?: VertexAICredentials;
+}
+
+/**
+ * Placeholder for Vertex AI Credentials
+ * TODO: Refine fields as requirements become clear
+ */
+export interface VertexAICredentials {
+  [key: string]: unknown;
+}
+
+/**
+ * Placeholder for Vertex AI Request Options
+ * TODO: Refine fields as requirements become clear
+ */
+export interface VertexAIRequestOptions {
+  [key: string]: unknown;
+}
+
+/**
+ * Placeholder for Vertex AI Function Arguments
+ * TODO: Refine fields as requirements become clear
+ */
+export interface VertexAIFunctionArguments {
+  [key: string]: unknown;
+}
+
+/**
  * Common options for model generation
  */
 export interface ModelRequestOptions {
@@ -16,7 +94,7 @@ export interface ModelRequestOptions {
   functions?: Array<{
     name: string;
     description: string;
-    parameters: Record<string, any>;
+    parameters: AdapterParameters; // TODO: Refine fields as discovered
   }>;
   functionCall?: 'auto' | 'none' | string;
 }
@@ -38,7 +116,7 @@ export interface ChatMessage {
   name?: string;
   functionCall?: {
     name: string;
-    arguments: Record<string, any>;
+    arguments: AdapterArguments; // TODO: Refine fields as discovered
   };
 }
 
@@ -84,9 +162,9 @@ export interface ModelResponse {
     | 'error';
   functionCall?: {
     name: string;
-    arguments: Record<string, any>;
+    arguments: AdapterArguments; // TODO: Refine fields as discovered
   };
-  metadata?: Record<string, any>;
+  metadata?: AdapterMetadata; // TODO: Refine fields as discovered
 }
 
 /**
@@ -96,7 +174,7 @@ export interface ModelAdapter {
   /**
    * Initialize the adapter with configuration
    */
-  initialize(config: Record<string, any>): Promise<void>;
+  initialize(config: AdapterConfig): Promise<void>; // TODO: Refine fields as discovered
 
   /**
    * Check if the adapter can handle a specific model

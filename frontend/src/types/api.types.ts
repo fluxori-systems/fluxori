@@ -1,6 +1,6 @@
 /**
  * Core API Types
- * 
+ *
  * Common types used across API endpoints
  */
 
@@ -11,7 +11,7 @@ export interface User {
   id: string;
   email: string;
   name: string;
-  role: 'admin' | 'user' | 'manager';
+  role: "admin" | "user" | "manager";
   organizationId?: string;
   createdAt: string;
   updatedAt: string;
@@ -25,7 +25,7 @@ export interface Organization {
   name: string;
   slug: string;
   plan: string;
-  status: 'active' | 'inactive' | 'suspended';
+  status: "active" | "inactive" | "suspended";
   createdAt: string;
   updatedAt: string;
   userCount?: number;

@@ -31,6 +31,7 @@ chmod +x /home/tarquin_stapa/fluxori/scripts/fix-typescript-errors.sh
 ```
 
 This will:
+
 1. Fix repository interface and implementation types
 2. Fix PIM module services and controllers
 3. Regenerate the error reports to track progress

@@ -26,9 +26,9 @@
       "      {children}",
       "    </div>",
       "  );",
-      "}"
+      "}",
     ],
-    "description": "React Client Component with TypeScript"
+    "description": "React Client Component with TypeScript",
   },
   "React Server Component": {
     "prefix": "rsc",
@@ -55,9 +55,9 @@
       "      {children}",
       "    </div>",
       "  );",
-      "}"
+      "}",
     ],
-    "description": "React Server Component with TypeScript"
+    "description": "React Server Component with TypeScript",
   },
   "React Client Component with State": {
     "prefix": "rccs",
@@ -107,9 +107,9 @@
       "      {children}",
       "    </Stack>",
       "  );",
-      "}"
+      "}",
     ],
-    "description": "React Client Component with State and TypeScript"
+    "description": "React Client Component with State and TypeScript",
   },
   "React TypeScript Interface": {
     "prefix": "interface",
@@ -117,16 +117,14 @@
       "interface ${1:Interface}Props {",
       "  /** ${2:Property description} */",
       "  ${3:property}${4:?}: ${5:type};$0",
-      "}"
+      "}",
     ],
-    "description": "React TypeScript Interface"
+    "description": "React TypeScript Interface",
   },
   "Mantine Import": {
     "prefix": "uiimport",
-    "body": [
-      "import { ${1:Button, Text, Stack, Group} } from '@/lib/ui';"
-    ],
-    "description": "Import from UI library instead of directly from Mantine"
+    "body": ["import { ${1:Button, Text, Stack, Group} } from '@/lib/ui';"],
+    "description": "Import from UI library instead of directly from Mantine",
   },
   "React TypeScript Hook": {
     "prefix": "hook",
@@ -157,8 +155,8 @@
       "    state,",
       "    handleChange",
       "  };",
-      "}"
+      "}",
     ],
-    "description": "React TypeScript Custom Hook"
-  }
+    "description": "React TypeScript Custom Hook",
+  },
 }

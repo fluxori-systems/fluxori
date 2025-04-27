@@ -7,16 +7,19 @@ During this session, we continued implementing the Repository Refactoring portio
 ### Completed Tasks
 
 1. **Updated RAG-Retrieval Module Repositories**:
+
    - Fixed imports in DocumentRepository to use the public API
    - Fixed imports in EmbeddingProviderRepository to use the public API
    - Both repositories were already using FirestoreBaseRepository correctly
 
 2. **Updated AI-Insights Module Repositories**:
+
    - Fixed imports in AIModelConfigRepository to use the public API
    - Fixed imports in InsightRepository to use the public API
    - Fixed deprecated method usage (`withTransaction` → `runTransaction`) in AIModelConfigRepository
 
 3. **Fixed Utility Module References**:
+
    - Updated `/common/repositories/utils.ts` to import FirestoreBaseRepository instead of the deprecated UnifiedFirestoreRepository
 
 4. **Verified Module Migration Status**:
@@ -25,16 +28,18 @@ During this session, we continued implementing the Repository Refactoring portio
 ### Current Status Summary
 
 Modules that have been fully migrated and verified:
+
 - feature-flags ✅
-- inventory ✅ 
+- inventory ✅
 - buybox ✅
 - agent-framework ✅
 - rag-retrieval ✅
-- ai-insights ✅ 
+- ai-insights ✅
 - marketplaces ✅
 - users ✅
 
 The following modules still may need verification:
+
 - storage
 - notifications
 - scheduled-tasks

@@ -1,0 +1,13 @@
+/**
+ * TS config for the buybox slice (Phase 2.4)
+ */
+{
+  "extends": "./tsconfig.base.json",
+  "include": [
+    "modules/buybox/**/*",
+    "common/**/*",
+    "config/**/*",
+    "types/**/*"
+  ],
+  "exclude": ["**/*.spec.ts", "node_modules", "src/src/**/*"]
+}

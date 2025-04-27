@@ -1,0 +1,50 @@
+{
+  "api_base_url": "https://api.fluxori.com",
+  "api_key": "fluxori_api_key_placeholder",
+  "credit_settings": {
+    "default_credit_type": "KEYWORD_RESEARCH",
+    "enable_credit_checks": true,
+    "cache_ttl_days": 7,
+    "cache_discount_percent": 70,
+    "bulk_discount_thresholds": [
+      {
+        "keyword_count": 10,
+        "discount_percent": 10
+      },
+      {
+        "keyword_count": 20,
+        "discount_percent": 20
+      },
+      {
+        "keyword_count": 50,
+        "discount_percent": 30
+      }
+    ],
+    "marketplace_costs": {
+      "takealot": 1.0,
+      "amazon": 1.2,
+      "makro": 0.9,
+      "loot": 0.8,
+      "bob_shop": 0.7,
+      "buck_cheap": 0.7
+    },
+    "operation_costs": {
+      "basic_research": 5,
+      "ranking_tracking": 3,
+      "competitor_analysis": 8,
+      "opportunity_scoring": 6,
+      "historical_data": 10,
+      "advanced_analytics": 15
+    },
+    "additional_features": {
+      "seo_metrics": 2,
+      "additional_page": 2,
+      "competitor_monitoring": 5
+    }
+  },
+  "logging": {
+    "enable_detailed_logging": true,
+    "log_level": "INFO",
+    "log_credit_operations": true
+  }
+}

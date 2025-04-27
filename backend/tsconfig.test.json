@@ -10,7 +10,8 @@
     "src/modules/connectors/adapters/amazon-sp/**/*",
     "src/modules/connectors/adapters/shopify/**/*",
     "src/modules/connectors/adapters/takealot-connector.ts",
-    "src/modules/connectors/adapters/woocommerce-connector.ts"
+    "src/modules/connectors/adapters/woocommerce-connector.ts",
+    "test/**/*.ts"
   ],
   "exclude": [
     "node_modules",

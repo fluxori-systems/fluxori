@@ -58,7 +58,7 @@ export class CompetitivePriceMonitoringController {
   @ApiResponse({
     status: 201,
     description: 'Competitor price recorded successfully',
-    type: CompetitorPrice,
+    type: Object,
   })
   @ApiBody({ description: 'Competitor price data', type: Object })
   async recordCompetitorPrice(
@@ -69,7 +69,13 @@ export class CompetitivePriceMonitoringController {
     >,
     @GetUser() user: User,
   ): Promise<CompetitorPrice> {
-    const organizationId = user.organizationId || '';
+    const organizationId = user.organizationId;
+    if (!organizationId) {
+      throw new HttpException(
+        'Missing organizationId for user',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
     return this.competitivePriceMonitoringService.recordCompetitorPrice(
       data,
       organizationId,
@@ -103,8 +109,13 @@ export class CompetitivePriceMonitoringController {
     },
     @GetUser() user: User,
   ) {
-    const organizationId = user.organizationId || '';
-
+    const organizationId = user.organizationId;
+    if (!organizationId) {
+      throw new HttpException(
+        'Missing organizationId for user',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
     return this.competitivePriceMonitoringService.recordOurPrice(
       data.productId,
       organizationId,
@@ -137,7 +148,7 @@ export class CompetitivePriceMonitoringController {
   @ApiResponse({
     status: 200,
     description: 'Competitor prices retrieved successfully',
-    type: [CompetitorPrice],
+    type: Object,
   })
   @ApiParam({ name: 'productId', description: 'Product ID' })
   @ApiQuery({
@@ -165,13 +176,19 @@ export class CompetitivePriceMonitoringController {
   })
   async getCompetitorPrices(
     @Param('productId') productId: string,
+    @GetUser() user: User,
     @Query('marketplaceId') marketplaceId?: string,
     @Query('includeOutOfStock') includeOutOfStockStr?: string,
     @Query('limit') limitStr?: string,
     @Query('offset') offsetStr?: string,
-    @GetUser() user: User,
   ): Promise<CompetitorPrice[]> {
-    const organizationId = user.organizationId || '';
+    const organizationId = user.organizationId;
+    if (!organizationId) {
+      throw new HttpException(
+        'Missing organizationId for user',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
     const includeOutOfStock = includeOutOfStockStr === 'true';
     const limit = limitStr ? parseInt(limitStr) : undefined;
     const offset = offsetStr ? parseInt(offsetStr) : undefined;
@@ -201,7 +218,7 @@ export class CompetitivePriceMonitoringController {
   @ApiResponse({
     status: 200,
     description: 'Market position retrieved successfully',
-    type: MarketPosition,
+    type: Object,
   })
   @ApiParam({ name: 'productId', description: 'Product ID' })
   @ApiQuery({
@@ -211,11 +228,16 @@ export class CompetitivePriceMonitoringController {
   })
   async getMarketPosition(
     @Param('productId') productId: string,
-    @Query('marketplaceId') marketplaceId?: string,
     @GetUser() user: User,
+    @Query('marketplaceId') marketplaceId?: string,
   ): Promise<MarketPosition> {
-    const organizationId = user.organizationId || '';
-
+    const organizationId = user.organizationId;
+    if (!organizationId) {
+      throw new HttpException(
+        'Missing organizationId for user',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
     return this.competitivePriceMonitoringService.getMarketPosition(
       productId,
       organizationId,
@@ -259,16 +281,22 @@ export class CompetitivePriceMonitoringController {
   })
   async getPriceHistory(
     @Param('productId') productId: string,
+    @GetUser() user: User,
     @Query('days') daysStr: string = '30',
     @Query('marketplaceId') marketplaceId?: string,
     @Query('includeCompetitors') includeCompetitorsStr?: string,
-    @GetUser() user: User,
   ): Promise<{
     dates: string[];
     ourPrices: number[];
     competitorPrices: Record<string, number[]>;
   }> {
-    const organizationId = user.organizationId || '';
+    const organizationId = user.organizationId;
+    if (!organizationId) {
+      throw new HttpException(
+        'Missing organizationId for user',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
     const days = parseInt(daysStr);
     const includeCompetitors = includeCompetitorsStr === 'true';
 
@@ -296,7 +324,7 @@ export class CompetitivePriceMonitoringController {
   @ApiResponse({
     status: 200,
     description: 'Price monitoring configured successfully',
-    type: PriceMonitoringConfig,
+    type: Object,
   })
   @ApiParam({ name: 'productId', description: 'Product ID' })
   @ApiBody({ description: 'Monitoring configuration', type: Object })
@@ -305,8 +333,13 @@ export class CompetitivePriceMonitoringController {
     @Body() config: Partial<PriceMonitoringConfig>,
     @GetUser() user: User,
   ): Promise<PriceMonitoringConfig> {
-    const organizationId = user.organizationId || '';
-
+    const organizationId = user.organizationId;
+    if (!organizationId) {
+      throw new HttpException(
+        'Missing organizationId for user',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
     return this.competitivePriceMonitoringService.configurePriceMonitoring(
       productId,
       organizationId,
@@ -327,7 +360,7 @@ export class CompetitivePriceMonitoringController {
   @ApiResponse({
     status: 200,
     description: 'Price monitoring configuration retrieved successfully',
-    type: PriceMonitoringConfig,
+    type: Object,
   })
   @ApiResponse({
     status: 404,
@@ -338,8 +371,13 @@ export class CompetitivePriceMonitoringController {
     @Param('productId') productId: string,
     @GetUser() user: User,
   ): Promise<PriceMonitoringConfig> {
-    const organizationId = user.organizationId || '';
-
+    const organizationId = user.organizationId;
+    if (!organizationId) {
+      throw new HttpException(
+        'Missing organizationId for user',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
     const config =
       await this.competitivePriceMonitoringService.getPriceMonitoringConfig(
         productId,
@@ -372,7 +410,7 @@ export class CompetitivePriceMonitoringController {
   @ApiResponse({
     status: 200,
     description: 'Price alerts retrieved successfully',
-    type: [PriceAlert],
+    type: Object,
   })
   @ApiParam({ name: 'productId', description: 'Product ID' })
   @ApiQuery({
@@ -400,13 +438,19 @@ export class CompetitivePriceMonitoringController {
   })
   async getPriceAlerts(
     @Param('productId') productId: string,
+    @GetUser() user: User,
     @Query('includeResolved') includeResolvedStr?: string,
     @Query('alertType') alertType?: string,
     @Query('limit') limitStr?: string,
     @Query('offset') offsetStr?: string,
-    @GetUser() user: User,
   ): Promise<PriceAlert[]> {
-    const organizationId = user.organizationId || '';
+    const organizationId = user.organizationId;
+    if (!organizationId) {
+      throw new HttpException(
+        'Missing organizationId for user',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
     const includeResolved = includeResolvedStr === 'true';
     const limit = limitStr ? parseInt(limitStr) : undefined;
     const offset = offsetStr ? parseInt(offsetStr) : undefined;
@@ -435,15 +479,20 @@ export class CompetitivePriceMonitoringController {
   @ApiResponse({
     status: 200,
     description: 'Price alert marked as read successfully',
-    type: PriceAlert,
+    type: Object,
   })
   @ApiParam({ name: 'alertId', description: 'Alert ID' })
   async markAlertAsRead(
     @Param('alertId') alertId: string,
     @GetUser() user: User,
   ): Promise<PriceAlert> {
-    const organizationId = user.organizationId || '';
-
+    const organizationId = user.organizationId;
+    if (!organizationId) {
+      throw new HttpException(
+        'Missing organizationId for user',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
     return this.competitivePriceMonitoringService.markAlertAsRead(
       alertId,
       organizationId,
@@ -463,15 +512,20 @@ export class CompetitivePriceMonitoringController {
   @ApiResponse({
     status: 200,
     description: 'Price alert marked as resolved successfully',
-    type: PriceAlert,
+    type: Object,
   })
   @ApiParam({ name: 'alertId', description: 'Alert ID' })
   async markAlertAsResolved(
     @Param('alertId') alertId: string,
     @GetUser() user: User,
   ): Promise<PriceAlert> {
-    const organizationId = user.organizationId || '';
-
+    const organizationId = user.organizationId;
+    if (!organizationId) {
+      throw new HttpException(
+        'Missing organizationId for user',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
     return this.competitivePriceMonitoringService.markAlertAsResolved(
       alertId,
       organizationId,
@@ -495,7 +549,7 @@ export class CompetitivePriceMonitoringController {
   @ApiResponse({
     status: 200,
     description: 'Price report generated successfully',
-    type: CompetitorPriceReport,
+    type: Object,
   })
   @ApiParam({ name: 'productId', description: 'Product ID' })
   @ApiQuery({
@@ -523,13 +577,19 @@ export class CompetitivePriceMonitoringController {
   })
   async generatePriceReport(
     @Param('productId') productId: string,
+    @GetUser() user: User,
     @Query('marketplaceId') marketplaceId?: string,
     @Query('includeHistory') includeHistoryStr?: string,
     @Query('daysOfHistory') daysOfHistoryStr?: string,
     @Query('includeRecommendations') includeRecommendationsStr?: string,
-    @GetUser() user: User,
   ): Promise<CompetitorPriceReport> {
-    const organizationId = user.organizationId || '';
+    const organizationId = user.organizationId;
+    if (!organizationId) {
+      throw new HttpException(
+        'Missing organizationId for user',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
     const includeHistory = includeHistoryStr === 'true';
     const daysOfHistory = daysOfHistoryStr
       ? parseInt(daysOfHistoryStr)

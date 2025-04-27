@@ -18,7 +18,7 @@ This module allows for controlled rollout of features and the ability to quickly
 1. **Boolean**: Simple on/off switch for features
 2. **Percentage**: Gradually roll out a feature to a percentage of users
 3. **User-Targeted**: Target specific users by ID, role, or email
-4. **Organization-Targeted**: Target specific organizations 
+4. **Organization-Targeted**: Target specific organizations
 5. **Environment-Targeted**: Control features per environment (dev, staging, prod)
 6. **Scheduled**: Time-based feature activation/deactivation
 
@@ -33,14 +33,14 @@ constructor(private readonly featureFlagService: FeatureFlagService) {}
 // Simple check
 async someMethod() {
   const isFeatureEnabled = await this.featureFlagService.isEnabled(
-    'my-feature', 
-    { 
-      userId: 'user123', 
+    'my-feature',
+    {
+      userId: 'user123',
       organizationId: 'org456',
       environment: Environment.PRODUCTION
     }
   );
-  
+
   if (isFeatureEnabled) {
     // Feature-specific code
   } else {
@@ -51,14 +51,14 @@ async someMethod() {
 // Detailed evaluation
 async someOtherMethod() {
   const evaluation = await this.featureFlagService.evaluateFlag(
-    'advanced-feature', 
-    { 
+    'advanced-feature',
+    {
       userId: 'user123',
       userRole: 'admin',
       organizationId: 'org456'
     }
   );
-  
+
   if (evaluation.enabled) {
     // Feature is enabled
     console.log(`Feature enabled because: ${evaluation.reason}`);
@@ -76,25 +76,22 @@ function MyComponent() {
   return (
     <div>
       <h1>My App</h1>
-      
+
       {/* Simple feature flag */}
       <FeatureFlag flag="new-dashboard">
         <NewDashboardComponent />
       </FeatureFlag>
-      
+
       {/* With fallback content */}
-      <FeatureFlag 
-        flag="beta-analytics" 
+      <FeatureFlag
+        flag="beta-analytics"
         fallback={<LegacyAnalyticsComponent />}
       >
         <BetaAnalyticsComponent />
       </FeatureFlag>
-      
+
       {/* With additional context */}
-      <FeatureFlag 
-        flag="premium-features" 
-        context={{ userRole: 'premium' }}
-      >
+      <FeatureFlag flag="premium-features" context={{ userRole: 'premium' }}>
         <PremiumFeatures />
       </FeatureFlag>
     </div>
@@ -106,18 +103,10 @@ import { useFeatureFlag } from '../hooks/useFeatureFlag';
 
 function ConditionalFeature() {
   const { isEnabled, isLoading } = useFeatureFlag('fancy-feature');
-  
+
   if (isLoading) return <Spinner />;
-  
-  return (
-    <div>
-      {isEnabled ? (
-        <NewFeature />
-      ) : (
-        <OldFeature />
-      )}
-    </div>
-  );
+
+  return <div>{isEnabled ? <NewFeature /> : <OldFeature />}</div>;
 }
 ```
 
@@ -134,8 +123,8 @@ The Agent Framework uses feature flags to control which agents are available to 
 ```typescript
 // Check if an agent is available for a specific organization
 const agentEnabled = await this.featureFlagService.isEnabled(
-  `agent-${agentName.toLowerCase().replace(/\s+/g, '-')}`, 
-  { organizationId }
+  `agent-${agentName.toLowerCase().replace(/\s+/g, '-')}`,
+  { organizationId },
 );
 ```
 
@@ -146,12 +135,8 @@ The frontend uses React hooks and components to conditionally render features ba
 ```tsx
 function MyComponent() {
   const { isEnabled } = useFeatureFlag('new-ui');
-  
-  return (
-    <div>
-      {isEnabled ? <NewUI /> : <LegacyUI />}
-    </div>
-  );
+
+  return <div>{isEnabled ? <NewUI /> : <LegacyUI />}</div>;
 }
 ```
 

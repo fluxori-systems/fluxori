@@ -1,0 +1,909 @@
+      1 src/test/app.e2e-spec.ts(5,27): error TS2307: Cannot find module './../src/app.module' or its corresponding type declarations.
+      1 src/swagger.config.ts(90,31): error TS2345: Argument of type 'import("/home/tarquin_stapa/fluxori/backend/src/node_modules/@nestjs/common/interfaces/nest-application.interface").INestApplication<any>' is not assignable to parameter of type 'import("/home/tarquin_stapa/fluxori/backend/node_modules/@nestjs/common/interfaces/nest-application.interface").INestApplication<any>'.
+      1 src/swagger.config.ts(89,49): error TS2345: Argument of type 'import("/home/tarquin_stapa/fluxori/backend/src/node_modules/@nestjs/common/interfaces/nest-application.interface").INestApplication<any>' is not assignable to parameter of type 'import("/home/tarquin_stapa/fluxori/backend/node_modules/@nestjs/common/interfaces/nest-application.interface").INestApplication<any>'.
+      1 src/modules/storage/dto/signed-url-response.dto.ts(42,3): error TS2564: Property 'cdnUrl' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/storage/dto/signed-url-response.dto.ts(36,3): error TS2564: Property 'publicUrl' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/storage/dto/signed-url-response.dto.ts(29,3): error TS2564: Property 'uploadId' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/storage/dto/signed-url-response.dto.ts(18,3): error TS2564: Property 'fields' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/storage/dto/signed-url-response.dto.ts(12,3): error TS2564: Property 'url' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/storage/dto/signed-url-request.dto.ts(99,3): error TS2564: Property 'productId' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/storage/dto/signed-url-request.dto.ts(56,3): error TS2564: Property 'contentType' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/storage/dto/signed-url-request.dto.ts(48,3): error TS2564: Property 'fileName' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/pim/test/product-variant.service.spec.ts(294,14): error TS18048: 'result.data' is possibly 'undefined'.
+      1 src/modules/pim/test/product-variant.service.spec.ts(263,52): error TS2345: Argument of type '{ id: string; name: string; sku: string; attributes: { code: string; label: string; type: string; value: string; validation: { options: string[]; }; }[]; pricing: { basePrice: number; vatIncluded: boolean; currency: string; }; }' is not assignable to parameter of type 'Product | Promise<Product | null> | null'.
+      1 src/modules/pim/test/product-variant.service.spec.ts(204,52): error TS2345: Argument of type '{ id: string; attributes: { code: string; label: string; usedForVariants: boolean; }[]; }' is not assignable to parameter of type 'Product | Promise<Product | null> | null'.
+      1 src/modules/pim/test/product-variant.service.spec.ts(141,52): error TS2345: Argument of type '{ id: string; name: string; sku: string; status: ProductStatus; type: ProductType; description: string; attributes: never[]; categories: never[]; pricing: { basePrice: number; vatIncluded: boolean; currency: string; }; }' is not assignable to parameter of type 'Product | Promise<Product | null> | null'.
+      1 src/modules/pim/test/african-tax-framework.service.spec.ts(432,9): error TS2345: Argument of type '{ id: string; jurisdiction: { country: string; level: "country"; }; taxType: TaxType; rate: number; name: string; validFrom: Date; validTo: null; metadata: { isSpecialRate: boolean; productType: string; }; createdAt: Date; updatedAt: Date; }[]' is not assignable to parameter of type 'TaxRateSchedule[] | Promise<TaxRateSchedule[]>'.
+      1 src/modules/pim/test/african-tax-framework.service.spec.ts(369,60): error TS2322: Type '{ id: string; jurisdiction: { country: string; level: "country"; }; taxType: TaxType; rate: number; name: string; validFrom: Date; validTo: null; description: string; legalReference: string; createdAt: Date; updatedAt: Date; }' is not assignable to type 'TaxRateSchedule'.
+      1 src/modules/pim/test/african-tax-framework.service.spec.ts(347,40): error TS2322: Type '"country"' is not assignable to type 'TaxJurisdictionLevel'.
+      1 src/modules/pim/test/african-tax-framework.service.spec.ts(322,40): error TS2322: Type '"country"' is not assignable to type 'TaxJurisdictionLevel'.
+      1 src/modules/pim/test/african-tax-framework.service.spec.ts(253,9): error TS2322: Type '{ id: string; jurisdiction: { country: string; region: string; level: "province"; }; taxType: TaxType; rate: number; name: string; validFrom: Date; validTo: null; createdAt: Date; updatedAt: Date; }' is not assignable to type 'TaxRateSchedule'.
+      1 src/modules/pim/test/african-tax-framework.service.spec.ts(227,40): error TS2322: Type '"country"' is not assignable to type 'TaxJurisdictionLevel'.
+      1 src/modules/pim/test/african-tax-framework.service.spec.ts(200,40): error TS2322: Type '"country"' is not assignable to type 'TaxJurisdictionLevel'.
+      1 src/modules/pim/test/african-tax-framework.service.spec.ts(171,40): error TS2322: Type '"country"' is not assignable to type 'TaxJurisdictionLevel'.
+      1 src/modules/pim/test/african-tax-framework.service.spec.ts(144,40): error TS2322: Type '"country"' is not assignable to type 'TaxJurisdictionLevel'.
+      1 src/modules/pim/test/african-tax-framework.service.spec.ts(118,40): error TS2322: Type '"country"' is not assignable to type 'TaxJurisdictionLevel'.
+      1 src/modules/pim/services/validation.service.ts(936,7): error TS2322: Type '(product: Product, context: ValidationContext) => ValidationIssue[]' is not assignable to type '(product: Product, context?: ValidationContext | undefined) => ValidationIssue[]'.
+      1 src/modules/pim/services/validation.service.ts(876,7): error TS2322: Type '(product: Product, context: ValidationContext) => ValidationIssue[]' is not assignable to type '(product: Product, context?: ValidationContext | undefined) => ValidationIssue[]'.
+      1 src/modules/pim/services/validation.service.ts(818,40): error TS18046: 'count' is of type 'unknown'.
+      1 src/modules/pim/services/validation.service.ts(812,28): error TS7053: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{}'.
+      1 src/modules/pim/services/validation.service.ts(812,15): error TS7053: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{}'.
+      1 src/modules/pim/services/validation.service.ts(335,37): error TS18048: 'context.category' is possibly 'undefined'.
+      1 src/modules/pim/services/validation.service.ts(320,28): error TS18048: 'validationOptions.skipRuleIds' is possibly 'undefined'.
+      1 src/modules/pim/services/validation.service.ts(313,9): error TS18048: 'validationOptions.ruleIds' is possibly 'undefined'.
+      1 src/modules/pim/services/validation.service.ts(284,53): error TS2339: Property 'findById' does not exist on type 'CategoryService'.
+      1 src/modules/pim/services/validation.service.ts(234,7): error TS2345: Argument of type '() => Promise<ValidationResult>' is not assignable to parameter of type 'string'.
+      1 src/modules/pim/services/validation.service.ts(233,5): error TS2322: Type 'ValidationResult | undefined' is not assignable to type 'ValidationResult'.
+      1 src/modules/pim/services/validation.service.ts(1110,40): error TS2339: Property 'saBarcode' does not exist on type '{ icasaApproved?: boolean | undefined; sabsApproved?: boolean | undefined; nrcsApproved?: boolean | undefined; loadSheddingCritical?: boolean | undefined; }'.
+      1 src/modules/pim/services/validation.service.ts(1027,9): error TS18048: 'product.images.gallery.length' is possibly 'undefined'.
+      1 src/modules/pim/services/tax-rate.service.ts(60,7): error TS2322: Type '"city" | "province" | "country"' is not assignable to type 'TaxJurisdictionLevel'.
+      1 src/modules/pim/services/tax-rate.service.ts(156,7): error TS2322: Type '"city" | "province" | "country"' is not assignable to type 'TaxJurisdictionLevel'.
+      1 src/modules/pim/services/takealot-connector.service.ts(837,52): error TS2339: Property 'saBarcode' does not exist on type '{ icasaApproved?: boolean | undefined; sabsApproved?: boolean | undefined; nrcsApproved?: boolean | undefined; loadSheddingCritical?: boolean | undefined; } | { saBarcode?: string | undefined; }'.
+      1 src/modules/pim/services/takealot-connector.service.ts(836,49): error TS2339: Property 'saBarcode' does not exist on type '{ icasaApproved?: boolean | undefined; sabsApproved?: boolean | undefined; nrcsApproved?: boolean | undefined; loadSheddingCritical?: boolean | undefined; } | { saBarcode?: string | undefined; }'.
+      1 src/modules/pim/services/takealot-connector.service.ts(798,9): error TS2322: Type '{ code: string; message: any; }' is not assignable to type 'string'.
+      1 src/modules/pim/services/takealot-connector.service.ts(748,11): error TS2322: Type '{ code: string; message: string; }' is not assignable to type 'string'.
+      1 src/modules/pim/services/takealot-connector.service.ts(732,11): error TS2322: Type '{ code: string; message: string; }' is not assignable to type 'string'.
+      1 src/modules/pim/services/takealot-connector.service.ts(700,9): error TS2322: Type '{ code: string; message: any; }' is not assignable to type 'string'.
+      1 src/modules/pim/services/takealot-connector.service.ts(653,11): error TS2322: Type '{ code: string; message: string; }' is not assignable to type 'string'.
+      1 src/modules/pim/services/takealot-connector.service.ts(570,41): error TS7006: Parameter 'cat' implicitly has an 'any' type.
+      1 src/modules/pim/services/takealot-connector.service.ts(512,9): error TS2559: Type 'string' has no properties in common with type 'CreateDocumentOptions'.
+      1 src/modules/pim/services/takealot-connector.service.ts(381,7): error TS2345: Argument of type 'ProductMarketplaceMapping | null' is not assignable to parameter of type 'ProductMarketplaceMapping | undefined'.
+      1 src/modules/pim/services/takealot-connector.service.ts(327,9): error TS2345: Argument of type '() => Promise<MarketplaceSyncResult>' is not assignable to parameter of type 'string'.
+      1 src/modules/pim/services/takealot-connector.service.ts(326,7): error TS2322: Type 'MarketplaceSyncResult | undefined' is not assignable to type 'MarketplaceSyncResult'.
+      1 src/modules/pim/services/takealot-connector.service.ts(305,36): error TS2339: Property 'optimizeImageUrl' does not exist on type 'NetworkAwareStorageService'.
+      1 src/modules/pim/services/takealot-connector.service.ts(280,31): error TS2339: Property 'compareAtPrice' does not exist on type '{ basePrice?: number | undefined; vatIncluded?: boolean | undefined; currency?: string | undefined; specialPrice?: number | undefined; specialPriceFromDate?: Date | undefined; specialPriceToDate?: Date | undefined; }'.
+      1 src/modules/pim/services/report-exporter.service.ts(653,9): error TS2345: Argument of type 'boolean | undefined' is not assignable to parameter of type 'boolean'.
+      1 src/modules/pim/services/report-exporter.service.ts(5,23): error TS2307: Cannot find module 'xlsx' or its corresponding type declarations.
+      1 src/modules/pim/services/report-exporter.service.ts(459,10): error TS2367: This comparison appears to be unintentional because the types '"low" | "medium" | "high" | undefined' and '"poor"' have no overlap.
+      1 src/modules/pim/services/report-exporter.service.ts(447,11): error TS2322: Type 'string | undefined' is not assignable to type 'string'.
+      1 src/modules/pim/services/report-exporter.service.ts(261,9): error TS2367: This comparison appears to be unintentional because the types '"low" | "medium" | "high" | undefined' and '"poor"' have no overlap.
+      1 src/modules/pim/services/report-exporter.service.ts(232,11): error TS2322: Type 'string | undefined' is not assignable to type 'string'.
+      1 src/modules/pim/services/report-exporter.service.ts(1083,9): error TS2739: Type '{}' is missing the following properties from type '{ connectionType: string; loadSheddingActive: boolean; loadSheddingStage?: number | undefined; }': connectionType, loadSheddingActive
+      1 src/modules/pim/services/regional-warehouse.service.ts(690,7): error TS2559: Type 'string' has no properties in common with type 'FlagEvaluationContext'.
+      1 src/modules/pim/services/regional-warehouse.service.ts(214,33): error TS7006: Parameter 'warehouse' implicitly has an 'any' type.
+      1 src/modules/pim/services/product-variant.service.ts(89,62): error TS2559: Type 'string' has no properties in common with type 'FindByIdOptions'.
+      1 src/modules/pim/services/product-variant.service.ts(75,54): error TS2559: Type 'string' has no properties in common with type 'CreateDocumentOptions'.
+      1 src/modules/pim/services/product-variant.service.ts(69,9): error TS2345: Argument of type '() => Promise<ProductVariant>' is not assignable to parameter of type 'string'.
+      1 src/modules/pim/services/product-variant.service.ts(69,63): error TS2559: Type 'string' has no properties in common with type 'CreateDocumentOptions'.
+      1 src/modules/pim/services/product-variant.service.ts(68,7): error TS2322: Type 'ProductVariant | undefined' is not assignable to type 'ProductVariant'.
+      1 src/modules/pim/services/product-variant.service.ts(497,56): error TS7006: Parameter 'option' implicitly has an 'any' type.
+      1 src/modules/pim/services/product-variant.service.ts(497,32): error TS2339: Property 'validation' does not exist on type '{ code: string; value: any; label: string; type: string; }'.
+      1 src/modules/pim/services/product-variant.service.ts(496,19): error TS2339: Property 'validation' does not exist on type '{ code: string; value: any; label: string; type: string; }'.
+      1 src/modules/pim/services/product-variant.service.ts(45,7): error TS2559: Type 'string' has no properties in common with type 'FindByIdOptions'.
+      1 src/modules/pim/services/product-variant.service.ts(443,45): error TS7006: Parameter 'option' implicitly has an 'any' type.
+      1 src/modules/pim/services/product-variant.service.ts(443,21): error TS2339: Property 'validation' does not exist on type '{ code: string; value: any; label: string; type: string; }'.
+      1 src/modules/pim/services/product-variant.service.ts(442,16): error TS2339: Property 'validation' does not exist on type '{ code: string; value: any; label: string; type: string; }'.
+      1 src/modules/pim/services/product-variant.service.ts(397,9): error TS2559: Type 'string' has no properties in common with type 'UpdateDocumentOptions'.
+      1 src/modules/pim/services/product-variant.service.ts(381,11): error TS2559: Type 'string' has no properties in common with type 'CreateDocumentOptions'.
+      1 src/modules/pim/services/product-variant.service.ts(321,9): error TS2559: Type 'string' has no properties in common with type 'FindByIdOptions'.
+      1 src/modules/pim/services/product-variant.service.ts(255,61): error TS2559: Type 'string' has no properties in common with type 'DeleteDocumentOptions'.
+      1 src/modules/pim/services/product-variant.service.ts(244,9): error TS2559: Type 'string' has no properties in common with type 'FindByIdOptions'.
+      1 src/modules/pim/services/product-variant.service.ts(194,65): error TS2559: Type 'string' has no properties in common with type 'UpdateDocumentOptions'.
+      1 src/modules/pim/services/product-variant.service.ts(184,47): error TS2339: Property 'optimizeImageUrl' does not exist on type 'NetworkAwareStorageService'.
+      1 src/modules/pim/services/product-variant.service.ts(183,37): error TS7006: Parameter 'url' implicitly has an 'any' type.
+      1 src/modules/pim/services/product-variant.service.ts(175,51): error TS2339: Property 'optimizeImageUrl' does not exist on type 'NetworkAwareStorageService'.
+      1 src/modules/pim/services/product-variant.service.ts(156,7): error TS2559: Type 'string' has no properties in common with type 'FindByIdOptions'.
+      1 src/modules/pim/services/product-variant.service.ts(117,70): error TS2559: Type 'string' has no properties in common with type 'FindByIdOptions'.
+      1 src/modules/pim/services/product-review.service.ts(947,11): error TS18048: 'sentiment' is possibly 'undefined'.
+      1 src/modules/pim/services/product-review.service.ts(946,13): error TS18048: 'sentiment' is possibly 'undefined'.
+      1 src/modules/pim/services/product-review.service.ts(94,40): error TS18048: 'loadSheddingStatus.currentStage' is possibly 'undefined'.
+      1 src/modules/pim/services/product-review.service.ts(937,11): error TS18048: 'sentiment' is possibly 'undefined'.
+      1 src/modules/pim/services/product-review.service.ts(936,13): error TS18048: 'sentiment' is possibly 'undefined'.
+      1 src/modules/pim/services/product-review.service.ts(927,11): error TS18048: 'sentiment' is possibly 'undefined'.
+      1 src/modules/pim/services/product-review.service.ts(926,13): error TS18048: 'sentiment' is possibly 'undefined'.
+      1 src/modules/pim/services/product-review.service.ts(919,20): error TS18048: 'sentiment' is possibly 'undefined'.
+      1 src/modules/pim/services/product-review.service.ts(917,13): error TS18048: 'sentiment' is possibly 'undefined'.
+      1 src/modules/pim/services/product-review.service.ts(914,27): error TS18048: 'sentiment' is possibly 'undefined'.
+      1 src/modules/pim/services/product-review.service.ts(89,58): error TS2551: Property 'assessNetworkQuality' does not exist on type 'NetworkAwareStorageService'. Did you mean 'getNetworkQuality'?
+      1 src/modules/pim/services/product-review.service.ts(808,32): error TS7006: Parameter 'review' implicitly has an 'any' type.
+      1 src/modules/pim/services/product-review.service.ts(805,66): error TS2339: Property 'query' does not exist on type 'ProductReviewRepository'.
+      1 src/modules/pim/services/product-review.service.ts(254,34): error TS2551: Property 'queueOperation' does not exist on type 'LoadSheddingResilienceService'. Did you mean 'enqueueOperation'?
+      1 src/modules/pim/services/product-review.service.ts(188,34): error TS2551: Property 'queueOperation' does not exist on type 'LoadSheddingResilienceService'. Did you mean 'enqueueOperation'?
+      1 src/modules/pim/services/product-review.service.ts(187,43): error TS18048: 'loadSheddingStatus.currentStage' is possibly 'undefined'.
+      1 src/modules/pim/services/product-review.service.ts(181,11): error TS2367: This comparison appears to be unintentional because the types 'ProductReviewStatus.PENDING' and 'ProductReviewStatus.APPROVED' have no overlap.
+      1 src/modules/pim/services/product-review.service.ts(1265,11): error TS2353: Object literal may only specify known properties, and 'feature' does not exist in type 'CreditUsageRequest'.
+      1 src/modules/pim/services/product-review.service.ts(1216,9): error TS2353: Object literal may only specify known properties, and 'feature' does not exist in type 'CreditCheckRequest'.
+      1 src/modules/pim/services/product-review.service.ts(121,42): error TS2551: Property 'queueOperation' does not exist on type 'LoadSheddingResilienceService'. Did you mean 'enqueueOperation'?
+      1 src/modules/pim/services/product-review.service.ts(1195,11): error TS18048: 'loadSheddingStatus.currentStage' is possibly 'undefined'.
+      1 src/modules/pim/services/product-review.service.ts(117,9): error TS18048: 'loadSheddingStatus.currentStage' is possibly 'undefined'.
+      1 src/modules/pim/services/product-review.service.ts(1117,48): error TS2339: Property 'generateText' does not exist on type 'AgentService'.
+      1 src/modules/pim/services/product-review.service.ts(111,11): error TS2559: Type 'string' has no properties in common with type 'FlagEvaluationContext'.
+      1 src/modules/pim/services/product-review.service.ts(1048,9): error TS2353: Object literal may only specify known properties, and 'feature' does not exist in type 'CreditUsageRequest'.
+      1 src/modules/pim/services/product-review.service.ts(1027,9): error TS2353: Object literal may only specify known properties, and 'feature' does not exist in type 'CreditCheckRequest'.
+      1 src/modules/pim/services/product-ai.service.ts(648,27): error TS2339: Property 'usage' does not exist on type 'AgentResponse'.
+      1 src/modules/pim/services/product-ai.service.ts(647,28): error TS2339: Property 'usage' does not exist on type 'AgentResponse'.
+      1 src/modules/pim/services/product-ai.service.ts(646,27): error TS2339: Property 'usage' does not exist on type 'AgentResponse'.
+      1 src/modules/pim/services/product-ai.service.ts(633,38): error TS2339: Property 'usage' does not exist on type 'AgentResponse'.
+      1 src/modules/pim/services/product-ai.service.ts(632,9): error TS2353: Object literal may only specify known properties, and 'actualInputTokens' does not exist in type 'CreditUsageRequest'.
+      1 src/modules/pim/services/product-ai.service.ts(632,37): error TS2339: Property 'usage' does not exist on type 'AgentResponse'.
+      1 src/modules/pim/services/product-ai.service.ts(617,29): error TS2345: Argument of type 'string | Record<string, any>' is not assignable to parameter of type 'string'.
+      1 src/modules/pim/services/product-ai.service.ts(610,9): error TS2554: Expected 1 arguments, but got 2.
+      1 src/modules/pim/services/product-ai.service.ts(602,9): error TS2353: Object literal may only specify known properties, and 'modelId' does not exist in type 'CreateConversationRequest'.
+      1 src/modules/pim/services/product-ai.service.ts(584,36): error TS2339: Property 'ATTRIBUTE_EXTRACTION' does not exist on type 'typeof CreditUsageType'.
+      1 src/modules/pim/services/product-ai.service.ts(571,56): error TS2339: Property 'estimateTokens' does not exist on type 'TokenEstimator'.
+      1 src/modules/pim/services/product-ai.service.ts(546,9): error TS2559: Type 'string' has no properties in common with type 'FlagEvaluationContext'.
+      1 src/modules/pim/services/product-ai.service.ts(510,27): error TS2339: Property 'usage' does not exist on type 'AgentResponse'.
+      1 src/modules/pim/services/product-ai.service.ts(509,28): error TS2339: Property 'usage' does not exist on type 'AgentResponse'.
+      1 src/modules/pim/services/product-ai.service.ts(508,27): error TS2339: Property 'usage' does not exist on type 'AgentResponse'.
+      1 src/modules/pim/services/product-ai.service.ts(496,38): error TS2339: Property 'usage' does not exist on type 'AgentResponse'.
+      1 src/modules/pim/services/product-ai.service.ts(495,9): error TS2353: Object literal may only specify known properties, and 'actualInputTokens' does not exist in type 'CreditUsageRequest'.
+      1 src/modules/pim/services/product-ai.service.ts(495,37): error TS2339: Property 'usage' does not exist on type 'AgentResponse'.
+      1 src/modules/pim/services/product-ai.service.ts(479,29): error TS2345: Argument of type 'string | Record<string, any>' is not assignable to parameter of type 'string'.
+      1 src/modules/pim/services/product-ai.service.ts(472,9): error TS2554: Expected 1 arguments, but got 2.
+      1 src/modules/pim/services/product-ai.service.ts(461,9): error TS2353: Object literal may only specify known properties, and 'modelId' does not exist in type 'CreateConversationRequest'.
+      1 src/modules/pim/services/product-ai.service.ts(445,36): error TS2339: Property 'CLASSIFICATION' does not exist on type 'typeof CreditUsageType'.
+      1 src/modules/pim/services/product-ai.service.ts(432,56): error TS2339: Property 'estimateTokens' does not exist on type 'TokenEstimator'.
+      1 src/modules/pim/services/product-ai.service.ts(409,9): error TS2559: Type 'string' has no properties in common with type 'FlagEvaluationContext'.
+      1 src/modules/pim/services/product-ai.service.ts(366,27): error TS2339: Property 'usage' does not exist on type 'AgentResponse'.
+      1 src/modules/pim/services/product-ai.service.ts(365,28): error TS2339: Property 'usage' does not exist on type 'AgentResponse'.
+      1 src/modules/pim/services/product-ai.service.ts(364,27): error TS2339: Property 'usage' does not exist on type 'AgentResponse'.
+      1 src/modules/pim/services/product-ai.service.ts(350,38): error TS2339: Property 'usage' does not exist on type 'AgentResponse'.
+      1 src/modules/pim/services/product-ai.service.ts(349,9): error TS2353: Object literal may only specify known properties, and 'actualInputTokens' does not exist in type 'CreditUsageRequest'.
+      1 src/modules/pim/services/product-ai.service.ts(349,37): error TS2339: Property 'usage' does not exist on type 'AgentResponse'.
+      1 src/modules/pim/services/product-ai.service.ts(333,29): error TS2345: Argument of type 'string | Record<string, any>' is not assignable to parameter of type 'string'.
+      1 src/modules/pim/services/product-ai.service.ts(326,9): error TS2554: Expected 1 arguments, but got 2.
+      1 src/modules/pim/services/product-ai.service.ts(315,9): error TS2353: Object literal may only specify known properties, and 'modelId' does not exist in type 'CreateConversationRequest'.
+      1 src/modules/pim/services/product-ai.service.ts(296,36): error TS2339: Property 'SEO_OPTIMIZATION' does not exist on type 'typeof CreditUsageType'.
+      1 src/modules/pim/services/product-ai.service.ts(283,56): error TS2339: Property 'estimateTokens' does not exist on type 'TokenEstimator'.
+      1 src/modules/pim/services/product-ai.service.ts(257,9): error TS2559: Type 'string' has no properties in common with type 'FlagEvaluationContext'.
+      1 src/modules/pim/services/product-ai.service.ts(214,27): error TS2339: Property 'usage' does not exist on type 'AgentResponse'.
+      1 src/modules/pim/services/product-ai.service.ts(213,28): error TS2339: Property 'usage' does not exist on type 'AgentResponse'.
+      1 src/modules/pim/services/product-ai.service.ts(212,27): error TS2339: Property 'usage' does not exist on type 'AgentResponse'.
+      1 src/modules/pim/services/product-ai.service.ts(200,38): error TS2339: Property 'usage' does not exist on type 'AgentResponse'.
+      1 src/modules/pim/services/product-ai.service.ts(199,9): error TS2353: Object literal may only specify known properties, and 'actualInputTokens' does not exist in type 'CreditUsageRequest'.
+      1 src/modules/pim/services/product-ai.service.ts(199,37): error TS2339: Property 'usage' does not exist on type 'AgentResponse'.
+      1 src/modules/pim/services/product-ai.service.ts(188,29): error TS2345: Argument of type 'string | Record<string, any>' is not assignable to parameter of type 'string'.
+      1 src/modules/pim/services/product-ai.service.ts(181,9): error TS2554: Expected 1 arguments, but got 2.
+      1 src/modules/pim/services/product-ai.service.ts(170,9): error TS2353: Object literal may only specify known properties, and 'modelId' does not exist in type 'CreateConversationRequest'.
+      1 src/modules/pim/services/product-ai.service.ts(152,36): error TS2339: Property 'CONTENT_GENERATION' does not exist on type 'typeof CreditUsageType'.
+      1 src/modules/pim/services/product-ai.service.ts(139,56): error TS2339: Property 'estimateTokens' does not exist on type 'TokenEstimator'.
+      1 src/modules/pim/services/product-ai.service.ts(110,9): error TS2559: Type 'string' has no properties in common with type 'FlagEvaluationContext'.
+      1 src/modules/pim/services/pim-storage.service.ts(547,7): error TS2322: Type '{ id: string | number | true; productId: string | number | true; fileName: string; storagePath: string; publicUrl: string; cdnUrl: string; imageType: string | number | true; position: number; ... 7 more ...; updatedAt: Date; }[]' is not assignable to type 'ProductImage[]'.
+      1 src/modules/pim/services/pim-storage.service.ts(497,35): error TS2345: Argument of type 'string | number | true' is not assignable to parameter of type 'string'.
+      1 src/modules/pim/services/pim-storage.service.ts(443,9): error TS2322: Type 'string | number | boolean | null' is not assignable to type 'string | undefined'.
+      1 src/modules/pim/services/pim-storage.service.ts(437,9): error TS2322: Type 'string | number | true' is not assignable to type 'string'.
+      1 src/modules/pim/services/pim-storage.service.ts(432,9): error TS2322: Type 'string | number | true' is not assignable to type 'string'.
+      1 src/modules/pim/services/pim-storage.service.ts(400,33): error TS2345: Argument of type 'string | number | true' is not assignable to parameter of type 'string'.
+      1 src/modules/pim/services/network-aware-storage.service.ts(423,7): error TS2322: Type '"low" | "medium" | "high" | undefined' is not assignable to type '"low" | "medium" | "high"'.
+      1 src/modules/pim/services/network-aware-storage.service.ts(421,7): error TS2322: Type '"low" | "medium" | "high" | undefined' is not assignable to type '"low" | "medium" | "high"'.
+      1 src/modules/pim/services/marketplace-validation.service.ts(532,27): error TS18048: 'v.pricing.basePrice' is possibly 'undefined'.
+      1 src/modules/pim/services/marketplace-validation.service.ts(237,40): error TS2339: Property 'saBarcode' does not exist on type '{ icasaApproved?: boolean | undefined; sabsApproved?: boolean | undefined; nrcsApproved?: boolean | undefined; loadSheddingCritical?: boolean | undefined; }'.
+      1 src/modules/pim/services/marketplace-sync.service.ts(88,70): error TS2559: Type 'string' has no properties in common with type 'FindByIdOptions'.
+      1 src/modules/pim/services/marketplace-sync.service.ts(797,7): error TS2322: Type '({ success: any; productId: string; marketplaceId: string; externalId: string | undefined; timestamp: Date; status: string; metadata: { priceOnly: boolean; }; errorMessage?: undefined; } | { ...; })[]' is not assignable to type 'MarketplaceSyncResult[]'.
+      1 src/modules/pim/services/marketplace-sync.service.ts(696,7): error TS2322: Type '({ success: any; productId: string; marketplaceId: string; externalId: string | undefined; timestamp: Date; status: string; metadata: { stockOnly: boolean; }; errorMessage?: undefined; } | { ...; })[]' is not assignable to type 'MarketplaceSyncResult[]'.
+      1 src/modules/pim/services/marketplace-sync.service.ts(58,9): error TS2345: Argument of type '() => Promise<MarketplaceSyncResult>' is not assignable to parameter of type 'string'.
+      1 src/modules/pim/services/marketplace-sync.service.ts(57,7): error TS2322: Type 'MarketplaceSyncResult | undefined' is not assignable to type 'MarketplaceSyncResult'.
+      1 src/modules/pim/services/marketplace-sync.service.ts(555,9): error TS2559: Type 'string' has no properties in common with type 'CreateDocumentOptions'.
+      1 src/modules/pim/services/marketplace-sync.service.ts(298,52): error TS2339: Property 'saBarcode' does not exist on type '{ icasaApproved?: boolean | undefined; sabsApproved?: boolean | undefined; nrcsApproved?: boolean | undefined; loadSheddingCritical?: boolean | undefined; } | { saBarcode?: string | undefined; }'.
+      1 src/modules/pim/services/marketplace-sync.service.ts(297,49): error TS2339: Property 'saBarcode' does not exist on type '{ icasaApproved?: boolean | undefined; sabsApproved?: boolean | undefined; nrcsApproved?: boolean | undefined; loadSheddingCritical?: boolean | undefined; } | { saBarcode?: string | undefined; }'.
+      1 src/modules/pim/services/marketplace-sync.service.ts(278,23): error TS2339: Property 'compliance' does not exist on type '{ offer_id: string; shop_sku: string; title: string; subtitle: string; short_description: string; long_description: string; rrp: number; selling_price: number; currency: string; stock_quantity: number; ... 5 more ...; attributes: Record<...>; }'.
+      1 src/modules/pim/services/marketplace-sync.service.ts(273,23): error TS2339: Property 'has_variations' does not exist on type '{ offer_id: string; shop_sku: string; title: string; subtitle: string; short_description: string; long_description: string; rrp: number; selling_price: number; currency: string; stock_quantity: number; ... 5 more ...; attributes: Record<...>; }'.
+      1 src/modules/pim/services/marketplace-sync.service.ts(262,31): error TS2339: Property 'compareAtPrice' does not exist on type '{ basePrice?: number | undefined; vatIncluded?: boolean | undefined; currency?: string | undefined; specialPrice?: number | undefined; specialPriceFromDate?: Date | undefined; specialPriceToDate?: Date | undefined; }'.
+      1 src/modules/pim/services/marketplace-sync.service.ts(257,23): error TS2339: Property 'variations' does not exist on type '{ offer_id: string; shop_sku: string; title: string; subtitle: string; short_description: string; long_description: string; rrp: number; selling_price: number; currency: string; stock_quantity: number; ... 5 more ...; attributes: Record<...>; }'.
+      1 src/modules/pim/services/marketplace-sync.service.ts(256,23): error TS2339: Property 'has_variations' does not exist on type '{ offer_id: string; shop_sku: string; title: string; subtitle: string; short_description: string; long_description: string; rrp: number; selling_price: number; currency: string; stock_quantity: number; ... 5 more ...; attributes: Record<...>; }'.
+      1 src/modules/pim/services/marketplace-sync.service.ts(190,30): error TS2339: Property 'compareAtPrice' does not exist on type '{ basePrice?: number | undefined; vatIncluded?: boolean | undefined; currency?: string | undefined; specialPrice?: number | undefined; specialPriceFromDate?: Date | undefined; specialPriceToDate?: Date | undefined; }'.
+      1 src/modules/pim/services/marketplace-sync.service.ts(118,9): error TS2345: Argument of type 'ProductMarketplaceMapping | null' is not assignable to parameter of type 'ProductMarketplaceMapping | undefined'.
+      1 src/modules/pim/services/load-shedding.service.ts(96,9): error TS2559: Type 'string' has no properties in common with type 'FlagEvaluationContext'.
+      1 src/modules/pim/services/load-shedding.service.ts(335,11): error TS2532: Object is possibly 'undefined'.
+      1 src/modules/pim/services/load-shedding.service.ts(225,7): error TS2532: Object is possibly 'undefined'.
+      1 src/modules/pim/services/load-shedding.service.ts(122,14): error TS18048: 'orgSchedule' is possibly 'undefined'.
+      1 src/modules/pim/services/load-shedding.service.ts(106,16): error TS18048: 'orgSchedule' is possibly 'undefined'.
+      1 src/modules/pim/services/import-export.service.ts(963,11): error TS18048: 'product.attributes' is possibly 'undefined'.
+      1 src/modules/pim/services/import-export.service.ts(907,13): error TS7053: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{}'.
+      1 src/modules/pim/services/import-export.service.ts(898,13): error TS7053: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{}'.
+      1 src/modules/pim/services/import-export.service.ts(859,25): error TS7006: Parameter 'category' implicitly has an 'any' type.
+      1 src/modules/pim/services/import-export.service.ts(852,51): error TS2339: Property 'findByIds' does not exist on type 'CategoryService'.
+      1 src/modules/pim/services/import-export.service.ts(806,48): error TS2339: Property 'findAll' does not exist on type 'ProductService'.
+      1 src/modules/pim/services/import-export.service.ts(576,41): error TS2339: Property 'findBySku' does not exist on type 'ProductService'.
+      1 src/modules/pim/services/import-export.service.ts(538,23): error TS7006: Parameter 'error' implicitly has an 'any' type.
+      1 src/modules/pim/services/import-export.service.ts(485,45): error TS2339: Property 'findBySku' does not exist on type 'ProductService'.
+      1 src/modules/pim/services/import-export.service.ts(456,22): error TS7006: Parameter 'row' implicitly has an 'any' type.
+      1 src/modules/pim/services/import-export.service.ts(359,11): error TS7053: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{}'.
+      1 src/modules/pim/services/import-export.service.ts(312,9): error TS2345: Argument of type '() => Promise<ExportResult>' is not assignable to parameter of type 'string'.
+      1 src/modules/pim/services/import-export.service.ts(311,7): error TS2322: Type 'ExportResult | undefined' is not assignable to type 'ExportResult'.
+      1 src/modules/pim/services/import-export.service.ts(280,9): error TS2345: Argument of type '() => Promise<ImportResult>' is not assignable to parameter of type 'string'.
+      1 src/modules/pim/services/import-export.service.ts(279,7): error TS2322: Type 'ImportResult | undefined' is not assignable to type 'ImportResult'.
+      1 src/modules/pim/services/import-export.service.ts(18,23): error TS2307: Cannot find module 'papaparse' or its corresponding type declarations.
+      1 src/modules/pim/services/import-export.service.ts(17,22): error TS2307: Cannot find module 'csv-parser' or its corresponding type declarations.
+      1 src/modules/pim/services/import-export.service.ts(1143,23): error TS2532: Object is possibly 'undefined'.
+      1 src/modules/pim/services/image-analysis.service.ts(990,44): error TS2339: Property 'processImage' does not exist on type 'AgentService'.
+      1 src/modules/pim/services/image-analysis.service.ts(981,33): error TS2339: Property 'processImage' does not exist on type 'AgentService'.
+      1 src/modules/pim/services/image-analysis.service.ts(979,51): error TS2554: Expected 3-4 arguments, but got 1.
+      1 src/modules/pim/services/image-analysis.service.ts(950,60): error TS2339: Property 'reserveTokens' does not exist on type 'CreditSystemService'.
+      1 src/modules/pim/services/image-analysis.service.ts(690,11): error TS2322: Type 'string | undefined' is not assignable to type 'string'.
+      1 src/modules/pim/services/image-analysis.service.ts(679,11): error TS2322: Type 'string | undefined' is not assignable to type 'string'.
+      1 src/modules/pim/services/image-analysis.service.ts(676,11): error TS2322: Type 'string | undefined' is not assignable to type 'string'.
+      1 src/modules/pim/services/image-analysis.service.ts(461,38): error TS2551: Property 'releaseReservedTokens' does not exist on type 'CreditSystemService'. Did you mean 'releaseReservation'?
+      1 src/modules/pim/services/image-analysis.service.ts(453,38): error TS2339: Property 'commitReservedTokens' does not exist on type 'CreditSystemService'.
+      1 src/modules/pim/services/image-analysis.service.ts(424,46): error TS2339: Property 'processImage' does not exist on type 'AgentService'.
+      1 src/modules/pim/services/image-analysis.service.ts(407,58): error TS2339: Property 'reserveTokens' does not exist on type 'CreditSystemService'.
+      1 src/modules/pim/services/image-analysis.service.ts(361,9): error TS2322: Type 'ImageAnalysisResult | undefined' is not assignable to type 'ImageAnalysisResult'.
+      1 src/modules/pim/services/image-analysis.service.ts(361,47): error TS2554: Expected 3-4 arguments, but got 1.
+      1 src/modules/pim/services/image-analysis.service.ts(18,10): error TS2305: Module '"../../feature-flags/interfaces/types"' has no exported member 'FlagEvaluationOptions'.
+      1 src/modules/pim/services/image-analysis.service.ts(1057,40): error TS2551: Property 'releaseReservedTokens' does not exist on type 'CreditSystemService'. Did you mean 'releaseReservation'?
+      1 src/modules/pim/services/image-analysis.service.ts(1024,40): error TS2339: Property 'commitReservedTokens' does not exist on type 'CreditSystemService'.
+      1 src/modules/pim/services/enhanced-regional/regional-product-enhancer.service.ts(611,42): error TS2345: Argument of type 'Product' is not assignable to parameter of type 'string'.
+      1 src/modules/pim/services/enhanced-regional/regional-product-enhancer.service.ts(566,10): error TS7006: Parameter 'r' implicitly has an 'any' type.
+      1 src/modules/pim/services/enhanced-regional/regional-product-enhancer.service.ts(530,70): error TS2559: Type 'string' has no properties in common with type 'FindByIdOptions'.
+      1 src/modules/pim/services/enhanced-regional/regional-product-enhancer.service.ts(413,10): error TS7006: Parameter 'r' implicitly has an 'any' type.
+      1 src/modules/pim/services/enhanced-regional/regional-product-enhancer.service.ts(393,70): error TS2559: Type 'string' has no properties in common with type 'FindByIdOptions'.
+      1 src/modules/pim/services/enhanced-regional/regional-product-enhancer.service.ts(378,42): error TS2345: Argument of type 'Product' is not assignable to parameter of type 'string'.
+      1 src/modules/pim/services/enhanced-regional/regional-product-enhancer.service.ts(358,8): error TS7006: Parameter 'r' implicitly has an 'any' type.
+      1 src/modules/pim/services/enhanced-regional/regional-product-enhancer.service.ts(345,70): error TS2559: Type 'string' has no properties in common with type 'FindByIdOptions'.
+      1 src/modules/pim/services/enhanced-regional/regional-product-enhancer.service.ts(326,40): error TS7006: Parameter 'r' implicitly has an 'any' type.
+      1 src/modules/pim/services/enhanced-regional/regional-product-enhancer.service.ts(320,70): error TS2559: Type 'string' has no properties in common with type 'FindByIdOptions'.
+      1 src/modules/pim/services/enhanced-regional/regional-product-enhancer.service.ts(297,70): error TS2559: Type 'string' has no properties in common with type 'FindByIdOptions'.
+      1 src/modules/pim/services/enhanced-regional/regional-product-enhancer.service.ts(266,7): error TS18048: 'validationResult.marketplaceValidation' is possibly 'undefined'.
+      1 src/modules/pim/services/enhanced-regional/regional-product-enhancer.service.ts(244,8): error TS7006: Parameter 'r' implicitly has an 'any' type.
+      1 src/modules/pim/services/enhanced-regional/regional-product-enhancer.service.ts(226,60): error TS7015: Element implicitly has an 'any' type because index expression is not of type 'number'.
+      1 src/modules/pim/services/enhanced-regional/regional-product-enhancer.service.ts(202,70): error TS2559: Type 'string' has no properties in common with type 'FindByIdOptions'.
+      1 src/modules/pim/services/enhanced-regional/regional-configuration.service.ts(795,65): error TS2559: Type 'string' has no properties in common with type 'FindOptions<RegionConfiguration>'.
+      1 src/modules/pim/services/enhanced-regional/regional-configuration.service.ts(781,65): error TS2559: Type 'string' has no properties in common with type 'FindOptions<RegionConfiguration>'.
+      1 src/modules/pim/services/enhanced-regional/regional-configuration.service.ts(767,23): error TS18048: 'language' is possibly 'undefined'.
+      1 src/modules/pim/services/enhanced-regional/regional-configuration.service.ts(766,21): error TS18048: 'language' is possibly 'undefined'.
+      1 src/modules/pim/services/enhanced-regional/regional-configuration.service.ts(765,19): error TS18048: 'language' is possibly 'undefined'.
+      1 src/modules/pim/services/enhanced-regional/regional-configuration.service.ts(764,19): error TS18048: 'language' is possibly 'undefined'.
+      1 src/modules/pim/services/enhanced-regional/regional-configuration.service.ts(763,14): error TS18048: 'language' is possibly 'undefined'.
+      1 src/modules/pim/services/enhanced-regional/regional-configuration.service.ts(762,18): error TS18048: 'language' is possibly 'undefined'.
+      1 src/modules/pim/services/enhanced-regional/regional-configuration.service.ts(761,17): error TS18048: 'language' is possibly 'undefined'.
+      1 src/modules/pim/services/enhanced-regional/regional-configuration.service.ts(671,9): error TS2353: Object literal may only specify known properties, and 'code' does not exist in type 'RegionalMarketplace'.
+      1 src/modules/pim/services/enhanced-regional/regional-configuration.service.ts(453,62): error TS2559: Type 'string' has no properties in common with type 'FlagEvaluationContext'.
+      1 src/modules/pim/services/enhanced-regional/regional-configuration.service.ts(448,14): error TS7053: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{ defaultTaxRate: number; defaultShippingMethods: string[]; defaultPaymentMethods: string[]; enableMarketplaceIntegration: boolean; enableMultiWarehouse: boolean; enableLoadSheddingResilience: boolean; ... 5 more ...; customSettings?: Record<...> | undefined; }'.
+      1 src/modules/pim/services/enhanced-regional/regional-configuration.service.ts(412,60): error TS2559: Type 'string' has no properties in common with type 'DeleteDocumentOptions'.
+      1 src/modules/pim/services/enhanced-regional/regional-configuration.service.ts(392,7): error TS2345: Argument of type 'RegionConfiguration' is not assignable to parameter of type 'string'.
+      1 src/modules/pim/services/enhanced-regional/regional-configuration.service.ts(357,7): error TS2559: Type 'string' has no properties in common with type 'CreateDocumentOptions'.
+      1 src/modules/pim/services/enhanced-regional/regional-configuration.service.ts(304,7): error TS2559: Type 'string' has no properties in common with type 'FindByIdOptions'.
+      1 src/modules/pim/services/enhanced-regional/regional-configuration.service.ts(298,7): error TS2322: Type 'RegionConfiguration | undefined' is not assignable to type 'RegionConfiguration'.
+      1 src/modules/pim/services/enhanced-regional/regional-configuration.service.ts(273,50): error TS2559: Type 'string' has no properties in common with type 'FindOptions<RegionConfiguration>'.
+      1 src/modules/pim/services/dynamic-pricing.service.ts(636,41): error TS7015: Element implicitly has an 'any' type because index expression is not of type 'number'.
+      1 src/modules/pim/services/dynamic-pricing.service.ts(634,33): error TS2769: No overload matches this call.
+      1 src/modules/pim/services/dynamic-pricing.service.ts(622,46): error TS2339: Property 'findAll' does not exist on type 'ProductService'.
+      1 src/modules/pim/services/dynamic-pricing.service.ts(616,46): error TS2339: Property 'findAll' does not exist on type 'ProductService'.
+      1 src/modules/pim/services/dynamic-pricing.service.ts(420,33): error TS18048: 'loadSheddingStatus.currentStage' is possibly 'undefined'.
+      1 src/modules/pim/services/dynamic-pricing.service.ts(356,33): error TS18048: 'loadSheddingStatus.currentStage' is possibly 'undefined'.
+      1 src/modules/pim/services/dynamic-pricing.service.ts(308,54): error TS2339: Property 'query' does not exist on type 'PricingRuleRepository'.
+      1 src/modules/pim/services/dynamic-pricing.service.ts(198,9): error TS2353: Object literal may only specify known properties, and 'updatedAt' does not exist in type 'Partial<Omit<PricingRuleEntity, "id" | "createdAt" | "updatedAt">>'.
+      1 src/modules/pim/services/dynamic-pricing.service.ts(1561,26): error TS2304: Cannot find name 'CompetitorReference'.
+      1 src/modules/pim/services/dynamic-pricing.service.ts(1171,9): error TS18048: 'result.skippedRules' is possibly 'undefined'.
+      1 src/modules/pim/services/dynamic-pricing.service.ts(1099,11): error TS18048: 'result.skippedRules' is possibly 'undefined'.
+      1 src/modules/pim/services/dynamic-pricing.service.ts(1087,13): error TS18048: 'result.skippedRules' is possibly 'undefined'.
+      1 src/modules/pim/services/dynamic-pricing.service.ts(1073,13): error TS18048: 'result.calculationDetails' is possibly 'undefined'.
+      1 src/modules/pim/services/data-protection/data-protection.service.ts(885,45): error TS18048: 'fieldResult' is possibly 'undefined'.
+      1 src/modules/pim/services/data-protection/data-protection.service.ts(563,13): error TS18048: 'scanResult.recommendedActions' is possibly 'undefined'.
+      1 src/modules/pim/services/cross-border-trade.service.ts(806,9): error TS2588: Cannot assign to 'isDutyFree' because it is a constant.
+      1 src/modules/pim/services/cross-border-trade.service.ts(635,23): error TS2339: Property 'CROSS_BORDER_TRADING' does not exist on type 'typeof MarketFeature'.
+      1 src/modules/pim/services/cross-border-trade.service.ts(625,7): error TS2559: Type 'string' has no properties in common with type 'FlagEvaluationContext'.
+      1 src/modules/pim/services/cross-border-trade.service.ts(1512,18): error TS2304: Cannot find name 'TaxType'.
+      1 src/modules/pim/services/compliance/compliance-framework.service.ts(840,55): error TS2345: Argument of type 'ComplianceRequirement' is not assignable to parameter of type 'string'.
+      1 src/modules/pim/services/compliance/compliance-framework.service.ts(819,9): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+      1 src/modules/pim/services/compliance/compliance-framework.service.ts(793,50): error TS2559: Type 'string' has no properties in common with type 'FindOptions<ComplianceRule>'.
+      1 src/modules/pim/services/compliance/compliance-framework.service.ts(780,56): error TS2559: Type 'string' has no properties in common with type 'DeleteDocumentOptions'.
+      1 src/modules/pim/services/compliance/compliance-framework.service.ts(763,7): error TS2345: Argument of type 'ComplianceRule' is not assignable to parameter of type 'string'.
+      1 src/modules/pim/services/compliance/compliance-framework.service.ts(731,7): error TS2559: Type 'string' has no properties in common with type 'CreateDocumentOptions'.
+      1 src/modules/pim/services/compliance/compliance-framework.service.ts(706,9): error TS2559: Type 'string' has no properties in common with type 'CreateDocumentOptions'.
+      1 src/modules/pim/services/compliance/compliance-framework.service.ts(684,57): error TS2345: Argument of type 'ComplianceRequirement' is not assignable to parameter of type 'string'.
+      1 src/modules/pim/services/compliance/compliance-framework.service.ts(637,71): error TS2559: Type 'string' has no properties in common with type 'FindByIdOptions'.
+      1 src/modules/pim/services/compliance/compliance-framework.service.ts(633,7): error TS2322: Type 'ComplianceRule | undefined' is not assignable to type 'ComplianceRule'.
+      1 src/modules/pim/services/compliance/compliance-framework.service.ts(419,7): error TS7053: Element implicitly has an 'any' type because expression of type '"expirationDate"' can't be used to index type '{ regionCodes: string; productTypes: string; }'.
+      1 src/modules/pim/services/compliance/compliance-framework.service.ts(414,7): error TS7053: Element implicitly has an 'any' type because expression of type '"severity"' can't be used to index type '{ regionCodes: string; productTypes: string; }'.
+      1 src/modules/pim/services/compliance/compliance-framework.service.ts(410,7): error TS7053: Element implicitly has an 'any' type because expression of type '"authority"' can't be used to index type '{ regionCodes: string; productTypes: string; }'.
+      1 src/modules/pim/services/compliance/compliance-framework.service.ts(406,7): error TS7053: Element implicitly has an 'any' type because expression of type '"category"' can't be used to index type '{ regionCodes: string; productTypes: string; }'.
+      1 src/modules/pim/services/compliance/compliance-framework.service.ts(232,70): error TS2559: Type 'string' has no properties in common with type 'FindByIdOptions'.
+      1 src/modules/pim/services/competitive-price-monitoring.service.ts(1496,11): error TS18048: 'loadSheddingStatus.currentStage' is possibly 'undefined'.
+      1 src/modules/pim/services/bundle.service.ts(95,9): error TS2322: Type 'Record<string, any> | undefined' is not assignable to type 'ProductAttribute[] | undefined'.
+      1 src/modules/pim/services/bundle.service.ts(94,9): error TS2322: Type 'string[] | undefined' is not assignable to type '{ main?: string | undefined; gallery?: string[] | undefined; metadata?: Record<string, { alt?: string | undefined; title?: string | undefined; sortOrder?: number | undefined; }> | undefined; } | undefined'.
+      1 src/modules/pim/services/bundle.service.ts(627,13): error TS2353: Object literal may only specify known properties, and 'updatedAt' does not exist in type 'Partial<Omit<Bundle, "id" | "createdAt" | "updatedAt">>'.
+      1 src/modules/pim/services/bundle.service.ts(621,7): error TS2322: Type 'Bundle | undefined' is not assignable to type 'Bundle'.
+      1 src/modules/pim/services/bundle.service.ts(621,55): error TS2554: Expected 3-4 arguments, but got 2.
+      1 src/modules/pim/services/bundle.service.ts(616,9): error TS2345: Argument of type 'string | number | undefined' is not assignable to parameter of type 'string | number'.
+      1 src/modules/pim/services/bundle.service.ts(535,13): error TS2353: Object literal may only specify known properties, and 'updatedAt' does not exist in type 'Partial<Omit<Bundle, "id" | "createdAt" | "updatedAt">>'.
+      1 src/modules/pim/services/bundle.service.ts(529,7): error TS2322: Type 'Bundle | undefined' is not assignable to type 'Bundle'.
+      1 src/modules/pim/services/bundle.service.ts(529,55): error TS2554: Expected 3-4 arguments, but got 2.
+      1 src/modules/pim/services/bundle.service.ts(524,9): error TS2345: Argument of type 'string | number | undefined' is not assignable to parameter of type 'string | number'.
+      1 src/modules/pim/services/bundle.service.ts(442,13): error TS2353: Object literal may only specify known properties, and 'updatedAt' does not exist in type 'Partial<Omit<Bundle, "id" | "createdAt" | "updatedAt">>'.
+      1 src/modules/pim/services/bundle.service.ts(436,7): error TS2322: Type 'Bundle | undefined' is not assignable to type 'Bundle'.
+      1 src/modules/pim/services/bundle.service.ts(436,55): error TS2554: Expected 3-4 arguments, but got 2.
+      1 src/modules/pim/services/bundle.service.ts(431,9): error TS2345: Argument of type 'string | number | undefined' is not assignable to parameter of type 'string | number'.
+      1 src/modules/pim/services/bundle.service.ts(351,48): error TS2554: Expected 3-4 arguments, but got 2.
+      1 src/modules/pim/services/bundle.service.ts(309,7): error TS2322: Type 'Bundle | undefined' is not assignable to type 'Bundle'.
+      1 src/modules/pim/services/bundle.service.ts(309,55): error TS2554: Expected 3-4 arguments, but got 2.
+      1 src/modules/pim/services/bundle.service.ts(301,11): error TS2345: Argument of type 'string | number | undefined' is not assignable to parameter of type 'string | number'.
+      1 src/modules/pim/services/bundle.service.ts(262,27): error TS2551: Property 'INACTIVE' does not exist on type 'typeof ProductStatus'. Did you mean 'ACTIVE'?
+      1 src/modules/pim/services/bundle.service.ts(258,9): error TS2740: Type 'Record<string, any>' is missing the following properties from type 'ProductAttribute[]': length, pop, push, concat, and 29 more.
+      1 src/modules/pim/services/bundle.service.ts(256,30): error TS2559: Type 'string[]' has no properties in common with type '{ main?: string | undefined; gallery?: string[] | undefined; metadata?: Record<string, { alt?: string | undefined; title?: string | undefined; sortOrder?: number | undefined; }> | undefined; }'.
+      1 src/modules/pim/services/bundle.service.ts(230,13): error TS2322: Type '{ updatedAt: Date; name: string; description: string; sku: string; components: { productId: string; sku?: string; quantity: number; isRequired?: boolean; }[]; pricingStrategy: "FIXED_PRICE" | "CUSTOM_FORMULA" | "DISCOUNT_PERCENTAGE" | "COMPONENT_SUM" | PricingStrategy; ... 7 more ...; createdAt: Date; }' is not assignable to type 'Bundle'.
+      1 src/modules/pim/services/bundle.service.ts(148,9): error TS2322: Type 'null' is not assignable to type 'Bundle'.
+      1 src/modules/pim/services/bundle.service.ts(116,7): error TS2322: Type 'Bundle | undefined' is not assignable to type 'Bundle'.
+      1 src/modules/pim/services/bundle.service.ts(116,55): error TS2554: Expected 3-4 arguments, but got 2.
+      1 src/modules/pim/services/bundle.service.ts(108,9): error TS2345: Argument of type 'string | number | undefined' is not assignable to parameter of type 'string | number'.
+      1 src/modules/pim/services/bulk-operations/product-bulk-operations.service.ts(409,11): error TS2559: Type 'never[]' has no properties in common with type '{ main?: string | undefined; gallery?: string[] | undefined; metadata?: Record<string, { alt?: string | undefined; title?: string | undefined; sortOrder?: number | undefined; }> | undefined; }'.
+      1 src/modules/pim/services/bulk-operations/product-bulk-operations.service.ts(383,16): error TS2790: The operand of a 'delete' operator must be optional.
+      1 src/modules/pim/services/bulk-operations/category-bulk-operations.service.ts(229,13): error TS2353: Object literal may only specify known properties, and 'marketplaceCategoryId' does not exist in type '{ marketplaceId: string; externalId: string; externalName?: string | undefined; }'.
+      1 src/modules/pim/services/bulk-operations/category-bulk-operations.service.ts(223,53): error TS2339: Property 'marketplaceCategoryId' does not exist on type '{ marketplaceId: string; externalId: string; externalName?: string | undefined; }'.
+      1 src/modules/pim/services/bulk-operations/category-bulk-operations.service.ts(122,11): error TS2554: Expected 1 arguments, but got 2.
+      1 src/modules/pim/services/bulk-operations/bulk-operations.service.ts(292,25): error TS18048: 'options.retryDelay' is possibly 'undefined'.
+      1 src/modules/pim/services/bulk-operations/bulk-operations.service.ts(282,21): error TS18048: 'options.maxRetries' is possibly 'undefined'.
+      1 src/modules/pim/services/bulk-operations/bulk-operations.service.ts(271,11): error TS2345: Argument of type 'number | undefined' is not assignable to parameter of type 'number'.
+      1 src/modules/pim/services/bulk-operations/bulk-operations.service.ts(127,48): error TS2345: Argument of type 'number | undefined' is not assignable to parameter of type 'number'.
+      1 src/modules/pim/services/bulk-operations/bulk-operations.service.ts(115,7): error TS2345: Argument of type 'number | undefined' is not assignable to parameter of type 'number'.
+      1 src/modules/pim/services/bulk-operations/attribute-template-bulk-operations.service.ts(262,11): error TS2740: Type '{}' is missing the following properties from type '{ marketplaceId: string; attributeMappings: Record<string, string>; }[]': length, pop, push, concat, and 29 more.
+      1 src/modules/pim/services/bulk-operations/attribute-template-bulk-operations.service.ts(258,9): error TS7053: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{}'.
+      1 src/modules/pim/services/bulk-operations/attribute-template-bulk-operations.service.ts(190,32): error TS2339: Property 'key' does not exist on type 'ProductAttribute'.
+      1 src/modules/pim/services/bulk-operations/attribute-template-bulk-operations.service.ts(184,70): error TS2339: Property 'key' does not exist on type 'ProductAttribute'.
+      1 src/modules/pim/services/bulk-operations/attribute-template-bulk-operations.service.ts(175,55): error TS2339: Property 'key' does not exist on type 'ProductAttribute'.
+      1 src/modules/pim/services/bulk-operations/attribute-template-bulk-operations.service.ts(118,11): error TS2554: Expected 1 arguments, but got 2.
+      1 src/modules/pim/services/b2b/b2b-service.ts(742,47): error TS2554: Expected 2 arguments, but got 1.
+      1 src/modules/pim/services/b2b/b2b-service.ts(683,7): error TS2353: Object literal may only specify known properties, and 'updatedAt' does not exist in type 'Partial<Omit<CustomerContract, "id" | "createdAt" | "updatedAt">>'.
+      1 src/modules/pim/services/b2b/b2b-service.ts(611,38): error TS18046: 'a' is of type 'unknown'.
+      1 src/modules/pim/services/b2b/b2b-service.ts(611,18): error TS18046: 'b' is of type 'unknown'.
+      1 src/modules/pim/services/b2b/b2b-service.ts(610,5): error TS2322: Type 'unknown[]' is not assignable to type 'B2BPriceList[]'.
+      1 src/modules/pim/services/b2b/b2b-service.ts(607,36): error TS7006: Parameter 'pl' implicitly has an 'any' type.
+      1 src/modules/pim/services/b2b/b2b-service.ts(599,10): error TS7006: Parameter 'priceList' implicitly has an 'any' type.
+      1 src/modules/pim/services/b2b/b2b-service.ts(584,36): error TS2339: Property 'findByContractId' does not exist on type 'B2BPriceListRepository'.
+      1 src/modules/pim/services/b2b/b2b-service.ts(566,38): error TS2551: Property 'findByTierId' does not exist on type 'B2BPriceListRepository'. Did you mean 'findById'?
+      1 src/modules/pim/services/b2b/b2b-service.ts(560,34): error TS2339: Property 'findByGroupId' does not exist on type 'B2BPriceListRepository'.
+      1 src/modules/pim/services/b2b/b2b-service.ts(556,32): error TS2551: Property 'findByCustomerId' does not exist on type 'B2BPriceListRepository'. Did you mean 'findByCustomer'?
+      1 src/modules/pim/services/b2b/b2b-service.ts(452,9): error TS2353: Object literal may only specify known properties, and 'updatedAt' does not exist in type 'Partial<Omit<B2BCustomer, "id" | "createdAt" | "updatedAt">>'.
+      1 src/modules/pim/services/b2b/b2b-service.ts(380,7): error TS2353: Object literal may only specify known properties, and 'updatedAt' does not exist in type 'Partial<Omit<B2BCustomer, "id" | "createdAt" | "updatedAt">>'.
+      1 src/modules/pim/services/b2b/b2b-service.ts(307,39): error TS2339: Property 'findByOrganizationId' does not exist on type 'B2BCustomerRepository'.
+      1 src/modules/pim/services/b2b/b2b-service.ts(1391,57): error TS2538: Type 'undefined' cannot be used as an index type.
+      1 src/modules/pim/services/african-tax-framework.service.ts(80,11): error TS2564: Property 'africanTaxRules' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/pim/services/african-tax-framework.service.ts(738,18): error TS18048: 'countryRules' is possibly 'undefined'.
+      1 src/modules/pim/services/african-tax-framework.service.ts(726,9): error TS18048: 'countryRules' is possibly 'undefined'.
+      1 src/modules/pim/services/african-tax-framework.service.ts(710,7): error TS2322: Type '"country"' is not assignable to type 'TaxJurisdictionLevel'.
+      1 src/modules/pim/services/african-tax-framework.service.ts(609,10): error TS18048: 'countryRules' is possibly 'undefined'.
+      1 src/modules/pim/services/african-tax-framework.service.ts(505,7): error TS2322: Type '"country"' is not assignable to type 'TaxJurisdictionLevel'.
+      1 src/modules/pim/services/african-tax-framework.service.ts(362,15): error TS2322: Type '"province"' is not assignable to type 'TaxJurisdictionLevel'.
+      1 src/modules/pim/services/african-tax-framework.service.ts(308,13): error TS2322: Type '"city" | "province" | "country"' is not assignable to type 'TaxJurisdictionLevel'.
+      1 src/modules/pim/services/african-tax-framework.service.ts(282,24): error TS18048: 'countryRules' is possibly 'undefined'.
+      1 src/modules/pim/repositories/tax-rate.repository.ts(72,7): error TS2322: Type '{ field: string; operator: string; value: string; }[]' is not assignable to type 'FirestoreAdvancedFilter<TaxRateSchedule>[]'.
+      1 src/modules/pim/repositories/tax-rate.repository.ts(67,7): error TS2322: Type 'Date' is not assignable to type 'string'.
+      1 src/modules/pim/repositories/tax-rate.repository.ts(296,7): error TS2322: Type '{ field: string; operator: string; value: string; }[]' is not assignable to type 'FirestoreAdvancedFilter<TaxRateSchedule>[]'.
+      1 src/modules/pim/repositories/tax-rate.repository.ts(291,7): error TS2322: Type 'Date' is not assignable to type 'string'.
+      1 src/modules/pim/repositories/tax-rate.repository.ts(283,7): error TS2322: Type 'boolean' is not assignable to type 'string'.
+      1 src/modules/pim/repositories/tax-rate.repository.ts(259,7): error TS2322: Type '{ field: string; operator: string; value: string; }[]' is not assignable to type 'FirestoreAdvancedFilter<TaxRateSchedule>[]'.
+      1 src/modules/pim/repositories/tax-rate.repository.ts(23,62): error TS2344: Type 'TaxRateSchedule' does not satisfy the constraint 'TenantEntity'.
+      1 src/modules/pim/repositories/tax-rate.repository.ts(220,7): error TS2322: Type '{ field: string; operator: string; value: string; }[]' is not assignable to type 'FirestoreAdvancedFilter<TaxRateSchedule>[]'.
+      1 src/modules/pim/repositories/tax-rate.repository.ts(214,9): error TS2322: Type 'Date' is not assignable to type 'string'.
+      1 src/modules/pim/repositories/tax-rate.repository.ts(178,11): error TS18048: 'rate.metadata' is possibly 'undefined'.
+      1 src/modules/pim/repositories/tax-rate.repository.ts(138,7): error TS2322: Type '{ field: string; operator: string; value: string; }[]' is not assignable to type 'FirestoreAdvancedFilter<TaxRateSchedule>[]'.
+      1 src/modules/pim/repositories/tax-rate.repository.ts(133,7): error TS2322: Type 'boolean' is not assignable to type 'string'.
+      1 src/modules/pim/repositories/tax-rate.repository.ts(126,7): error TS2322: Type 'Date' is not assignable to type 'string'.
+      1 src/modules/pim/repositories/regional-configuration.repository.ts(80,40): error TS2559: Type 'string' has no properties in common with type 'FindOptions<RegionConfiguration>'.
+      1 src/modules/pim/repositories/regional-configuration.repository.ts(57,17): error TS2339: Property 'findWithFilters' does not exist on type 'RegionalConfigurationRepository'.
+      1 src/modules/pim/repositories/regional-configuration.repository.ts(38,17): error TS2339: Property 'findWithFilters' does not exist on type 'RegionalConfigurationRepository'.
+      1 src/modules/pim/repositories/regional-configuration.repository.ts(24,10): error TS2540: Cannot assign to 'logger' because it is a read-only property.
+      1 src/modules/pim/repositories/regional-configuration.repository.ts(18,11): error TS2345: Argument of type 'string' is not assignable to parameter of type 'FirestoreConfigService'.
+      1 src/modules/pim/repositories/regional-configuration.repository.ts(142,39): error TS7053: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{ defaultTaxRate: number; defaultShippingMethods: string[]; defaultPaymentMethods: string[]; enableMarketplaceIntegration: boolean; enableMultiWarehouse: boolean; enableLoadSheddingResilience: boolean; ... 5 more ...; customSettings?: Record<...> | undefined; }'.
+      1 src/modules/pim/repositories/regional-configuration.repository.ts(140,40): error TS2559: Type 'string' has no properties in common with type 'FindOptions<RegionConfiguration>'.
+      1 src/modules/pim/repositories/regional-configuration.repository.ts(120,40): error TS2559: Type 'string' has no properties in common with type 'FindOptions<RegionConfiguration>'.
+      1 src/modules/pim/repositories/regional-configuration.repository.ts(100,40): error TS2559: Type 'string' has no properties in common with type 'FindOptions<RegionConfiguration>'.
+      1 src/modules/pim/repositories/purchase-order.repository.ts(92,44): error TS2339: Property 'mapSnapshotToEntity' does not exist on type 'PurchaseOrderRepository'.
+      1 src/modules/pim/repositories/purchase-order.repository.ts(92,31): error TS7006: Parameter 'doc' implicitly has an 'any' type.
+      1 src/modules/pim/repositories/purchase-order.repository.ts(91,33): error TS2339: Property 'executeQuery' does not exist on type 'PurchaseOrderRepository'.
+      1 src/modules/pim/repositories/purchase-order.repository.ts(73,44): error TS2339: Property 'mapSnapshotToEntity' does not exist on type 'PurchaseOrderRepository'.
+      1 src/modules/pim/repositories/purchase-order.repository.ts(73,31): error TS7006: Parameter 'doc' implicitly has an 'any' type.
+      1 src/modules/pim/repositories/purchase-order.repository.ts(72,33): error TS2339: Property 'executeQuery' does not exist on type 'PurchaseOrderRepository'.
+      1 src/modules/pim/repositories/purchase-order.repository.ts(45,14): error TS2339: Property 'mapSnapshotToEntity' does not exist on type 'PurchaseOrderRepository'.
+      1 src/modules/pim/repositories/purchase-order.repository.ts(43,33): error TS2339: Property 'executeQuery' does not exist on type 'PurchaseOrderRepository'.
+      1 src/modules/pim/repositories/purchase-order.repository.ts(25,5): error TS2554: Expected 2-3 arguments, but got 1.
+      1 src/modules/pim/repositories/purchase-order.repository.ts(221,25): error TS7006: Parameter 'item' implicitly has an 'any' type.
+      1 src/modules/pim/repositories/purchase-order.repository.ts(220,30): error TS7006: Parameter 'order' implicitly has an 'any' type.
+      1 src/modules/pim/repositories/purchase-order.repository.ts(217,55): error TS2339: Property 'mapSnapshotToEntity' does not exist on type 'PurchaseOrderRepository'.
+      1 src/modules/pim/repositories/purchase-order.repository.ts(217,42): error TS7006: Parameter 'doc' implicitly has an 'any' type.
+      1 src/modules/pim/repositories/purchase-order.repository.ts(216,33): error TS2339: Property 'executeQuery' does not exist on type 'PurchaseOrderRepository'.
+      1 src/modules/pim/repositories/purchase-order.repository.ts(196,44): error TS2339: Property 'mapSnapshotToEntity' does not exist on type 'PurchaseOrderRepository'.
+      1 src/modules/pim/repositories/purchase-order.repository.ts(196,31): error TS7006: Parameter 'doc' implicitly has an 'any' type.
+      1 src/modules/pim/repositories/purchase-order.repository.ts(195,33): error TS2339: Property 'executeQuery' does not exist on type 'PurchaseOrderRepository'.
+      1 src/modules/pim/repositories/purchase-order.repository.ts(18,70): error TS2344: Type 'PurchaseOrder' does not satisfy the constraint 'BaseEntity'.
+      1 src/modules/pim/repositories/purchase-order.repository.ts(148,44): error TS2339: Property 'mapSnapshotToEntity' does not exist on type 'PurchaseOrderRepository'.
+      1 src/modules/pim/repositories/purchase-order.repository.ts(148,31): error TS7006: Parameter 'doc' implicitly has an 'any' type.
+      1 src/modules/pim/repositories/purchase-order.repository.ts(147,33): error TS2339: Property 'executeQuery' does not exist on type 'PurchaseOrderRepository'.
+      1 src/modules/pim/repositories/purchase-order.repository.ts(126,44): error TS2339: Property 'mapSnapshotToEntity' does not exist on type 'PurchaseOrderRepository'.
+      1 src/modules/pim/repositories/purchase-order.repository.ts(126,31): error TS7006: Parameter 'doc' implicitly has an 'any' type.
+      1 src/modules/pim/repositories/purchase-order.repository.ts(125,33): error TS2339: Property 'executeQuery' does not exist on type 'PurchaseOrderRepository'.
+      1 src/modules/pim/repositories/purchase-order.repository.ts(111,44): error TS2339: Property 'mapSnapshotToEntity' does not exist on type 'PurchaseOrderRepository'.
+      1 src/modules/pim/repositories/purchase-order.repository.ts(111,31): error TS7006: Parameter 'doc' implicitly has an 'any' type.
+      1 src/modules/pim/repositories/purchase-order.repository.ts(110,33): error TS2339: Property 'executeQuery' does not exist on type 'PurchaseOrderRepository'.
+      1 src/modules/pim/repositories/product-variant.repository.ts(97,52): error TS2559: Type 'string' has no properties in common with type 'FindByIdOptions'.
+      1 src/modules/pim/repositories/product-variant.repository.ts(74,43): error TS2353: Object literal may only specify known properties, and 'tenantId' does not exist in type 'FindOptions<ProductVariant>'.
+      1 src/modules/pim/repositories/product-variant.repository.ts(51,7): error TS2353: Object literal may only specify known properties, and 'tenantId' does not exist in type 'FindOptions<ProductVariant>'.
+      1 src/modules/pim/repositories/product-variant.repository.ts(4,10): error TS2305: Module '"../../../config/firestore.config"' has no exported member 'FirestoreService'.
+      1 src/modules/pim/repositories/product-variant.repository.ts(33,7): error TS2353: Object literal may only specify known properties, and 'tenantId' does not exist in type 'FindOptions<ProductVariant>'.
+      1 src/modules/pim/repositories/product-variant.repository.ts(18,5): error TS2554: Expected 2-3 arguments, but got 1.
+      1 src/modules/pim/repositories/product-variant.repository.ts(117,57): error TS2559: Type 'string' has no properties in common with type 'DeleteDocumentOptions'.
+      1 src/modules/pim/repositories/product-variant.repository.ts(103,49): error TS2559: Type 'string' has no properties in common with type 'UpdateDocumentOptions'.
+      1 src/modules/pim/repositories/product-marketplace-mapping.repository.ts(84,7): error TS2353: Object literal may only specify known properties, and 'tenantId' does not exist in type 'FindOptions<ProductMarketplaceMapping>'.
+      1 src/modules/pim/repositories/product-marketplace-mapping.repository.ts(61,7): error TS2353: Object literal may only specify known properties, and 'tenantId' does not exist in type 'FindOptions<ProductMarketplaceMapping>'.
+      1 src/modules/pim/repositories/product-marketplace-mapping.repository.ts(40,7): error TS2353: Object literal may only specify known properties, and 'tenantId' does not exist in type 'FindOptions<ProductMarketplaceMapping>'.
+      1 src/modules/pim/repositories/product-marketplace-mapping.repository.ts(25,5): error TS2554: Expected 2-3 arguments, but got 1.
+      1 src/modules/pim/repositories/product-marketplace-mapping.repository.ts(247,36): error TS2559: Type 'string' has no properties in common with type 'UpdateDocumentOptions'.
+      1 src/modules/pim/repositories/product-marketplace-mapping.repository.ts(214,7): error TS2353: Object literal may only specify known properties, and 'tenantId' does not exist in type 'FindOptions<ProductMarketplaceMapping>'.
+      1 src/modules/pim/repositories/product-marketplace-mapping.repository.ts(209,9): error TS2322: Type 'string' is not assignable to type 'string[] | Date'.
+      1 src/modules/pim/repositories/product-marketplace-mapping.repository.ts(169,7): error TS2353: Object literal may only specify known properties, and 'tenantId' does not exist in type 'FindOptions<ProductMarketplaceMapping>'.
+      1 src/modules/pim/repositories/product-marketplace-mapping.repository.ts(164,9): error TS2322: Type 'string' is not assignable to type '"error" | "pending" | "active" | "inactive"'.
+      1 src/modules/pim/repositories/product-marketplace-mapping.repository.ts(134,7): error TS2353: Object literal may only specify known properties, and 'tenantId' does not exist in type 'FindOptions<ProductMarketplaceMapping>'.
+      1 src/modules/pim/repositories/product-marketplace-mapping.repository.ts(11,10): error TS2305: Module '"../../../config/firestore.config"' has no exported member 'FirestoreService'.
+      1 src/modules/pim/repositories/product-marketplace-mapping.repository.ts(109,7): error TS2353: Object literal may only specify known properties, and 'tenantId' does not exist in type 'FindOptions<ProductMarketplaceMapping>'.
+      1 src/modules/pim/repositories/product-attribute.repository.ts(234,17): error TS2339: Property 'findWithFilters' does not exist on type 'ProductAttributeRepository'.
+      1 src/modules/pim/repositories/product-attribute.repository.ts(211,17): error TS2339: Property 'findWithFilters' does not exist on type 'ProductAttributeRepository'.
+      1 src/modules/pim/repositories/product-attribute.repository.ts(192,17): error TS2339: Property 'findWithFilters' does not exist on type 'ProductAttributeRepository'.
+      1 src/modules/pim/repositories/product-attribute.repository.ts(173,17): error TS2339: Property 'findWithFilters' does not exist on type 'ProductAttributeRepository'.
+      1 src/modules/pim/repositories/product-attribute.repository.ts(154,17): error TS2339: Property 'findWithFilters' does not exist on type 'ProductAttributeRepository'.
+      1 src/modules/pim/repositories/product-attribute.repository.ts(139,43): error TS2559: Type 'string' has no properties in common with type 'FindOptions<ProductAttribute>'.
+      1 src/modules/pim/repositories/product-attribute.repository.ts(121,10): error TS2540: Cannot assign to 'logger' because it is a read-only property.
+      1 src/modules/pim/repositories/product-attribute.repository.ts(115,11): error TS2345: Argument of type 'string' is not assignable to parameter of type 'FirestoreConfigService'.
+      1 src/modules/pim/repositories/pricing-rule.repository.ts(288,60): error TS7006: Parameter 'execution' implicitly has an 'any' type.
+      1 src/modules/pim/repositories/pricing-rule.repository.ts(161,32): error TS2345: Argument of type '{ startTime: Date; endTime: Date | null; id: string; status: PricingRuleExecutionStatus; productsAffected: number; failedProducts?: string[]; error?: string; triggeredBy?: string; }' is not assignable to parameter of type 'PricingRuleExecution'.
+      1 src/modules/pim/repositories/price-monitoring-config.repository.ts(95,34): error TS2339: Property 'query' does not exist on type 'PriceMonitoringConfigRepository'.
+      1 src/modules/pim/repositories/price-monitoring-config.repository.ts(196,19): error TS2339: Property 'query' does not exist on type 'PriceMonitoringConfigRepository'.
+      1 src/modules/pim/repositories/price-monitoring-config.repository.ts(17,11): error TS2345: Argument of type 'string' is not assignable to parameter of type 'FirestoreConfigService'.
+      1 src/modules/pim/repositories/price-monitoring-config.repository.ts(158,24): error TS7006: Parameter 'config' implicitly has an 'any' type.
+      1 src/modules/pim/repositories/price-monitoring-config.repository.ts(153,34): error TS2339: Property 'query' does not exist on type 'PriceMonitoringConfigRepository'.
+      1 src/modules/pim/repositories/price-monitoring-config.repository.ts(13,78): error TS2344: Type 'PriceMonitoringConfig' does not satisfy the constraint 'BaseEntity'.
+      1 src/modules/pim/repositories/price-monitoring-config.repository.ts(13,14): error TS2415: Class 'PriceMonitoringConfigRepository' incorrectly extends base class 'FirestoreBaseRepository<PriceMonitoringConfig, string>'.
+      1 src/modules/pim/repositories/price-monitoring-config.repository.ts(125,19): error TS2339: Property 'query' does not exist on type 'PriceMonitoringConfigRepository'.
+      1 src/modules/pim/repositories/price-history.repository.ts(483,34): error TS2339: Property 'query' does not exist on type 'PriceHistoryRepository'.
+      1 src/modules/pim/repositories/price-history.repository.ts(418,9): error TS2322: Type '"PENDING" | "FAILED" | "VERIFIED" | "UNVERIFIED"' is not assignable to type 'PriceVerificationStatus'.
+      1 src/modules/pim/repositories/price-history.repository.ts(364,9): error TS2322: Type '"VERIFIED" | "UNVERIFIED"' is not assignable to type 'PriceVerificationStatus'.
+      1 src/modules/pim/repositories/price-history.repository.ts(303,15): error TS2345: Argument of type 'number | null | undefined' is not assignable to parameter of type 'number'.
+      1 src/modules/pim/repositories/price-history.repository.ts(298,26): error TS2345: Argument of type 'number | null' is not assignable to parameter of type 'number'.
+      1 src/modules/pim/repositories/price-history.repository.ts(270,11): error TS18048: 'dayData' is possibly 'undefined'.
+      1 src/modules/pim/repositories/price-history.repository.ts(265,11): error TS18048: 'dayData' is possibly 'undefined'.
+      1 src/modules/pim/repositories/price-history.repository.ts(253,24): error TS7006: Parameter 'record' implicitly has an 'any' type.
+      1 src/modules/pim/repositories/price-history.repository.ts(242,34): error TS2339: Property 'query' does not exist on type 'PriceHistoryRepository'.
+      1 src/modules/pim/repositories/price-history.repository.ts(21,11): error TS2345: Argument of type 'string' is not assignable to parameter of type 'FirestoreConfigService'.
+      1 src/modules/pim/repositories/price-history.repository.ts(181,24): error TS7006: Parameter 'record' implicitly has an 'any' type.
+      1 src/modules/pim/repositories/price-history.repository.ts(170,34): error TS2339: Property 'query' does not exist on type 'PriceHistoryRepository'.
+      1 src/modules/pim/repositories/price-history.repository.ts(17,69): error TS2344: Type 'PriceHistoryRecord' does not satisfy the constraint 'BaseEntity'.
+      1 src/modules/pim/repositories/price-history.repository.ts(17,14): error TS2415: Class 'PriceHistoryRepository' incorrectly extends base class 'FirestoreBaseRepository<PriceHistoryRecord, string>'.
+      1 src/modules/pim/repositories/price-history.repository.ts(112,19): error TS2339: Property 'query' does not exist on type 'PriceHistoryRepository'.
+      1 src/modules/pim/repositories/price-alert.repository.ts(228,23): error TS7006: Parameter 'alert' implicitly has an 'any' type.
+      1 src/modules/pim/repositories/price-alert.repository.ts(223,33): error TS2339: Property 'query' does not exist on type 'PriceAlertRepository'.
+      1 src/modules/pim/repositories/price-alert.repository.ts(197,19): error TS2339: Property 'query' does not exist on type 'PriceAlertRepository'.
+      1 src/modules/pim/repositories/price-alert.repository.ts(17,11): error TS2345: Argument of type 'string' is not assignable to parameter of type 'FirestoreConfigService'.
+      1 src/modules/pim/repositories/price-alert.repository.ts(144,19): error TS2339: Property 'query' does not exist on type 'PriceAlertRepository'.
+      1 src/modules/pim/repositories/price-alert.repository.ts(13,67): error TS2344: Type 'PriceAlert' does not satisfy the constraint 'BaseEntity'.
+      1 src/modules/pim/repositories/price-alert.repository.ts(13,14): error TS2415: Class 'PriceAlertRepository' incorrectly extends base class 'FirestoreBaseRepository<PriceAlert, string>'.
+      1 src/modules/pim/repositories/customer-tier.repository.ts(75,44): error TS2339: Property 'mapSnapshotToEntity' does not exist on type 'CustomerTierRepository'.
+      1 src/modules/pim/repositories/customer-tier.repository.ts(75,31): error TS7006: Parameter 'doc' implicitly has an 'any' type.
+      1 src/modules/pim/repositories/customer-tier.repository.ts(74,33): error TS2339: Property 'executeQuery' does not exist on type 'CustomerTierRepository'.
+      1 src/modules/pim/repositories/customer-tier.repository.ts(57,44): error TS2339: Property 'mapSnapshotToEntity' does not exist on type 'CustomerTierRepository'.
+      1 src/modules/pim/repositories/customer-tier.repository.ts(57,31): error TS7006: Parameter 'doc' implicitly has an 'any' type.
+      1 src/modules/pim/repositories/customer-tier.repository.ts(56,33): error TS2339: Property 'executeQuery' does not exist on type 'CustomerTierRepository'.
+      1 src/modules/pim/repositories/customer-tier.repository.ts(42,14): error TS2339: Property 'mapSnapshotToEntity' does not exist on type 'CustomerTierRepository'.
+      1 src/modules/pim/repositories/customer-tier.repository.ts(40,33): error TS2339: Property 'executeQuery' does not exist on type 'CustomerTierRepository'.
+      1 src/modules/pim/repositories/customer-tier.repository.ts(22,5): error TS2554: Expected 2-3 arguments, but got 1.
+      1 src/modules/pim/repositories/customer-tier.repository.ts(15,69): error TS2344: Type 'CustomerTier' does not satisfy the constraint 'BaseEntity'.
+      1 src/modules/pim/repositories/customer-group.repository.ts(90,44): error TS2339: Property 'mapSnapshotToEntity' does not exist on type 'CustomerGroupRepository'.
+      1 src/modules/pim/repositories/customer-group.repository.ts(90,31): error TS7006: Parameter 'doc' implicitly has an 'any' type.
+      1 src/modules/pim/repositories/customer-group.repository.ts(89,33): error TS2339: Property 'executeQuery' does not exist on type 'CustomerGroupRepository'.
+      1 src/modules/pim/repositories/customer-group.repository.ts(72,44): error TS2339: Property 'mapSnapshotToEntity' does not exist on type 'CustomerGroupRepository'.
+      1 src/modules/pim/repositories/customer-group.repository.ts(72,31): error TS7006: Parameter 'doc' implicitly has an 'any' type.
+      1 src/modules/pim/repositories/customer-group.repository.ts(71,33): error TS2339: Property 'executeQuery' does not exist on type 'CustomerGroupRepository'.
+      1 src/modules/pim/repositories/customer-group.repository.ts(54,44): error TS2339: Property 'mapSnapshotToEntity' does not exist on type 'CustomerGroupRepository'.
+      1 src/modules/pim/repositories/customer-group.repository.ts(54,31): error TS7006: Parameter 'doc' implicitly has an 'any' type.
+      1 src/modules/pim/repositories/customer-group.repository.ts(53,33): error TS2339: Property 'executeQuery' does not exist on type 'CustomerGroupRepository'.
+      1 src/modules/pim/repositories/customer-group.repository.ts(36,44): error TS2339: Property 'mapSnapshotToEntity' does not exist on type 'CustomerGroupRepository'.
+      1 src/modules/pim/repositories/customer-group.repository.ts(36,31): error TS7006: Parameter 'doc' implicitly has an 'any' type.
+      1 src/modules/pim/repositories/customer-group.repository.ts(35,33): error TS2339: Property 'executeQuery' does not exist on type 'CustomerGroupRepository'.
+      1 src/modules/pim/repositories/customer-group.repository.ts(22,5): error TS2554: Expected 2-3 arguments, but got 1.
+      1 src/modules/pim/repositories/customer-group.repository.ts(15,70): error TS2344: Type 'CustomerGroup' does not satisfy the constraint 'BaseEntity'.
+      1 src/modules/pim/repositories/customer-group.repository.ts(116,16): error TS7006: Parameter 'group' implicitly has an 'any' type.
+      1 src/modules/pim/repositories/customer-group.repository.ts(115,26): error TS2339: Property 'mapSnapshotToEntity' does not exist on type 'CustomerGroupRepository'.
+      1 src/modules/pim/repositories/customer-group.repository.ts(115,13): error TS7006: Parameter 'doc' implicitly has an 'any' type.
+      1 src/modules/pim/repositories/customer-group.repository.ts(111,34): error TS2339: Property 'executeQuery' does not exist on type 'CustomerGroupRepository'.
+      1 src/modules/pim/repositories/compliance-rule.repository.ts(91,17): error TS2551: Property 'findWithFilters' does not exist on type 'ComplianceRuleRepository'. Did you mean 'findByFilters'?
+      1 src/modules/pim/repositories/compliance-rule.repository.ts(68,17): error TS2551: Property 'findWithFilters' does not exist on type 'ComplianceRuleRepository'. Did you mean 'findByFilters'?
+      1 src/modules/pim/repositories/compliance-rule.repository.ts(40,17): error TS2551: Property 'findWithFilters' does not exist on type 'ComplianceRuleRepository'. Did you mean 'findByFilters'?
+      1 src/modules/pim/repositories/compliance-rule.repository.ts(24,10): error TS2540: Cannot assign to 'logger' because it is a read-only property.
+      1 src/modules/pim/repositories/compliance-rule.repository.ts(18,11): error TS2345: Argument of type 'string' is not assignable to parameter of type 'FirestoreConfigService'.
+      1 src/modules/pim/repositories/compliance-rule.repository.ts(170,17): error TS2551: Property 'findWithFilters' does not exist on type 'ComplianceRuleRepository'. Did you mean 'findByFilters'?
+      1 src/modules/pim/repositories/compliance-rule.repository.ts(16,71): error TS2344: Type 'ComplianceRule' does not satisfy the constraint 'BaseEntity'.
+      1 src/modules/pim/repositories/compliance-requirement.repository.ts(93,17): error TS2339: Property 'findWithFilters' does not exist on type 'ComplianceRequirementRepository'.
+      1 src/modules/pim/repositories/compliance-requirement.repository.ts(63,32): error TS2339: Property 'findWithFilters' does not exist on type 'ComplianceRequirementRepository'.
+      1 src/modules/pim/repositories/compliance-requirement.repository.ts(38,17): error TS2339: Property 'findWithFilters' does not exist on type 'ComplianceRequirementRepository'.
+      1 src/modules/pim/repositories/compliance-requirement.repository.ts(24,10): error TS2540: Cannot assign to 'logger' because it is a read-only property.
+      1 src/modules/pim/repositories/compliance-requirement.repository.ts(18,11): error TS2345: Argument of type 'string' is not assignable to parameter of type 'FirestoreConfigService'.
+      1 src/modules/pim/repositories/compliance-requirement.repository.ts(16,78): error TS2344: Type 'ComplianceRequirement' does not satisfy the constraint 'BaseEntity'.
+      1 src/modules/pim/repositories/compliance-requirement.repository.ts(144,17): error TS2339: Property 'findWithFilters' does not exist on type 'ComplianceRequirementRepository'.
+      1 src/modules/pim/repositories/compliance-requirement.repository.ts(116,17): error TS2339: Property 'findWithFilters' does not exist on type 'ComplianceRequirementRepository'.
+      1 src/modules/pim/repositories/compliance-check.repository.ts(91,17): error TS2339: Property 'findWithFilters' does not exist on type 'ComplianceCheckRepository'.
+      1 src/modules/pim/repositories/compliance-check.repository.ts(68,17): error TS2339: Property 'findWithFilters' does not exist on type 'ComplianceCheckRepository'.
+      1 src/modules/pim/repositories/compliance-check.repository.ts(54,32): error TS2559: Type 'string' has no properties in common with type 'CreateDocumentOptions'.
+      1 src/modules/pim/repositories/compliance-check.repository.ts(33,10): error TS2540: Cannot assign to 'logger' because it is a read-only property.
+      1 src/modules/pim/repositories/compliance-check.repository.ts(27,11): error TS2345: Argument of type 'string' is not assignable to parameter of type 'FirestoreConfigService'.
+      1 src/modules/pim/repositories/compliance-check.repository.ts(25,72): error TS2344: Type 'ComplianceCheckRecord' does not satisfy the constraint 'BaseEntity'.
+      1 src/modules/pim/repositories/compliance-check.repository.ts(169,17): error TS2339: Property 'findWithFilters' does not exist on type 'ComplianceCheckRepository'.
+      1 src/modules/pim/repositories/compliance-check.repository.ts(144,17): error TS2339: Property 'findWithFilters' does not exist on type 'ComplianceCheckRepository'.
+      1 src/modules/pim/repositories/compliance-check.repository.ts(116,17): error TS2339: Property 'findWithFilters' does not exist on type 'ComplianceCheckRepository'.
+      1 src/modules/pim/repositories/competitor-price.repository.ts(465,19): error TS2339: Property 'query' does not exist on type 'CompetitorPriceRepository'.
+      1 src/modules/pim/repositories/competitor-price.repository.ts(429,34): error TS2339: Property 'query' does not exist on type 'CompetitorPriceRepository'.
+      1 src/modules/pim/repositories/competitor-price.repository.ts(322,19): error TS2339: Property 'query' does not exist on type 'CompetitorPriceRepository'.
+      1 src/modules/pim/repositories/competitor-price.repository.ts(289,19): error TS2339: Property 'query' does not exist on type 'CompetitorPriceRepository'.
+      1 src/modules/pim/repositories/competitor-price.repository.ts(255,19): error TS2339: Property 'query' does not exist on type 'CompetitorPriceRepository'.
+      1 src/modules/pim/repositories/competitor-price.repository.ts(224,19): error TS2339: Property 'query' does not exist on type 'CompetitorPriceRepository'.
+      1 src/modules/pim/repositories/competitor-price.repository.ts(22,11): error TS2345: Argument of type 'string' is not assignable to parameter of type 'FirestoreConfigService'.
+      1 src/modules/pim/repositories/competitor-price.repository.ts(181,23): error TS7006: Parameter 'price' implicitly has an 'any' type.
+      1 src/modules/pim/repositories/competitor-price.repository.ts(18,72): error TS2344: Type 'CompetitorPrice' does not satisfy the constraint 'BaseEntity'.
+      1 src/modules/pim/repositories/competitor-price.repository.ts(18,14): error TS2415: Class 'CompetitorPriceRepository' incorrectly extends base class 'FirestoreBaseRepository<CompetitorPrice, string>'.
+      1 src/modules/pim/repositories/competitor-price.repository.ts(170,33): error TS2339: Property 'query' does not exist on type 'CompetitorPriceRepository'.
+      1 src/modules/pim/repositories/competitor-price.repository.ts(129,19): error TS2339: Property 'query' does not exist on type 'CompetitorPriceRepository'.
+      1 src/modules/pim/repositories/bundle.repository.ts(69,37): error TS2339: Property 'toDate' does not exist on type 'Date'.
+      1 src/modules/pim/repositories/bundle.repository.ts(68,37): error TS2339: Property 'toDate' does not exist on type 'Date'.
+      1 src/modules/pim/repositories/bundle.repository.ts(15,11): error TS2345: Argument of type 'string' is not assignable to parameter of type 'FirestoreConfigService'.
+      1 src/modules/pim/repositories/bundle.repository.ts(11,63): error TS2344: Type 'Bundle' does not satisfy the constraint 'BaseEntity'.
+      1 src/modules/pim/repositories/bundle.repository.ts(11,14): error TS2415: Class 'BundleRepository' incorrectly extends base class 'FirestoreBaseRepository<Bundle, string>'.
+      1 src/modules/pim/repositories/b2b-price-list.repository.ts(85,44): error TS2339: Property 'mapSnapshotToEntity' does not exist on type 'B2BPriceListRepository'.
+      1 src/modules/pim/repositories/b2b-price-list.repository.ts(85,31): error TS7006: Parameter 'doc' implicitly has an 'any' type.
+      1 src/modules/pim/repositories/b2b-price-list.repository.ts(84,33): error TS2339: Property 'executeQuery' does not exist on type 'B2BPriceListRepository'.
+      1 src/modules/pim/repositories/b2b-price-list.repository.ts(66,44): error TS2339: Property 'mapSnapshotToEntity' does not exist on type 'B2BPriceListRepository'.
+      1 src/modules/pim/repositories/b2b-price-list.repository.ts(66,31): error TS7006: Parameter 'doc' implicitly has an 'any' type.
+      1 src/modules/pim/repositories/b2b-price-list.repository.ts(65,33): error TS2339: Property 'executeQuery' does not exist on type 'B2BPriceListRepository'.
+      1 src/modules/pim/repositories/b2b-price-list.repository.ts(47,44): error TS2339: Property 'mapSnapshotToEntity' does not exist on type 'B2BPriceListRepository'.
+      1 src/modules/pim/repositories/b2b-price-list.repository.ts(47,31): error TS7006: Parameter 'doc' implicitly has an 'any' type.
+      1 src/modules/pim/repositories/b2b-price-list.repository.ts(46,33): error TS2339: Property 'executeQuery' does not exist on type 'B2BPriceListRepository'.
+      1 src/modules/pim/repositories/b2b-price-list.repository.ts(33,5): error TS2554: Expected 2-3 arguments, but got 1.
+      1 src/modules/pim/repositories/b2b-price-list.repository.ts(315,44): error TS2339: Property 'mapSnapshotToEntity' does not exist on type 'B2BPriceListRepository'.
+      1 src/modules/pim/repositories/b2b-price-list.repository.ts(315,31): error TS7006: Parameter 'doc' implicitly has an 'any' type.
+      1 src/modules/pim/repositories/b2b-price-list.repository.ts(314,33): error TS2339: Property 'executeQuery' does not exist on type 'B2BPriceListRepository'.
+      1 src/modules/pim/repositories/b2b-price-list.repository.ts(271,33): error TS7006: Parameter 'pl' implicitly has an 'any' type.
+      1 src/modules/pim/repositories/b2b-price-list.repository.ts(267,12): error TS2339: Property 'mapSnapshotToEntity' does not exist on type 'B2BPriceListRepository'.
+      1 src/modules/pim/repositories/b2b-price-list.repository.ts(266,43): error TS7006: Parameter 'doc' implicitly has an 'any' type.
+      1 src/modules/pim/repositories/b2b-price-list.repository.ts(263,33): error TS2339: Property 'executeQuery' does not exist on type 'B2BPriceListRepository'.
+      1 src/modules/pim/repositories/b2b-price-list.repository.ts(233,46): error TS7006: Parameter 'id' implicitly has an 'any' type.
+      1 src/modules/pim/repositories/b2b-price-list.repository.ts(191,9): error TS2353: Object literal may only specify known properties, and 'createdAt' does not exist in type 'PriceListEntry'.
+      1 src/modules/pim/repositories/b2b-price-list.repository.ts(185,9): error TS2353: Object literal may only specify known properties, and 'updatedAt' does not exist in type 'PriceListEntry'.
+      1 src/modules/pim/repositories/b2b-price-list.repository.ts(123,44): error TS2339: Property 'mapSnapshotToEntity' does not exist on type 'B2BPriceListRepository'.
+      1 src/modules/pim/repositories/b2b-price-list.repository.ts(123,31): error TS7006: Parameter 'doc' implicitly has an 'any' type.
+      1 src/modules/pim/repositories/b2b-price-list.repository.ts(122,33): error TS2339: Property 'executeQuery' does not exist on type 'B2BPriceListRepository'.
+      1 src/modules/pim/repositories/b2b-price-list.repository.ts(104,44): error TS2339: Property 'mapSnapshotToEntity' does not exist on type 'B2BPriceListRepository'.
+      1 src/modules/pim/repositories/b2b-price-list.repository.ts(104,31): error TS7006: Parameter 'doc' implicitly has an 'any' type.
+      1 src/modules/pim/repositories/b2b-price-list.repository.ts(103,33): error TS2339: Property 'executeQuery' does not exist on type 'B2BPriceListRepository'.
+      1 src/modules/pim/repositories/b2b-customer.repository.ts(97,44): error TS2339: Property 'mapSnapshotToEntity' does not exist on type 'B2BCustomerRepository'.
+      1 src/modules/pim/repositories/b2b-customer.repository.ts(97,31): error TS7006: Parameter 'doc' implicitly has an 'any' type.
+      1 src/modules/pim/repositories/b2b-customer.repository.ts(96,33): error TS2339: Property 'executeQuery' does not exist on type 'B2BCustomerRepository'.
+      1 src/modules/pim/repositories/b2b-customer.repository.ts(79,44): error TS2339: Property 'mapSnapshotToEntity' does not exist on type 'B2BCustomerRepository'.
+      1 src/modules/pim/repositories/b2b-customer.repository.ts(79,31): error TS7006: Parameter 'doc' implicitly has an 'any' type.
+      1 src/modules/pim/repositories/b2b-customer.repository.ts(78,33): error TS2339: Property 'executeQuery' does not exist on type 'B2BCustomerRepository'.
+      1 src/modules/pim/repositories/b2b-customer.repository.ts(61,44): error TS2339: Property 'mapSnapshotToEntity' does not exist on type 'B2BCustomerRepository'.
+      1 src/modules/pim/repositories/b2b-customer.repository.ts(61,31): error TS7006: Parameter 'doc' implicitly has an 'any' type.
+      1 src/modules/pim/repositories/b2b-customer.repository.ts(60,33): error TS2339: Property 'executeQuery' does not exist on type 'B2BCustomerRepository'.
+      1 src/modules/pim/repositories/b2b-customer.repository.ts(42,14): error TS2339: Property 'mapSnapshotToEntity' does not exist on type 'B2BCustomerRepository'.
+      1 src/modules/pim/repositories/b2b-customer.repository.ts(40,33): error TS2339: Property 'executeQuery' does not exist on type 'B2BCustomerRepository'.
+      1 src/modules/pim/repositories/b2b-customer.repository.ts(22,5): error TS2554: Expected 2-3 arguments, but got 1.
+      1 src/modules/pim/repositories/b2b-customer.repository.ts(169,44): error TS2339: Property 'mapSnapshotToEntity' does not exist on type 'B2BCustomerRepository'.
+      1 src/modules/pim/repositories/b2b-customer.repository.ts(169,31): error TS7006: Parameter 'doc' implicitly has an 'any' type.
+      1 src/modules/pim/repositories/b2b-customer.repository.ts(168,33): error TS2339: Property 'executeQuery' does not exist on type 'B2BCustomerRepository'.
+      1 src/modules/pim/repositories/b2b-customer.repository.ts(151,44): error TS2339: Property 'mapSnapshotToEntity' does not exist on type 'B2BCustomerRepository'.
+      1 src/modules/pim/repositories/b2b-customer.repository.ts(151,31): error TS7006: Parameter 'doc' implicitly has an 'any' type.
+      1 src/modules/pim/repositories/b2b-customer.repository.ts(150,33): error TS2339: Property 'executeQuery' does not exist on type 'B2BCustomerRepository'.
+      1 src/modules/pim/repositories/b2b-customer.repository.ts(15,68): error TS2344: Type 'B2BCustomer' does not satisfy the constraint 'BaseEntity'.
+      1 src/modules/pim/repositories/b2b-customer.repository.ts(133,44): error TS2339: Property 'mapSnapshotToEntity' does not exist on type 'B2BCustomerRepository'.
+      1 src/modules/pim/repositories/b2b-customer.repository.ts(133,31): error TS7006: Parameter 'doc' implicitly has an 'any' type.
+      1 src/modules/pim/repositories/b2b-customer.repository.ts(132,33): error TS2339: Property 'executeQuery' does not exist on type 'B2BCustomerRepository'.
+      1 src/modules/pim/repositories/b2b-customer.repository.ts(115,44): error TS2339: Property 'mapSnapshotToEntity' does not exist on type 'B2BCustomerRepository'.
+      1 src/modules/pim/repositories/b2b-customer.repository.ts(115,31): error TS7006: Parameter 'doc' implicitly has an 'any' type.
+      1 src/modules/pim/repositories/b2b-customer.repository.ts(114,33): error TS2339: Property 'executeQuery' does not exist on type 'B2BCustomerRepository'.
+      1 src/modules/pim/repositories/b2b-contract.repository.ts(98,44): error TS2339: Property 'mapSnapshotToEntity' does not exist on type 'B2BContractRepository'.
+      1 src/modules/pim/repositories/b2b-contract.repository.ts(98,31): error TS7006: Parameter 'doc' implicitly has an 'any' type.
+      1 src/modules/pim/repositories/b2b-contract.repository.ts(97,33): error TS2339: Property 'executeQuery' does not exist on type 'B2BContractRepository'.
+      1 src/modules/pim/repositories/b2b-contract.repository.ts(80,44): error TS2339: Property 'mapSnapshotToEntity' does not exist on type 'B2BContractRepository'.
+      1 src/modules/pim/repositories/b2b-contract.repository.ts(80,31): error TS7006: Parameter 'doc' implicitly has an 'any' type.
+      1 src/modules/pim/repositories/b2b-contract.repository.ts(79,33): error TS2339: Property 'executeQuery' does not exist on type 'B2BContractRepository'.
+      1 src/modules/pim/repositories/b2b-contract.repository.ts(62,44): error TS2339: Property 'mapSnapshotToEntity' does not exist on type 'B2BContractRepository'.
+      1 src/modules/pim/repositories/b2b-contract.repository.ts(62,31): error TS7006: Parameter 'doc' implicitly has an 'any' type.
+      1 src/modules/pim/repositories/b2b-contract.repository.ts(61,33): error TS2339: Property 'executeQuery' does not exist on type 'B2BContractRepository'.
+      1 src/modules/pim/repositories/b2b-contract.repository.ts(42,14): error TS2339: Property 'mapSnapshotToEntity' does not exist on type 'B2BContractRepository'.
+      1 src/modules/pim/repositories/b2b-contract.repository.ts(40,33): error TS2339: Property 'executeQuery' does not exist on type 'B2BContractRepository'.
+      1 src/modules/pim/repositories/b2b-contract.repository.ts(22,5): error TS2554: Expected 2-3 arguments, but got 1.
+      1 src/modules/pim/repositories/b2b-contract.repository.ts(165,8): error TS7006: Parameter 'contract' implicitly has an 'any' type.
+      1 src/modules/pim/repositories/b2b-contract.repository.ts(162,55): error TS2339: Property 'mapSnapshotToEntity' does not exist on type 'B2BContractRepository'.
+      1 src/modules/pim/repositories/b2b-contract.repository.ts(162,42): error TS7006: Parameter 'doc' implicitly has an 'any' type.
+      1 src/modules/pim/repositories/b2b-contract.repository.ts(161,33): error TS2339: Property 'executeQuery' does not exist on type 'B2BContractRepository'.
+      1 src/modules/pim/repositories/b2b-contract.repository.ts(15,68): error TS2344: Type 'CustomerContract' does not satisfy the constraint 'BaseEntity'.
+      1 src/modules/pim/repositories/b2b-contract.repository.ts(143,44): error TS2339: Property 'mapSnapshotToEntity' does not exist on type 'B2BContractRepository'.
+      1 src/modules/pim/repositories/b2b-contract.repository.ts(143,31): error TS7006: Parameter 'doc' implicitly has an 'any' type.
+      1 src/modules/pim/repositories/b2b-contract.repository.ts(142,33): error TS2339: Property 'executeQuery' does not exist on type 'B2BContractRepository'.
+      1 src/modules/pim/repositories/b2b-contract.repository.ts(122,44): error TS2339: Property 'mapSnapshotToEntity' does not exist on type 'B2BContractRepository'.
+      1 src/modules/pim/repositories/b2b-contract.repository.ts(122,31): error TS7006: Parameter 'doc' implicitly has an 'any' type.
+      1 src/modules/pim/repositories/b2b-contract.repository.ts(121,33): error TS2339: Property 'executeQuery' does not exist on type 'B2BContractRepository'.
+      1 src/modules/pim/repositories/approval-workflow.repository.ts(97,12): error TS2339: Property 'mapSnapshotToEntity' does not exist on type 'ApprovalWorkflowRepository'.
+      1 src/modules/pim/repositories/approval-workflow.repository.ts(96,45): error TS7006: Parameter 'doc' implicitly has an 'any' type.
+      1 src/modules/pim/repositories/approval-workflow.repository.ts(95,33): error TS2339: Property 'executeQuery' does not exist on type 'ApprovalWorkflowRepository'.
+      1 src/modules/pim/repositories/approval-workflow.repository.ts(76,44): error TS2339: Property 'mapSnapshotToEntity' does not exist on type 'ApprovalWorkflowRepository'.
+      1 src/modules/pim/repositories/approval-workflow.repository.ts(76,31): error TS7006: Parameter 'doc' implicitly has an 'any' type.
+      1 src/modules/pim/repositories/approval-workflow.repository.ts(75,33): error TS2339: Property 'executeQuery' does not exist on type 'ApprovalWorkflowRepository'.
+      1 src/modules/pim/repositories/approval-workflow.repository.ts(57,44): error TS2339: Property 'mapSnapshotToEntity' does not exist on type 'ApprovalWorkflowRepository'.
+      1 src/modules/pim/repositories/approval-workflow.repository.ts(57,31): error TS7006: Parameter 'doc' implicitly has an 'any' type.
+      1 src/modules/pim/repositories/approval-workflow.repository.ts(56,33): error TS2339: Property 'executeQuery' does not exist on type 'ApprovalWorkflowRepository'.
+      1 src/modules/pim/repositories/approval-workflow.repository.ts(38,44): error TS2339: Property 'mapSnapshotToEntity' does not exist on type 'ApprovalWorkflowRepository'.
+      1 src/modules/pim/repositories/approval-workflow.repository.ts(38,31): error TS7006: Parameter 'doc' implicitly has an 'any' type.
+      1 src/modules/pim/repositories/approval-workflow.repository.ts(37,33): error TS2339: Property 'executeQuery' does not exist on type 'ApprovalWorkflowRepository'.
+      1 src/modules/pim/repositories/approval-workflow.repository.ts(22,5): error TS2554: Expected 2-3 arguments, but got 1.
+      1 src/modules/pim/repositories/approval-workflow.repository.ts(15,73): error TS2344: Type 'ApprovalWorkflow' does not satisfy the constraint 'BaseEntity'.
+      1 src/modules/pim/repositories/approval-workflow.repository.ts(130,10): error TS7006: Parameter 'step' implicitly has an 'any' type.
+      1 src/modules/pim/repositories/approval-workflow.repository.ts(128,33): error TS7006: Parameter 'workflow' implicitly has an 'any' type.
+      1 src/modules/pim/repositories/approval-workflow.repository.ts(124,12): error TS2339: Property 'mapSnapshotToEntity' does not exist on type 'ApprovalWorkflowRepository'.
+      1 src/modules/pim/repositories/approval-workflow.repository.ts(123,45): error TS7006: Parameter 'doc' implicitly has an 'any' type.
+      1 src/modules/pim/repositories/approval-workflow.repository.ts(122,33): error TS2339: Property 'executeQuery' does not exist on type 'ApprovalWorkflowRepository'.
+      1 src/modules/pim/repositories/approval-workflow.repository.ts(102,28): error TS7006: Parameter 'step' implicitly has an 'any' type.
+      1 src/modules/pim/repositories/approval-workflow.repository.ts(101,33): error TS7006: Parameter 'workflow' implicitly has an 'any' type.
+      1 src/modules/pim/pim.module.ts(89,46): error TS2307: Cannot find module './repositories/data-subject-request.repository' or its corresponding type declarations.
+      1 src/modules/pim/pim.module.ts(88,41): error TS2307: Cannot find module './repositories/consent-record.repository' or its corresponding type declarations.
+      1 src/modules/pim/pim.module.ts(87,38): error TS2307: Cannot find module './repositories/data-policy.repository' or its corresponding type declarations.
+      1 src/modules/pim/pim.module.ts(54,37): error TS2307: Cannot find module './services/product-batch.service' or its corresponding type declarations.
+      1 src/modules/pim/pim.module.ts(233,9): error TS2322: Type 'Promise<DynamicModule | typeof InventoryModule>' is not assignable to type 'Type<any> | ForwardReference<any> | DynamicModule | Promise<DynamicModule>'.
+      1 src/modules/pim/pim.module.ts(232,9): error TS2322: Type 'Promise<DynamicModule | typeof FeatureFlagsModule>' is not assignable to type 'Type<any> | ForwardReference<any> | DynamicModule | Promise<DynamicModule>'.
+      1 src/modules/pim/pim.module.ts(231,9): error TS2322: Type 'Promise<DynamicModule | typeof CreditSystemModule>' is not assignable to type 'Type<any> | ForwardReference<any> | DynamicModule | Promise<DynamicModule>'.
+      1 src/modules/pim/pim.module.ts(230,9): error TS2322: Type 'Promise<DynamicModule | typeof AgentFrameworkModule>' is not assignable to type 'Type<any> | ForwardReference<any> | DynamicModule | Promise<DynamicModule>'.
+      1 src/modules/pim/index.ts(79,3): error TS2305: Module '"./services/cross-border-trade.service"' has no exported member 'TradeRestriction'.
+      1 src/modules/pim/index.ts(78,3): error TS2305: Module '"./services/cross-border-trade.service"' has no exported member 'DocumentType'.
+      1 src/modules/pim/index.ts(77,3): error TS2305: Module '"./services/cross-border-trade.service"' has no exported member 'DocumentRequirement'.
+      1 src/modules/pim/index.ts(76,3): error TS2305: Module '"./services/cross-border-trade.service"' has no exported member 'ShipmentStatus'.
+      1 src/modules/pim/index.ts(74,3): error TS2305: Module '"./services/cross-border-trade.service"' has no exported member 'ShippingMethod'.
+      1 src/modules/pim/index.ts(73,3): error TS2305: Module '"./services/cross-border-trade.service"' has no exported member 'ShippingEstimate'.
+      1 src/modules/pim/index.ts(72,3): error TS2305: Module '"./services/cross-border-trade.service"' has no exported member 'TradeAgreement'.
+      1 src/modules/pim/index.ts(51,10): error TS2300: Duplicate identifier 'ReportExporterService'.
+      1 src/modules/pim/index.ts(215,3): error TS2305: Module '"./interfaces/types"' has no exported member 'MarketplaceConnector'.
+      1 src/modules/pim/index.ts(209,3): error TS2300: Duplicate identifier 'TaxRateService'.
+      1 src/modules/pim/index.ts(202,3): error TS2305: Module '"./interfaces/tax-rate.interface"' has no exported member 'TaxRate'.
+      1 src/modules/pim/index.ts(200,10): error TS2300: Duplicate identifier 'ImageUploadOptions'.
+      1 src/modules/pim/index.ts(183,10): error TS2300: Duplicate identifier 'ImageUploadOptions'.
+      1 src/modules/pim/index.ts(124,10): error TS2300: Duplicate identifier 'TaxRateService'.
+      1 src/modules/pim/index.ts(114,3): error TS2300: Duplicate identifier 'ReportExporterService'.
+      1 src/modules/pim/controllers/validation.controller.ts(34,3): error TS2564: Property 'productId' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/pim/controllers/validation.controller.ts(300,9): error TS7053: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{}'.
+      1 src/modules/pim/controllers/validation.controller.ts(184,9): error TS7005: Variable 'variants' implicitly has an 'any[]' type.
+      1 src/modules/pim/controllers/validation.controller.ts(173,13): error TS7034: Variable 'variants' implicitly has type 'any[]' in some locations where its type cannot be determined.
+      1 src/modules/pim/controllers/tax-rate.controller.ts(228,7): error TS2322: Type '"city" | "province" | "country"' is not assignable to type 'TaxJurisdictionLevel'.
+      1 src/modules/pim/controllers/tax-rate.controller.ts(168,7): error TS2322: Type '"city" | "province" | "country"' is not assignable to type 'TaxJurisdictionLevel'.
+      1 src/modules/pim/controllers/tax-rate.controller.ts(128,7): error TS2322: Type '"city" | "province" | "country"' is not assignable to type 'TaxJurisdictionLevel'.
+      1 src/modules/pim/controllers/report-export.controller.ts(71,11): error TS2367: This comparison appears to be unintentional because the types '"low" | "medium" | "high" | undefined' and '"excellent"' have no overlap.
+      1 src/modules/pim/controllers/report-export.controller.ts(297,42): error TS2367: This comparison appears to be unintentional because the types '"low" | "medium" | "high" | undefined' and '"excellent"' have no overlap.
+      1 src/modules/pim/controllers/regional-warehouse.controller.ts(235,16): error TS1016: A required parameter cannot follow an optional parameter.
+      1 src/modules/pim/controllers/regional-warehouse.controller.ts(135,36): error TS2367: This comparison appears to be unintentional because the types 'boolean' and 'string' have no overlap.
+      1 src/modules/pim/controllers/regional-warehouse.controller.ts(130,13): error TS2367: This comparison appears to be unintentional because the types 'boolean' and 'string' have no overlap.
+      1 src/modules/pim/controllers/regional-warehouse.controller.ts(122,16): error TS1016: A required parameter cannot follow an optional parameter.
+      1 src/modules/pim/controllers/regional-product.controller.ts(62,3): error TS2564: Property 'data' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/pim/controllers/regional-product.controller.ts(61,3): error TS2564: Property 'regionId' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/pim/controllers/regional-product.controller.ts(60,3): error TS2564: Property 'productIds' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/pim/controllers/regional-product.controller.ts(219,16): error TS1016: A required parameter cannot follow an optional parameter.
+      1 src/modules/pim/controllers/regional-configuration.controller.ts(97,3): error TS2416: Property 'businessRules' in type 'UpdateRegionDto' is not assignable to the same property in base type 'Partial<RegionConfiguration>'.
+      1 src/modules/pim/controllers/regional-configuration.controller.ts(73,3): error TS2564: Property 'complianceRequirements' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/pim/controllers/regional-configuration.controller.ts(67,3): error TS2564: Property 'localization' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/pim/controllers/regional-configuration.controller.ts(61,3): error TS2564: Property 'pricingRules' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/pim/controllers/regional-configuration.controller.ts(60,3): error TS2564: Property 'requiredProductAttributes' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/pim/controllers/regional-configuration.controller.ts(59,3): error TS2564: Property 'supportedMarketplaces' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/pim/controllers/regional-configuration.controller.ts(45,3): error TS2564: Property 'businessRules' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/pim/controllers/regional-configuration.controller.ts(44,3): error TS2564: Property 'timezone' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/pim/controllers/regional-configuration.controller.ts(43,3): error TS2564: Property 'supportedLanguages' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/pim/controllers/regional-configuration.controller.ts(42,3): error TS2564: Property 'primaryLanguage' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/pim/controllers/regional-configuration.controller.ts(41,3): error TS2564: Property 'supportedCurrencies' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/pim/controllers/regional-configuration.controller.ts(40,3): error TS2564: Property 'primaryCurrency' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/pim/controllers/regional-configuration.controller.ts(39,3): error TS2564: Property 'active' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/pim/controllers/regional-configuration.controller.ts(38,3): error TS2564: Property 'countryCode' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/pim/controllers/regional-configuration.controller.ts(37,3): error TS2564: Property 'name' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/pim/controllers/regional-configuration.controller.ts(36,3): error TS2564: Property 'id' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/pim/controllers/regional-configuration.controller.ts(295,9): error TS2345: Argument of type 'UpdateRegionDto' is not assignable to parameter of type 'Partial<RegionConfiguration>'.
+      1 src/modules/pim/controllers/regional-configuration.controller.ts(125,3): error TS2416: Property 'complianceRequirements' in type 'UpdateRegionDto' is not assignable to the same property in base type 'Partial<RegionConfiguration>'.
+      1 src/modules/pim/controllers/regional-configuration.controller.ts(119,3): error TS2416: Property 'localization' in type 'UpdateRegionDto' is not assignable to the same property in base type 'Partial<RegionConfiguration>'.
+      1 src/modules/pim/controllers/regional-configuration.controller.ts(113,3): error TS2416: Property 'pricingRules' in type 'UpdateRegionDto' is not assignable to the same property in base type 'Partial<RegionConfiguration>'.
+      1 src/modules/pim/controllers/product.controller.ts(53,7): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+      1 src/modules/pim/controllers/product.controller.ts(368,7): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+      1 src/modules/pim/controllers/product.controller.ts(323,7): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+      1 src/modules/pim/controllers/product.controller.ts(303,7): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+      1 src/modules/pim/controllers/product.controller.ts(278,7): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+      1 src/modules/pim/controllers/product.controller.ts(253,7): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+      1 src/modules/pim/controllers/product.controller.ts(236,58): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+      1 src/modules/pim/controllers/product.controller.ts(214,7): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+      1 src/modules/pim/controllers/product.controller.ts(190,7): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+      1 src/modules/pim/controllers/product-review.controller.ts(842,9): error TS2345: Argument of type '{ productId: string; variantId?: string | undefined; rating: number; title: string; content: string; pros?: string[] | undefined; cons?: string[] | undefined; recommended?: boolean | undefined; ... 9 more ...; tags?: string[] | undefined; }[]' is not assignable to parameter of type 'Omit<ProductReview, "organizationId" | "id" | "createdAt" | "updatedAt">[]'.
+      1 src/modules/pim/controllers/product-review.controller.ts(834,11): error TS18048: 'loadSheddingStatus.currentStage' is possibly 'undefined'.
+      1 src/modules/pim/controllers/product-review.controller.ts(82,3): error TS2564: Property 'reviewerName' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/pim/controllers/product-review.controller.ts(62,3): error TS2564: Property 'content' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/pim/controllers/product-review.controller.ts(57,3): error TS2564: Property 'title' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/pim/controllers/product-review.controller.ts(52,3): error TS2564: Property 'rating' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/pim/controllers/product-review.controller.ts(467,9): error TS18048: 'loadSheddingStatus.currentStage' is possibly 'undefined'.
+      1 src/modules/pim/controllers/product-review.controller.ts(457,56): error TS2551: Property 'assessNetworkQuality' does not exist on type 'NetworkAwareStorageService'. Did you mean 'getNetworkQuality'?
+      1 src/modules/pim/controllers/product-review.controller.ts(42,3): error TS2564: Property 'productId' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/pim/controllers/product-review.controller.ts(25,35): error TS2307: Cannot find module '../../../common/auth/firebase-auth.guard' or its corresponding type declarations.
+      1 src/modules/pim/controllers/product-review.controller.ts(197,3): error TS2564: Property 'reviews' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/pim/controllers/product-review.controller.ts(187,3): error TS2564: Property 'content' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/pim/controllers/product-review.controller.ts(172,3): error TS2564: Property 'status' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/pim/controllers/pricing-rule.controller.ts(22,35): error TS2307: Cannot find module '../../../common/auth/firebase-auth.guard' or its corresponding type declarations.
+      1 src/modules/pim/controllers/multi-currency.controller.ts(412,48): error TS2367: This comparison appears to be unintentional because the types 'boolean' and 'string' have no overlap.
+      1 src/modules/pim/controllers/mobile-first.controller.ts(94,16): error TS1016: A required parameter cannot follow an optional parameter.
+      1 src/modules/pim/controllers/mobile-first.controller.ts(506,38): error TS2339: Property 'isActive' does not exist on type 'LoadSheddingService'.
+      1 src/modules/pim/controllers/mobile-first.controller.ts(499,38): error TS2339: Property 'getNextScheduledChange' does not exist on type 'LoadSheddingService'.
+      1 src/modules/pim/controllers/mobile-first.controller.ts(497,43): error TS2339: Property 'getCurrentStage' does not exist on type 'LoadSheddingService'.
+      1 src/modules/pim/controllers/mobile-first.controller.ts(496,44): error TS2339: Property 'isActive' does not exist on type 'LoadSheddingService'.
+      1 src/modules/pim/controllers/mobile-first.controller.ts(442,53): error TS2339: Property 'getNextScheduledChange' does not exist on type 'LoadSheddingService'.
+      1 src/modules/pim/controllers/mobile-first.controller.ts(441,39): error TS2339: Property 'getCurrentStage' does not exist on type 'LoadSheddingService'.
+      1 src/modules/pim/controllers/mobile-first.controller.ts(440,40): error TS2339: Property 'isActive' does not exist on type 'LoadSheddingService'.
+      1 src/modules/pim/controllers/mobile-first.controller.ts(393,50): error TS2339: Property 'getOptimizedImageUrl' does not exist on type 'NetworkAwareStorageService'.
+      1 src/modules/pim/controllers/mobile-first.controller.ts(367,16): error TS1016: A required parameter cannot follow an optional parameter.
+      1 src/modules/pim/controllers/mobile-first.controller.ts(325,55): error TS2339: Property 'getNextScheduledChange' does not exist on type 'LoadSheddingService'.
+      1 src/modules/pim/controllers/mobile-first.controller.ts(324,41): error TS2339: Property 'getCurrentStage' does not exist on type 'LoadSheddingService'.
+      1 src/modules/pim/controllers/mobile-first.controller.ts(323,42): error TS2339: Property 'isActive' does not exist on type 'LoadSheddingService'.
+      1 src/modules/pim/controllers/mobile-first.controller.ts(310,53): error TS2339: Property 'findByParent' does not exist on type 'CategoryService'.
+      1 src/modules/pim/controllers/mobile-first.controller.ts(284,16): error TS1016: A required parameter cannot follow an optional parameter.
+      1 src/modules/pim/controllers/mobile-first.controller.ts(245,55): error TS2339: Property 'getNextScheduledChange' does not exist on type 'LoadSheddingService'.
+      1 src/modules/pim/controllers/mobile-first.controller.ts(244,41): error TS2339: Property 'getCurrentStage' does not exist on type 'LoadSheddingService'.
+      1 src/modules/pim/controllers/mobile-first.controller.ts(243,42): error TS2339: Property 'isActive' does not exist on type 'LoadSheddingService'.
+      1 src/modules/pim/controllers/mobile-first.controller.ts(200,16): error TS1016: A required parameter cannot follow an optional parameter.
+      1 src/modules/pim/controllers/mobile-first.controller.ts(175,9): error TS7053: Element implicitly has an 'any' type because expression of type '"totalPages"' can't be used to index type '{ optimized: boolean; clientHints?: Record<string, any> | undefined; viewport?: Record<string, any> | undefined; loadShedding?: { active: boolean; stage?: number | undefined; nextScheduledChange?: Date | undefined; } | undefined; networkQuality?: string | undefined; mobileOptimized?: boolean | undefined; }'.
+      1 src/modules/pim/controllers/mobile-first.controller.ts(174,9): error TS7053: Element implicitly has an 'any' type because expression of type '"totalItems"' can't be used to index type '{ optimized: boolean; clientHints?: Record<string, any> | undefined; viewport?: Record<string, any> | undefined; loadShedding?: { active: boolean; stage?: number | undefined; nextScheduledChange?: Date | undefined; } | undefined; networkQuality?: string | undefined; mobileOptimized?: boolean | undefined; }'.
+      1 src/modules/pim/controllers/mobile-first.controller.ts(149,55): error TS2339: Property 'getNextScheduledChange' does not exist on type 'LoadSheddingService'.
+      1 src/modules/pim/controllers/mobile-first.controller.ts(148,41): error TS2339: Property 'getCurrentStage' does not exist on type 'LoadSheddingService'.
+      1 src/modules/pim/controllers/mobile-first.controller.ts(147,42): error TS2339: Property 'isActive' does not exist on type 'LoadSheddingService'.
+      1 src/modules/pim/controllers/mobile-first.controller.ts(126,50): error TS2339: Property 'findAll' does not exist on type 'ProductService'.
+      1 src/modules/pim/controllers/marketplace-connector.controller.ts(70,3): error TS2564: Property 'productId' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/pim/controllers/marketplace-connector.controller.ts(50,3): error TS2564: Property 'productId' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/pim/controllers/marketplace-connector.controller.ts(490,54): error TS2353: Object literal may only specify known properties, and 'tenantId' does not exist in type 'FindOptions<ProductMarketplaceMapping>'.
+      1 src/modules/pim/controllers/import-export.controller.ts(76,19): error TS2694: Namespace 'global.Express' has no exported member 'Multer'.
+      1 src/modules/pim/controllers/import-export.controller.ts(226,23): error TS2532: Object is possibly 'undefined'.
+      1 src/modules/pim/controllers/data-protection.controller.ts(95,3): error TS2564: Property 'details' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/pim/controllers/data-protection.controller.ts(94,3): error TS2564: Property 'dataSubjectEmail' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/pim/controllers/data-protection.controller.ts(93,3): error TS2564: Property 'dataSubjectId' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/pim/controllers/data-protection.controller.ts(86,3): error TS2564: Property 'type' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/pim/controllers/data-protection.controller.ts(78,3): error TS2564: Property 'scope' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/pim/controllers/data-protection.controller.ts(77,3): error TS2564: Property 'userId' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/pim/controllers/data-protection.controller.ts(70,3): error TS2564: Property 'applicableRegions' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/pim/controllers/data-protection.controller.ts(68,3): error TS2564: Property 'requiresEncryption' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/pim/controllers/data-protection.controller.ts(67,3): error TS2564: Property 'retentionPeriodDays' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/pim/controllers/data-protection.controller.ts(66,3): error TS2564: Property 'allowExport' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/pim/controllers/data-protection.controller.ts(65,3): error TS2564: Property 'maskInUi' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/pim/controllers/data-protection.controller.ts(64,3): error TS2564: Property 'redactInLogs' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/pim/controllers/data-protection.controller.ts(63,3): error TS2564: Property 'infoType' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/pim/controllers/data-protection.controller.ts(62,3): error TS2564: Property 'isOperationallyNecessary' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/pim/controllers/data-protection.controller.ts(61,3): error TS2564: Property 'isPersonalInfo' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/pim/controllers/data-protection.controller.ts(60,3): error TS2564: Property 'sensitivity' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/pim/controllers/data-protection.controller.ts(59,3): error TS2564: Property 'field' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/pim/controllers/data-protection.controller.ts(50,3): error TS2564: Property 'text' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/pim/controllers/data-protection.controller.ts(39,3): error TS2564: Property 'productId' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/pim/controllers/data-protection.controller.ts(102,3): error TS2564: Property 'status' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/pim/controllers/compliance-framework.controller.ts(77,3): error TS2564: Property 'status' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/pim/controllers/compliance-framework.controller.ts(50,3): error TS2564: Property 'version' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/pim/controllers/compliance-framework.controller.ts(48,3): error TS2564: Property 'effectiveDate' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/pim/controllers/compliance-framework.controller.ts(45,3): error TS2564: Property 'severity' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/pim/controllers/compliance-framework.controller.ts(44,3): error TS2564: Property 'validationRules' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/pim/controllers/compliance-framework.controller.ts(43,3): error TS2564: Property 'requiredAttributes' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/pim/controllers/compliance-framework.controller.ts(42,3): error TS2564: Property 'productTypes' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/pim/controllers/compliance-framework.controller.ts(41,3): error TS2564: Property 'regionCodes' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/pim/controllers/compliance-framework.controller.ts(40,3): error TS2564: Property 'authority' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/pim/controllers/compliance-framework.controller.ts(39,3): error TS2564: Property 'category' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/pim/controllers/compliance-framework.controller.ts(38,3): error TS2564: Property 'description' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/pim/controllers/compliance-framework.controller.ts(37,3): error TS2564: Property 'name' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/pim/controllers/competitive-price-monitoring.controller.ts(61,11): error TS2693: 'CompetitorPrice' only refers to a type, but is being used as a value here.
+      1 src/modules/pim/controllers/competitive-price-monitoring.controller.ts(530,16): error TS1016: A required parameter cannot follow an optional parameter.
+      1 src/modules/pim/controllers/competitive-price-monitoring.controller.ts(498,11): error TS2693: 'CompetitorPriceReport' only refers to a type, but is being used as a value here.
+      1 src/modules/pim/controllers/competitive-price-monitoring.controller.ts(466,11): error TS2693: 'PriceAlert' only refers to a type, but is being used as a value here.
+      1 src/modules/pim/controllers/competitive-price-monitoring.controller.ts(438,11): error TS2693: 'PriceAlert' only refers to a type, but is being used as a value here.
+      1 src/modules/pim/controllers/competitive-price-monitoring.controller.ts(407,16): error TS1016: A required parameter cannot follow an optional parameter.
+      1 src/modules/pim/controllers/competitive-price-monitoring.controller.ts(375,12): error TS2693: 'PriceAlert' only refers to a type, but is being used as a value here.
+      1 src/modules/pim/controllers/competitive-price-monitoring.controller.ts(330,11): error TS2693: 'PriceMonitoringConfig' only refers to a type, but is being used as a value here.
+      1 src/modules/pim/controllers/competitive-price-monitoring.controller.ts(299,11): error TS2693: 'PriceMonitoringConfig' only refers to a type, but is being used as a value here.
+      1 src/modules/pim/controllers/competitive-price-monitoring.controller.ts(265,16): error TS1016: A required parameter cannot follow an optional parameter.
+      1 src/modules/pim/controllers/competitive-price-monitoring.controller.ts(215,16): error TS1016: A required parameter cannot follow an optional parameter.
+      1 src/modules/pim/controllers/competitive-price-monitoring.controller.ts(204,11): error TS2693: 'MarketPosition' only refers to a type, but is being used as a value here.
+      1 src/modules/pim/controllers/competitive-price-monitoring.controller.ts(172,16): error TS1016: A required parameter cannot follow an optional parameter.
+      1 src/modules/pim/controllers/competitive-price-monitoring.controller.ts(140,12): error TS2693: 'CompetitorPrice' only refers to a type, but is being used as a value here.
+      1 src/modules/pim/controllers/category.controller.ts(53,7): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+      1 src/modules/pim/controllers/category.controller.ts(351,7): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+      1 src/modules/pim/controllers/category.controller.ts(331,7): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+      1 src/modules/pim/controllers/category.controller.ts(288,55): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+      1 src/modules/pim/controllers/category.controller.ts(270,7): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+      1 src/modules/pim/controllers/category.controller.ts(251,7): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+      1 src/modules/pim/controllers/category.controller.ts(234,57): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+      1 src/modules/pim/controllers/category.controller.ts(219,7): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+      1 src/modules/pim/controllers/category.controller.ts(194,7): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+      1 src/modules/pim/controllers/category.controller.ts(170,7): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+      1 src/modules/pim/controllers/category-classification.controller.ts(76,3): error TS2564: Property 'productIds' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/pim/controllers/category-classification.controller.ts(61,3): error TS2564: Property 'categoryId' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/pim/controllers/category-classification.controller.ts(56,3): error TS2564: Property 'productId' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/pim/controllers/category-classification.controller.ts(323,54): error TS2339: Property 'findAll' does not exist on type 'CategoryService'.
+      1 src/modules/pim/controllers/category-classification.controller.ts(194,51): error TS2339: Property 'findById' does not exist on type 'CategoryService'.
+      1 src/modules/pim/controllers/catalog-optimization.controller.ts(98,3): error TS2564: Property 'productText' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/pim/controllers/catalog-optimization.controller.ts(88,3): error TS2564: Property 'productId' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/pim/controllers/bundle.controller.ts(77,3): error TS2564: Property 'pricingStrategy' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/pim/controllers/bundle.controller.ts(52,3): error TS2564: Property 'components' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/pim/controllers/bundle.controller.ts(47,3): error TS2564: Property 'sku' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/pim/controllers/bundle.controller.ts(37,3): error TS2564: Property 'name' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/pim/controllers/bundle.controller.ts(224,3): error TS2564: Property 'productId' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/pim/controllers/bundle.controller.ts(209,3): error TS2564: Property 'quantity' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/pim/controllers/bundle.controller.ts(199,3): error TS2564: Property 'productId' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/pim/controllers/bulk-operations.controller.ts(99,9): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'FlagEvaluationContext'.
+      1 src/modules/pim/controllers/bulk-operations.controller.ts(449,7): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+      1 src/modules/pim/controllers/bulk-operations.controller.ts(419,7): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+      1 src/modules/pim/controllers/bulk-operations.controller.ts(391,7): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+      1 src/modules/pim/controllers/bulk-operations.controller.ts(328,7): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+      1 src/modules/pim/controllers/bulk-operations.controller.ts(298,7): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+      1 src/modules/pim/controllers/bulk-operations.controller.ts(268,7): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+      1 src/modules/pim/controllers/bulk-operations.controller.ts(238,7): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+      1 src/modules/pim/controllers/bulk-operations.controller.ts(208,7): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+      1 src/modules/pim/controllers/bulk-operations.controller.ts(178,7): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+      1 src/modules/pim/controllers/bulk-operations.controller.ts(108,7): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'FlagEvaluationContext'.
+      1 src/modules/pim/controllers/b2b.controller.ts(713,16): error TS1016: A required parameter cannot follow an optional parameter.
+      1 src/modules/pim/controllers/b2b.controller.ts(163,16): error TS1016: A required parameter cannot follow an optional parameter.
+      1 src/modules/pim/controllers/attribute-template.controller.ts(94,7): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+      1 src/modules/pim/controllers/attribute-template.controller.ts(55,9): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+      1 src/modules/pim/controllers/attribute-template.controller.ts(378,7): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+      1 src/modules/pim/controllers/attribute-template.controller.ts(328,7): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+      1 src/modules/pim/controllers/attribute-template.controller.ts(292,7): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+      1 src/modules/pim/controllers/attribute-template.controller.ts(263,7): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+      1 src/modules/pim/controllers/attribute-template.controller.ts(244,7): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+      1 src/modules/pim/controllers/attribute-template.controller.ts(226,7): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+      1 src/modules/pim/controllers/attribute-template.controller.ts(209,7): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+      1 src/modules/pim/controllers/attribute-template.controller.ts(183,9): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+      1 src/modules/pim/controllers/attribute-template.controller.ts(152,9): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+      1 src/modules/pim/controllers/analytics.controller.ts(246,59): error TS2339: Property 'categoryId' does not exist on type 'CategoryReference'.
+      1 src/modules/marketplaces/controllers/marketplace.controller.ts(30,8): error TS2307: Cannot find module 'src/common/auth' or its corresponding type declarations.
+      1 src/modules/marketplaces/adapters/base-marketplace-adapter.ts(26,13): error TS2564: Property 'credentials' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/inventory/controllers/inventory.controller.ts(21,8): error TS2307: Cannot find module 'src/common/auth' or its corresponding type declarations.
+      1 src/modules/feature-flags/controllers/feature-flag.controller.ts(21,8): error TS2307: Cannot find module 'src/common/auth' or its corresponding type declarations.
+      1 src/modules/credit-system/models/credit-dto.ts(99,3): error TS2564: Property 'usageType' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/credit-system/models/credit-dto.ts(94,3): error TS2564: Property 'modelId' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/credit-system/models/credit-dto.ts(89,3): error TS2564: Property 'expectedOutputTokens' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/credit-system/models/credit-dto.ts(84,3): error TS2564: Property 'expectedInputTokens' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/credit-system/models/credit-dto.ts(74,3): error TS2564: Property 'organizationId' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/credit-system/models/credit-dto.ts(59,3): error TS2564: Property 'amount' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/credit-system/models/credit-dto.ts(54,3): error TS2564: Property 'allocationId' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/credit-system/models/credit-dto.ts(24,3): error TS2564: Property 'totalCredits' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/credit-system/models/credit-dto.ts(209,3): error TS2564: Property 'taskComplexity' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/credit-system/models/credit-dto.ts(204,3): error TS2564: Property 'userPrompt' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/credit-system/models/credit-dto.ts(199,3): error TS2564: Property 'organizationId' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/credit-system/models/credit-dto.ts(19,3): error TS2564: Property 'modelType' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/credit-system/models/credit-dto.ts(179,3): error TS2564: Property 'success' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/credit-system/models/credit-dto.ts(149,3): error TS2564: Property 'outputTokens' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/credit-system/models/credit-dto.ts(144,3): error TS2564: Property 'inputTokens' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/credit-system/models/credit-dto.ts(14,3): error TS2564: Property 'organizationId' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/credit-system/models/credit-dto.ts(139,3): error TS2564: Property 'modelProvider' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/credit-system/models/credit-dto.ts(134,3): error TS2564: Property 'modelId' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/credit-system/models/credit-dto.ts(129,3): error TS2564: Property 'usageType' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/credit-system/models/credit-dto.ts(119,3): error TS2564: Property 'organizationId' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/connectors/models/connector-credential.schema.ts(67,3): error TS2564: Property 'credentials' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/connectors/models/connector-credential.schema.ts(64,3): error TS2564: Property 'organizationId' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/connectors/models/connector-credential.schema.ts(61,3): error TS2564: Property 'connectorName' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/connectors/models/connector-credential.schema.ts(58,3): error TS2564: Property 'connectorId' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/connectors/adapters/xero/xero-connector.ts(50,11): error TS2564: Property 'credentials' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/connectors/adapters/woocommerce-connector.ts(58,11): error TS2564: Property 'config' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/connectors/adapters/woocommerce-connector.ts(57,11): error TS2564: Property 'client' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/connectors/adapters/wantitall-connector.ts(41,11): error TS2564: Property 'organizationId' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/connectors/adapters/wantitall-connector.ts(40,11): error TS2564: Property 'sellerId' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/connectors/adapters/wantitall-connector.ts(39,11): error TS2564: Property 'apiKey' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/connectors/adapters/wantitall-connector.ts(37,11): error TS2564: Property 'apiClient' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/connectors/adapters/superbalist-connector.ts(41,11): error TS2564: Property 'organizationId' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/connectors/adapters/superbalist-connector.ts(40,11): error TS2564: Property 'apiSecret' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/connectors/adapters/superbalist-connector.ts(39,11): error TS2564: Property 'apiKey' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/connectors/adapters/superbalist-connector.ts(37,11): error TS2564: Property 'apiClient' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/connectors/adapters/makro-connector.ts(40,11): error TS2564: Property 'organizationId' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/connectors/adapters/makro-connector.ts(39,11): error TS2564: Property 'sellerId' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/connectors/adapters/makro-connector.ts(38,11): error TS2564: Property 'apiKey' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/connectors/adapters/makro-connector.ts(36,11): error TS2564: Property 'apiClient' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/connectors/adapters/bob-shop-connector.ts(41,11): error TS2564: Property 'organizationId' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/connectors/adapters/bob-shop-connector.ts(40,11): error TS2564: Property 'apiSecret' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/connectors/adapters/bob-shop-connector.ts(39,11): error TS2564: Property 'apiKey' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/connectors/adapters/bob-shop-connector.ts(37,11): error TS2564: Property 'apiClient' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/connectors/adapters/base-connector.ts(687,7): error TS2564: Property 'retryable' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/connectors/adapters/base-connector.ts(685,7): error TS2564: Property 'type' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/connectors/adapters/base-connector.ts(37,13): error TS2564: Property 'credentials' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/auth/dtos/register.dto.ts(48,3): error TS2564: Property 'password' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/auth/dtos/register.dto.ts(34,3): error TS2564: Property 'email' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/auth/dtos/register.dto.ts(26,3): error TS2564: Property 'name' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/auth/dtos/login.dto.ts(25,3): error TS2564: Property 'password' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/auth/dtos/login.dto.ts(15,3): error TS2564: Property 'email' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/agent-framework/controllers/agent.controller.ts(19,8): error TS2307: Cannot find module 'src/common/auth' or its corresponding type declarations.
+      1 src/modules/agent-framework/adapters/vertex-ai.adapter.ts(25,11): error TS2564: Property 'location' has no initializer and is not definitely assigned in the constructor.
+      1 src/modules/agent-framework/adapters/vertex-ai.adapter.ts(24,11): error TS2564: Property 'projectId' has no initializer and is not definitely assigned in the constructor.
+      1 src/common/utils/logger.ts(53,11): error TS2564: Property 'isProduction' has no initializer and is not definitely assigned in the constructor.
+      1 src/common/utils/logger.ts(52,11): error TS2564: Property 'projectId' has no initializer and is not definitely assigned in the constructor.
+      1 src/common/utils/logger.ts(51,11): error TS2564: Property 'logName' has no initializer and is not definitely assigned in the constructor.
+      1 src/common/utils/logger.ts(50,11): error TS2564: Property 'cloudLogging' has no initializer and is not definitely assigned in the constructor.
+      1 src/common/utils/logger.ts(49,11): error TS2564: Property 'nestLogger' has no initializer and is not definitely assigned in the constructor.
+      1 src/common/repositories/firestore-base.repository.ts(946,44): error TS2769: No overload matches this call.
+      1 src/common/repositories/firestore-base.repository.ts(217,26): error TS2769: No overload matches this call.
+      1 src/common/repositories/firestore-base.repository.ts(213,44): error TS2769: No overload matches this call.
+      1 src/common/repositories/firestore-base.repository.ts(170,22): error TS2769: No overload matches this call.
+      1 src/common/observability/services/enhanced-logger.service.ts(462,33): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+      1 src/common/observability/services/enhanced-logger.service.ts(30,11): error TS2564: Property 'cloudLogging' has no initializer and is not definitely assigned in the constructor.

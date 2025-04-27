@@ -1,3 +1,3 @@
-"use strict";
+'use strict';
 // Using interface-based schema for Firestore compatibility
-Object.defineProperty(exports, "__esModule", { value: true });
+Object.defineProperty(exports, '__esModule', { value: true });

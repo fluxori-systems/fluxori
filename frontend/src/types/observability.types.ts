@@ -4,7 +4,7 @@
  * Basic health check result interface
  */
 export interface HealthCheckResult {
-  status: 'up' | 'down' | 'degraded';
+  status: "up" | "down" | "degraded";
   name: string;
   details?: Record<string, any>;
   message?: string;
@@ -15,7 +15,7 @@ export interface HealthCheckResult {
  * Detailed system health information
  */
 export interface SystemHealthInfo {
-  status: 'healthy' | 'unhealthy' | 'degraded';
+  status: "healthy" | "unhealthy" | "degraded";
   components: HealthCheckResult[];
   uptime: number;
   timestamp: string;
@@ -38,7 +38,7 @@ export interface Metric {
   name: string;
   description: string;
   unit: string;
-  type: 'counter' | 'gauge' | 'histogram';
+  type: "counter" | "gauge" | "histogram";
   dataPoints: MetricDataPoint[];
 }
 
@@ -52,7 +52,7 @@ export interface TraceSpan {
   startTime: string;
   endTime: string;
   duration: number;
-  status: 'success' | 'error' | 'unknown';
+  status: "success" | "error" | "unknown";
   attributes: Record<string, any>;
 }
 
@@ -120,7 +120,7 @@ export interface ApiMetric {
  */
 export interface ObservabilityConfig {
   enabled: boolean;
-  logLevel: 'debug' | 'info' | 'warn' | 'error';
+  logLevel: "debug" | "info" | "warn" | "error";
   errorSamplingRate: number;
   performanceSamplingRate: number;
   metricsReportingIntervalMs: number;

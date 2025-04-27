@@ -6,7 +6,7 @@ import {
   ForbiddenException,
 } from '@nestjs/common';
 
-import { AIAnalysisResult } from '../interfaces/types';
+import { AIAnalysisResult, InsightData } from '../interfaces/types';
 import { CreditSystemService } from '../services/credit-system.service';
 import {
   InsightGenerationService,
@@ -116,14 +116,20 @@ export class InsightGenerationController {
   @Post('recent-transactions')
   async getRecentTransactions(
     @Body() checkBalanceDto: CheckBalanceDto,
-  ): Promise<{ transactions: any[] }> {
+  ): Promise<{ transactions: InsightData[] }> {
+    // TODO: Refine type as discovered
     if (!checkBalanceDto.organizationId) {
       throw new ForbiddenException('Organization ID is required');
     }
 
-    const transactions = await this.creditService.getRecentTransactions(
+    const creditTransactions = await this.creditService.getRecentTransactions(
       checkBalanceDto.organizationId,
     );
+
+    // TODO: Replace with real mapping logic as requirements become clear
+    const transactions: InsightData[] = creditTransactions.map((tx) => ({
+      ...tx,
+    }));
 
     return { transactions };
   }

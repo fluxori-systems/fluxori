@@ -8,12 +8,15 @@ import {
   ProductPricing,
   ProductSupplier,
   StockLevelThreshold,
+  InventoryMetadata,
 } from '../interfaces/types';
 
 /**
  * Product entity for Firestore
  */
-export interface Product extends FirestoreEntity {
+import { FirestoreEntityWithMetadata } from '../../../common/repositories/base/repository-types';
+
+export interface Product extends FirestoreEntityWithMetadata {
   organizationId: string;
   sku: string;
   barcode?: string;
@@ -52,7 +55,7 @@ export interface Product extends FirestoreEntity {
   // Attributes and metadata
   attributes?: Record<string, string | number | boolean>;
   tags?: string[];
-  metadata?: Record<string, any>;
+  metadata?: InventoryMetadata; // TODO: Refine fields as discovered
 
   // SEO
   seoTitle?: string;

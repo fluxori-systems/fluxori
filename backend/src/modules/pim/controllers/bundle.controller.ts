@@ -30,11 +30,18 @@ import { ProductService } from '../services/product.service';
 /**
  * DTO for creating a product bundle
  */
+interface BundleComponentDto {
+  productId: string;
+  sku?: string;
+  quantity: number;
+  isRequired?: boolean;
+}
+
 class CreateBundleDto {
   /**
    * Name of the bundle
    */
-  name: string;
+  name!: string;
 
   /**
    * Description of the bundle
@@ -44,37 +51,17 @@ class CreateBundleDto {
   /**
    * SKU for the bundle
    */
-  sku: string;
+  sku!: string;
 
   /**
    * Components of the bundle
    */
-  components: Array<{
-    /**
-     * Product ID of the component
-     */
-    productId: string;
-
-    /**
-     * SKU of the component
-     */
-    sku?: string;
-
-    /**
-     * Quantity of the component in the bundle
-     */
-    quantity: number;
-
-    /**
-     * Whether the component is required
-     */
-    isRequired?: boolean;
-  }>;
+  components!: BundleComponentDto[];
 
   /**
    * Pricing strategy for the bundle
    */
-  pricingStrategy:
+  pricingStrategy!:
     | 'FIXED_PRICE'
     | 'DISCOUNT_PERCENTAGE'
     | 'COMPONENT_SUM'
@@ -132,27 +119,7 @@ class UpdateBundleDto {
   /**
    * Components of the bundle
    */
-  components?: Array<{
-    /**
-     * Product ID of the component
-     */
-    productId: string;
-
-    /**
-     * SKU of the component
-     */
-    sku?: string;
-
-    /**
-     * Quantity of the component in the bundle
-     */
-    quantity: number;
-
-    /**
-     * Whether the component is required
-     */
-    isRequired?: boolean;
-  }>;
+  components?: BundleComponentDto[];
 
   /**
    * Pricing strategy for the bundle
@@ -196,7 +163,7 @@ class AddComponentDto {
   /**
    * Product ID of the component
    */
-  productId: string;
+  productId!: string;
 
   /**
    * SKU of the component
@@ -206,7 +173,7 @@ class AddComponentDto {
   /**
    * Quantity of the component in the bundle
    */
-  quantity: number;
+  quantity!: number;
 
   /**
    * Whether the component is required
@@ -221,7 +188,7 @@ class UpdateComponentDto {
   /**
    * Product ID of the component
    */
-  productId: string;
+  productId!: string;
 
   /**
    * SKU of the component

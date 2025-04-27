@@ -14,11 +14,12 @@ interface ChatMessage {
   name?: string;
   functionCall?: {
     name: string;
-    arguments: Record<string, any>;
+    arguments: CreditArguments; // TODO: Refine fields as discovered
   };
 }
 
 import { AgentFrameworkDependencies } from '../interfaces/dependencies';
+import { CreditArguments } from '../interfaces/types';
 
 /**
  * Adapter for integrating with Agent Framework
@@ -85,7 +86,7 @@ export class AgentFrameworkAdapter implements AgentFrameworkDependencies {
     // This is a stub - in actual implementation, this would
     // delegate to the ModelAdapterFactory service in the Agent Framework
     // Since we're not performing actual model calls here, we can return null
-    return null as unknown as ModelAdapter;
+    return null as unknown as ModelAdapter; // TODO: Refine type assertion
   }
 
   /**

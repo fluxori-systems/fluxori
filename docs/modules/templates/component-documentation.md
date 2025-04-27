@@ -8,14 +8,14 @@ Brief description of the component's purpose and main functionalities.
 
 ### Props
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
+| Name       | Type       | Default        | Description             |
+| ---------- | ---------- | -------------- | ----------------------- |
 | `propName` | `PropType` | `defaultValue` | Description of the prop |
 
 ### Events
 
-| Name | Parameters | Description |
-|------|------------|-------------|
+| Name        | Parameters                   | Description              |
+| ----------- | ---------------------------- | ------------------------ |
 | `eventName` | `(param: ParamType) => void` | Description of the event |
 
 ## Usage
@@ -27,9 +27,9 @@ import { ExampleComponent } from '@/components/example';
 <ExampleComponent prop="value" />
 
 // Advanced usage with callback
-<ExampleComponent 
+<ExampleComponent
   prop="value"
-  onSomeEvent={(result) => handleResult(result)} 
+  onSomeEvent={(result) => handleResult(result)}
 />
 ```
 
@@ -42,7 +42,6 @@ This component:
   - Shared UI components
   - Hooks
   - Utility functions
-  
 - **Cannot import from**:
   - Page components
   - API services directly (should use hooks instead)
@@ -68,14 +67,14 @@ Describe how the component is styled and how to customize its appearance:
 
 ```tsx
 // Example test for the component
-import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import { ExampleComponent } from './ExampleComponent';
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { ExampleComponent } from "./ExampleComponent";
 
-describe('ExampleComponent', () => {
-  it('renders correctly', () => {
+describe("ExampleComponent", () => {
+  it("renders correctly", () => {
     render(<ExampleComponent prop="value" />);
-    expect(screen.getByText('Expected text')).toBeInTheDocument();
+    expect(screen.getByText("Expected text")).toBeInTheDocument();
   });
 });
 ```

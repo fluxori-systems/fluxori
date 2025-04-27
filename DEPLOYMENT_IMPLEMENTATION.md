@@ -54,6 +54,7 @@ The deployment is broken down into six phases:
 ### 3. Configuration Management
 
 All configuration is externalized in JSON files, with reasonable defaults that can be customized as needed. This includes:
+
 - Quota settings
 - Marketplace configurations
 - Scheduling parameters
@@ -62,6 +63,7 @@ All configuration is externalized in JSON files, with reasonable defaults that c
 ### 4. Security Implementation
 
 Security best practices are implemented throughout:
+
 - Secret Manager for API credentials
 - Service accounts with minimal permissions
 - Non-root container execution
@@ -70,6 +72,7 @@ Security best practices are implemented throughout:
 ### 5. South African Optimizations
 
 The deployment is optimized for South African market conditions:
+
 - Deployment to africa-south1 (Johannesburg) region
 - Load shedding detection and adaptation
 - Conservative quota management for SmartProxy
@@ -77,6 +80,7 @@ The deployment is optimized for South African market conditions:
 ### 6. Monitoring and Alerting
 
 Comprehensive monitoring includes:
+
 - Custom dashboard with all key metrics
 - Alert policies for critical conditions
 - Daily status reports
@@ -85,6 +89,7 @@ Comprehensive monitoring includes:
 ### 7. Documentation
 
 Detailed documentation is provided:
+
 - Deployment guide with step-by-step instructions
 - Troubleshooting guide for common issues
 - Monitoring guide for ongoing oversight

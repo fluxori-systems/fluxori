@@ -15,7 +15,7 @@ const findFiles = () => {
   try {
     const command = `grep -l "firestore-base.repository" ${rootDir}/src/modules/**/repositories/*.ts`;
     const output = execSync(command).toString();
-    return output.split('\n').filter(file => file.trim() !== '');
+    return output.split('\n').filter((file) => file.trim() !== '');
   } catch (error) {
     console.error('Error finding files:', error.message);
     return [];
@@ -25,16 +25,16 @@ const findFiles = () => {
 // Update import statements in a file
 const updateImports = (filePath) => {
   console.log(`Updating imports in ${filePath}`);
-  
+
   try {
     let content = fs.readFileSync(filePath, 'utf8');
-    
+
     // Replace the import path
     content = content.replace(
       /import\s+{([^}]*)}\s+from\s+['"](.+?)firestore-base\.repository['"]/g,
-      'import {$1} from \'$2unified-firestore.repository\''
+      "import {$1} from '$2unified-firestore.repository'",
     );
-    
+
     // Write back to file
     fs.writeFileSync(filePath, content, 'utf8');
     console.log(`  Updated imports in ${filePath}`);
@@ -48,18 +48,18 @@ const updateImports = (filePath) => {
 // Main function
 const main = () => {
   console.log('Starting import updates...');
-  
+
   const files = findFiles();
   console.log(`Found ${files.length} files to update`);
-  
+
   let updateCount = 0;
-  
+
   for (const file of files) {
     if (updateImports(file)) {
       updateCount++;
     }
   }
-  
+
   console.log(`\nUpdated imports in ${updateCount} files`);
 };
 

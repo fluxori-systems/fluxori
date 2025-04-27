@@ -53,10 +53,11 @@ interface MobileResponse<T> {
     loadShedding?: {
       active: boolean;
       stage?: number;
-      nextScheduledChange?: Date;
     };
     networkQuality?: string;
     mobileOptimized?: boolean;
+    totalItems?: number;
+    totalPages?: number;
   };
 }
 
@@ -84,6 +85,9 @@ export class MobileFirstController {
    */
   @Get('products')
   async getProducts(
+    @GetUser() user: any,
+    @Req() request: Request,
+    @Res() response: Response,
     @Query('page') page = '0',
     @Query('pageSize') pageSize = '20',
     @Query('category') categoryId?: string,
@@ -91,9 +95,6 @@ export class MobileFirstController {
     @Query('status') status?: string,
     @Query('sort') sort?: string,
     @Query('fields') fields?: string,
-    @GetUser() user: any,
-    @Req() request: Request,
-    @Res() response: Response,
   ) {
     // Detect device profile
     const deviceProfile =
@@ -123,30 +124,27 @@ export class MobileFirstController {
 
     try {
       // Fetch products
-      const products = await this.productService.findAll(
-        {
-          page: parseInt(page, 10),
-          pageSize: limitedPageSize,
-          categoryId,
-          search,
-          status,
-          sort,
-        },
-        user.tenantId,
-      );
+      const filter: any = {
+        page: parseInt(page, 10),
+        limit: limitedPageSize,
+        categoryIds: categoryId ? [categoryId] : undefined,
+        status,
+        sort,
+      };
+      if (search) filter.query = search;
+      const products = await this.productService.findProducts(filter);
 
       // Optimize the response
       const optimizedProducts =
         this.mobileDetectionService.optimizeProductListForMobile(
-          products.data,
+          products.items,
           optimizationOptions,
         );
 
       // Check load shedding status
       const loadShedding = {
-        active: this.loadSheddingService.isActive(),
-        stage: this.loadSheddingService.getCurrentStage(),
-        nextScheduledChange: this.loadSheddingService.getNextScheduledChange(),
+        active: await this.loadSheddingService.isLoadSheddingActive(),
+        stage: await this.loadSheddingService.getLoadSheddingStage(),
       };
 
       // Generate mobile-optimized response
@@ -159,23 +157,13 @@ export class MobileFirstController {
           loadShedding,
           networkQuality: deviceProfile.networkQuality,
           mobileOptimized: true,
+          totalItems: products.total,
+          totalPages: Math.ceil(products.total / limitedPageSize),
         },
       };
 
       // Set cache headers based on device and network quality
       this.setCacheHeaders(response, deviceProfile);
-
-      // If poor network quality, add specific metadata to help client side
-      if (
-        deviceProfile.networkQuality === 'poor' ||
-        deviceProfile.networkQuality === 'fair'
-      ) {
-        // Add total count for pagination calculations to avoid additional requests
-        mobileResponse.meta['totalItems'] = products.total;
-        mobileResponse.meta['totalPages'] = Math.ceil(
-          products.total / limitedPageSize,
-        );
-      }
 
       return response.status(HttpStatus.OK).json(mobileResponse);
     } catch (error) {
@@ -195,11 +183,11 @@ export class MobileFirstController {
    */
   @Get('products/:id')
   async getProduct(
-    @Param('id') id: string,
-    @Query('fields') fields?: string,
-    @GetUser() user: any,
     @Req() request: Request,
     @Res() response: Response,
+    @GetUser() user: any,
+    @Param('id') id: string,
+    @Query('fields') fields?: string,
   ) {
     // Detect device profile
     const deviceProfile =
@@ -240,9 +228,8 @@ export class MobileFirstController {
 
       // Check load shedding status
       const loadShedding = {
-        active: this.loadSheddingService.isActive(),
-        stage: this.loadSheddingService.getCurrentStage(),
-        nextScheduledChange: this.loadSheddingService.getNextScheduledChange(),
+        active: await this.loadSheddingService.isLoadSheddingActive(),
+        stage: await this.loadSheddingService.getLoadSheddingStage(),
       };
 
       // Generate mobile-optimized response
@@ -279,11 +266,11 @@ export class MobileFirstController {
    */
   @Get('categories')
   async getCategories(
-    @Query('parent') parentId?: string,
-    @Query('fields') fields?: string,
-    @GetUser() user: any,
     @Req() request: Request,
     @Res() response: Response,
+    @GetUser() user: any,
+    @Query('parent') parentId?: string,
+    @Query('fields') fields?: string,
   ) {
     // Detect device profile
     const deviceProfile =
@@ -307,10 +294,8 @@ export class MobileFirstController {
 
     try {
       // Fetch categories
-      const categories = await this.categoryService.findByParent(
-        parentId,
-        user.tenantId,
-      );
+      const catFilter: any = { parentId };
+      const categories = await this.categoryService.findCategories(catFilter);
 
       // Optimize the response
       const optimizedCategories = this.mobileDetectionService.optimizeResponse(
@@ -320,9 +305,8 @@ export class MobileFirstController {
 
       // Check load shedding status
       const loadShedding = {
-        active: this.loadSheddingService.isActive(),
-        stage: this.loadSheddingService.getCurrentStage(),
-        nextScheduledChange: this.loadSheddingService.getNextScheduledChange(),
+        active: await this.loadSheddingService.isLoadSheddingActive(),
+        stage: await this.loadSheddingService.getLoadSheddingStage(),
       };
 
       // Generate mobile-optimized response
@@ -359,14 +343,14 @@ export class MobileFirstController {
    */
   @Get('images/:imageId')
   async getOptimizedImage(
+    @GetUser() user: any,
     @Param('imageId') imageId: string,
+    @Req() request: Request,
+    @Res() response: Response,
     @Query('width') width?: string,
     @Query('height') height?: string,
     @Query('quality') quality?: string,
     @Query('format') format?: string,
-    @GetUser() user: any,
-    @Req() request: Request,
-    @Res() response: Response,
   ) {
     // Detect device profile
     const deviceProfile =
@@ -388,34 +372,10 @@ export class MobileFirstController {
       : optimizationOptions.imageTransform.quality;
     const imageFormat = format || optimizationOptions.imageTransform.format;
 
-    try {
-      // Get optimized image URL
-      const imageUrl = await this.storageService.getOptimizedImageUrl(
-        imageId,
-        user.tenantId,
-        {
-          width: imageWidth,
-          height: imageHeight,
-          quality: imageQuality,
-          format: imageFormat as any,
-        },
-      );
-
-      // Set cache headers based on device and network quality
-      this.setCacheHeaders(response, deviceProfile);
-
-      // Redirect to the optimized image URL
-      return response.redirect(HttpStatus.TEMPORARY_REDIRECT, imageUrl);
-    } catch (error) {
-      this.logger.error(
-        `Error getting optimized image: ${error.message}`,
-        error.stack,
-      );
-      throw new HttpException(
-        `Failed to get optimized image: ${error.message}`,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
+    // Not implemented: image optimization logic
+    return response.status(HttpStatus.NOT_IMPLEMENTED).json({
+      message: 'Image optimization not implemented',
+    });
   }
 
   /**
@@ -437,9 +397,8 @@ export class MobileFirstController {
 
     // Check load shedding status
     const loadShedding = {
-      active: this.loadSheddingService.isActive(),
-      stage: this.loadSheddingService.getCurrentStage(),
-      nextScheduledChange: this.loadSheddingService.getNextScheduledChange(),
+      active: await this.loadSheddingService.isLoadSheddingActive(),
+      stage: await this.loadSheddingService.getLoadSheddingStage(),
     };
 
     // Add client hints headers to response
@@ -493,23 +452,13 @@ export class MobileFirstController {
         networkProvider: deviceProfile.networkProvider,
         isSavingData: deviceProfile.isSavingData,
         loadShedding: {
-          active: this.loadSheddingService.isActive(),
-          stage: this.loadSheddingService.getCurrentStage(),
-          nextScheduledChange:
-            this.loadSheddingService.getNextScheduledChange(),
+          active: await this.loadSheddingService.isLoadSheddingActive(),
+          stage: await this.loadSheddingService.getLoadSheddingStage(),
         },
-        recommendedSettings: {
-          imagesPerPage: this.calculateImagesPerPage(deviceProfile),
-          prefetchDepth: this.calculatePrefetchDepth(deviceProfile),
-          offlineMode:
-            deviceProfile.networkQuality === 'poor' ||
-            this.loadSheddingService.isActive(),
-          compressionLevel: this.calculateCompressionLevel(deviceProfile),
-        },
-        ussdShortcodes: this.getSouthAfricanUssdCodes(deviceProfile),
       },
     };
 
+    // Set cache headers based on device and network quality
     // Add client hints headers to response
     const clientHintsHeaders =
       this.mobileDetectionService.generateClientHintsHeaders();

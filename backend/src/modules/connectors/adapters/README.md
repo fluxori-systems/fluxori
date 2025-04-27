@@ -20,6 +20,7 @@ The WooCommerce connector provides integration with the WooCommerce REST API. It
 - Load shedding detection and handling
 
 Features:
+
 - Product management (fetching, updating stock levels, pricing)
 - Order management (fetching, acknowledging)
 - South African-specific optimizations
@@ -61,11 +62,14 @@ export class SomeService {
 
   async someMethod(organizationId: string) {
     // Get a marketplace connector
-    const woocommerce = await this.connectorFactory.getMarketplaceConnector('woocommerce', organizationId);
-    
+    const woocommerce = await this.connectorFactory.getMarketplaceConnector(
+      'woocommerce',
+      organizationId,
+    );
+
     // Use the connector
     const products = await woocommerce.getProducts({ page: 0, pageSize: 20 });
-    
+
     return products;
   }
 }

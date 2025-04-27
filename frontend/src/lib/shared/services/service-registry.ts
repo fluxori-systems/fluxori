@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { IAnimationService } from './animation-service.interface';
-import { IConnectionService } from './connection-service.interface';
+import { IAnimationService } from "./animation-service.interface";
+import { IConnectionService } from "./connection-service.interface";
 
 // Define a type for the default services
 interface DefaultServices {
@@ -15,7 +15,7 @@ interface DefaultServices {
  */
 class ServiceRegistryClass {
   private services: Map<string, any> = new Map();
-  
+
   /**
    * Register a service implementation
    * @param key Service identifier
@@ -24,7 +24,7 @@ class ServiceRegistryClass {
   register<T>(key: string, implementation: T): void {
     this.services.set(key, implementation);
   }
-  
+
   /**
    * Get a service implementation
    * @param key Service identifier
@@ -37,7 +37,7 @@ class ServiceRegistryClass {
     }
     return service as T;
   }
-  
+
   /**
    * Check if a service is registered
    * @param key Service identifier
@@ -54,15 +54,17 @@ export const ServiceRegistry = new ServiceRegistryClass();
  * Keys for registered services
  */
 export const SERVICE_KEYS = {
-  ANIMATION_SERVICE: 'animationService',
-  CONNECTION_SERVICE: 'connectionService',
+  ANIMATION_SERVICE: "animationService",
+  CONNECTION_SERVICE: "connectionService",
 };
 
 /**
  * Register the animation service implementation
  * @param implementation Animation service implementation
  */
-export function registerAnimationService(implementation: IAnimationService): void {
+export function registerAnimationService(
+  implementation: IAnimationService,
+): void {
   ServiceRegistry.register(SERVICE_KEYS.ANIMATION_SERVICE, implementation);
 }
 
@@ -70,7 +72,9 @@ export function registerAnimationService(implementation: IAnimationService): voi
  * Register the connection service implementation
  * @param implementation Connection service implementation
  */
-export function registerConnectionService(implementation: IConnectionService): void {
+export function registerConnectionService(
+  implementation: IConnectionService,
+): void {
   ServiceRegistry.register(SERVICE_KEYS.CONNECTION_SERVICE, implementation);
 }
 
@@ -87,13 +91,15 @@ export function getAnimationService(): IAnimationService {
  * @returns Connection service implementation
  */
 export function getConnectionService(): IConnectionService {
-  return ServiceRegistry.get<IConnectionService>(SERVICE_KEYS.CONNECTION_SERVICE);
+  return ServiceRegistry.get<IConnectionService>(
+    SERVICE_KEYS.CONNECTION_SERVICE,
+  );
 }
 
 /**
  * Get default service implementations with lazy loading and dependency inversion
- * 
- * This function dynamically imports the default service implementations from 
+ *
+ * This function dynamically imports the default service implementations from
  * the motion module, allowing the Shared module to avoid direct dependencies
  * on the Motion module at build/compile time.
  */
@@ -109,47 +115,47 @@ export function getDefaultServices(): DefaultServices {
       reduceComplexity: false,
       maxActiveAnimations: 10,
       disableStaggering: false,
-      scaleMultiplier: 1
+      scaleMultiplier: 1,
     }),
     shouldReduceMotion: () => false,
-    getMotionMode: () => 'full',
+    getMotionMode: () => "full",
     startPerformanceMonitoring: () => 0,
     recordAnimationFrame: () => {},
     stopPerformanceMonitoring: () => {},
-    getPerformanceAnalysis: () => null
+    getPerformanceAnalysis: () => null,
   };
-  
+
   const nullConnectionService: IConnectionService = {
     getConnectionQuality: () => ({
-      quality: 'medium',
+      quality: "medium",
       isMetered: false,
       isDataSaver: false,
-      saveData: false
+      saveData: false,
     }),
     subscribeToConnectionChanges: () => () => {},
     isDataSaverEnabled: () => false,
-    isConnectionMetered: () => false
+    isConnectionMetered: () => false,
   };
-  
+
   try {
     // Try to dynamically load the actual services
     // In a real environment, this would be provided by the motion module
     // This dynamic import keeps us from having a build-time dependency
-    if (typeof window !== 'undefined' && (window as any).__DEFAULT_SERVICES) {
+    if (typeof window !== "undefined" && (window as any).__DEFAULT_SERVICES) {
       return (window as any).__DEFAULT_SERVICES;
     }
-    
+
     // For development or SSR where window isn't available
     return {
       defaultAnimationService: nullAnimationService,
-      defaultConnectionService: nullConnectionService
+      defaultConnectionService: nullConnectionService,
     };
   } catch (error) {
     // Fallback to null implementations if there's an error
-    console.warn('Error loading default services:', error);
+    console.warn("Error loading default services:", error);
     return {
       defaultAnimationService: nullAnimationService,
-      defaultConnectionService: nullConnectionService
+      defaultConnectionService: nullConnectionService,
     };
   }
 }

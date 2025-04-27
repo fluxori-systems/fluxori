@@ -1,9 +1,14 @@
-import { FirestoreEntity } from '../../../types/google-cloud.types';
+import { TenantEntity } from '../../../common/types/tenant-entity';
+import { InsightMetadata } from '../interfaces/types';
 
 /**
  * AI Model Configuration entity for Firestore
  */
-export interface AIModelConfig extends FirestoreEntity {
+import { FirestoreEntityWithMetadata } from '../../../common/repositories/base/repository-types';
+
+export interface AIModelConfig
+  extends TenantEntity,
+    FirestoreEntityWithMetadata {
   organizationId: string;
   modelProvider: string;
   modelName: string;
@@ -12,5 +17,5 @@ export interface AIModelConfig extends FirestoreEntity {
   maxTokens: number;
   isDefault: boolean;
   isEnabled: boolean;
-  metadata?: Record<string, any>;
+  metadata?: InsightMetadata; // TODO: Refine fields as discovered
 }

@@ -3,6 +3,7 @@
 ## Phase 1: Create Shared Types and Interfaces
 
 1. Create a new shared types module:
+
    ```
    src/lib/shared/
    └── types/
@@ -10,15 +11,16 @@
    ```
 
 2. Extract shared types and interfaces:
-   - `ConnectionQuality` 
+   - `ConnectionQuality`
    - `NetworkCondition`
-   - `AnimationMode` 
+   - `AnimationMode`
    - `AnimationParams`
    - `AnimationStrategyConfig`
 
 ## Phase 2: Implement Dependency Inversion
 
 1. Create abstract services for motion functionality:
+
    ```
    src/lib/shared/
    └── services/
@@ -36,6 +38,7 @@
 ## Phase 3: Refactor Motion Module
 
 1. Reorganize module structure:
+
    ```
    src/lib/motion/
    ├── animations/       # Animation-specific code
@@ -55,12 +58,13 @@
 ## Phase 4: Refactor UI Module
 
 1. Update UI components to use service interfaces:
+
    ```ts
    // Before
-   import { useConnectionQuality } from '../../motion/hooks/useConnectionQuality';
-   
+   import { useConnectionQuality } from "../../motion/hooks/useConnectionQuality";
+
    // After
-   import { useConnectionService } from '../../shared/services/connection-service.interface';
+   import { useConnectionService } from "../../shared/services/connection-service.interface";
    ```
 
 2. Create UI-specific animation helpers that don't depend on motion directly
@@ -68,6 +72,7 @@
 ## Phase 5: Create Service Registration
 
 1. Implement a registry pattern for services:
+
    ```ts
    // src/lib/shared/services/service-registry.ts
    export const ServiceRegistry = {

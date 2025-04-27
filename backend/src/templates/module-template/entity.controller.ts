@@ -1,18 +1,22 @@
-import { 
-  Controller, 
-  Get, 
-  Post, 
-  Put, 
-  Delete, 
-  Param, 
-  Body, 
-  Query, 
+import {
+  Controller,
+  Get,
+  Post,
+  Put,
+  Delete,
+  Param,
+  Body,
+  Query,
   UseGuards,
   Logger,
   NotFoundException,
-  ForbiddenException
+  ForbiddenException,
 } from '@nestjs/common';
-import { EntityService, CreateEntityDto, UpdateEntityDto } from './entity.service';
+import {
+  EntityService,
+  CreateEntityDto,
+  UpdateEntityDto,
+} from './entity.service';
 import { Entity } from './entity.model';
 
 /**
@@ -21,9 +25,9 @@ import { Entity } from './entity.model';
 @Controller('api/entities')
 export class EntityController {
   private readonly logger = new Logger(EntityController.name);
-  
+
   constructor(private readonly entityService: EntityService) {}
-  
+
   /**
    * Create a new entity
    * @param createEntityDto Entity creation data
@@ -33,7 +37,7 @@ export class EntityController {
   async create(@Body() createEntityDto: CreateEntityDto): Promise<Entity> {
     return this.entityService.create(createEntityDto);
   }
-  
+
   /**
    * Get entity by ID
    * @param id Entity ID
@@ -43,7 +47,7 @@ export class EntityController {
   async findById(@Param('id') id: string): Promise<Entity> {
     return this.entityService.findById(id);
   }
-  
+
   /**
    * Get entities by organization
    * @param organizationId Organization ID
@@ -51,15 +55,15 @@ export class EntityController {
    */
   @Get()
   async findByOrganization(
-    @Query('organizationId') organizationId: string
+    @Query('organizationId') organizationId: string,
   ): Promise<Entity[]> {
     if (!organizationId) {
       throw new ForbiddenException('Organization ID is required');
     }
-    
+
     return this.entityService.findByOrganization(organizationId);
   }
-  
+
   /**
    * Update an entity
    * @param id Entity ID
@@ -69,11 +73,11 @@ export class EntityController {
   @Put(':id')
   async update(
     @Param('id') id: string,
-    @Body() updateEntityDto: UpdateEntityDto
+    @Body() updateEntityDto: UpdateEntityDto,
   ): Promise<Entity> {
     return this.entityService.update(id, updateEntityDto);
   }
-  
+
   /**
    * Delete an entity
    * @param id Entity ID
@@ -84,7 +88,7 @@ export class EntityController {
     await this.entityService.delete(id);
     return { success: true };
   }
-  
+
   /**
    * Activate an entity
    * @param id Entity ID
@@ -94,7 +98,7 @@ export class EntityController {
   async activate(@Param('id') id: string): Promise<Entity> {
     return this.entityService.setStatus(id, 'active');
   }
-  
+
   /**
    * Deactivate an entity
    * @param id Entity ID

@@ -192,12 +192,10 @@ export interface B2BCustomerContact {
   /**
    * Creation timestamp
    */
-  createdAt: Date;
 
   /**
    * Last update timestamp
    */
-  updatedAt: Date;
 }
 
 /**
@@ -297,12 +295,10 @@ export interface B2BAddress {
   /**
    * Creation timestamp
    */
-  createdAt: Date;
 
   /**
    * Last update timestamp
    */
-  updatedAt: Date;
 }
 
 /**
@@ -453,11 +449,31 @@ export interface OrganizationalHierarchy {
 /**
  * B2B Customer model
  */
-export interface B2BCustomer {
+import { FirestoreEntityWithMetadata } from '../../../../common/repositories/base/repository-types';
+
+export interface B2BCustomer extends FirestoreEntityWithMetadata {
   /**
    * Unique identifier for the B2B customer
    */
-  id?: string;
+  id: string;
+
+  /**
+   * Timestamp when the customer was created
+   */
+
+  /**
+   * Timestamp when the customer was last updated
+   */
+
+  /**
+   * Whether the customer is soft-deleted
+   */
+  isDeleted: boolean;
+
+  /**
+   * Version number for optimistic concurrency
+   */
+  version: number;
 
   /**
    * Organization that owns this customer record
@@ -653,12 +669,10 @@ export interface B2BCustomer {
   /**
    * Creation timestamp
    */
-  createdAt: Date;
 
   /**
    * Last update timestamp
    */
-  updatedAt: Date;
 
   /**
    * Account onboarding status

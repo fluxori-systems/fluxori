@@ -1,21 +1,24 @@
 /**
  * Test Data Generator for Fluxori Performance Tests
- * 
+ *
  * This script generates realistic test data for performance testing
  * the Fluxori platform on Google Cloud.
  */
 
-const fs = require('fs');
-const path = require('path');
-const { faker } = require('@faker-js/faker');
+const fs = require("fs");
+const path = require("path");
+const { faker } = require("@faker-js/faker");
 
 // Configure faker to use South African locale when appropriate
-faker.locale = 'en_ZA';
+faker.locale = "en_ZA";
 
 // Parse command line arguments
 const args = process.argv.slice(2);
-const dataSize = args.find(arg => arg.startsWith('--size='))?.split('=')[1] || 'medium';
-const outputDir = args.find(arg => arg.startsWith('--output='))?.split('=')[1] || path.join(__dirname, 'data');
+const dataSize =
+  args.find((arg) => arg.startsWith("--size="))?.split("=")[1] || "medium";
+const outputDir =
+  args.find((arg) => arg.startsWith("--output="))?.split("=")[1] ||
+  path.join(__dirname, "data");
 
 // Ensure output directory exists
 if (!fs.existsSync(outputDir)) {
@@ -68,12 +71,12 @@ console.log(`Orders per organization: ${config.ordersPerOrg}`);
 console.log(`Marketplaces per organization: ${config.marketplacesPerOrg}`);
 console.log(`Insights per organization: ${config.insightsPerOrg}`);
 console.log(`Documents per organization: ${config.documentsPerOrg}`);
-console.log('==========================================');
+console.log("==========================================");
 
 // Generate organizations
 function generateOrganizations() {
   const organizations = [];
-  
+
   for (let i = 0; i < config.organizations; i++) {
     const orgId = `org_${faker.datatype.uuid()}`;
     organizations.push({
@@ -86,45 +89,49 @@ function generateOrganizations() {
         city: faker.location.city(),
         state: faker.location.state(),
         zip: faker.location.zipCode(),
-        country: 'South Africa',
+        country: "South Africa",
       },
       createdAt: faker.date.past(),
       updatedAt: faker.date.recent(),
     });
   }
-  
+
   return organizations;
 }
 
 // Generate users for organizations
 function generateUsers(organizations) {
   const users = [];
-  
-  organizations.forEach(org => {
+
+  organizations.forEach((org) => {
     for (let i = 0; i < config.usersPerOrg; i++) {
       const isAdmin = i === 0; // First user is admin
-      
+
       users.push({
         id: `user_${faker.datatype.uuid()}`,
         organizationId: org.id,
         firstName: faker.person.firstName(),
         lastName: faker.person.lastName(),
-        email: faker.internet.email({ firstName: faker.person.firstName(), lastName: faker.person.lastName(), provider: org.name.toLowerCase().replace(/[^a-z0-9]/g, '') + '.com' }),
-        role: isAdmin ? 'ADMIN' : 'USER',
+        email: faker.internet.email({
+          firstName: faker.person.firstName(),
+          lastName: faker.person.lastName(),
+          provider: org.name.toLowerCase().replace(/[^a-z0-9]/g, "") + ".com",
+        }),
+        role: isAdmin ? "ADMIN" : "USER",
         createdAt: faker.date.past(),
         updatedAt: faker.date.recent(),
       });
     }
   });
-  
+
   return users;
 }
 
 // Generate warehouses for organizations
 function generateWarehouses(organizations) {
   const warehouses = [];
-  
-  organizations.forEach(org => {
+
+  organizations.forEach((org) => {
     for (let i = 0; i < config.warehousesPerOrg; i++) {
       warehouses.push({
         id: `wh_${faker.datatype.uuid()}`,
@@ -136,7 +143,7 @@ function generateWarehouses(organizations) {
           city: faker.location.city(),
           state: faker.location.state(),
           zip: faker.location.zipCode(),
-          country: 'South Africa',
+          country: "South Africa",
         },
         isActive: faker.datatype.boolean(0.9), // 90% are active
         createdAt: faker.date.past(),
@@ -144,7 +151,7 @@ function generateWarehouses(organizations) {
       });
     }
   });
-  
+
   return warehouses;
 }
 
@@ -152,21 +159,21 @@ function generateWarehouses(organizations) {
 function generateProducts(organizations, warehouses) {
   const products = [];
   const warehousesByOrg = {};
-  
+
   // Group warehouses by organization
-  warehouses.forEach(warehouse => {
+  warehouses.forEach((warehouse) => {
     if (!warehousesByOrg[warehouse.organizationId]) {
       warehousesByOrg[warehouse.organizationId] = [];
     }
     warehousesByOrg[warehouse.organizationId].push(warehouse);
   });
-  
-  organizations.forEach(org => {
+
+  organizations.forEach((org) => {
     const orgWarehouses = warehousesByOrg[org.id] || [];
-    
+
     for (let i = 0; i < config.productsPerOrg; i++) {
       const productId = `prod_${faker.datatype.uuid()}`;
-      
+
       // Create product
       products.push({
         id: productId,
@@ -177,11 +184,19 @@ function generateProducts(organizations, warehouses) {
         category: faker.commerce.department(),
         price: parseFloat(faker.commerce.price({ min: 50, max: 5000 })),
         cost: parseFloat(faker.commerce.price({ min: 20, max: 2500 })),
-        weight: parseFloat(faker.number.float({ min: 0.1, max: 20, precision: 0.01 })),
+        weight: parseFloat(
+          faker.number.float({ min: 0.1, max: 20, precision: 0.01 }),
+        ),
         dimensions: {
-          length: parseFloat(faker.number.float({ min: 1, max: 100, precision: 0.1 })),
-          width: parseFloat(faker.number.float({ min: 1, max: 100, precision: 0.1 })),
-          height: parseFloat(faker.number.float({ min: 1, max: 100, precision: 0.1 })),
+          length: parseFloat(
+            faker.number.float({ min: 1, max: 100, precision: 0.1 }),
+          ),
+          width: parseFloat(
+            faker.number.float({ min: 1, max: 100, precision: 0.1 }),
+          ),
+          height: parseFloat(
+            faker.number.float({ min: 1, max: 100, precision: 0.1 }),
+          ),
         },
         isActive: faker.datatype.boolean(0.9), // 90% are active
         attributes: {
@@ -189,20 +204,17 @@ function generateProducts(organizations, warehouses) {
           material: faker.commerce.productMaterial(),
           brand: faker.company.name(),
         },
-        images: [
-          faker.image.url(),
-          faker.image.url(),
-        ],
+        images: [faker.image.url(), faker.image.url()],
         createdAt: faker.date.past(),
         updatedAt: faker.date.recent(),
       });
-      
+
       // Create stock levels for this product in each warehouse
-      orgWarehouses.forEach(warehouse => {
+      orgWarehouses.forEach((warehouse) => {
         if (warehouse.isActive) {
           products.push({
             id: `stock_${faker.datatype.uuid()}`,
-            type: 'STOCK_LEVEL',
+            type: "STOCK_LEVEL",
             productId,
             organizationId: org.id,
             warehouseId: warehouse.id,
@@ -218,7 +230,7 @@ function generateProducts(organizations, warehouses) {
       });
     }
   });
-  
+
   return products;
 }
 
@@ -226,29 +238,29 @@ function generateProducts(organizations, warehouses) {
 function generateOrders(organizations, products) {
   const orders = [];
   const productsByOrg = {};
-  
+
   // Group products by organization
   products
-    .filter(p => !p.type || p.type !== 'STOCK_LEVEL') // Filter out stock levels
-    .forEach(product => {
+    .filter((p) => !p.type || p.type !== "STOCK_LEVEL") // Filter out stock levels
+    .forEach((product) => {
       if (!productsByOrg[product.organizationId]) {
         productsByOrg[product.organizationId] = [];
       }
       productsByOrg[product.organizationId].push(product);
     });
-  
-  organizations.forEach(org => {
+
+  organizations.forEach((org) => {
     const orgProducts = productsByOrg[org.id] || [];
-    
+
     for (let i = 0; i < config.ordersPerOrg; i++) {
       // Select random products for this order
       const numOrderItems = faker.number.int({ min: 1, max: 5 });
       const orderItems = [];
-      
+
       for (let j = 0; j < numOrderItems; j++) {
         const product = faker.helpers.arrayElement(orgProducts);
         const quantity = faker.number.int({ min: 1, max: 10 });
-        
+
         orderItems.push({
           productId: product.id,
           productName: product.name,
@@ -258,19 +270,27 @@ function generateOrders(organizations, products) {
           total: product.price * quantity,
         });
       }
-      
+
       const subtotal = orderItems.reduce((sum, item) => sum + item.total, 0);
-      const shippingCost = parseFloat(faker.commerce.price({ min: 30, max: 150 }));
+      const shippingCost = parseFloat(
+        faker.commerce.price({ min: 30, max: 150 }),
+      );
       const total = subtotal + shippingCost;
-      
+
       // Random order status
-      const possibleStatuses = ['PENDING', 'PROCESSING', 'SHIPPED', 'DELIVERED', 'CANCELLED'];
+      const possibleStatuses = [
+        "PENDING",
+        "PROCESSING",
+        "SHIPPED",
+        "DELIVERED",
+        "CANCELLED",
+      ];
       const weights = [0.1, 0.2, 0.3, 0.3, 0.1]; // Probability distribution
-      
+
       let status;
       const random = Math.random();
       let cumulativeWeight = 0;
-      
+
       for (let k = 0; k < possibleStatuses.length; k++) {
         cumulativeWeight += weights[k];
         if (random <= cumulativeWeight) {
@@ -278,7 +298,7 @@ function generateOrders(organizations, products) {
           break;
         }
       }
-      
+
       orders.push({
         id: `order_${faker.datatype.uuid()}`,
         organizationId: org.id,
@@ -293,35 +313,56 @@ function generateOrders(organizations, products) {
             city: faker.location.city(),
             state: faker.location.state(),
             zip: faker.location.zipCode(),
-            country: 'South Africa',
+            country: "South Africa",
           },
         },
         items: orderItems,
         subtotal,
         shippingCost,
         total,
-        paymentMethod: faker.helpers.arrayElement(['CREDIT_CARD', 'PAYPAL', 'BANK_TRANSFER', 'COD']),
-        shippingMethod: faker.helpers.arrayElement(['STANDARD', 'EXPRESS', 'OVERNIGHT']),
+        paymentMethod: faker.helpers.arrayElement([
+          "CREDIT_CARD",
+          "PAYPAL",
+          "BANK_TRANSFER",
+          "COD",
+        ]),
+        shippingMethod: faker.helpers.arrayElement([
+          "STANDARD",
+          "EXPRESS",
+          "OVERNIGHT",
+        ]),
         createdAt: faker.date.past(),
         updatedAt: faker.date.recent(),
       });
     }
   });
-  
+
   return orders;
 }
 
 // Generate marketplace configs for organizations
 function generateMarketplaces(organizations) {
   const marketplaces = [];
-  const marketplaceTypes = ['SHOPIFY', 'WOOCOMMERCE', 'AMAZON', 'TAKEALOT', 'BIDORBUY'];
-  
-  organizations.forEach(org => {
+  const marketplaceTypes = [
+    "SHOPIFY",
+    "WOOCOMMERCE",
+    "AMAZON",
+    "TAKEALOT",
+    "BIDORBUY",
+  ];
+
+  organizations.forEach((org) => {
     // Randomly select marketplace types for this organization
-    const numMarketplaces = Math.min(config.marketplacesPerOrg, marketplaceTypes.length);
-    const selectedTypes = faker.helpers.arrayElements(marketplaceTypes, numMarketplaces);
-    
-    selectedTypes.forEach(type => {
+    const numMarketplaces = Math.min(
+      config.marketplacesPerOrg,
+      marketplaceTypes.length,
+    );
+    const selectedTypes = faker.helpers.arrayElements(
+      marketplaceTypes,
+      numMarketplaces,
+    );
+
+    selectedTypes.forEach((type) => {
       marketplaces.push({
         id: `mp_${faker.datatype.uuid()}`,
         organizationId: org.id,
@@ -331,9 +372,12 @@ function generateMarketplaces(organizations) {
         credentials: {
           apiKey: `api_${faker.string.alphanumeric(20)}`,
           apiSecret: `secret_${faker.string.alphanumeric(32)}`,
-          storeUrl: type === 'SHOPIFY' ? `https://${org.name.toLowerCase().replace(/[^a-z0-9]/g, '')}.myshopify.com` : 
-                    type === 'WOOCOMMERCE' ? `https://${org.name.toLowerCase().replace(/[^a-z0-9]/g, '')}.co.za` :
-                    'https://example.com',
+          storeUrl:
+            type === "SHOPIFY"
+              ? `https://${org.name.toLowerCase().replace(/[^a-z0-9]/g, "")}.myshopify.com`
+              : type === "WOOCOMMERCE"
+                ? `https://${org.name.toLowerCase().replace(/[^a-z0-9]/g, "")}.co.za`
+                : "https://example.com",
         },
         syncSettings: {
           syncProducts: faker.datatype.boolean(0.9),
@@ -347,105 +391,164 @@ function generateMarketplaces(organizations) {
       });
     });
   });
-  
+
   return marketplaces;
 }
 
 // Generate AI insights for organizations
 function generateInsights(organizations) {
   const insights = [];
-  const insightTypes = ['INVENTORY_ALERT', 'SALES_TREND', 'MARKET_OPPORTUNITY', 'PRICING_RECOMMENDATION', 'LOGISTICS_OPTIMIZATION'];
-  const severities = ['LOW', 'MEDIUM', 'HIGH', 'CRITICAL'];
-  
-  organizations.forEach(org => {
+  const insightTypes = [
+    "INVENTORY_ALERT",
+    "SALES_TREND",
+    "MARKET_OPPORTUNITY",
+    "PRICING_RECOMMENDATION",
+    "LOGISTICS_OPTIMIZATION",
+  ];
+  const severities = ["LOW", "MEDIUM", "HIGH", "CRITICAL"];
+
+  organizations.forEach((org) => {
     for (let i = 0; i < config.insightsPerOrg; i++) {
       const type = faker.helpers.arrayElement(insightTypes);
       const severity = faker.helpers.arrayElement(severities);
-      
+
       let title, description, data;
-      
+
       switch (type) {
-        case 'INVENTORY_ALERT':
-          title = 'Low stock inventory detected';
-          description = 'Several products are below their reorder threshold and may need restocking.';
+        case "INVENTORY_ALERT":
+          title = "Low stock inventory detected";
+          description =
+            "Several products are below their reorder threshold and may need restocking.";
           data = {
-            products: Array.from({ length: faker.number.int({ min: 1, max: 5 }) }, () => ({
-              id: `prod_${faker.string.alphanumeric(8)}`,
-              name: faker.commerce.productName(),
-              currentStock: faker.number.int({ min: 0, max: 5 }),
-              reorderThreshold: faker.number.int({ min: 10, max: 20 }),
-            })),
+            products: Array.from(
+              { length: faker.number.int({ min: 1, max: 5 }) },
+              () => ({
+                id: `prod_${faker.string.alphanumeric(8)}`,
+                name: faker.commerce.productName(),
+                currentStock: faker.number.int({ min: 0, max: 5 }),
+                reorderThreshold: faker.number.int({ min: 10, max: 20 }),
+              }),
+            ),
           };
           break;
-          
-        case 'SALES_TREND':
-          title = 'Increasing sales trend detected';
-          description = 'Several products are showing increasing sales over the past 30 days.';
+
+        case "SALES_TREND":
+          title = "Increasing sales trend detected";
+          description =
+            "Several products are showing increasing sales over the past 30 days.";
           data = {
             periodStart: faker.date.past({ days: 30 }).toISOString(),
             periodEnd: new Date().toISOString(),
-            overallGrowth: faker.number.float({ min: 5, max: 25, precision: 0.1 }),
-            products: Array.from({ length: faker.number.int({ min: 3, max: 8 }) }, () => ({
-              id: `prod_${faker.string.alphanumeric(8)}`,
-              name: faker.commerce.productName(),
-              growthRate: faker.number.float({ min: 5, max: 50, precision: 0.1 }),
-            })),
+            overallGrowth: faker.number.float({
+              min: 5,
+              max: 25,
+              precision: 0.1,
+            }),
+            products: Array.from(
+              { length: faker.number.int({ min: 3, max: 8 }) },
+              () => ({
+                id: `prod_${faker.string.alphanumeric(8)}`,
+                name: faker.commerce.productName(),
+                growthRate: faker.number.float({
+                  min: 5,
+                  max: 50,
+                  precision: 0.1,
+                }),
+              }),
+            ),
           };
           break;
-          
-        case 'MARKET_OPPORTUNITY':
-          title = 'Market opportunity identified';
-          description = 'Based on search trends and competitor analysis, new market opportunities were identified.';
+
+        case "MARKET_OPPORTUNITY":
+          title = "Market opportunity identified";
+          description =
+            "Based on search trends and competitor analysis, new market opportunities were identified.";
           data = {
             marketSegment: faker.commerce.department(),
-            potentialRevenue: parseFloat(faker.commerce.price({ min: 10000, max: 100000 })),
-            confidenceScore: faker.number.float({ min: 0.6, max: 0.95, precision: 0.01 }),
-            recommendedProducts: Array.from({ length: faker.number.int({ min: 2, max: 5 }) }, () => ({
-              name: faker.commerce.productName(),
-              estimatedDemand: faker.number.int({ min: 100, max: 1000 }),
-            })),
+            potentialRevenue: parseFloat(
+              faker.commerce.price({ min: 10000, max: 100000 }),
+            ),
+            confidenceScore: faker.number.float({
+              min: 0.6,
+              max: 0.95,
+              precision: 0.01,
+            }),
+            recommendedProducts: Array.from(
+              { length: faker.number.int({ min: 2, max: 5 }) },
+              () => ({
+                name: faker.commerce.productName(),
+                estimatedDemand: faker.number.int({ min: 100, max: 1000 }),
+              }),
+            ),
           };
           break;
-          
-        case 'PRICING_RECOMMENDATION':
-          title = 'Pricing optimization recommendations';
-          description = 'AI analysis suggests optimal price adjustments for maximum revenue.';
+
+        case "PRICING_RECOMMENDATION":
+          title = "Pricing optimization recommendations";
+          description =
+            "AI analysis suggests optimal price adjustments for maximum revenue.";
           data = {
             analysisDate: new Date().toISOString(),
-            recommendations: Array.from({ length: faker.number.int({ min: 3, max: 10 }) }, () => ({
-              productId: `prod_${faker.string.alphanumeric(8)}`,
-              productName: faker.commerce.productName(),
-              currentPrice: parseFloat(faker.commerce.price({ min: 100, max: 2000 })),
-              recommendedPrice: parseFloat(faker.commerce.price({ min: 100, max: 2000 })),
-              estimatedImpact: faker.number.float({ min: -10, max: 30, precision: 0.1 }),
-            })),
+            recommendations: Array.from(
+              { length: faker.number.int({ min: 3, max: 10 }) },
+              () => ({
+                productId: `prod_${faker.string.alphanumeric(8)}`,
+                productName: faker.commerce.productName(),
+                currentPrice: parseFloat(
+                  faker.commerce.price({ min: 100, max: 2000 }),
+                ),
+                recommendedPrice: parseFloat(
+                  faker.commerce.price({ min: 100, max: 2000 }),
+                ),
+                estimatedImpact: faker.number.float({
+                  min: -10,
+                  max: 30,
+                  precision: 0.1,
+                }),
+              }),
+            ),
           };
           break;
-          
-        case 'LOGISTICS_OPTIMIZATION':
-          title = 'Warehouse optimization opportunities';
-          description = 'Analysis of order patterns suggests logistics optimizations.';
+
+        case "LOGISTICS_OPTIMIZATION":
+          title = "Warehouse optimization opportunities";
+          description =
+            "Analysis of order patterns suggests logistics optimizations.";
           data = {
-            potentialSaving: parseFloat(faker.commerce.price({ min: 5000, max: 20000 })),
+            potentialSaving: parseFloat(
+              faker.commerce.price({ min: 5000, max: 20000 }),
+            ),
             recommendations: [
-              'Reorganize warehouse layout based on product affinity',
-              'Adjust inventory levels in regional warehouses',
-              'Optimize shipping carrier selection for specific routes',
+              "Reorganize warehouse layout based on product affinity",
+              "Adjust inventory levels in regional warehouses",
+              "Optimize shipping carrier selection for specific routes",
             ],
             impactAreas: {
-              shippingCost: faker.number.float({ min: 5, max: 15, precision: 0.1 }),
-              fulfillmentSpeed: faker.number.float({ min: 10, max: 30, precision: 0.1 }),
-              inventoryCost: faker.number.float({ min: 5, max: 20, precision: 0.1 }),
+              shippingCost: faker.number.float({
+                min: 5,
+                max: 15,
+                precision: 0.1,
+              }),
+              fulfillmentSpeed: faker.number.float({
+                min: 10,
+                max: 30,
+                precision: 0.1,
+              }),
+              inventoryCost: faker.number.float({
+                min: 5,
+                max: 20,
+                precision: 0.1,
+              }),
             },
           };
           break;
-          
+
         default:
-          title = 'General insight';
-          description = 'General business insight based on data analysis.';
-          data = { message: 'Generic insight data' };
+          title = "General insight";
+          description = "General business insight based on data analysis.";
+          data = { message: "Generic insight data" };
       }
-      
+
       insights.push({
         id: `insight_${faker.datatype.uuid()}`,
         organizationId: org.id,
@@ -454,33 +557,49 @@ function generateInsights(organizations) {
         description,
         data,
         severity,
-        confidence: faker.number.float({ min: 0.5, max: 0.98, precision: 0.01 }),
-        status: faker.helpers.arrayElement(['NEW', 'ACKNOWLEDGED', 'RESOLVED', 'DISMISSED']),
+        confidence: faker.number.float({
+          min: 0.5,
+          max: 0.98,
+          precision: 0.01,
+        }),
+        status: faker.helpers.arrayElement([
+          "NEW",
+          "ACKNOWLEDGED",
+          "RESOLVED",
+          "DISMISSED",
+        ]),
         createdAt: faker.date.past(),
         updatedAt: faker.date.recent(),
         expiresAt: faker.date.future(),
       });
     }
   });
-  
+
   return insights;
 }
 
 // Generate documents for RAG system
 function generateDocuments(organizations) {
   const documents = [];
-  const documentTypes = ['PRODUCT_SPEC', 'SUPPLIER_INFO', 'LOGISTICS_GUIDE', 'MARKET_REPORT', 'TRAINING_MATERIAL'];
-  
-  organizations.forEach(org => {
+  const documentTypes = [
+    "PRODUCT_SPEC",
+    "SUPPLIER_INFO",
+    "LOGISTICS_GUIDE",
+    "MARKET_REPORT",
+    "TRAINING_MATERIAL",
+  ];
+
+  organizations.forEach((org) => {
     for (let i = 0; i < config.documentsPerOrg; i++) {
       const type = faker.helpers.arrayElement(documentTypes);
-      
+
       let title, content;
-      
+
       switch (type) {
-        case 'PRODUCT_SPEC':
+        case "PRODUCT_SPEC":
           title = `Product Specification: ${faker.commerce.productName()}`;
-          content = `# ${title}\n\n` +
+          content =
+            `# ${title}\n\n` +
             `## Overview\n\n${faker.commerce.productDescription()}\n\n` +
             `## Technical Specifications\n\n` +
             `- Material: ${faker.commerce.productMaterial()}\n` +
@@ -493,10 +612,11 @@ function generateDocuments(organizations) {
             `## Warranty\n\n` +
             `This product comes with a ${faker.number.int({ min: 1, max: 5 })}-year warranty.`;
           break;
-          
-        case 'SUPPLIER_INFO':
+
+        case "SUPPLIER_INFO":
           title = `Supplier Information: ${faker.company.name()}`;
-          content = `# ${title}\n\n` +
+          content =
+            `# ${title}\n\n` +
             `## Company Profile\n\n` +
             `${faker.company.name()} is a leading supplier of ${faker.commerce.department()} products. Founded in ${faker.date.past().getFullYear()}, they have established a reputation for quality and reliability.\n\n` +
             `## Contact Information\n\n` +
@@ -514,10 +634,11 @@ function generateDocuments(organizations) {
             `- Minimum Order: ${faker.number.int({ min: 5, max: 100 })} units\n` +
             `- Lead Time: ${faker.number.int({ min: 1, max: 8 })} weeks`;
           break;
-          
-        case 'LOGISTICS_GUIDE':
-          title = 'Logistics and Shipping Guide';
-          content = `# ${title}\n\n` +
+
+        case "LOGISTICS_GUIDE":
+          title = "Logistics and Shipping Guide";
+          content =
+            `# ${title}\n\n` +
             `## Shipping Methods\n\n` +
             `### Standard Shipping\n\n` +
             `- Delivery Time: ${faker.number.int({ min: 3, max: 7 })} business days\n` +
@@ -532,12 +653,13 @@ function generateDocuments(organizations) {
             `## Return Policy\n\n` +
             `- Returns accepted within ${faker.number.int({ min: 7, max: 30 })} days of purchase\n` +
             `- Product must be in original packaging\n` +
-            `- Return shipping costs covered by ${faker.helpers.arrayElement(['buyer', 'seller'])}`;
+            `- Return shipping costs covered by ${faker.helpers.arrayElement(["buyer", "seller"])}`;
           break;
-          
-        case 'MARKET_REPORT':
+
+        case "MARKET_REPORT":
           title = `Market Analysis: ${faker.commerce.department()} Sector`;
-          content = `# ${title}\n\n` +
+          content =
+            `# ${title}\n\n` +
             `## Executive Summary\n\n` +
             `This report provides an analysis of the current state of the ${faker.commerce.department()} market in South Africa and identifies key trends and opportunities.\n\n` +
             `## Market Overview\n\n` +
@@ -557,12 +679,13 @@ function generateDocuments(organizations) {
             `- Develop eco-friendly product lines\n` +
             `- Target the growing ${faker.commerce.productAdjective()} market segment`;
           break;
-          
-        case 'TRAINING_MATERIAL':
-          title = `Training Guide: ${faker.helpers.arrayElement(['Inventory Management', 'Order Processing', 'Customer Service', 'Marketing Strategies'])}`;
-          content = `# ${title}\n\n` +
+
+        case "TRAINING_MATERIAL":
+          title = `Training Guide: ${faker.helpers.arrayElement(["Inventory Management", "Order Processing", "Customer Service", "Marketing Strategies"])}`;
+          content =
+            `# ${title}\n\n` +
             `## Introduction\n\n` +
-            `This training guide provides essential information on ${title.split(':')[1].trim()} for Fluxori platform users.\n\n` +
+            `This training guide provides essential information on ${title.split(":")[1].trim()} for Fluxori platform users.\n\n` +
             `## Key Concepts\n\n` +
             `- ${faker.lorem.sentence()}\n` +
             `- ${faker.lorem.sentence()}\n` +
@@ -582,23 +705,28 @@ function generateDocuments(organizations) {
             `- Internal Knowledge Base\n` +
             `- Support Team Contact: support@fluxori.com`;
           break;
-          
+
         default:
           title = `Document: ${faker.lorem.words(3)}`;
           content = faker.lorem.paragraphs(5);
       }
-      
+
       documents.push({
         id: `doc_${faker.datatype.uuid()}`,
         organizationId: org.id,
         type,
         title,
         content,
-        fileUrl: faker.helpers.maybe(() => faker.internet.url(), { probability: 0.3 }),
+        fileUrl: faker.helpers.maybe(() => faker.internet.url(), {
+          probability: 0.3,
+        }),
         metadata: {
           author: `${faker.person.firstName()} ${faker.person.lastName()}`,
           createdDate: faker.date.past().toISOString(),
-          tags: faker.helpers.arrayElements(['important', 'reference', 'guide', 'technical', 'business'], faker.number.int({ min: 1, max: 3 })),
+          tags: faker.helpers.arrayElements(
+            ["important", "reference", "guide", "technical", "business"],
+            faker.number.int({ min: 1, max: 3 }),
+          ),
           version: `${faker.number.int({ min: 1, max: 5 })}.${faker.number.int({ min: 0, max: 9 })}`,
         },
         createdAt: faker.date.past(),
@@ -606,7 +734,7 @@ function generateDocuments(organizations) {
       });
     }
   });
-  
+
   return documents;
 }
 
@@ -627,14 +755,14 @@ const saveData = (filename, data) => {
   console.log(`Saved ${data.length} records to ${filePath}`);
 };
 
-saveData('organizations.json', organizations);
-saveData('users.json', users);
-saveData('warehouses.json', warehouses);
-saveData('products.json', products);
-saveData('orders.json', orders);
-saveData('marketplaces.json', marketplaces);
-saveData('insights.json', insights);
-saveData('documents.json', documents);
+saveData("organizations.json", organizations);
+saveData("users.json", users);
+saveData("warehouses.json", warehouses);
+saveData("products.json", products);
+saveData("orders.json", orders);
+saveData("marketplaces.json", marketplaces);
+saveData("insights.json", insights);
+saveData("documents.json", documents);
 
 // Create a manifest file with data counts
 const manifest = {
@@ -644,24 +772,31 @@ const manifest = {
     organizations: organizations.length,
     users: users.length,
     warehouses: warehouses.length,
-    products: products.filter(p => !p.type || p.type !== 'STOCK_LEVEL').length,
-    stockLevels: products.filter(p => p.type === 'STOCK_LEVEL').length,
+    products: products.filter((p) => !p.type || p.type !== "STOCK_LEVEL")
+      .length,
+    stockLevels: products.filter((p) => p.type === "STOCK_LEVEL").length,
     orders: orders.length,
     marketplaces: marketplaces.length,
     insights: insights.length,
     documents: documents.length,
   },
-  totalRecords: organizations.length + users.length + warehouses.length + 
-    products.length + orders.length + marketplaces.length + 
-    insights.length + documents.length,
+  totalRecords:
+    organizations.length +
+    users.length +
+    warehouses.length +
+    products.length +
+    orders.length +
+    marketplaces.length +
+    insights.length +
+    documents.length,
 };
 
 fs.writeFileSync(
-  path.join(outputDir, 'manifest.json'), 
-  JSON.stringify(manifest, null, 2)
+  path.join(outputDir, "manifest.json"),
+  JSON.stringify(manifest, null, 2),
 );
 
-console.log('\n=== Test Data Generation Complete ===');
+console.log("\n=== Test Data Generation Complete ===");
 console.log(`Total records generated: ${manifest.totalRecords}`);
 console.log(`Data saved to: ${outputDir}`);
-console.log('======================================');
+console.log("======================================");

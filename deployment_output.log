@@ -1,0 +1,370 @@
+[0;34m==================================================================[0m
+[0;34m         FLUXORI MARKETPLACE SCRAPER DEPLOYMENT                  [0m
+[0;34m==================================================================[0m
+[0;34m This script will handle the complete deployment of the          [0m
+[0;34m marketplace scrapers to Google Cloud Platform.                  [0m
+[0;34m==================================================================[0m
+
+[0;32mStarting deployment process...[0m
+
+[0;34m[1/6] Setting up foundation infrastructure...[0m
+Updated property [core/project].
+Enabling required GCP services...
+Assigning necessary permissions...
+Updated IAM policy for project [fluxori-web-app].
+bindings:
+- members:
+  - serviceAccount:service-427925539255@gcp-sa-artifactregistry.iam.gserviceaccount.com
+  role: roles/artifactregistry.serviceAgent
+- members:
+  - serviceAccount:427925539255@cloudbuild.gserviceaccount.com
+  role: roles/artifactregistry.writer
+- members:
+  - serviceAccount:427925539255@cloudbuild.gserviceaccount.com
+  role: roles/cloudbuild.builds.builder
+- members:
+  - serviceAccount:service-427925539255@gcp-sa-cloudbuild.iam.gserviceaccount.com
+  role: roles/cloudbuild.serviceAgent
+- members:
+  - serviceAccount:service-427925539255@gcp-sa-cloudscheduler.iam.gserviceaccount.com
+  role: roles/cloudscheduler.serviceAgent
+- members:
+  - serviceAccount:marketplace-scraper-sa@fluxori-web-app.iam.gserviceaccount.com
+  role: roles/cloudtrace.agent
+- members:
+  - serviceAccount:service-427925539255@compute-system.iam.gserviceaccount.com
+  role: roles/compute.serviceAgent
+- members:
+  - serviceAccount:service-427925539255@containerregistry.iam.gserviceaccount.com
+  role: roles/containerregistry.ServiceAgent
+- members:
+  - serviceAccount:marketplace-scraper-sa@fluxori-web-app.iam.gserviceaccount.com
+  role: roles/datastore.user
+- members:
+  - serviceAccount:427925539255@cloudservices.gserviceaccount.com
+  role: roles/editor
+- members:
+  - serviceAccount:marketplace-scraper-sa@fluxori-web-app.iam.gserviceaccount.com
+  role: roles/monitoring.metricWriter
+- members:
+  - serviceAccount:fluxori-web-app@fluxori-web-app.iam.gserviceaccount.com
+  - user:tarquin.stapa@fluxori.com
+  role: roles/owner
+- members:
+  - serviceAccount:marketplace-scraper-sa@fluxori-web-app.iam.gserviceaccount.com
+  role: roles/pubsub.publisher
+- members:
+  - serviceAccount:service-427925539255@gcp-sa-pubsub.iam.gserviceaccount.com
+  role: roles/pubsub.serviceAgent
+- members:
+  - serviceAccount:marketplace-scraper-sa@fluxori-web-app.iam.gserviceaccount.com
+  role: roles/run.invoker
+- members:
+  - serviceAccount:service-427925539255@serverless-robot-prod.iam.gserviceaccount.com
+  role: roles/run.serviceAgent
+- members:
+  - serviceAccount:marketplace-scraper-sa@fluxori-web-app.iam.gserviceaccount.com
+  role: roles/secretmanager.secretAccessor
+- members:
+  - serviceAccount:427925539255-compute@developer.gserviceaccount.com
+  role: roles/storage.objectViewer
+etag: BwYzAQEGWDI=
+version: 1
+Updated IAM policy for project [fluxori-web-app].
+bindings:
+- members:
+  - serviceAccount:service-427925539255@gcp-sa-artifactregistry.iam.gserviceaccount.com
+  role: roles/artifactregistry.serviceAgent
+- members:
+  - serviceAccount:427925539255@cloudbuild.gserviceaccount.com
+  role: roles/artifactregistry.writer
+- members:
+  - serviceAccount:427925539255@cloudbuild.gserviceaccount.com
+  role: roles/cloudbuild.builds.builder
+- members:
+  - serviceAccount:service-427925539255@gcp-sa-cloudbuild.iam.gserviceaccount.com
+  role: roles/cloudbuild.serviceAgent
+- members:
+  - serviceAccount:service-427925539255@gcp-sa-cloudscheduler.iam.gserviceaccount.com
+  role: roles/cloudscheduler.serviceAgent
+- members:
+  - serviceAccount:marketplace-scraper-sa@fluxori-web-app.iam.gserviceaccount.com
+  role: roles/cloudtrace.agent
+- members:
+  - serviceAccount:service-427925539255@compute-system.iam.gserviceaccount.com
+  role: roles/compute.serviceAgent
+- members:
+  - serviceAccount:service-427925539255@containerregistry.iam.gserviceaccount.com
+  role: roles/containerregistry.ServiceAgent
+- members:
+  - serviceAccount:marketplace-scraper-sa@fluxori-web-app.iam.gserviceaccount.com
+  role: roles/datastore.user
+- members:
+  - serviceAccount:427925539255@cloudservices.gserviceaccount.com
+  role: roles/editor
+- members:
+  - serviceAccount:marketplace-scraper-sa@fluxori-web-app.iam.gserviceaccount.com
+  role: roles/monitoring.metricWriter
+- members:
+  - serviceAccount:fluxori-web-app@fluxori-web-app.iam.gserviceaccount.com
+  - user:tarquin.stapa@fluxori.com
+  role: roles/owner
+- members:
+  - serviceAccount:marketplace-scraper-sa@fluxori-web-app.iam.gserviceaccount.com
+  role: roles/pubsub.publisher
+- members:
+  - serviceAccount:service-427925539255@gcp-sa-pubsub.iam.gserviceaccount.com
+  role: roles/pubsub.serviceAgent
+- members:
+  - serviceAccount:marketplace-scraper-sa@fluxori-web-app.iam.gserviceaccount.com
+  role: roles/run.invoker
+- members:
+  - serviceAccount:service-427925539255@serverless-robot-prod.iam.gserviceaccount.com
+  role: roles/run.serviceAgent
+- members:
+  - serviceAccount:marketplace-scraper-sa@fluxori-web-app.iam.gserviceaccount.com
+  role: roles/secretmanager.secretAccessor
+- members:
+  - serviceAccount:427925539255-compute@developer.gserviceaccount.com
+  role: roles/storage.objectViewer
+etag: BwYzAQFV8TU=
+version: 1
+Updated IAM policy for project [fluxori-web-app].
+bindings:
+- members:
+  - serviceAccount:service-427925539255@gcp-sa-artifactregistry.iam.gserviceaccount.com
+  role: roles/artifactregistry.serviceAgent
+- members:
+  - serviceAccount:427925539255@cloudbuild.gserviceaccount.com
+  role: roles/artifactregistry.writer
+- members:
+  - serviceAccount:427925539255@cloudbuild.gserviceaccount.com
+  role: roles/cloudbuild.builds.builder
+- members:
+  - serviceAccount:service-427925539255@gcp-sa-cloudbuild.iam.gserviceaccount.com
+  role: roles/cloudbuild.serviceAgent
+- members:
+  - serviceAccount:service-427925539255@gcp-sa-cloudscheduler.iam.gserviceaccount.com
+  role: roles/cloudscheduler.serviceAgent
+- members:
+  - serviceAccount:marketplace-scraper-sa@fluxori-web-app.iam.gserviceaccount.com
+  role: roles/cloudtrace.agent
+- members:
+  - serviceAccount:service-427925539255@compute-system.iam.gserviceaccount.com
+  role: roles/compute.serviceAgent
+- members:
+  - serviceAccount:service-427925539255@containerregistry.iam.gserviceaccount.com
+  role: roles/containerregistry.ServiceAgent
+- members:
+  - serviceAccount:marketplace-scraper-sa@fluxori-web-app.iam.gserviceaccount.com
+  role: roles/datastore.user
+- members:
+  - serviceAccount:427925539255@cloudservices.gserviceaccount.com
+  role: roles/editor
+- members:
+  - serviceAccount:marketplace-scraper-sa@fluxori-web-app.iam.gserviceaccount.com
+  role: roles/monitoring.metricWriter
+- members:
+  - serviceAccount:fluxori-web-app@fluxori-web-app.iam.gserviceaccount.com
+  - user:tarquin.stapa@fluxori.com
+  role: roles/owner
+- members:
+  - serviceAccount:marketplace-scraper-sa@fluxori-web-app.iam.gserviceaccount.com
+  role: roles/pubsub.publisher
+- members:
+  - serviceAccount:service-427925539255@gcp-sa-pubsub.iam.gserviceaccount.com
+  role: roles/pubsub.serviceAgent
+- members:
+  - serviceAccount:marketplace-scraper-sa@fluxori-web-app.iam.gserviceaccount.com
+  role: roles/run.invoker
+- members:
+  - serviceAccount:service-427925539255@serverless-robot-prod.iam.gserviceaccount.com
+  role: roles/run.serviceAgent
+- members:
+  - serviceAccount:marketplace-scraper-sa@fluxori-web-app.iam.gserviceaccount.com
+  role: roles/secretmanager.secretAccessor
+- members:
+  - serviceAccount:427925539255-compute@developer.gserviceaccount.com
+  role: roles/storage.objectViewer
+etag: BwYzAQGm7FQ=
+version: 1
+Updated IAM policy for project [fluxori-web-app].
+bindings:
+- members:
+  - serviceAccount:service-427925539255@gcp-sa-artifactregistry.iam.gserviceaccount.com
+  role: roles/artifactregistry.serviceAgent
+- members:
+  - serviceAccount:427925539255@cloudbuild.gserviceaccount.com
+  role: roles/artifactregistry.writer
+- members:
+  - serviceAccount:427925539255@cloudbuild.gserviceaccount.com
+  role: roles/cloudbuild.builds.builder
+- members:
+  - serviceAccount:service-427925539255@gcp-sa-cloudbuild.iam.gserviceaccount.com
+  role: roles/cloudbuild.serviceAgent
+- members:
+  - serviceAccount:service-427925539255@gcp-sa-cloudscheduler.iam.gserviceaccount.com
+  role: roles/cloudscheduler.serviceAgent
+- members:
+  - serviceAccount:marketplace-scraper-sa@fluxori-web-app.iam.gserviceaccount.com
+  role: roles/cloudtrace.agent
+- members:
+  - serviceAccount:service-427925539255@compute-system.iam.gserviceaccount.com
+  role: roles/compute.serviceAgent
+- members:
+  - serviceAccount:service-427925539255@containerregistry.iam.gserviceaccount.com
+  role: roles/containerregistry.ServiceAgent
+- members:
+  - serviceAccount:marketplace-scraper-sa@fluxori-web-app.iam.gserviceaccount.com
+  role: roles/datastore.user
+- members:
+  - serviceAccount:427925539255@cloudservices.gserviceaccount.com
+  role: roles/editor
+- members:
+  - serviceAccount:marketplace-scraper-sa@fluxori-web-app.iam.gserviceaccount.com
+  role: roles/monitoring.metricWriter
+- members:
+  - serviceAccount:fluxori-web-app@fluxori-web-app.iam.gserviceaccount.com
+  - user:tarquin.stapa@fluxori.com
+  role: roles/owner
+- members:
+  - serviceAccount:marketplace-scraper-sa@fluxori-web-app.iam.gserviceaccount.com
+  role: roles/pubsub.publisher
+- members:
+  - serviceAccount:service-427925539255@gcp-sa-pubsub.iam.gserviceaccount.com
+  role: roles/pubsub.serviceAgent
+- members:
+  - serviceAccount:marketplace-scraper-sa@fluxori-web-app.iam.gserviceaccount.com
+  role: roles/run.invoker
+- members:
+  - serviceAccount:service-427925539255@serverless-robot-prod.iam.gserviceaccount.com
+  role: roles/run.serviceAgent
+- members:
+  - serviceAccount:marketplace-scraper-sa@fluxori-web-app.iam.gserviceaccount.com
+  role: roles/secretmanager.secretAccessor
+- members:
+  - serviceAccount:427925539255-compute@developer.gserviceaccount.com
+  role: roles/storage.objectViewer
+etag: BwYzAQH4Tmc=
+version: 1
+Updated IAM policy for project [fluxori-web-app].
+bindings:
+- members:
+  - serviceAccount:service-427925539255@gcp-sa-artifactregistry.iam.gserviceaccount.com
+  role: roles/artifactregistry.serviceAgent
+- members:
+  - serviceAccount:427925539255@cloudbuild.gserviceaccount.com
+  role: roles/artifactregistry.writer
+- members:
+  - serviceAccount:427925539255@cloudbuild.gserviceaccount.com
+  role: roles/cloudbuild.builds.builder
+- members:
+  - serviceAccount:service-427925539255@gcp-sa-cloudbuild.iam.gserviceaccount.com
+  role: roles/cloudbuild.serviceAgent
+- members:
+  - serviceAccount:service-427925539255@gcp-sa-cloudscheduler.iam.gserviceaccount.com
+  role: roles/cloudscheduler.serviceAgent
+- members:
+  - serviceAccount:marketplace-scraper-sa@fluxori-web-app.iam.gserviceaccount.com
+  role: roles/cloudtrace.agent
+- members:
+  - serviceAccount:service-427925539255@compute-system.iam.gserviceaccount.com
+  role: roles/compute.serviceAgent
+- members:
+  - serviceAccount:service-427925539255@containerregistry.iam.gserviceaccount.com
+  role: roles/containerregistry.ServiceAgent
+- members:
+  - serviceAccount:marketplace-scraper-sa@fluxori-web-app.iam.gserviceaccount.com
+  role: roles/datastore.user
+- members:
+  - serviceAccount:427925539255@cloudservices.gserviceaccount.com
+  role: roles/editor
+- members:
+  - serviceAccount:marketplace-scraper-sa@fluxori-web-app.iam.gserviceaccount.com
+  role: roles/monitoring.metricWriter
+- members:
+  - serviceAccount:fluxori-web-app@fluxori-web-app.iam.gserviceaccount.com
+  - user:tarquin.stapa@fluxori.com
+  role: roles/owner
+- members:
+  - serviceAccount:marketplace-scraper-sa@fluxori-web-app.iam.gserviceaccount.com
+  role: roles/pubsub.publisher
+- members:
+  - serviceAccount:service-427925539255@gcp-sa-pubsub.iam.gserviceaccount.com
+  role: roles/pubsub.serviceAgent
+- members:
+  - serviceAccount:marketplace-scraper-sa@fluxori-web-app.iam.gserviceaccount.com
+  role: roles/run.invoker
+- members:
+  - serviceAccount:service-427925539255@serverless-robot-prod.iam.gserviceaccount.com
+  role: roles/run.serviceAgent
+- members:
+  - serviceAccount:marketplace-scraper-sa@fluxori-web-app.iam.gserviceaccount.com
+  role: roles/secretmanager.secretAccessor
+- members:
+  - serviceAccount:427925539255-compute@developer.gserviceaccount.com
+  role: roles/storage.objectViewer
+etag: BwYzAQJgYyU=
+version: 1
+Updated IAM policy for project [fluxori-web-app].
+bindings:
+- members:
+  - serviceAccount:service-427925539255@gcp-sa-artifactregistry.iam.gserviceaccount.com
+  role: roles/artifactregistry.serviceAgent
+- members:
+  - serviceAccount:427925539255@cloudbuild.gserviceaccount.com
+  role: roles/artifactregistry.writer
+- members:
+  - serviceAccount:427925539255@cloudbuild.gserviceaccount.com
+  role: roles/cloudbuild.builds.builder
+- members:
+  - serviceAccount:service-427925539255@gcp-sa-cloudbuild.iam.gserviceaccount.com
+  role: roles/cloudbuild.serviceAgent
+- members:
+  - serviceAccount:service-427925539255@gcp-sa-cloudscheduler.iam.gserviceaccount.com
+  role: roles/cloudscheduler.serviceAgent
+- members:
+  - serviceAccount:marketplace-scraper-sa@fluxori-web-app.iam.gserviceaccount.com
+  role: roles/cloudtrace.agent
+- members:
+  - serviceAccount:service-427925539255@compute-system.iam.gserviceaccount.com
+  role: roles/compute.serviceAgent
+- members:
+  - serviceAccount:service-427925539255@containerregistry.iam.gserviceaccount.com
+  role: roles/containerregistry.ServiceAgent
+- members:
+  - serviceAccount:marketplace-scraper-sa@fluxori-web-app.iam.gserviceaccount.com
+  role: roles/datastore.user
+- members:
+  - serviceAccount:427925539255@cloudservices.gserviceaccount.com
+  role: roles/editor
+- members:
+  - serviceAccount:marketplace-scraper-sa@fluxori-web-app.iam.gserviceaccount.com
+  role: roles/monitoring.metricWriter
+- members:
+  - serviceAccount:fluxori-web-app@fluxori-web-app.iam.gserviceaccount.com
+  - user:tarquin.stapa@fluxori.com
+  role: roles/owner
+- members:
+  - serviceAccount:marketplace-scraper-sa@fluxori-web-app.iam.gserviceaccount.com
+  role: roles/pubsub.publisher
+- members:
+  - serviceAccount:service-427925539255@gcp-sa-pubsub.iam.gserviceaccount.com
+  role: roles/pubsub.serviceAgent
+- members:
+  - serviceAccount:marketplace-scraper-sa@fluxori-web-app.iam.gserviceaccount.com
+  role: roles/run.invoker
+- members:
+  - serviceAccount:service-427925539255@serverless-robot-prod.iam.gserviceaccount.com
+  role: roles/run.serviceAgent
+- members:
+  - serviceAccount:marketplace-scraper-sa@fluxori-web-app.iam.gserviceaccount.com
+  role: roles/secretmanager.secretAccessor
+- members:
+  - serviceAccount:427925539255-compute@developer.gserviceaccount.com
+  role: roles/storage.objectViewer
+etag: BwYzAQKzkGc=
+version: 1
+[0;32m✓ Foundation infrastructure setup complete[0m
+
+[0;34m[2/6] Setting up Firestore database...[0m

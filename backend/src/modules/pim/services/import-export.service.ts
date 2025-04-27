@@ -1122,16 +1122,13 @@ export class ImportExportService {
     // Validate product status
     if (
       product.status &&
-      !Object.values(ProductStatus).includes(product.status as ProductStatus)
+      !Object.values(ProductStatus).includes(product.status)
     ) {
       throw new Error(`Invalid product status: ${product.status}`);
     }
 
     // Validate product type
-    if (
-      product.type &&
-      !Object.values(ProductType).includes(product.type as ProductType)
-    ) {
+    if (product.type && !Object.values(ProductType).includes(product.type)) {
       throw new Error(`Invalid product type: ${product.type}`);
     }
   }

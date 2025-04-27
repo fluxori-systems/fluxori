@@ -34,11 +34,11 @@ export class WantitallConnector extends BaseMarketplaceConnector {
   readonly connectorId: string = 'wantitall';
   readonly connectorName: string = 'Wantitall Marketplace API';
 
-  private apiClient: NetworkAwareClient;
+  private apiClient!: NetworkAwareClient;
   private baseUrl: string = 'https://api.wantitall.co.za/v2';
-  private apiKey: string;
-  private sellerId: string;
-  private organizationId: string;
+  private apiKey!: string;
+  private sellerId!: string;
+  private organizationId!: string;
 
   constructor() {
     super('WantitallConnector');

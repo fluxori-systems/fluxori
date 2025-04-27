@@ -1,11 +1,11 @@
 import { Injectable, Logger } from '@nestjs/common';
 
-import { FirestoreConfigService } from 'src/config/firestore.config';
+import { FirestoreConfigService } from '../../../config/firestore.config';
 
 import {
   FirestoreBaseRepository,
   QueryFilter as FirestoreAdvancedFilter,
-} from 'src/common/repositories';
+} from '../../../common/repositories';
 
 import { BuyBoxStatus as BuyBoxStatusEnum } from '../interfaces/types';
 import { BuyBoxHistory } from '../models/buybox-history.schema';

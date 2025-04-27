@@ -36,7 +36,9 @@ export interface BundleComponent {
 /**
  * Bundle model
  */
-export interface Bundle {
+import { FirestoreEntityWithMetadata } from '../../../common/repositories/base/repository-types';
+
+export interface Bundle extends FirestoreEntityWithMetadata {
   /**
    * Bundle ID (auto-generated)
    */

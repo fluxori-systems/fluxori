@@ -9,7 +9,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
 import { ObservabilityService } from '../../../../common/observability';
-import { CredentialManagerService } from '../../../../modules/security/services/credential-manager.service';
+import { CredentialManagerService } from '@modules/security';
 import { IConnector } from '../../interfaces/connector.interface';
 import {
   PaginationOptions,
@@ -47,7 +47,7 @@ export class XeroConnector implements IConnector, IFinancialConnector {
     quality: ConnectionQuality.UNKNOWN,
   };
 
-  private credentials: ConnectorCredentials;
+  private credentials!: ConnectorCredentials;
   private tenantId?: string;
   private readonly logger = new Logger(XeroConnector.name);
 

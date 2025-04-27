@@ -19,10 +19,12 @@ The Credit System is a core infrastructure component that tracks, manages, and o
 The Credit System follows a modular architecture with clear boundaries:
 
 1. **Core Services**:
+
    - `CreditSystemService`: Main service for credit management
    - `TokenTrackingService`: Integration with Agent Framework for token tracking
 
 2. **Repositories**:
+
    - `CreditAllocationRepository`: Manages credit allocations
    - `CreditTransactionRepository`: Records credit transactions
    - `CreditPricingTierRepository`: Stores pricing tiers for different models

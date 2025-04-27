@@ -29,25 +29,25 @@ We use the `FirestoreBaseRepository` as the base class for all repositories. Thi
 ### Basic Repository Structure
 
 ```typescript
-import { Injectable, Logger } from '@nestjs/common';
-import { FirestoreBaseRepository } from '../../../common/repositories';
-import { FirestoreConfigService } from '../../../config/firestore.config';
-import { MyEntity } from '../models/my-entity.schema';
+import { Injectable, Logger } from "@nestjs/common";
+import { FirestoreBaseRepository } from "../../../common/repositories";
+import { FirestoreConfigService } from "../../../config/firestore.config";
+import { MyEntity } from "../models/my-entity.schema";
 
 @Injectable()
 export class MyEntityRepository extends FirestoreBaseRepository<MyEntity> {
   protected readonly logger = new Logger(MyEntityRepository.name);
-  
+
   constructor(firestoreConfigService: FirestoreConfigService) {
-    super(firestoreConfigService, 'my_entities', {
+    super(firestoreConfigService, "my_entities", {
       useSoftDeletes: true,
       useVersioning: true,
       enableCache: true,
       cacheTTLMs: 5 * 60 * 1000, // 5 minutes
-      requiredFields: ['organizationId', 'name'],
+      requiredFields: ["organizationId", "name"],
     });
   }
-  
+
   // Custom repository methods...
 }
 ```
@@ -66,16 +66,16 @@ The repositories module exports a public API that should be used for all imports
 
 ```typescript
 // Correct
-import { 
-  FirestoreBaseRepository, 
+import {
+  FirestoreBaseRepository,
   QueryFilter,
   equalTo,
-  greaterThan
-} from '../../../common/repositories';
+  greaterThan,
+} from "../../../common/repositories";
 
 // Incorrect
-import { FirestoreBaseRepository } from '../../../common/repositories/firestore-base.repository';
-import { QueryFilter } from '../../../common/repositories/base/repository-types';
+import { FirestoreBaseRepository } from "../../../common/repositories/firestore-base.repository";
+import { QueryFilter } from "../../../common/repositories/base/repository-types";
 ```
 
 The public API includes:
@@ -91,27 +91,27 @@ The public API includes:
 
 ```typescript
 // Find by ID
-const entity = await repository.findById('entity-id');
+const entity = await repository.findById("entity-id");
 
 // Find with filters
 const entities = await repository.find({
   advancedFilters: [
-    { field: 'organizationId', operator: '==', value: organizationId },
-    { field: 'status', operator: '==', value: 'active' }
+    { field: "organizationId", operator: "==", value: organizationId },
+    { field: "status", operator: "==", value: "active" },
   ],
   queryOptions: {
-    orderBy: 'createdAt',
-    direction: 'desc',
-    limit: 10
-  }
+    orderBy: "createdAt",
+    direction: "desc",
+    limit: 10,
+  },
 });
 
 // Using helper functions
 const entities = await repository.find({
   advancedFilters: [
-    equalTo('organizationId', organizationId),
-    greaterThan('score', 100)
-  ]
+    equalTo("organizationId", organizationId),
+    greaterThan("score", 100),
+  ],
 });
 ```
 
@@ -119,8 +119,8 @@ const entities = await repository.find({
 
 ```typescript
 const newEntity = await repository.create({
-  name: 'New Entity',
-  organizationId: 'org-123',
+  name: "New Entity",
+  organizationId: "org-123",
   // Other fields...
 });
 ```
@@ -128,9 +128,9 @@ const newEntity = await repository.create({
 ### Updating Entities
 
 ```typescript
-const updatedEntity = await repository.update('entity-id', {
-  name: 'Updated Name',
-  description: 'New description'
+const updatedEntity = await repository.update("entity-id", {
+  name: "Updated Name",
+  description: "New description",
 });
 ```
 
@@ -138,10 +138,10 @@ const updatedEntity = await repository.update('entity-id', {
 
 ```typescript
 // Soft delete (default)
-await repository.delete('entity-id');
+await repository.delete("entity-id");
 
 // Hard delete
-await repository.delete('entity-id', { softDelete: false });
+await repository.delete("entity-id", { softDelete: false });
 ```
 
 ## Transactions
@@ -151,20 +151,20 @@ Use transactions for operations that need to be atomic:
 ```typescript
 await repository.runTransaction(async (context) => {
   const { transaction } = context;
-  
+
   // Get data within transaction
-  const entityA = await repository.findById('entity-a', { transaction });
-  const entityB = await repository.findById('entity-b', { transaction });
-  
+  const entityA = await repository.findById("entity-a", { transaction });
+  const entityB = await repository.findById("entity-b", { transaction });
+
   // Perform updates within transaction
-  transaction.update(repository.getDocRef('entity-a'), { 
-    balance: entityA.balance - 100 
+  transaction.update(repository.getDocRef("entity-a"), {
+    balance: entityA.balance - 100,
   });
-  
-  transaction.update(repository.getDocRef('entity-b'), { 
-    balance: entityB.balance + 100 
+
+  transaction.update(repository.getDocRef("entity-b"), {
+    balance: entityB.balance + 100,
   });
-  
+
   return true; // Transaction result
 });
 ```
@@ -175,16 +175,20 @@ Repositories provide built-in caching support:
 
 ```typescript
 // Enable caching in constructor options
-super(firestoreConfigService, 'my_entities', {
+super(firestoreConfigService, "my_entities", {
   enableCache: true,
   cacheTTLMs: 5 * 60 * 1000, // 5 minutes
 });
 
 // Bypass cache for specific operations
-const entity = await repository.findById('entity-id', { bypassCache: true });
+const entity = await repository.findById("entity-id", { bypassCache: true });
 
 // Invalidate cache after updates
-await repository.update('entity-id', { name: 'New Name' }, { invalidateCache: true });
+await repository.update(
+  "entity-id",
+  { name: "New Name" },
+  { invalidateCache: true },
+);
 ```
 
 ## Error Handling
@@ -215,31 +219,31 @@ When testing repositories, create a mock implementation of `FirestoreBaseReposit
 // Mock repository
 class MockMyEntityRepository {
   private entities: MyEntity[] = [];
-  
+
   async findById(id: string): Promise<MyEntity | null> {
-    return this.entities.find(e => e.id === id) || null;
+    return this.entities.find((e) => e.id === id) || null;
   }
-  
+
   async create(data: Partial<MyEntity>): Promise<MyEntity> {
-    const entity = { id: 'mock-id', ...data } as MyEntity;
+    const entity = { id: "mock-id", ...data } as MyEntity;
     this.entities.push(entity);
     return entity;
   }
-  
+
   // Implement other methods as needed
 }
 
 // In test
-describe('MyEntityService', () => {
+describe("MyEntityService", () => {
   let service: MyEntityService;
   let repository: MockMyEntityRepository;
-  
+
   beforeEach(async () => {
     repository = new MockMyEntityRepository();
     service = new MyEntityService(repository as unknown as MyEntityRepository);
   });
-  
-  it('should find entity by id', async () => {
+
+  it("should find entity by id", async () => {
     // Test implementation
   });
 });

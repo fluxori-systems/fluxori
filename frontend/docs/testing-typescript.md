@@ -39,11 +39,13 @@ We've added several TypeScript definition files to support testing:
 When adding new tests:
 
 1. Import Jest-DOM at the top of your test file:
+
    ```tsx
-   import '@testing-library/jest-dom';
+   import "@testing-library/jest-dom";
    ```
 
 2. Add the vitest environment directive:
+
    ```tsx
    // @vitest-environment jsdom
    ```

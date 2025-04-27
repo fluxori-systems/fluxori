@@ -1,0 +1,7 @@
+/**
+ * Project TS config for only the common slice (Phase 2.2)
+ */
+{
+  "extends": "./tsconfig.base.json",
+  "include": ["common/**/*", "types/**/*", "config/**/*"]
+}

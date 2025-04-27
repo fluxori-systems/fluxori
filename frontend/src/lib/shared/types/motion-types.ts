@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 /**
  * Shared types for motion and animation features
@@ -6,22 +6,30 @@
  * to prevent circular dependencies between them.
  */
 
-import { ConnectionQuality } from './sa-market-types';
+import { ConnectionQuality } from "./sa-market-types";
 
 /**
  * Network condition types used in animation strategies
  */
-export type NetworkCondition = 'fast' | 'medium' | 'slow' | 'poor';
+export type NetworkCondition = "fast" | "medium" | "slow" | "poor";
 
 /**
  * User-selectable motion preference modes
  */
-export type MotionMode = 'full' | 'reduced' | 'minimal';
+export type MotionMode = "full" | "reduced" | "minimal";
 
 /**
  * Types of animations that can be applied to components
  */
-export type AnimationMode = 'hover' | 'press' | 'focus' | 'error' | 'success' | 'loading' | 'shake' | 'appear';
+export type AnimationMode =
+  | "hover"
+  | "press"
+  | "focus"
+  | "error"
+  | "success"
+  | "loading"
+  | "shake"
+  | "appear";
 
 /**
  * Animation strategy configuration
@@ -29,19 +37,19 @@ export type AnimationMode = 'hover' | 'press' | 'focus' | 'error' | 'success' | 
 export interface AnimationStrategyConfig {
   /** Animation type */
   animationType: AnimationMode;
-  
+
   /** Motion mode from user preference */
   motionMode: MotionMode;
-  
+
   /** Whether to optimize for network conditions */
   networkAware?: boolean;
-  
+
   /** Current network condition (if known) */
   networkCondition?: NetworkCondition;
-  
+
   /** Whether to respect reduced motion settings */
   shouldReduceMotion?: boolean;
-  
+
   /** Custom duration multiplier (1.0 = default) */
   customDuration?: number;
 }
@@ -52,22 +60,22 @@ export interface AnimationStrategyConfig {
 export interface AnimationParams {
   /** Whether animations should run at all */
   enabled: boolean;
-  
+
   /** Duration multiplier (1.0 = default, 0.5 = half speed) */
   durationMultiplier: number;
-  
+
   /** Whether to use simplified easings */
   useSimpleEasings: boolean;
-  
+
   /** Whether to reduce motion complexity */
   reduceComplexity: boolean;
-  
+
   /** Maximum active animations */
   maxActiveAnimations: number;
-  
+
   /** Whether to disable staggering effects */
   disableStaggering: boolean;
-  
+
   /** Animation scale multiplier */
   scaleMultiplier: number;
 }
@@ -75,4 +83,9 @@ export interface AnimationParams {
 /**
  * Type for AI confidence levels
  */
-export type ConfidenceLevel = 'low' | 'medium' | 'high' | 'verifying' | 'processing';
+export type ConfidenceLevel =
+  | "low"
+  | "medium"
+  | "high"
+  | "verifying"
+  | "processing";

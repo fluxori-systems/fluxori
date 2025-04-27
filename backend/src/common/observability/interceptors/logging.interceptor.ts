@@ -65,6 +65,7 @@ export class LoggingInterceptor implements NestInterceptor {
     // Create log context
     const logContext: LogContext = {
       service: 'HttpLogger',
+      timestamp: new Date(),
       ...(traceId && { trace: { traceId, spanId: '', startTime: new Date() } }),
     };
 
@@ -78,13 +79,15 @@ export class LoggingInterceptor implements NestInterceptor {
     if (shouldSample) {
       this.logger.debug(`${request.method} ${request.path} - Request`, {
         ...logContext,
-        request: {
+        customFields: {
           method: request.method,
           path: request.path,
-          query: request.query,
-          params: request.params,
-          headers: this.sanitizeHeaders(request.headers),
-          ...(this.logRequestBodies && request.body && { body: request.body }),
+          query: JSON.stringify(request.query),
+          params: JSON.stringify(request.params),
+          // headers can be large, so only log selected headers or summary
+          headers: JSON.stringify(this.sanitizeHeaders(request.headers)),
+          ...(this.logRequestBodies &&
+            request.body && { body: JSON.stringify(request.body) }),
         },
       });
     }
@@ -99,18 +102,26 @@ export class LoggingInterceptor implements NestInterceptor {
           // Log normal info message for all requests
           this.logger.log(
             `${request.method} ${request.path} - ${response.statusCode} (${duration}ms)`,
-            logContext,
+            {
+              ...logContext,
+              customFields: {
+                responseStatusCode: response.statusCode,
+                responseDurationMs: duration,
+                ...(this.logResponseBodies &&
+                  data && { responseBody: JSON.stringify(data) }),
+              },
+            },
           );
 
           // Log response details if sampling allows
           if (shouldSample) {
             this.logger.debug(`${request.method} ${request.path} - Response`, {
               ...logContext,
-              response: {
-                statusCode: response.statusCode,
-                duration,
-                headers: this.sanitizeHeaders(response.getHeaders()),
-                ...(this.logResponseBodies && data && { body: data }),
+              customFields: {
+                responseStatusCode: response.statusCode,
+                responseDurationMs: duration,
+                ...(this.logResponseBodies &&
+                  data && { responseBody: JSON.stringify(data) }),
               },
             });
           }
@@ -121,16 +132,15 @@ export class LoggingInterceptor implements NestInterceptor {
 
           // Always log errors
           this.logger.error(
-            `${request.method} ${request.path} - ${statusCode} Error: ${error.message} (${duration}ms)`,
-            error.stack,
+            `${request.method} ${request.path} - Error (${duration}ms)`,
+            undefined,
             {
               ...logContext,
-              error: {
-                message: error.message,
-                statusCode,
-                duration,
-                path: request.path,
-                method: request.method,
+              stack: error.stack,
+              customFields: {
+                errorMessage: error.message,
+                errorStatusCode: statusCode,
+                errorDurationMs: duration,
               },
             },
           );

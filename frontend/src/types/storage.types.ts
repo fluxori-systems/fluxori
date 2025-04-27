@@ -1,6 +1,6 @@
 /**
  * Storage API Types
- * 
+ *
  * Types related to file storage and management
  */
 
@@ -31,7 +31,7 @@ export interface FileListParams {
   entityId?: string;
   entityType?: string;
   sortBy?: string;
-  sortDirection?: 'asc' | 'desc';
+  sortDirection?: "asc" | "desc";
   limit?: number;
   offset?: number;
 }

@@ -12,12 +12,12 @@ quota_alert:
         filter: 'metric.type="custom.googleapis.com/marketplace_scraper/quota_usage" AND resource.type="global"'
         comparison: COMPARISON_GT
         threshold_value: 80.0
-        duration: {seconds: 0}
+        duration: { seconds: 0 }
         trigger:
           count: 1
   alert_strategy:
     notification_rate_limit:
-      period: {seconds: 3600}  # One notification per hour max
+      period: { seconds: 3600 } # One notification per hour max
 
 # High error rate alert
 error_rate_alert:
@@ -31,12 +31,12 @@ error_rate_alert:
         filter: 'metric.type="custom.googleapis.com/marketplace_scraper/error_rate" AND resource.type="global"'
         comparison: COMPARISON_GT
         threshold_value: 20.0
-        duration: {seconds: 600}  # 10 minutes
+        duration: { seconds: 600 } # 10 minutes
         trigger:
           count: 1
   alert_strategy:
     notification_rate_limit:
-      period: {seconds: 1800}  # Notification every 30 minutes max
+      period: { seconds: 1800 } # Notification every 30 minutes max
 
 # Load shedding detected alert
 loadshedding_alert:
@@ -50,12 +50,12 @@ loadshedding_alert:
         filter: 'metric.type="custom.googleapis.com/marketplace_scraper/loadshedding_detected" AND resource.type="global"'
         comparison: COMPARISON_GT
         threshold_value: 0.0
-        duration: {seconds: 0}
+        duration: { seconds: 0 }
         trigger:
           count: 1
   alert_strategy:
     notification_rate_limit:
-      period: {seconds: 7200}  # Notification every 2 hours max
+      period: { seconds: 7200 } # Notification every 2 hours max
 
 # Service inactivity alert
 inactivity_alert:
@@ -69,12 +69,12 @@ inactivity_alert:
         filter: 'metric.type="custom.googleapis.com/marketplace_scraper/tasks_completed" AND resource.type="global"'
         comparison: COMPARISON_LT
         threshold_value: 1.0
-        duration: {seconds: 21600}  # 6 hours
+        duration: { seconds: 21600 } # 6 hours
         trigger:
           count: 1
   alert_strategy:
     notification_rate_limit:
-      period: {seconds: 21600}  # Notification every 6 hours max
+      period: { seconds: 21600 } # Notification every 6 hours max
 
 # Response time alert
 response_time_alert:
@@ -88,12 +88,12 @@ response_time_alert:
         filter: 'metric.type="custom.googleapis.com/marketplace_scraper/response_time" AND resource.type="global"'
         comparison: COMPARISON_GT
         threshold_value: 10.0
-        duration: {seconds: 300}  # 5 minutes
+        duration: { seconds: 300 } # 5 minutes
         trigger:
           count: 5
   alert_strategy:
     notification_rate_limit:
-      period: {seconds: 3600}  # Notification every hour max
+      period: { seconds: 3600 } # Notification every hour max
 
 # Data quality alert
 data_quality_alert:
@@ -107,9 +107,9 @@ data_quality_alert:
         filter: 'metric.type="custom.googleapis.com/marketplace_scraper/data_quality_score" AND resource.type="global"'
         comparison: COMPARISON_LT
         threshold_value: 0.8
-        duration: {seconds: 600}  # 10 minutes
+        duration: { seconds: 600 } # 10 minutes
         trigger:
           count: 3
   alert_strategy:
     notification_rate_limit:
-      period: {seconds: 7200}  # Notification every 2 hours max
+      period: { seconds: 7200 } # Notification every 2 hours max

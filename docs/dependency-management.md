@@ -65,6 +65,7 @@ Dependency visualization helps understand the relationships between different pa
 - `architecture.svg`: High-level architectural view
 
 The visualizations use the following color coding:
+
 - Green: Modules/Pages
 - Blue: Components/Common utilities
 - Yellow: Configuration/Library code
@@ -106,6 +107,7 @@ Each module should have its own documentation file in `docs/modules/` using the 
 - `component-documentation.md`: Template for frontend components
 
 These documentation files should describe:
+
 - Module purpose and functionality
 - Public API and interface
 - Dependencies on other modules
@@ -122,6 +124,7 @@ The GitHub workflow in `.github/workflows/dependency-validation.yml` automatical
 4. Uploads the visualizations as build artifacts
 
 Failed checks will block pull request merges, ensuring architectural integrity is maintained.
+
 ## Baseline Dependency Graphs
 
 To establish a baseline for future comparison, initial dependency graphs have been generated and checked into the repository under `docs/dependency-baseline`. These SVG files reflect the current module dependency structure:
@@ -136,6 +139,7 @@ Use these baseline graphs to track changes in module coupling and to identify wh
 ## Phase 1.5 – Stub Audit & Cleanup
 
 To locate and begin cleaning up stub artifacts:
+
 1. Run `npm run stub:audit` to list all stub files (`*.stub.ts[x]`, `__stubs__`, `__mocks__`, and `.d.ts` stubs) and any `@ts-ignore`/`@ts-expect-error` directives within them.
 2. For each stub file:
    - If it’s a placeholder implementation, add a minimal typed implementation (e.g. `throw new Error('not implemented')`) with correct return types.

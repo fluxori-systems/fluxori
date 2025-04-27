@@ -31,11 +31,13 @@ This document outlines the standards and best practices for creating and modifyi
 - Include displayName for React DevTools
 
 ```tsx
-export const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
-  // Component implementation
-});
+export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
+  (props, ref) => {
+    // Component implementation
+  },
+);
 
-Button.displayName = 'Button';
+Button.displayName = "Button";
 ```
 
 ### Props Structure
@@ -46,16 +48,18 @@ Button.displayName = 'Button';
 - Use descriptive property names with JSDoc comments
 
 ```tsx
-export interface ButtonProps extends BaseComponentProps, AnimatableComponentProps {
+export interface ButtonProps
+  extends BaseComponentProps,
+    AnimatableComponentProps {
   /** The intent/purpose of the button */
   intent?: Intent;
-  
+
   /** Whether the button spans full width */
   fullWidth?: boolean;
-  
+
   /** For network optimization - if true, animations adapt to connection quality */
   networkAware?: boolean;
-  
+
   // Other props...
 }
 ```
@@ -96,7 +100,7 @@ const color = getColor(theme, `intent.${intent}`, undefined);
 tokenTracking.trackToken(`color-intent-${intent}`);
 
 // Bad
-const color = '#3f51b5';
+const color = "#3f51b5";
 ```
 
 ### Theme Awareness
@@ -120,11 +124,11 @@ const color = '#3f51b5';
 useComponentAnimation({
   ref: buttonRef,
   enabled: animated,
-  mode: 'hover',
+  mode: "hover",
   isActive: isHovered,
-  networkAware: true,  // Will adapt to connection quality
+  networkAware: true, // Will adapt to connection quality
   durationMultiplier: animationSpeed,
-  properties: { scale: 1.05 }
+  properties: { scale: 1.05 },
 });
 ```
 
@@ -161,7 +165,7 @@ useComponentAnimation({
 const { quality, isDataSaver } = useConnectionQuality();
 
 // Adapt content based on connection quality
-if (isDataSaver || quality === 'poor') {
+if (isDataSaver || quality === "poor") {
   // Use simpler animations or disable them
 }
 ```
@@ -176,7 +180,7 @@ if (isDataSaver || quality === 'poor') {
 ```tsx
 // Animation strategy adapts automatically based on network
 const strategy = getAnimationStrategy({
-  animationType: 'hover',
+  animationType: "hover",
   motionMode,
   networkAware: true,
   networkCondition: networkQuality,
@@ -213,23 +217,23 @@ const strategy = getAnimationStrategy({
 
 ```tsx
 // Example of modern test structure
-describe('Button', () => {
-  it('renders correctly with default props', () => {
+describe("Button", () => {
+  it("renders correctly with default props", () => {
     renderWithProviders(<Button>Test</Button>);
-    expect(screen.getByText('Test')).toBeInTheDocument();
+    expect(screen.getByText("Test")).toBeInTheDocument();
   });
-  
-  it('respects reduced motion preferences', () => {
+
+  it("respects reduced motion preferences", () => {
     const { container } = renderWithProviders(
       <Button animated={true}>Test</Button>,
-      { motionMode: 'reduced' }
+      { motionMode: "reduced" },
     );
-    
+
     // Use custom matcher
     expect(container.firstChild).toRespectReducedMotion();
   });
-  
-  it('applies design tokens correctly', () => {
+
+  it("applies design tokens correctly", () => {
     renderWithProviders(<Button intent="primary">Test</Button>);
     // Test token usage...
   });

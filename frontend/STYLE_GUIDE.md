@@ -8,16 +8,16 @@ This style guide ensures consistent, type-safe code across the Fluxori frontend 
 
 ### Use Modern Property Names
 
-| ❌ Deprecated | ✅ Modern | Component |
-|--------------|-----------|-----------|
-| `color` | `c` | Text, Title, Badge, etc. |
-| `weight` | `fw` | Text, Title, etc. |
-| `align` | `ta` | Text, Title, Stack, etc. |
-| `spacing` | `gap` | Group, Stack, etc. |
-| `position` | `justify` | Group, etc. |
-| `leftIcon` | `leftSection` | Button, etc. |
-| `rightIcon` | `rightSection` | Button, etc. |
-| `breakpoint` | *removed* | Stepper, etc. |
+| ❌ Deprecated | ✅ Modern      | Component                |
+| ------------- | -------------- | ------------------------ |
+| `color`       | `c`            | Text, Title, Badge, etc. |
+| `weight`      | `fw`           | Text, Title, etc.        |
+| `align`       | `ta`           | Text, Title, Stack, etc. |
+| `spacing`     | `gap`          | Group, Stack, etc.       |
+| `position`    | `justify`      | Group, etc.              |
+| `leftIcon`    | `leftSection`  | Button, etc.             |
+| `rightIcon`   | `rightSection` | Button, etc.             |
+| `breakpoint`  | _removed_      | Stepper, etc.            |
 
 ### Grid Sizing
 
@@ -36,6 +36,7 @@ Use the responsive object syntax for Grid columns:
 ### Always Add 'use client' Directive
 
 Add the 'use client' directive to any component that:
+
 - Uses React hooks like useState, useEffect, useRef, etc.
 - Uses Next.js hooks like useRouter, useSearchParams, etc.
 - Contains event handlers (onClick, onChange, etc.)
@@ -43,18 +44,14 @@ Add the 'use client' directive to any component that:
 
 ```tsx
 // ✅ Correct
-'use client';
+"use client";
 
-import { useState } from 'react';
+import { useState } from "react";
 
 export default function Counter() {
   const [count, setCount] = useState(0);
-  
-  return (
-    <button onClick={() => setCount(count + 1)}>
-      Count: {count}
-    </button>
-  );
+
+  return <button onClick={() => setCount(count + 1)}>Count: {count}</button>;
 }
 ```
 
@@ -64,15 +61,15 @@ Always wrap components using `useSearchParams()` in a Suspense boundary:
 
 ```tsx
 // ✅ Correct
-'use client';
+"use client";
 
-import { Suspense } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 
 function SearchContent() {
   const searchParams = useSearchParams();
-  const query = searchParams.get('q');
-  
+  const query = searchParams.get("q");
+
   return <div>Search results for: {query}</div>;
 }
 
@@ -111,10 +108,10 @@ function List<T extends DataItem>({ items }: { items: T[] }) {
 
 ```tsx
 // ❌ Incorrect
-import { Text, Button } from '@mantine/core';
+import { Text, Button } from "@mantine/core";
 
 // ✅ Correct
-import { Text, Button } from '@/lib/ui-components';
+import { Text, Button } from "@/lib/ui-components";
 ```
 
 ## Code Organization
@@ -123,9 +120,9 @@ import { Text, Button } from '@/lib/ui-components';
 
 ```tsx
 // Imports
-import { useState } from 'react';
-import { Text, Button } from '@/lib/ui-components';
-import { YourType } from '@/types';
+import { useState } from "react";
+import { Text, Button } from "@/lib/ui-components";
+import { YourType } from "@/types";
 
 // Component interfaces/types
 interface YourComponentProps {
@@ -137,10 +134,10 @@ interface YourComponentProps {
 export default function YourComponent({ title, items }: YourComponentProps) {
   // Hooks
   const [isOpen, setIsOpen] = useState(false);
-  
+
   // Helper functions
   const handleToggle = () => setIsOpen(!isOpen);
-  
+
   // JSX
   return (
     <div>
@@ -154,6 +151,7 @@ export default function YourComponent({ title, items }: YourComponentProps) {
 ## Pre-commit Checks
 
 Your code will be automatically checked on commit for:
+
 - TypeScript errors
 - ESLint warnings and errors, including:
   - Deprecated Mantine props
@@ -165,12 +163,7 @@ Your code will be automatically checked on commit for:
 We provide a set of pre-typed components that enforce the correct Mantine props:
 
 ```tsx
-import { 
-  Text, 
-  Group, 
-  Stack, 
-  Button 
-} from '@/lib/ui-components';
+import { Text, Group, Stack, Button } from "@/lib/ui-components";
 
 // These components are guaranteed to have the correct prop types
 ```

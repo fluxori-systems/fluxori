@@ -37,6 +37,7 @@ After running the automated scripts, there will likely be some manual fixes need
 ## Repository Class Changes
 
 ### Before:
+
 ```typescript
 import { FirestoreBaseRepository } from '../../common/repositories/firestore-base.repository';
 
@@ -45,18 +46,19 @@ export class ProductRepository extends FirestoreBaseRepository<Product> {
   protected readonly collectionName = 'products';
 
   constructor(
-    @Inject(FirestoreConfigService) firestoreConfigService: FirestoreConfigService
+    @Inject(FirestoreConfigService)
+    firestoreConfigService: FirestoreConfigService,
   ) {
     super(firestoreConfigService, {
       useSoftDeletes: true,
-      useVersioning: true
+      useVersioning: true,
     });
   }
-  
+
   async findByType(type: string): Promise<Product[]> {
     return this.findAll({ type });
   }
-  
+
   async setAsDefault(id: string): Promise<boolean> {
     return this.withTransaction(async (transaction) => {
       // Transaction logic
@@ -67,28 +69,28 @@ export class ProductRepository extends FirestoreBaseRepository<Product> {
 ```
 
 ### After:
+
 ```typescript
 import { UnifiedFirestoreRepository } from '../../common/repositories/unified-firestore.repository';
 
 @Injectable()
 export class ProductRepository extends UnifiedFirestoreRepository<Product> {
   constructor(
-    @Inject(FirestoreConfigService) firestoreConfigService: FirestoreConfigService
+    @Inject(FirestoreConfigService)
+    firestoreConfigService: FirestoreConfigService,
   ) {
     super(firestoreConfigService, 'products', {
       useSoftDeletes: true,
-      useVersioning: true
+      useVersioning: true,
     });
   }
-  
+
   async findByType(type: string): Promise<Product[]> {
     return this.find({
-      filters: [
-        { field: 'type', operator: '==', value: type }
-      ]
+      filters: [{ field: 'type', operator: '==', value: type }],
     });
   }
-  
+
   async setAsDefault(id: string): Promise<boolean> {
     return this.runTransaction(async (context) => {
       // Transaction logic using context
@@ -101,13 +103,16 @@ export class ProductRepository extends UnifiedFirestoreRepository<Product> {
 ## Key Changes Summary
 
 1. **Class Inheritance**
+
    - Change from `FirestoreBaseRepository` to `UnifiedFirestoreRepository`
 
 2. **Constructor Changes**
+
    - Pass collection name directly to the constructor
    - Options are the third parameter now
 
 3. **Query Method Changes**
+
    - `findAll()` with object properties becomes `find()` with filters array
    - Instead of `findAll({ type })`, use `find({ filters: [{ field: 'type', operator: '==', value: type }] })`
 

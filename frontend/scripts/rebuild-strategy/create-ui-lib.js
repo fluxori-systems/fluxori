@@ -5,19 +5,19 @@
  * It creates the directory structure and core component files.
  */
 
-const fs = require('fs');
-const path = require('path');
+const fs = require("fs");
+const path = require("path");
 
 // Create directory structure
 const directories = [
-  'src/lib/ui',
-  'src/lib/ui/components',
-  'src/lib/ui/types',
-  'src/lib/ui/hooks',
-  'src/lib/ui/theme',
+  "src/lib/ui",
+  "src/lib/ui/components",
+  "src/lib/ui/types",
+  "src/lib/ui/hooks",
+  "src/lib/ui/theme",
 ];
 
-directories.forEach(dir => {
+directories.forEach((dir) => {
   const dirPath = path.resolve(process.cwd(), dir);
   if (!fs.existsSync(dirPath)) {
     fs.mkdirSync(dirPath, { recursive: true });
@@ -42,11 +42,8 @@ export * from './hooks';
 export * from './theme';
 `;
 
-fs.writeFileSync(
-  path.resolve(process.cwd(), 'src/lib/ui/index.ts'),
-  indexFile
-);
-console.log('Created index.ts file');
+fs.writeFileSync(path.resolve(process.cwd(), "src/lib/ui/index.ts"), indexFile);
+console.log("Created index.ts file");
 
 // Create component index file
 const componentIndexFile = `// Component exports
@@ -120,10 +117,10 @@ export {
 `;
 
 fs.writeFileSync(
-  path.resolve(process.cwd(), 'src/lib/ui/components/index.ts'),
-  componentIndexFile
+  path.resolve(process.cwd(), "src/lib/ui/components/index.ts"),
+  componentIndexFile,
 );
-console.log('Created components/index.ts file');
+console.log("Created components/index.ts file");
 
 // Create Button component file
 const buttonFile = `import { Button as MantineButton } from '@mantine/core';
@@ -156,10 +153,10 @@ Button.displayName = 'Button';
 `;
 
 fs.writeFileSync(
-  path.resolve(process.cwd(), 'src/lib/ui/components/Button.tsx'),
-  buttonFile
+  path.resolve(process.cwd(), "src/lib/ui/components/Button.tsx"),
+  buttonFile,
 );
-console.log('Created Button component');
+console.log("Created Button component");
 
 // Create Text component file
 const textFile = `import { Text as MantineText } from '@mantine/core';
@@ -195,10 +192,10 @@ Text.displayName = 'Text';
 `;
 
 fs.writeFileSync(
-  path.resolve(process.cwd(), 'src/lib/ui/components/Text.tsx'),
-  textFile
+  path.resolve(process.cwd(), "src/lib/ui/components/Text.tsx"),
+  textFile,
 );
-console.log('Created Text component');
+console.log("Created Text component");
 
 // Create README file
 const readmeFile = `# UI Library
@@ -233,10 +230,10 @@ The library includes wrappers around Mantine UI components to ensure proper typi
 `;
 
 fs.writeFileSync(
-  path.resolve(process.cwd(), 'src/lib/ui/README.md'),
-  readmeFile
+  path.resolve(process.cwd(), "src/lib/ui/README.md"),
+  readmeFile,
 );
-console.log('Created README.md');
+console.log("Created README.md");
 
 // Create update-imports script
 const updateImportsScript = `#!/usr/bin/env node
@@ -363,12 +360,14 @@ console.log(\`\\nComplete! Updated \${updatedFiles} files.\`);
 `;
 
 fs.writeFileSync(
-  path.resolve(process.cwd(), 'scripts/rebuild-strategy/update-imports.js'),
-  updateImportsScript
+  path.resolve(process.cwd(), "scripts/rebuild-strategy/update-imports.js"),
+  updateImportsScript,
 );
-console.log('Created update-imports.js script');
+console.log("Created update-imports.js script");
 
-console.log('\nInitialization complete! Next steps:');
-console.log('1. Implement remaining UI components in src/lib/ui/components/');
-console.log('2. Run the update-imports.js script to update imports throughout the codebase');
-console.log('3. Fix any remaining TypeScript errors');
+console.log("\nInitialization complete! Next steps:");
+console.log("1. Implement remaining UI components in src/lib/ui/components/");
+console.log(
+  "2. Run the update-imports.js script to update imports throughout the codebase",
+);
+console.log("3. Fix any remaining TypeScript errors");

@@ -13,6 +13,8 @@ import { ConnectorCredentials, ConnectionStatus } from '../interfaces/types';
  * Connector credential entity for storage in Firestore
  */
 export interface ConnectorCredentialEntity extends FirestoreEntity {
+  isDeleted: boolean; // Ensure always present for FirestoreEntityWithMetadata compliance
+  version: number; // Ensure always present for FirestoreEntityWithMetadata compliance
   /** Unique identifier for the connector (e.g., 'takealot', 'amazon-sp-api', 'shopify') */
   connectorId: string;
 
@@ -55,16 +57,16 @@ export interface ConnectorCredentialEntity extends FirestoreEntity {
  */
 export class CreateConnectorCredentialDto {
   /** Connector ID */
-  connectorId: string;
+  connectorId!: string;
 
   /** Connector name */
-  connectorName: string;
+  connectorName!: string;
 
   /** Organization ID */
-  organizationId: string;
+  organizationId!: string;
 
   /** Credential data */
-  credentials: ConnectorCredentials;
+  credentials!: ConnectorCredentials;
 
   /** Optional access token */
   accessToken?: string;

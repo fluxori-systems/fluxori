@@ -4,12 +4,12 @@ on:
   push:
     branches: [main]
     paths:
-      - 'backend/src/**'
-      - 'backend/.dependency-cruiser.js'
+      - "backend/src/**"
+      - "backend/.dependency-cruiser.js"
   pull_request:
     paths:
-      - 'backend/src/**'
-      - 'backend/.dependency-cruiser.js'
+      - "backend/src/**"
+      - "backend/.dependency-cruiser.js"
   workflow_dispatch:
 
 jobs:
@@ -23,8 +23,8 @@ jobs:
       - name: Use Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18'
-          cache: 'npm'
+          node-version: "18"
+          cache: "npm"
 
       - name: Install Graphviz
         run: sudo apt-get install -y graphviz
@@ -50,8 +50,8 @@ jobs:
         with:
           author_name: GitHub Actions
           author_email: actions@github.com
-          message: 'chore: update ADR visualizations'
-          add: 'docs/adr/visualizations'
+          message: "chore: update ADR visualizations"
+          add: "docs/adr/visualizations"
 
       - name: Upload ADR visualizations as artifacts for PR
         if: github.event_name == 'pull_request'

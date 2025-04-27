@@ -1,0 +1,210 @@
+# Scheduler jobs configuration
+# This file defines the scheduled jobs for the marketplace scraper
+
+# Takealot scraping jobs
+takealot_daily_deals:
+  cron: "0 */4 * * *" # Every 4 hours
+  description: "Scrape Takealot daily deals"
+  task_type: "extract_daily_deals"
+  marketplace: "takealot"
+  priority: 9
+  max_pages: 5
+
+takealot_high_value_keywords:
+  cron: "0 */12 * * *" # Every 12 hours
+  description: "Track high value keywords on Takealot"
+  task_type: "track_keyword_ranking"
+  marketplace: "takealot"
+  priority: 8
+  params:
+    max_pages: 5
+    importance: "high"
+
+takealot_popular_product_updates:
+  cron: "0 */12 * * *" # Every 12 hours
+  description: "Update popular product details on Takealot"
+  task_type: "product_details"
+  marketplace: "takealot"
+  priority: 8
+  params:
+    category: "high_demand"
+
+takealot_category_scan:
+  cron: "0 9 */3 * *" # Every 3 days at 9:00
+  description: "Scan Takealot categories"
+  task_type: "category_scanning"
+  marketplace: "takealot"
+  priority: 6
+
+# Amazon scraping jobs
+amazon_daily_deals:
+  cron: "30 */4 * * *" # Every 4 hours, offset by 30min
+  description: "Scrape Amazon daily deals"
+  task_type: "extract_daily_deals"
+  marketplace: "amazon"
+  priority: 9
+  max_pages: 5
+
+amazon_high_value_keywords:
+  cron: "30 */12 * * *" # Every 12 hours, offset by 30min
+  description: "Track high value keywords on Amazon"
+  task_type: "track_keyword_ranking"
+  marketplace: "amazon"
+  priority: 8
+  params:
+    max_pages: 5
+    importance: "high"
+
+amazon_popular_product_updates:
+  cron: "30 */12 * * *" # Every 12 hours, offset by 30min
+  description: "Update popular product details on Amazon"
+  task_type: "product_details"
+  marketplace: "amazon"
+  priority: 8
+  params:
+    category: "high_demand"
+
+amazon_category_scan:
+  cron: "0 12 */3 * *" # Every 3 days at 12:00
+  description: "Scan Amazon categories"
+  task_type: "category_scanning"
+  marketplace: "amazon"
+  priority: 6
+
+# Bob Shop scraping jobs
+bob_shop_daily_deals:
+  cron: "0 */6 * * *" # Every 6 hours
+  description: "Scrape Bob Shop daily deals"
+  task_type: "extract_daily_deals"
+  marketplace: "bob_shop"
+  priority: 7
+  max_pages: 3
+
+bob_shop_high_value_keywords:
+  cron: "0 */24 * * *" # Every 24 hours
+  description: "Track high value keywords on Bob Shop"
+  task_type: "track_keyword_ranking"
+  marketplace: "bob_shop"
+  priority: 7
+  params:
+    max_pages: 3
+    importance: "high"
+
+bob_shop_popular_product_updates:
+  cron: "0 */24 * * *" # Every 24 hours
+  description: "Update popular product details on Bob Shop"
+  task_type: "product_details"
+  marketplace: "bob_shop"
+  priority: 7
+  params:
+    category: "high_demand"
+
+# Makro scraping jobs
+makro_daily_deals:
+  cron: "30 */6 * * *" # Every 6 hours, offset by 30min
+  description: "Scrape Makro daily deals"
+  task_type: "extract_daily_deals"
+  marketplace: "makro"
+  priority: 7
+  max_pages: 3
+
+makro_high_value_keywords:
+  cron: "30 */24 * * *" # Every 24 hours, offset by 30min
+  description: "Track high value keywords on Makro"
+  task_type: "track_keyword_ranking"
+  marketplace: "makro"
+  priority: 7
+  params:
+    max_pages: 3
+    importance: "high"
+
+makro_popular_product_updates:
+  cron: "30 */24 * * *" # Every 24 hours, offset by 30min
+  description: "Update popular product details on Makro"
+  task_type: "product_details"
+  marketplace: "makro"
+  priority: 7
+  params:
+    category: "high_demand"
+
+# Loot scraping jobs
+loot_daily_deals:
+  cron: "0 */8 * * *" # Every 8 hours
+  description: "Scrape Loot daily deals"
+  task_type: "extract_daily_deals"
+  marketplace: "loot"
+  priority: 6
+  max_pages: 3
+
+loot_high_value_keywords:
+  cron: "0 */24 * * *" # Every 24 hours
+  description: "Track high value keywords on Loot"
+  task_type: "track_keyword_ranking"
+  marketplace: "loot"
+  priority: 6
+  params:
+    max_pages: 3
+    importance: "high"
+
+loot_popular_product_updates:
+  cron: "0 */24 * * *" # Every 24 hours
+  description: "Update popular product details on Loot"
+  task_type: "product_details"
+  marketplace: "loot"
+  priority: 6
+  params:
+    category: "high_demand"
+
+# Buck.cheap scraping jobs
+buck_cheap_daily_deals:
+  cron: "0 */12 * * *" # Every 12 hours
+  description: "Scrape Buck.cheap deals"
+  task_type: "extract_daily_deals"
+  marketplace: "buck_cheap"
+  priority: 5
+  max_pages: 2
+
+# Cross-marketplace opportunity scoring
+opportunity_scoring:
+  cron: "0 */12 * * *" # Every 12 hours
+  description: "Calculate opportunity scores across marketplaces"
+  task_type: "opportunity_scoring"
+  priority: 7
+  params:
+    deep_analysis: true
+
+# Price monitoring for price-sensitive items
+price_monitoring:
+  cron: "0 */6 * * *" # Every 6 hours
+  description: "Monitor prices for price-sensitive items"
+  task_type: "product_details"
+  priority: 8
+  params:
+    category: "price_watch"
+
+# Daily operations
+quota_reporting:
+  cron: "0 22 * * *" # Every day at 22:00
+  description: "Generate daily quota usage report"
+  task_type: "reporting"
+  priority: 3
+  params:
+    report_type: "quota"
+
+weekly_opportunity_report:
+  cron: "0 8 * * 1" # Every Monday at 8:00
+  description: "Generate weekly opportunity report"
+  task_type: "reporting"
+  priority: 4
+  params:
+    report_type: "opportunity"
+    deep_analysis: true
+
+# Data freshness tasks
+keyword_rotation:
+  cron: "0 3 * * 1" # Every Monday at 3:00
+  description: "Rotate tracked keywords"
+  task_type: "keyword_rotation"
+  priority: 5
+  params:
+    max_rotations: 100

@@ -3,7 +3,13 @@
  */
 
 // Re-export common types
-import { InsightType, InsightSeverity, InsightStatus } from './types';
+import {
+  InsightType,
+  InsightSeverity,
+  InsightStatus,
+  InsightData,
+  InsightMetadata,
+} from './types';
 export { InsightType, InsightSeverity, InsightStatus };
 
 /**
@@ -15,7 +21,7 @@ export interface FirestoreInsight {
   type: InsightType;
   title: string;
   description: string;
-  data: Record<string, any>;
+  data: InsightData; // TODO: Refine fields as discovered
   severity: InsightSeverity;
   status: InsightStatus;
   confidence: number;
@@ -44,7 +50,7 @@ export interface FirestoreAIModelConfig {
   maxTokens: number;
   isDefault: boolean;
   isEnabled: boolean;
-  metadata?: Record<string, any>;
+  metadata?: InsightMetadata; // TODO: Refine fields as discovered
   createdAt?: Date;
   updatedAt?: Date;
 }

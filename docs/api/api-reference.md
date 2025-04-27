@@ -185,7 +185,7 @@ Example response:
       "status": "active",
       "description": "Genuine leather wallet with 6 card slots",
       "price": {
-        "cost": 150.00,
+        "cost": 150.0,
         "retail": 299.99,
         "currency": "ZAR"
       },
@@ -252,7 +252,7 @@ Request body:
   "status": "active",
   "description": "Genuine leather wallet with 6 card slots",
   "price": {
-    "cost": 150.00,
+    "cost": 150.0,
     "retail": 299.99,
     "currency": "ZAR"
   },
@@ -268,9 +268,7 @@ Request body:
     "unit": "cm"
   },
   "categoryId": "cat_12345",
-  "images": [
-    "https://storage.fluxori.com/images/products/plw-001-main.jpg"
-  ]
+  "images": ["https://storage.fluxori.com/images/products/plw-001-main.jpg"]
 }
 ```
 
@@ -368,9 +366,9 @@ Example response:
       ],
       "totals": {
         "subtotal": 299.99,
-        "shipping": 50.00,
-        "tax": 52.50,
-        "discount": 0.00,
+        "shipping": 50.0,
+        "tax": 52.5,
+        "discount": 0.0,
         "total": 402.49
       },
       "createdAt": "2023-04-15T14:22:00Z",
@@ -695,7 +693,7 @@ Example response:
       "prod_123456789": {
         "salesTrend": "INCREASING",
         "conversion": 4.2,
-        "averageOrderValue": 320.50
+        "averageOrderValue": 320.5
       },
       "prod_987654321": {
         "salesTrend": "DECREASING",
@@ -808,19 +806,19 @@ Each SDK follows the same patterns as the REST API but provides language-specifi
 Example (Node.js):
 
 ```javascript
-const Fluxori = require('fluxori');
-const client = new Fluxori('your-api-key');
+const Fluxori = require("fluxori");
+const client = new Fluxori("your-api-key");
 
 // Get products
 const products = await client.inventory.products.list({
-  status: 'active',
-  limit: 20
+  status: "active",
+  limit: 20,
 });
 
 // Create an order
 const order = await client.orders.create({
   customer: {
-    email: 'customer@example.com'
+    email: "customer@example.com",
   },
   // ... other order details
 });

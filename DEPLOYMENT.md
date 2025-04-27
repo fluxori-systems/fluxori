@@ -78,6 +78,7 @@ The application consists of a frontend and a backend service, both deployed to C
 The backend is deployed using GitHub Actions. To trigger a deployment:
 
 1. Push to the appropriate branch:
+
    - `dev` branch for development environment
    - `staging` branch for staging environment
    - `main` branch for production environment
@@ -223,6 +224,7 @@ Fluxori is optimized for the South African market with the following region-spec
 1. **Primary Region**: `africa-south1` (Johannesburg)
 2. **Secondary Region for AI Services**: `europe-west4` (Netherlands)
 3. **Network Configuration**:
+
    - Premium tier for external traffic
    - Standard tier for internal traffic
    - Cloud CDN for static assets

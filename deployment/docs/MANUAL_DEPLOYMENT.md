@@ -15,7 +15,7 @@ The automated deployment through Cloud Build appears to be experiencing issues. 
    - **Service name**: `marketplace-scraper`
    - **Region**: `africa-south1` (Johannesburg)
    - **CPU allocation**: `CPU is only allocated during request processing`
-   - **Autoscaling**: 
+   - **Autoscaling**:
      - Minimum instances: `0`
      - Maximum instances: `2`
    - **CPU**: `1`
@@ -87,20 +87,20 @@ After completing the deployment:
 1. Check the Firestore database for test data:
    - Go to https://console.cloud.google.com/firestore/data?project=fluxori-web-app
    - Look for the "products" collection
-   
 2. Verify scheduler jobs are created:
    - Go to https://console.cloud.google.com/cloudscheduler?project=fluxori-web-app
    - You should see jobs for each marketplace
-   
 3. Test a manual scrape:
+
    - Use cURL or a tool like Postman
    - Send a POST request to `https://your-service-url/tasks/execute`
    - With this JSON body:
+
    ```json
    {
      "task_type": "refresh_products",
      "marketplace": "takealot",
-     "params": {"max_count": 5},
+     "params": { "max_count": 5 },
      "priority": "HIGH"
    }
    ```

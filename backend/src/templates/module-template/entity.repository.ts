@@ -10,7 +10,7 @@ import { Entity } from './entity.model';
 export class EntityRepository extends FirestoreBaseRepository<Entity> {
   // Collection name in Firestore
   protected readonly collectionName = 'entities';
-  
+
   constructor(firestoreConfigService: FirestoreConfigService) {
     super(firestoreConfigService, {
       useSoftDeletes: true,
@@ -20,7 +20,7 @@ export class EntityRepository extends FirestoreBaseRepository<Entity> {
       requiredFields: ['organizationId', 'name', 'status'],
     });
   }
-  
+
   /**
    * Find entities by organization ID
    * @param organizationId Organization ID
@@ -29,7 +29,7 @@ export class EntityRepository extends FirestoreBaseRepository<Entity> {
   async findByOrganization(organizationId: string): Promise<Entity[]> {
     return this.findAll({ organizationId });
   }
-  
+
   /**
    * Find entities by status
    * @param status Entity status
@@ -38,26 +38,26 @@ export class EntityRepository extends FirestoreBaseRepository<Entity> {
   async findByStatus(status: 'active' | 'inactive'): Promise<Entity[]> {
     return this.findAll({ status });
   }
-  
+
   /**
    * Set an entity to active status
    * @param id Entity ID
    * @returns Updated entity
    */
   async setActive(id: string): Promise<Entity | null> {
-    return this.update(id, { 
-      status: 'active' 
+    return this.update(id, {
+      status: 'active',
     });
   }
-  
+
   /**
    * Set an entity to inactive status
    * @param id Entity ID
    * @returns Updated entity
    */
   async setInactive(id: string): Promise<Entity | null> {
-    return this.update(id, { 
-      status: 'inactive' 
+    return this.update(id, {
+      status: 'inactive',
     });
   }
 }

@@ -9,8 +9,24 @@
   "excludeExternals": true,
   "includeVersion": true,
   "categorizeByGroup": true,
-  "categoryOrder": ["Module", "Service", "Controller", "Repository", "Interface", "Type", "*"],
-  "groupOrder": ["Modules", "Services", "Controllers", "Repositories", "Interfaces", "Types", "*"],
+  "categoryOrder": [
+    "Module",
+    "Service",
+    "Controller",
+    "Repository",
+    "Interface",
+    "Type",
+    "*"
+  ],
+  "groupOrder": [
+    "Modules",
+    "Services",
+    "Controllers",
+    "Repositories",
+    "Interfaces",
+    "Types",
+    "*"
+  ],
   "sort": ["visibility", "alphabetical"],
   "visibilityFilters": {
     "protected": true,

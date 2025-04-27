@@ -21,7 +21,7 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 
-import { FirebaseAuthGuard } from '../../../common/guards/firebase-auth.guard';
+import { FirebaseAuthGuard } from '../../auth';
 import { GetUser } from '../../auth/decorators/get-user.decorator';
 import {
   DataProtectionService,
@@ -36,7 +36,7 @@ import {
  * DTO for scanning a product
  */
 class ScanProductDto {
-  productId: string;
+  productId!: string;
   skipRedaction?: boolean;
   skipFields?: string[];
   onlyFields?: string[];
@@ -47,7 +47,7 @@ class ScanProductDto {
  * DTO for redacting text
  */
 class RedactTextDto {
-  text: string;
+  text!: string;
   infoTypes?: string[];
   replaceWith?: string;
 }
@@ -56,26 +56,26 @@ class RedactTextDto {
  * DTO for creating a data policy
  */
 class CreateDataPolicyDto {
-  field: string;
-  sensitivity: DataSensitivityLevel;
-  isPersonalInfo: boolean;
-  isOperationallyNecessary: boolean;
-  infoType: string;
-  redactInLogs: boolean;
-  maskInUi: boolean;
-  allowExport: boolean;
-  retentionPeriodDays: number;
-  requiresEncryption: boolean;
+  field!: string;
+  sensitivity!: DataSensitivityLevel;
+  isPersonalInfo!: boolean;
+  isOperationallyNecessary!: boolean;
+  infoType!: string;
+  redactInLogs!: boolean;
+  maskInUi!: boolean;
+  allowExport!: boolean;
+  retentionPeriodDays!: number;
+  requiresEncryption!: boolean;
   specialHandling?: string;
-  applicableRegions: string[];
+  applicableRegions!: string[];
 }
 
 /**
  * DTO for creating a consent record
  */
 class CreateConsentDto {
-  userId: string;
-  scope: string[];
+  userId!: string;
+  scope!: string[];
   expirationDate?: Date;
 }
 
@@ -83,23 +83,23 @@ class CreateConsentDto {
  * DTO for creating a data subject request
  */
 class CreateDataSubjectRequestDto {
-  type:
+  type!:
     | 'access'
     | 'rectification'
     | 'erasure'
     | 'restriction'
     | 'portability'
     | 'objection';
-  dataSubjectId: string;
-  dataSubjectEmail: string;
-  details: string;
+  dataSubjectId!: string;
+  dataSubjectEmail!: string;
+  details!: string;
 }
 
 /**
  * DTO for updating a data subject request status
  */
 class UpdateDataSubjectRequestStatusDto {
-  status: 'pending' | 'in_progress' | 'completed' | 'denied';
+  status!: 'pending' | 'in_progress' | 'completed' | 'denied';
   notes?: string;
 }
 

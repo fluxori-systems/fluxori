@@ -1,9 +1,9 @@
 /**
  * BuyBox Status Schema
  */
-import { FirestoreEntity } from '../../../types/google-cloud.types';
-import {
-  BuyBoxStatus as BuyBoxStatusEnum,
+import { FirestoreEntityWithMetadata } from '../../../common/repositories/base/repository-types';
+import type {
+  BuyBoxStatus as BuyBoxStatusType,
   CompetitorPrice,
   MarketPosition,
   PriceSourceType,
@@ -12,14 +12,14 @@ import {
 /**
  * BuyBox Status entity for Firestore
  */
-export interface BuyBoxStatus extends FirestoreEntity {
+export interface BuyBoxStatus extends FirestoreEntityWithMetadata {
   organizationId: string;
   productId: string;
   productSku: string;
   productName: string;
   marketplaceId: string;
   marketplaceName: string;
-  status: BuyBoxStatusEnum;
+  status: BuyBoxStatusType;
   currentPrice: number;
   currentShipping: number;
   currency: string;
@@ -38,5 +38,10 @@ export interface BuyBoxStatus extends FirestoreEntity {
   isMonitored: boolean;
   monitoringInterval: number; // minutes
   sourceType: PriceSourceType;
-  metadata?: Record<string, any>;
+  metadata?: BuyBoxMetadata;
+}
+
+export interface BuyBoxMetadata {
+  costPrice?: number;
+  // Add more fields as they are discovered in the codebase
 }

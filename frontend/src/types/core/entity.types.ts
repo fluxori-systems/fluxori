@@ -63,7 +63,7 @@ export interface QueryOptions {
   page?: number;
   limit?: number;
   sortBy?: string;
-  sortDirection?: 'asc' | 'desc';
+  sortDirection?: "asc" | "desc";
   includeDeleted?: boolean;
   filters?: Record<string, any>;
   search?: string;
@@ -73,15 +73,15 @@ export interface QueryOptions {
  * Database field types
  */
 export enum FieldType {
-  TEXT = 'text',
-  NUMBER = 'number',
-  BOOLEAN = 'boolean',
-  DATE = 'date',
-  OBJECT = 'object',
-  ARRAY = 'array',
-  REFERENCE = 'reference',
-  GEO_POINT = 'geopoint',
-  MAP = 'map',
+  TEXT = "text",
+  NUMBER = "number",
+  BOOLEAN = "boolean",
+  DATE = "date",
+  OBJECT = "object",
+  ARRAY = "array",
+  REFERENCE = "reference",
+  GEO_POINT = "geopoint",
+  MAP = "map",
 }
 
 /**
@@ -89,6 +89,16 @@ export enum FieldType {
  */
 export interface AdvancedFilter {
   field: string;
-  operator: '==' | '!=' | '<' | '<=' | '>' | '>=' | 'array-contains' | 'array-contains-any' | 'in' | 'not-in';
+  operator:
+    | "=="
+    | "!="
+    | "<"
+    | "<="
+    | ">"
+    | ">="
+    | "array-contains"
+    | "array-contains-any"
+    | "in"
+    | "not-in";
   value: any;
 }

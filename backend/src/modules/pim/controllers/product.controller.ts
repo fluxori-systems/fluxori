@@ -48,6 +48,12 @@ export class ProductController {
     @GetUser() user: User,
   ): Promise<Product> {
     const organizationId = user.organizationId;
+    if (!organizationId) {
+      throw new HttpException(
+        'Missing organization ID',
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
     const product = await this.productService.getProductById(
       id,
       organizationId,
@@ -73,6 +79,12 @@ export class ProductController {
     @GetUser() user: User,
   ): Promise<{ items: Product[]; total: number; page: number; limit: number }> {
     const organizationId = user.organizationId;
+    if (!organizationId) {
+      throw new HttpException(
+        'Missing organization ID',
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
 
     // Parse and validate filter parameters
     const filter: ProductFilter = {
@@ -181,6 +193,12 @@ export class ProductController {
     @GetUser() user: User,
   ): Promise<Product> {
     const organizationId = user.organizationId;
+    if (!organizationId) {
+      throw new HttpException(
+        'Missing organization ID',
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
 
     // Ensure user can only update their organization's products
     updateProductDto.organizationId = organizationId;
@@ -208,6 +226,12 @@ export class ProductController {
     @GetUser() user: User,
   ): Promise<void> {
     const organizationId = user.organizationId;
+    if (!organizationId) {
+      throw new HttpException(
+        'Missing organization ID',
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
 
     const product = await this.productService.getProductById(
       id,
@@ -233,6 +257,12 @@ export class ProductController {
     @GetUser() user: User,
   ): Promise<Product[]> {
     const organizationId = user.organizationId;
+    if (!organizationId) {
+      throw new HttpException(
+        'Missing organization ID',
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
     return await this.productService.getFeaturedProducts(organizationId, limit);
   }
 
@@ -249,6 +279,12 @@ export class ProductController {
     @GetUser() user: User,
   ): Promise<Product[]> {
     const organizationId = user.organizationId;
+    if (!organizationId) {
+      throw new HttpException(
+        'Missing organization ID',
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
     return await this.productService.getRecentlyUpdatedProducts(
       organizationId,
       limit,
@@ -274,6 +310,12 @@ export class ProductController {
     @GetUser() user: User,
   ): Promise<Product[]> {
     const organizationId = user.organizationId;
+    if (!organizationId) {
+      throw new HttpException(
+        'Missing organization ID',
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
     return await this.productService.getProductsByCategory(
       organizationId,
       categoryId,
@@ -299,6 +341,12 @@ export class ProductController {
     @GetUser() user: User,
   ): Promise<Product[]> {
     const organizationId = user.organizationId;
+    if (!organizationId) {
+      throw new HttpException(
+        'Missing organization ID',
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
     return await this.productService.getProductsByMarketplace(
       organizationId,
       marketplaceId,
@@ -319,6 +367,12 @@ export class ProductController {
     @GetUser() user: User,
   ): Promise<Product[]> {
     const organizationId = user.organizationId;
+    if (!organizationId) {
+      throw new HttpException(
+        'Missing organization ID',
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
     return await this.productService.getProductsBySkus(
       organizationId,
       body.skus,
@@ -338,6 +392,12 @@ export class ProductController {
     @GetUser() user: User,
   ): Promise<Array<OperationResult<Product>>> {
     const organizationId = user.organizationId;
+    if (!organizationId) {
+      throw new HttpException(
+        'Missing organization ID',
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
 
     // Enforce organization ID for security
     operations = operations.map((op) => ({
@@ -364,6 +424,12 @@ export class ProductController {
     @GetUser() user: User,
   ): Promise<Array<OperationResult>> {
     const organizationId = user.organizationId;
+    if (!organizationId) {
+      throw new HttpException(
+        'Missing organization ID',
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
     return await this.productService.bulkDeleteProducts(
       organizationId,
       body.productIds,

@@ -18,7 +18,7 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 
-import { FirebaseAuthGuard } from '../../../common/guards/firebase-auth.guard';
+import { FirebaseAuthGuard } from '../../auth';
 import { GetUser } from '../../auth/decorators/get-user.decorator';
 import {
   RegionalProductEnhancerService,
@@ -57,8 +57,8 @@ class UpdateRegionalProductDataDto
  * DTO for bulk updating regional product data
  */
 class BulkUpdateRegionalDataDto {
-  productIds: string[];
-  regionId: string;
+  productIds!: string[];
+  regionId!: string;
   data: Partial<RegionalProductAttributes>;
 }
 

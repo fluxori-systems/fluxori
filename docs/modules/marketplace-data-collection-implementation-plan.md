@@ -71,18 +71,21 @@ marketplace-scrapers/
 #### Implementation Tasks:
 
 1. **Base Scraper Implementation**
+
    - Create abstract base class with shared functionality
    - Implement common methods for page fetching, data extraction, and storage
    - Add ethical scraping controls (robots.txt checking, rate limiting)
    - Implement load shedding detection and resilience
 
 2. **Marketplace-Specific Adapters**
+
    - Implement Takealot adapter with hybrid approach (template + HTML parsing)
    - Create Amazon SA adapter with specialized template support
    - Implement extraction patterns for product details, pricing, reviews
    - Add specialized methods for marketplace-specific features
 
 3. **Data Storage Abstractions**
+
    - Design repository interfaces for each data type
    - Implement Firestore-specific repositories
    - Create schema validation and conversion utilities
@@ -101,6 +104,7 @@ The SmartProxy Web Scraping API will be integrated with template support, browse
 #### Implementation Tasks:
 
 1. **Enhanced Client Implementation**
+
    - Implement authenticated client with comprehensive features
    - Create API integration types:
      - Synchronous requests via template-based extraction
@@ -109,6 +113,7 @@ The SmartProxy Web Scraping API will be integrated with template support, browse
    - Implement comprehensive error handling and retries
 
 2. **Template-Based Extraction**
+
    - Configure specialized Amazon templates for optimal extraction:
      - `amazon_product`: For product details with ASIN
      - `amazon_pricing`: For pricing information
@@ -120,12 +125,14 @@ The SmartProxy Web Scraping API will be integrated with template support, browse
    - Create fallback mechanisms when templates aren't effective
 
 3. **Browser Actions Framework**
+
    - Implement advanced browser interactions
    - Create action templates for common patterns
    - Design composable action sequences
    - Implement session persistence and state management
 
 4. **Regional Configuration**
+
    - Configure South African geo targeting (parameter: `geo`)
    - Implement session management with session_id for consistent IP usage
    - Create efficient caching to reduce duplicate requests
@@ -143,7 +150,7 @@ The SmartProxy Web Scraping API will be integrated with template support, browse
 ```python
 class SmartProxyClient:
     """Client for SmartProxy Web Scraping API with South African market focus"""
-    
+
     # Available Amazon templates
     AMAZON_TEMPLATES = {
         "product": "amazon_product",
@@ -153,23 +160,23 @@ class SmartProxyClient:
         "sellers": "amazon_sellers",
         "bestsellers": "amazon_bestsellers"
     }
-    
+
     # Generic templates for other marketplaces
     GENERIC_TEMPLATES = {
         "amazon": "amazon",
         "ecommerce": "ecommerce_product"
     }
-    
-    def __init__(self, 
+
+    def __init__(self,
                  auth_token: str = "VTAwMDAyNjAwNTY6UFdfMTYwYjliMDg0NzQ5NzU4Y2FiZjVmOTAyOTRkYTM4M2Vi",
                  base_url: str = "https://scraper-api.smartproxy.com/v2",
                  monthly_quota: int = 82000,
                  region: str = "ZA"):
         """Initialize SmartProxy client"""
         # [Implementation details]
-    
-    async def scrape_sync(self, 
-                          url: str, 
+
+    async def scrape_sync(self,
+                          url: str,
                           geo: str = None,
                           device_type: str = "desktop",
                           headless: str = "html",
@@ -186,7 +193,7 @@ class SmartProxyClient:
                           randomize_user_agent: bool = True) -> Dict[str, Any]:
         """Perform synchronous scraping with advanced features"""
         # [Implementation details]
-    
+
     async def scrape_with_template(self,
                                  url: str,
                                  template: str,
@@ -198,8 +205,8 @@ class SmartProxyClient:
                                  timeout: int = 60) -> Dict[str, Any]:
         """Perform template-based scraping request"""
         # [Implementation details]
-        
-    async def scrape_with_browser_actions(self, 
+
+    async def scrape_with_browser_actions(self,
                                        url: str,
                                        actions: List[Dict[str, Any]],
                                        geo: str = None,
@@ -211,7 +218,7 @@ class SmartProxyClient:
                                        timeout: int = 90) -> Dict[str, Any]:
         """Perform scraping with complex browser actions"""
         # [Implementation details]
-        
+
     async def scrape_with_hybrid_approach(self,
                                        url: str,
                                        templates: List[str],
@@ -221,7 +228,7 @@ class SmartProxyClient:
                                        fallback_to_raw: bool = True) -> Dict[str, Any]:
         """Scrape using multiple templates with fallback"""
         # [Implementation details]
-        
+
     # [Additional methods for specialized tasks]
 ```
 
@@ -232,16 +239,19 @@ The storage system will be implemented using Google Cloud Firestore with optimiz
 #### Implementation Tasks:
 
 1. **Firestore Schema Design**
+
    - Create collection structure for products, prices, categories, and searches
    - Implement efficient document IDs for fast lookups
    - Design indexes for common query patterns
 
 2. **Repository Implementation**
+
    - Create base repository with CRUD operations
    - Implement specialized repositories for each entity type
    - Add caching layer for frequently accessed data
 
 3. **Data Versioning**
+
    - Implement historical tracking for prices and availability
    - Create audit trails for data changes
    - Design efficient querying for time-series data
@@ -258,17 +268,20 @@ A comprehensive monitoring system will ensure reliable operation and quick issue
 #### Implementation Tasks:
 
 1. **Structured Logging**
+
    - Implement context-rich structured logging
    - Create log correlation across distributed components
    - Set up log-based alerting for critical errors
 
 2. **Metrics Collection**
+
    - Track scraping success rates by marketplace
    - Monitor quota usage and forecast depletion
    - Measure extraction pattern reliability
    - Track template vs. HTML parsing success rates
 
 3. **Error Recovery**
+
    - Implement graceful degradation for partial failures
    - Create self-healing mechanisms for common issues
    - Design fallback extraction patterns
@@ -288,6 +301,7 @@ The Amazon SA scraper has been implemented with comprehensive template support a
 #### Implemented Features:
 
 1. **ASIN-Based Product Extraction**
+
    - Complete product detail extraction using amazon_product template
    - Robust ASIN detection and validation logic
    - Multimedia content extraction with image URLs
@@ -296,6 +310,7 @@ The Amazon SA scraper has been implemented with comprehensive template support a
    - Template performance tracking for continuous optimization
 
 2. **Search Results Processing**
+
    - Implemented search extraction using amazon_search template
    - Position tracking and sponsored result detection
    - Search suggestion collection with related terms
@@ -303,6 +318,7 @@ The Amazon SA scraper has been implemented with comprehensive template support a
    - South African geo parameter targeting for local relevance
 
 3. **Review and Rating Collection**
+
    - Implemented review extraction using amazon_reviews template
    - Review aggregation with sentiment categorization
    - Rating distribution tracking by star level
@@ -310,6 +326,7 @@ The Amazon SA scraper has been implemented with comprehensive template support a
    - Optional paging for high-volume review collection
 
 4. **Price and Offer Monitoring**
+
    - Implemented price tracking using amazon_pricing template
    - Historical price recording with timestamp tracking
    - Promotion and discount detection
@@ -318,6 +335,7 @@ The Amazon SA scraper has been implemented with comprehensive template support a
    - ZAR currency handling for South African pricing
 
 5. **Bestseller Discovery**
+
    - Implemented bestseller extraction using amazon_bestsellers template
    - Category-specific bestseller tracking
    - Position tracking with change detection
@@ -338,6 +356,7 @@ The Takealot scraper implementation uses a hybrid approach combining templates a
 #### Implementation Tasks:
 
 1. **Template Compatibility Testing**
+
    - Implement template compatibility detection
    - Create automatic template selection
    - Design performance tracking for templates
@@ -345,6 +364,7 @@ The Takealot scraper implementation uses a hybrid approach combining templates a
    - Implement adaptive template usage
 
 2. **Hybrid Product Extraction**
+
    - Implement primary template-based extraction
    - Create HTML parsing fallback
    - Design extraction quality comparison
@@ -352,6 +372,7 @@ The Takealot scraper implementation uses a hybrid approach combining templates a
    - Implement best-result selection logic
 
 3. **Advanced Search Capabilities**
+
    - Implement search result extraction
    - Create suggestion harvesting
    - Design search position tracking
@@ -359,6 +380,7 @@ The Takealot scraper implementation uses a hybrid approach combining templates a
    - Implement competitive search analysis
 
 4. **Category Navigation**
+
    - Implement category structure extraction
    - Create breadcrumb trail tracking
    - Design category relationship mapping
@@ -366,6 +388,7 @@ The Takealot scraper implementation uses a hybrid approach combining templates a
    - Implement category change detection
 
 5. **Daily Deals and Promotions**
+
    - Implement daily deals extraction
    - Create promotion detection
    - Design price drop alerting
@@ -388,16 +411,19 @@ The data processing pipeline will transform raw scraped data into structured, no
 #### Implementation Tasks:
 
 1. **Schema Validation**
+
    - Create JSON schema validators for each data type
    - Implement data type and format checks
    - Add required field validation
 
 2. **Data Cleaning**
+
    - Implement text normalization (whitespace, encoding)
    - Create HTML and markdown stripping
    - Add currency and numeric value normalization
 
 3. **Anomaly Detection**
+
    - Implement outlier detection for prices
    - Create validation for image URLs and product specs
    - Add consistency checks across data points
@@ -412,16 +438,19 @@ The data processing pipeline will transform raw scraped data into structured, no
 #### Implementation Tasks:
 
 1. **Common Schema Design**
+
    - Create unified product representation across marketplaces
    - Design canonical category structure
    - Implement standardized price and availability schema
 
 2. **Marketplace-Specific Adapters**
+
    - Create transformation adapters for each marketplace
    - Implement field mapping and conversion
    - Add special handling for marketplace-specific features
 
 3. **Extensible Type System**
+
    - Design flexible attribute system for varied product types
    - Implement specification normalization
    - Create canonical units and measurements
@@ -436,16 +465,19 @@ The data processing pipeline will transform raw scraped data into structured, no
 #### Implementation Tasks:
 
 1. **Historical Price Tracking**
+
    - Implement time-series storage for price points
    - Create price change detection
    - Design efficient querying for price history
 
 2. **Stock Monitoring**
+
    - Track availability status changes
    - Implement stock level estimation where possible
    - Create alerts for significant availability changes
 
 3. **Promotion Detection**
+
    - Identify and track promotional pricing
    - Detect time-limited offers
    - Monitor discount percentages and patterns
@@ -464,6 +496,7 @@ The implementation successfully addresses South Africa's unique load shedding ch
 #### Implemented Features:
 
 1. **Load Shedding Detection**
+
    - Implemented advanced failure pattern analysis that detects load shedding within 30 seconds
    - Created a classification system for network status (normal, degraded, loadShedding)
    - Designed dynamic behavior adaptation based on detected network conditions
@@ -471,12 +504,14 @@ The implementation successfully addresses South Africa's unique load shedding ch
    - Implemented simulation capabilities for testing resilience
 
 2. **Checkpoint System**
+
    - Implemented robust state preservation during operations with incremental progress tracking
    - Created resumable operations after interruptions with consistent state recovery
    - Designed transaction boundaries for partial completion to ensure data integrity
    - Implemented recovery history for intelligent resumption of interrupted tasks
 
 3. **Adaptive Request Strategy**
+
    - Implemented backoff multiplier adjustments during constrained operation
    - Dynamically adjusted timeout parameters based on network status
    - Created intelligent retry policies with adaptive jitter for thundering herd prevention
@@ -495,17 +530,20 @@ The implementation will optimize SmartProxy usage for South African data collect
 #### Implementation Tasks:
 
 1. **South African IP Configuration**
+
    - Configure residential South African IP access
    - Implement region-specific proxy settings
    - Create geo-validation for collected data
 
 2. **Quota Management**
+
    - Implement tiered priority system
    - Create intelligent usage spreading across month
    - Design contingency for quota exhaustion
    - Implement circuit breaker for quota protection
 
 3. **Request Optimization**
+
    - Implement efficient request parameters
    - Create caching for repeated access
    - Design minimal page loading strategies
@@ -522,18 +560,21 @@ The implementation will account for unique aspects of South African marketplaces
 #### Implementation Tasks:
 
 1. **Takealot-Specific Features**
+
    - Implement Daily Deals tracking
    - Create Blue Dot Sale monitoring
    - Design Takealot Club price extraction
    - Implement seller type differentiation (marketplace vs. direct)
 
 2. **Amazon SA Customizations**
+
    - Create South African ASIN tracking
    - Implement ZAR currency detection
    - Design South African seller identification
    - Add import and duty fee extraction
 
 3. **South African Pricing Patterns**
+
    - Create ZAR currency handling
    - Implement VAT inclusion/exclusion detection
    - Design shipping cost extraction
@@ -587,6 +628,7 @@ The implementation will proceed in distinct phases to ensure steady progress and
 The specialized Amazon templates have been successfully implemented with the following capabilities:
 
 #### amazon_product Template
+
 - Product title, brand, and description extraction (100% success rate)
 - Price and availability information with ZAR currency support
 - Rating and review count with South African review filtering
@@ -596,6 +638,7 @@ The specialized Amazon templates have been successfully implemented with the fol
 - Related and recommended products with relevance tracking
 
 #### amazon_pricing Template
+
 - Current price extraction with ZAR formatting support
 - List price and discount calculation with percentage tracking
 - Shipping options and costs for South African delivery
@@ -605,6 +648,7 @@ The specialized Amazon templates have been successfully implemented with the fol
 - Offer counting and comparison with seller differentiation
 
 #### amazon_reviews Template
+
 - Review text and rating extraction with emotion analysis
 - Reviewer information with location relevance (South African focus)
 - Verification status with purchase validation
@@ -614,6 +658,7 @@ The specialized Amazon templates have been successfully implemented with the fol
 - Review distribution by rating with statistical breakdowns
 
 #### amazon_search Template
+
 - Product listing in search results with comprehensive metadata
 - Position and ranking information with historical tracking
 - Sponsored vs. organic result labeling with confidence scores
@@ -623,6 +668,7 @@ The specialized Amazon templates have been successfully implemented with the fol
 - Related search terms with search volume indicators
 
 #### amazon_bestsellers Template
+
 - Bestseller ranking information with temporal trend analysis
 - Category and subcategory details with market segmentation
 - Temporal ranking changes with velocity indicators
@@ -635,20 +681,21 @@ The specialized Amazon templates have been successfully implemented with the fol
 
 Performance statistics for the implemented templates:
 
-| Template Type    | Success Rate | Avg. Response Time | Fields Extracted | Fallback Rate |
-|------------------|--------------|-------------------|------------------|---------------|
-| amazon_product   | 96.5%        | 3.2s              | 42               | 3.5%          |
-| amazon_pricing   | 98.2%        | 2.1s              | 18               | 1.8%          |
-| amazon_reviews   | 94.3%        | 3.5s              | 24               | 5.7%          |
-| amazon_search    | 92.8%        | 3.9s              | 28               | 7.2%          |
-| amazon_bestsellers | 95.1%      | 3.3s              | 22               | 4.9%          |
-| Overall          | 95.4%        | 3.2s              | 134 (total)      | 4.6%          |
+| Template Type      | Success Rate | Avg. Response Time | Fields Extracted | Fallback Rate |
+| ------------------ | ------------ | ------------------ | ---------------- | ------------- |
+| amazon_product     | 96.5%        | 3.2s               | 42               | 3.5%          |
+| amazon_pricing     | 98.2%        | 2.1s               | 18               | 1.8%          |
+| amazon_reviews     | 94.3%        | 3.5s               | 24               | 5.7%          |
+| amazon_search      | 92.8%        | 3.9s               | 28               | 7.2%          |
+| amazon_bestsellers | 95.1%        | 3.3s               | 22               | 4.9%          |
+| Overall            | 95.4%        | 3.2s               | 134 (total)      | 4.6%          |
 
 ### 6.3 Hybrid Approach for Takealot (Implemented)
 
 For Takealot, a hybrid approach combining generic templates with traditional HTML parsing has been implemented:
 
 #### Template Compatibility and Performance
+
 - Comprehensive template compatibility testing system implemented
 - Automatic selection of best-performing templates for different page types
 - Performance tracking with adaptive template usage based on success rates
@@ -656,6 +703,7 @@ For Takealot, a hybrid approach combining generic templates with traditional HTM
 - Hybrid performance monitoring dashboard with real-time success rate tracking
 
 #### Advanced Browser Actions for Takealot
+
 - Automated scrolling for infinite loading with detection of content completion
 - Popup and overlay dismissal with resilient selectors
 - Filter and facet interaction with state preservation
@@ -665,6 +713,7 @@ For Takealot, a hybrid approach combining generic templates with traditional HTM
 - Category navigation with breadcrumb tracking
 
 #### Specialized Extraction Features
+
 - ZAR currency detection and parsing with format normalization
 - South African shipping option identification with delivery time estimation
 - VAT inclusion detection and price decomposition
@@ -674,6 +723,7 @@ For Takealot, a hybrid approach combining generic templates with traditional HTM
 - Competitor discovery with intelligent search term generation
 
 #### Competitive Intelligence Systems
+
 - Price history tracking with volatility analysis
 - Promotion pattern detection with predictive algorithms
 - Competitor product mapping with attribute matching
@@ -723,6 +773,7 @@ The implementation includes comprehensive testing to ensure reliability:
 The implementation has successfully achieved all defined success criteria:
 
 1. **Data Collection (100% Complete)**
+
    - ✅ Amazon SA scraper fully implemented with template integration
    - ✅ Takealot scraper fully implemented with hybrid approach
    - ✅ Historical price tracking implemented for competitive intelligence
@@ -731,6 +782,7 @@ The implementation has successfully achieved all defined success criteria:
    - ✅ Competitor product discovery and relationship mapping implemented
 
 2. **Template Effectiveness (Exceeded Targets)**
+
    - ✅ 95.4% overall success rate for Amazon specialized templates (target: 90%)
    - ✅ 87.3% success rate for Takealot with generic templates (target: 70%)
    - ✅ Robust fallback mechanisms implemented with 99.8% overall extraction success
@@ -739,6 +791,7 @@ The implementation has successfully achieved all defined success criteria:
    - ✅ Hybrid approach for Takealot completed with 99.5% overall success rate
 
 3. **Performance (Exceeded Targets)**
+
    - ✅ Average template response time: 3.2s for Amazon, 3.8s for Takealot (target: <5s)
    - ✅ Processing pipeline latency: 4.2 minutes for new data (target: <5 minutes)
    - ✅ Current capacity: 18K+ products for Amazon SA, 22K+ for Takealot
@@ -746,6 +799,7 @@ The implementation has successfully achieved all defined success criteria:
    - ✅ Batch processing efficiency: 98.7% quota utilization with priority scheduling
 
 4. **South African Market Adaptation (Exceeded Targets)**
+
    - ✅ Load shedding resilience tested with 99.7% recovery rate
    - ✅ Enhanced caching system with 3x longer cache lifetime during outages
    - ✅ ZAR currency detection and processing with 100% accuracy
@@ -771,6 +825,7 @@ The South African Marketplace Data Collection Framework has completed Phase 2A w
 2. **Amazon SA Scraper**: The Amazon SA scraper has been successfully implemented with comprehensive template support, achieving a 95.4% success rate across all template types. The system includes robust fallback mechanisms, price history tracking, and competitive intelligence features.
 
 3. **Takealot Scraper**: The Takealot scraper has been fully implemented using a sophisticated hybrid approach that combines template-based extraction with traditional HTML parsing. Key features include:
+
    - Template compatibility testing system that automatically selects optimal templates
    - Hybrid performance tracking with 87.3% success rate for template-based extraction
    - Intelligent fallback to HTML parsing with 99.5% overall extraction success
@@ -783,6 +838,7 @@ The South African Marketplace Data Collection Framework has completed Phase 2A w
 5. **SmartProxy Integration**: The SmartProxy client has been fully implemented with template support, browser actions framework, and South African geo-targeting. The system efficiently manages the 82K monthly request quota with circuit breaker patterns and priority-based scheduling.
 
 6. **Competitive Intelligence**: Comprehensive competitive intelligence features have been implemented for both Amazon SA and Takealot, including:
+
    - Price history tracking with volatility analysis
    - Competitor product discovery and relationship mapping
    - Promotion pattern detection and analysis
@@ -800,6 +856,7 @@ The Bob Shop (formerly Bid or Buy) marketplace scraper has now been successfully
 The implementation follows the same architectural patterns established for Amazon SA and Takealot, with the following key components:
 
 1. **BobShopScraper Class**
+
    - Implemented core scraper functionality using the hybrid approach
    - Integrated with SmartProxy for advanced web interaction
    - Added South African network optimization for resilience
@@ -807,6 +864,7 @@ The implementation follows the same architectural patterns established for Amazo
    - Created performance tracking for template vs. HTML parsing approaches
 
 2. **Specialized Extractors**
+
    - Implemented product_extractor for comprehensive product details
    - Created search_extractor for search results and suggestions
    - Developed category_extractor for category navigation and structure
@@ -814,6 +872,7 @@ The implementation follows the same architectural patterns established for Amazo
    - Implemented deals_extractor for special offers and promotions
 
 3. **Browser Actions for Bob Shop**
+
    - Created custom browser action sequences for product pages
    - Implemented specialized scroll patterns for infinite loading
    - Added interaction patterns for filtering and sorting
@@ -821,6 +880,7 @@ The implementation follows the same architectural patterns established for Amazo
    - Implemented facet expansion for category exploration
 
 4. **South African Optimizations**
+
    - Added load shedding resilience with adaptive request strategies
    - Implemented intelligent caching for regional network conditions
    - Created session management for consistent IP usage
@@ -838,15 +898,15 @@ The implementation follows the same architectural patterns established for Amazo
 
 The Bob Shop scraper implementation has achieved the following results:
 
-| Metric | Result | Target | Status |
-|--------|--------|--------|--------|
-| Template Compatibility | 83.7% | 70% | ✅ Exceeded |
-| HTML Parsing Success | 98.9% | 95% | ✅ Exceeded |
-| Overall Extraction Success | 99.7% | 95% | ✅ Exceeded |
-| Average Response Time | 3.5s | <5s | ✅ Achieved |
-| Products Covered | 15K+ | 10K | ✅ Exceeded |
-| Categories Mapped | 112 | 100 | ✅ Exceeded |
-| South African Seller Coverage | 92.4% | 90% | ✅ Exceeded |
+| Metric                        | Result | Target | Status      |
+| ----------------------------- | ------ | ------ | ----------- |
+| Template Compatibility        | 83.7%  | 70%    | ✅ Exceeded |
+| HTML Parsing Success          | 98.9%  | 95%    | ✅ Exceeded |
+| Overall Extraction Success    | 99.7%  | 95%    | ✅ Exceeded |
+| Average Response Time         | 3.5s   | <5s    | ✅ Achieved |
+| Products Covered              | 15K+   | 10K    | ✅ Exceeded |
+| Categories Mapped             | 112    | 100    | ✅ Exceeded |
+| South African Seller Coverage | 92.4%  | 90%    | ✅ Exceeded |
 
 The Bob Shop scraper implementation completes our coverage of major South African marketplaces, positioning the Fluxori platform as a comprehensive competitive intelligence solution for the local market.
 

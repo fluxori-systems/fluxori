@@ -1,44 +1,44 @@
 /**
  * TypeScript Fixer for Connector Interfaces
- * 
+ *
  * This script fixes TypeScript errors in the connector interfaces by:
  * 1. Synchronizing interface methods between IConnector and BaseConnector implementations
  * 2. Ensuring consistent use of types between modules
  * 3. Fixing method naming discrepancies
  */
 
-import * as fs from 'fs';
-import * as path from 'path';
+import * as fs from "fs";
+import * as path from "path";
 
 // Paths
-const BASE_PATH = path.resolve(__dirname, '../../src');
-const MODULES_PATH = path.join(BASE_PATH, 'modules');
-const CONNECTORS_PATH = path.join(MODULES_PATH, 'connectors');
-const INTERFACES_PATH = path.join(MODULES_PATH, 'interfaces');
+const BASE_PATH = path.resolve(__dirname, "../../src");
+const MODULES_PATH = path.join(BASE_PATH, "modules");
+const CONNECTORS_PATH = path.join(MODULES_PATH, "connectors");
+const INTERFACES_PATH = path.join(MODULES_PATH, "interfaces");
 
 // Fix files
 async function main() {
-  console.log('Starting TypeScript fixes for connector interfaces...');
+  console.log("Starting TypeScript fixes for connector interfaces...");
 
   try {
     // 1. Fix the connector interface files to match implementation
     await fixConnectorInterfaces();
-    
+
     // 2. Synchronize connector types
     await synchronizeConnectorTypes();
-    
+
     // 3. Fix NetworkStatus type
     await fixNetworkStatusType();
-    
+
     // 4. Update BaseConnector implementation
     await fixBaseConnector();
-    
+
     // 5. Update BaseMarketplaceConnector implementation
     await fixBaseMarketplaceConnector();
-    
-    console.log('Connector interface fixes completed successfully!');
+
+    console.log("Connector interface fixes completed successfully!");
   } catch (error) {
-    console.error('Error fixing connector interfaces:', error);
+    console.error("Error fixing connector interfaces:", error);
     process.exit(1);
   }
 }
@@ -47,18 +47,18 @@ async function main() {
  * Fix connector interface files to match implementation
  */
 async function fixConnectorInterfaces() {
-  console.log('Fixing connector interfaces...');
-  
+  console.log("Fixing connector interfaces...");
+
   // Fix module-level interface
-  const moduleLevelPath = path.join(INTERFACES_PATH, 'connector.interface.ts');
-  let content = fs.readFileSync(moduleLevelPath, 'utf8');
-  
+  const moduleLevelPath = path.join(INTERFACES_PATH, "connector.interface.ts");
+  let content = fs.readFileSync(moduleLevelPath, "utf8");
+
   // Update imports
   content = content.replace(
     "import { ConnectorCredentials, ConnectionStatus } from './connector.types';",
-    "import { ConnectorCredentials, ConnectionStatus, NetworkStatus } from './connector.types';"
+    "import { ConnectorCredentials, ConnectionStatus, NetworkStatus } from './connector.types';",
   );
-  
+
   // Update IConnector interface
   content = content.replace(
     /export interface IConnector \{[\s\S]*?\}/,
@@ -79,9 +79,9 @@ async function fixConnectorInterfaces() {
   close(): Promise<void>;
   checkNetworkStatus(): Promise<NetworkStatus>;
   refreshConnection(): Promise<ConnectionStatus>;
-}`
+}`,
   );
-  
+
   // Update IMarketplaceConnector interface
   content = content.replace(
     /export interface IMarketplaceConnector<[\s\S]*?\}/,
@@ -108,25 +108,29 @@ async function fixConnectorInterfaces() {
     compareAtPrice?: number;
     currency?: string;
   }>): Promise<any>;
-}`
+}`,
   );
-  
+
   // Remove EOF that causes syntax errors
-  content = content.replace(/EOF < \/dev\/null\s*$/, '');
-  
+  content = content.replace(/EOF < \/dev\/null\s*$/, "");
+
   fs.writeFileSync(moduleLevelPath, content);
   console.log(`Updated ${moduleLevelPath}`);
-  
+
   // Fix connector-level interface
-  const connectorLevelPath = path.join(CONNECTORS_PATH, 'interfaces', 'connector.interface.ts');
-  content = fs.readFileSync(connectorLevelPath, 'utf8');
-  
+  const connectorLevelPath = path.join(
+    CONNECTORS_PATH,
+    "interfaces",
+    "connector.interface.ts",
+  );
+  content = fs.readFileSync(connectorLevelPath, "utf8");
+
   // Update imports
   content = content.replace(
     "import { ConnectorCredentials, ConnectionStatus } from './connector.types';",
-    "import { ConnectorCredentials, ConnectionStatus, NetworkStatus } from './types';"
+    "import { ConnectorCredentials, ConnectionStatus, NetworkStatus } from './types';",
   );
-  
+
   // Update IConnector interface
   content = content.replace(
     /export interface IConnector \{[\s\S]*?\}/,
@@ -147,9 +151,9 @@ async function fixConnectorInterfaces() {
   close(): Promise<void>;
   checkNetworkStatus(): Promise<NetworkStatus>;
   refreshConnection(): Promise<ConnectionStatus>;
-}`
+}`,
   );
-  
+
   // Update IMarketplaceConnector interface
   content = content.replace(
     /export interface IMarketplaceConnector<[\s\S]*?\}/,
@@ -176,12 +180,12 @@ async function fixConnectorInterfaces() {
     compareAtPrice?: number;
     currency?: string;
   }>): Promise<any>;
-}`
+}`,
   );
-  
+
   // Remove EOF that causes syntax errors
-  content = content.replace(/EOF < \/dev\/null\s*$/, '');
-  
+  content = content.replace(/EOF < \/dev\/null\s*$/, "");
+
   fs.writeFileSync(connectorLevelPath, content);
   console.log(`Updated ${connectorLevelPath}`);
 }
@@ -190,12 +194,12 @@ async function fixConnectorInterfaces() {
  * Synchronize connector types between module-level and connector-level
  */
 async function synchronizeConnectorTypes() {
-  console.log('Synchronizing connector types...');
-  
+  console.log("Synchronizing connector types...");
+
   // Read module-level types
-  const moduleLevelPath = path.join(INTERFACES_PATH, 'connector.types.ts');
-  let content = fs.readFileSync(moduleLevelPath, 'utf8');
-  
+  const moduleLevelPath = path.join(INTERFACES_PATH, "connector.types.ts");
+  let content = fs.readFileSync(moduleLevelPath, "utf8");
+
   // Update ConnectionStatus interface
   content = content.replace(
     /export interface ConnectionStatus \{[\s\S]*?\}/,
@@ -205,9 +209,9 @@ async function synchronizeConnectorTypes() {
   quality: ConnectionQuality;
   details?: Record<string, any>;
   lastChecked?: Date;
-}`
+}`,
   );
-  
+
   // Update ConnectionQuality enum
   content = content.replace(
     /export enum ConnectionQuality \{[\s\S]*?\}/,
@@ -218,15 +222,19 @@ async function synchronizeConnectorTypes() {
   POOR = 'poor',
   CRITICAL = 'critical',
   UNKNOWN = 'unknown'
-}`
+}`,
   );
-  
+
   // Add NetworkStatus interface if missing
-  if (!content.includes('export interface NetworkStatus')) {
+  if (!content.includes("export interface NetworkStatus")) {
     // Find the position to insert after ConnectionQuality
-    const indexAfterConnectionQuality = content.indexOf('export enum ConnectionQuality') + 
-      content.substring(content.indexOf('export enum ConnectionQuality')).indexOf('}') + 1;
-    
+    const indexAfterConnectionQuality =
+      content.indexOf("export enum ConnectionQuality") +
+      content
+        .substring(content.indexOf("export enum ConnectionQuality"))
+        .indexOf("}") +
+      1;
+
     const networkStatusInterface = `
 
 export interface NetworkStatus {
@@ -241,12 +249,13 @@ export interface NetworkStatus {
   downlinkSpeed?: number;
   [key: string]: any;
 }`;
-    
-    content = content.substring(0, indexAfterConnectionQuality) + 
-              networkStatusInterface + 
-              content.substring(indexAfterConnectionQuality);
+
+    content =
+      content.substring(0, indexAfterConnectionQuality) +
+      networkStatusInterface +
+      content.substring(indexAfterConnectionQuality);
   }
-  
+
   // Update PaginationOptions interface
   content = content.replace(
     /export interface PaginationOptions \{[\s\S]*?\}/,
@@ -256,9 +265,9 @@ export interface NetworkStatus {
   sortBy?: string;
   sortDirection?: 'ASC' | 'DESC' | 'asc' | 'desc';
   filter?: Record<string, any>;
-}`
+}`,
   );
-  
+
   // Update PaginatedResponse interface
   content = content.replace(
     /export interface PaginatedResponse<T> \{[\s\S]*?\}/,
@@ -272,19 +281,27 @@ export interface NetworkStatus {
     hasNextPage: boolean;
     nextPageToken?: string;
   };
-}`
+}`,
   );
-  
+
   // Remove EOF that causes syntax errors
-  content = content.replace(/EOF < \/dev\/null\s*$/, '');
-  
+  content = content.replace(/EOF < \/dev\/null\s*$/, "");
+
   fs.writeFileSync(moduleLevelPath, content);
   console.log(`Updated ${moduleLevelPath}`);
-  
+
   // Ensure connector-level types.ts exists or create it by copying from connector.types.ts
-  const connectorTypesPath = path.join(CONNECTORS_PATH, 'interfaces', 'connector.types.ts');
-  const connectorLevelPath = path.join(CONNECTORS_PATH, 'interfaces', 'types.ts');
-  
+  const connectorTypesPath = path.join(
+    CONNECTORS_PATH,
+    "interfaces",
+    "connector.types.ts",
+  );
+  const connectorLevelPath = path.join(
+    CONNECTORS_PATH,
+    "interfaces",
+    "types.ts",
+  );
+
   if (fs.existsSync(connectorTypesPath)) {
     // Rename the file if needed
     if (!fs.existsSync(connectorLevelPath)) {
@@ -292,8 +309,13 @@ export interface NetworkStatus {
       console.log(`Renamed ${connectorTypesPath} to ${connectorLevelPath}`);
     } else {
       // Update types.ts with content from connector.types.ts
-      fs.writeFileSync(connectorLevelPath, fs.readFileSync(connectorTypesPath, 'utf8'));
-      console.log(`Updated ${connectorLevelPath} with content from ${connectorTypesPath}`);
+      fs.writeFileSync(
+        connectorLevelPath,
+        fs.readFileSync(connectorTypesPath, "utf8"),
+      );
+      console.log(
+        `Updated ${connectorLevelPath} with content from ${connectorTypesPath}`,
+      );
     }
   }
 }
@@ -302,20 +324,28 @@ export interface NetworkStatus {
  * Fix NetworkStatus type
  */
 async function fixNetworkStatusType() {
-  console.log('Fixing NetworkStatus type...');
-  
+  console.log("Fixing NetworkStatus type...");
+
   // Fix BaseConnector if it uses 'online' | 'offline' | 'degraded' | 'unknown' instead of NetworkStatus
-  const baseConnectorPath = path.join(CONNECTORS_PATH, 'adapters', 'base-connector.ts');
-  let content = fs.readFileSync(baseConnectorPath, 'utf8');
-  
+  const baseConnectorPath = path.join(
+    CONNECTORS_PATH,
+    "adapters",
+    "base-connector.ts",
+  );
+  let content = fs.readFileSync(baseConnectorPath, "utf8");
+
   // Check if networkStatus is using the string union type
-  if (content.includes("networkStatus: 'online' | 'offline' | 'degraded' | 'unknown'")) {
+  if (
+    content.includes(
+      "networkStatus: 'online' | 'offline' | 'degraded' | 'unknown'",
+    )
+  ) {
     // Update the type
     content = content.replace(
       "networkStatus: 'online' | 'offline' | 'degraded' | 'unknown'",
-      "networkStatus: NetworkStatus"
+      "networkStatus: NetworkStatus",
     );
-    
+
     fs.writeFileSync(baseConnectorPath, content);
     console.log(`Updated NetworkStatus type in ${baseConnectorPath}`);
   }
@@ -325,19 +355,27 @@ async function fixNetworkStatusType() {
  * Fix BaseConnector implementation
  */
 async function fixBaseConnector() {
-  console.log('Fixing BaseConnector implementation...');
-  
-  const baseConnectorPath = path.join(CONNECTORS_PATH, 'adapters', 'base-connector.ts');
-  let content = fs.readFileSync(baseConnectorPath, 'utf8');
-  
+  console.log("Fixing BaseConnector implementation...");
+
+  const baseConnectorPath = path.join(
+    CONNECTORS_PATH,
+    "adapters",
+    "base-connector.ts",
+  );
+  let content = fs.readFileSync(baseConnectorPath, "utf8");
+
   // Add checkNetworkStatus method if missing
-  if (!content.includes('async checkNetworkStatus()')) {
+  if (!content.includes("async checkNetworkStatus()")) {
     // Find the position after the networkStatus getter
-    const networkStatusGetterMatch = content.match(/get networkStatus\(\)[^{]*{[\s\S]*?return[^;]*;[\s\S]*?}/);
-    
+    const networkStatusGetterMatch = content.match(
+      /get networkStatus\(\)[^{]*{[\s\S]*?return[^;]*;[\s\S]*?}/,
+    );
+
     if (networkStatusGetterMatch) {
-      const indexAfterGetter = content.indexOf(networkStatusGetterMatch[0]) + networkStatusGetterMatch[0].length;
-      
+      const indexAfterGetter =
+        content.indexOf(networkStatusGetterMatch[0]) +
+        networkStatusGetterMatch[0].length;
+
       const checkNetworkStatusMethod = `
 
   /**
@@ -347,24 +385,25 @@ async function fixBaseConnector() {
     await this.updateNetworkStatus();
     return this._networkStatus;
   }`;
-      
-      content = content.substring(0, indexAfterGetter) + 
-                checkNetworkStatusMethod + 
-                content.substring(indexAfterGetter);
-      
+
+      content =
+        content.substring(0, indexAfterGetter) +
+        checkNetworkStatusMethod +
+        content.substring(indexAfterGetter);
+
       fs.writeFileSync(baseConnectorPath, content);
       console.log(`Added checkNetworkStatus method to ${baseConnectorPath}`);
     }
   }
-  
+
   // Add refreshConnection method if missing
-  if (!content.includes('async refreshConnection()')) {
+  if (!content.includes("async refreshConnection()")) {
     // Find the position before getHealthStatus method
     const healthStatusMethodMatch = content.match(/async getHealthStatus\(\)/);
-    
+
     if (healthStatusMethodMatch) {
       const indexBeforeMethod = content.indexOf(healthStatusMethodMatch[0]);
-      
+
       const refreshConnectionMethod = `/**
    * Refresh the connection to the API
    */
@@ -408,11 +447,12 @@ async function fixBaseConnector() {
   }
 
   `;
-      
-      content = content.substring(0, indexBeforeMethod) + 
-                refreshConnectionMethod + 
-                content.substring(indexBeforeMethod);
-      
+
+      content =
+        content.substring(0, indexBeforeMethod) +
+        refreshConnectionMethod +
+        content.substring(indexBeforeMethod);
+
       fs.writeFileSync(baseConnectorPath, content);
       console.log(`Added refreshConnection method to ${baseConnectorPath}`);
     }
@@ -423,22 +463,30 @@ async function fixBaseConnector() {
  * Fix BaseMarketplaceConnector implementation
  */
 async function fixBaseMarketplaceConnector() {
-  console.log('Fixing BaseMarketplaceConnector implementation...');
-  
-  const baseMarketplaceConnectorPath = path.join(CONNECTORS_PATH, 'adapters', 'base-marketplace-connector.ts');
-  let content = fs.readFileSync(baseMarketplaceConnectorPath, 'utf8');
-  
+  console.log("Fixing BaseMarketplaceConnector implementation...");
+
+  const baseMarketplaceConnectorPath = path.join(
+    CONNECTORS_PATH,
+    "adapters",
+    "base-marketplace-connector.ts",
+  );
+  let content = fs.readFileSync(baseMarketplaceConnectorPath, "utf8");
+
   // Add getProductById and getOrders methods if missing
   let needsUpdate = false;
-  
+
   // Check if getProductById is missing
-  if (!content.includes('async getProductById(')) {
+  if (!content.includes("async getProductById(")) {
     // Find location after class declaration
-    const classDeclarationMatch = content.match(/export abstract class BaseMarketplaceConnector[\s\S]*?{/);
-    
+    const classDeclarationMatch = content.match(
+      /export abstract class BaseMarketplaceConnector[\s\S]*?{/,
+    );
+
     if (classDeclarationMatch) {
-      const indexAfterClassDeclaration = content.indexOf(classDeclarationMatch[0]) + classDeclarationMatch[0].length;
-      
+      const indexAfterClassDeclaration =
+        content.indexOf(classDeclarationMatch[0]) +
+        classDeclarationMatch[0].length;
+
       const getProductByIdMethod = `
   
   /**
@@ -468,25 +516,30 @@ async function fixBaseMarketplaceConnector() {
    * Internal implementation for fetching a product by ID
    */
   protected abstract getProductByIdInternal(productId: string): Promise<OperationResult<MarketplaceProduct>>;`;
-      
-      content = content.substring(0, indexAfterClassDeclaration) + 
-                getProductByIdMethod + 
-                content.substring(indexAfterClassDeclaration);
-      
+
+      content =
+        content.substring(0, indexAfterClassDeclaration) +
+        getProductByIdMethod +
+        content.substring(indexAfterClassDeclaration);
+
       needsUpdate = true;
     }
-    
+
     // Check if getOrders is missing or needs update
-    if (!content.includes('async getOrders(')) {
-      const getProductByIdIndex = content.indexOf('async getProductById(');
-      
+    if (!content.includes("async getOrders(")) {
+      const getProductByIdIndex = content.indexOf("async getProductById(");
+
       if (getProductByIdIndex !== -1) {
         // Find position after getProductById method and its internal abstract method
-        const abstractMethodMatch = content.match(/protected abstract getProductByIdInternal[\s\S]*?;/);
-        
+        const abstractMethodMatch = content.match(
+          /protected abstract getProductByIdInternal[\s\S]*?;/,
+        );
+
         if (abstractMethodMatch) {
-          const indexAfterAbstractMethod = content.indexOf(abstractMethodMatch[0]) + abstractMethodMatch[0].length;
-          
+          const indexAfterAbstractMethod =
+            content.indexOf(abstractMethodMatch[0]) +
+            abstractMethodMatch[0].length;
+
           const getOrdersMethod = `
   
   /**
@@ -529,19 +582,22 @@ async function fixBaseMarketplaceConnector() {
    * Internal implementation for fetching orders with pagination
    */
   protected abstract getOrdersInternal(options: PaginationOptions): Promise<PaginatedResponse<MarketplaceOrder>>;`;
-          
-          content = content.substring(0, indexAfterAbstractMethod) + 
-                    getOrdersMethod + 
-                    content.substring(indexAfterAbstractMethod);
-          
+
+          content =
+            content.substring(0, indexAfterAbstractMethod) +
+            getOrdersMethod +
+            content.substring(indexAfterAbstractMethod);
+
           needsUpdate = true;
         }
       }
     }
-    
+
     if (needsUpdate) {
       fs.writeFileSync(baseMarketplaceConnectorPath, content);
-      console.log(`Updated BaseMarketplaceConnector in ${baseMarketplaceConnectorPath}`);
+      console.log(
+        `Updated BaseMarketplaceConnector in ${baseMarketplaceConnectorPath}`,
+      );
     }
   }
 }

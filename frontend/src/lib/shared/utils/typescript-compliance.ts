@@ -1,8 +1,11 @@
-'use client';
+"use client";
 
-import { IAnimationService } from '../services/animation-service.interface';
-import { IConnectionService } from '../services/connection-service.interface';
-import { AnimationParams, AnimationStrategyConfig } from '../types/motion-types';
+import { IAnimationService } from "../services/animation-service.interface";
+import { IConnectionService } from "../services/connection-service.interface";
+import {
+  AnimationParams,
+  AnimationStrategyConfig,
+} from "../types/motion-types";
 
 /**
  * Type guard to check if an object implements IAnimationService
@@ -13,10 +16,10 @@ export function isAnimationService(obj: any): obj is IAnimationService {
   // Check if object has all required methods
   return (
     obj &&
-    typeof obj.animateComponent === 'function' &&
-    typeof obj.getAnimationStrategy === 'function' &&
-    typeof obj.shouldReduceMotion === 'function' &&
-    typeof obj.getMotionMode === 'function'
+    typeof obj.animateComponent === "function" &&
+    typeof obj.getAnimationStrategy === "function" &&
+    typeof obj.shouldReduceMotion === "function" &&
+    typeof obj.getMotionMode === "function"
   );
 }
 
@@ -29,10 +32,10 @@ export function isConnectionService(obj: any): obj is IConnectionService {
   // Check if object has all required methods
   return (
     obj &&
-    typeof obj.getConnectionQuality === 'function' &&
-    typeof obj.subscribeToConnectionChanges === 'function' &&
-    typeof obj.isDataSaverEnabled === 'function' &&
-    typeof obj.isConnectionMetered === 'function'
+    typeof obj.getConnectionQuality === "function" &&
+    typeof obj.subscribeToConnectionChanges === "function" &&
+    typeof obj.isDataSaverEnabled === "function" &&
+    typeof obj.isConnectionMetered === "function"
   );
 }
 
@@ -45,13 +48,13 @@ export function isAnimationParams(obj: any): obj is AnimationParams {
   // Check if object has all required properties
   return (
     obj &&
-    typeof obj.enabled === 'boolean' &&
-    typeof obj.durationMultiplier === 'number' &&
-    typeof obj.useSimpleEasings === 'boolean' &&
-    typeof obj.reduceComplexity === 'boolean' &&
-    typeof obj.maxActiveAnimations === 'number' &&
-    typeof obj.disableStaggering === 'boolean' &&
-    typeof obj.scaleMultiplier === 'number'
+    typeof obj.enabled === "boolean" &&
+    typeof obj.durationMultiplier === "number" &&
+    typeof obj.useSimpleEasings === "boolean" &&
+    typeof obj.reduceComplexity === "boolean" &&
+    typeof obj.maxActiveAnimations === "number" &&
+    typeof obj.disableStaggering === "boolean" &&
+    typeof obj.scaleMultiplier === "number"
   );
 }
 
@@ -68,13 +71,13 @@ export type WithRequired<T, K extends keyof T> = T & { [P in K]-?: T[P] };
 export interface NetworkAwareProps {
   /** Enable network-aware optimizations */
   networkAware?: boolean;
-  
+
   /** Animation speed multiplier */
   animationSpeed?: number;
-  
+
   /** Animation delay in ms */
   animationDelay?: number;
-  
+
   /** Whether to use animations at all */
   animated?: boolean;
 }
@@ -87,9 +90,12 @@ export interface NetworkAwareProps {
 export function hasNetworkAwareProps(props: any): props is NetworkAwareProps {
   return (
     props &&
-    (props.networkAware === undefined || typeof props.networkAware === 'boolean') &&
-    (props.animationSpeed === undefined || typeof props.animationSpeed === 'number') &&
-    (props.animationDelay === undefined || typeof props.animationDelay === 'number') &&
-    (props.animated === undefined || typeof props.animated === 'boolean')
+    (props.networkAware === undefined ||
+      typeof props.networkAware === "boolean") &&
+    (props.animationSpeed === undefined ||
+      typeof props.animationSpeed === "number") &&
+    (props.animationDelay === undefined ||
+      typeof props.animationDelay === "number") &&
+    (props.animated === undefined || typeof props.animated === "boolean")
   );
 }

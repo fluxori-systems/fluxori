@@ -2,7 +2,7 @@ import { FirestoreEntity } from '../../../types/google-cloud.types';
 
 /**
  * Entity definition
- * 
+ *
  * Replace this with your entity's properties
  */
 export interface Entity extends FirestoreEntity {

@@ -84,6 +84,9 @@ describe('AgentService', () => {
         isEnabled: true,
         createdAt: new Date(),
         updatedAt: new Date(),
+        isDeleted: false,
+        deletedAt: null,
+        version: 1,
       };
 
       const conversation: AgentConversation = {
@@ -107,6 +110,9 @@ describe('AgentService', () => {
         tags: [],
         createdAt: new Date(),
         updatedAt: new Date(),
+        isDeleted: false,
+        deletedAt: null,
+        version: 1,
       };
 
       // Properly typed mocks
@@ -150,6 +156,9 @@ describe('AgentService', () => {
         order: 1,
         createdAt: new Date(),
         updatedAt: new Date(),
+        isDeleted: false,
+        deletedAt: null,
+        version: 1,
       };
 
       // Properly typed mock

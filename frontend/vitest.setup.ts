@@ -6,13 +6,13 @@
  */
 
 // Import required libraries
-import '@testing-library/jest-dom';
-import { vi, expect } from 'vitest';
-import * as matchers from '@testing-library/jest-dom/matchers';
+import "@testing-library/jest-dom";
+import { vi, expect } from "vitest";
+import * as matchers from "@testing-library/jest-dom/matchers";
 
 // Import DOM/global mocks
-import { setupMockBrowserAPIs } from './src/testing/mocks/browser-apis';
-import { setupMockPlatformAPIs } from './src/testing/mocks/platform-apis';
+import { setupMockBrowserAPIs } from "./src/testing/mocks/browser-apis";
+import { setupMockPlatformAPIs } from "./src/testing/mocks/platform-apis";
 
 // Extend Vitest's expect with testing-library matchers
 expect.extend(matchers);
@@ -24,16 +24,16 @@ class MockIntersectionObserver {
   unobserve = vi.fn();
 }
 
-Object.defineProperty(window, 'IntersectionObserver', {
+Object.defineProperty(window, "IntersectionObserver", {
   writable: true,
   configurable: true,
-  value: MockIntersectionObserver
+  value: MockIntersectionObserver,
 });
 
 // Mock window.matchMedia
-Object.defineProperty(window, 'matchMedia', {
+Object.defineProperty(window, "matchMedia", {
   writable: true,
-  value: vi.fn().mockImplementation(query => ({
+  value: vi.fn().mockImplementation((query) => ({
     matches: false,
     media: query,
     onchange: null,
@@ -52,43 +52,43 @@ class MockResizeObserver {
   unobserve = vi.fn();
 }
 
-Object.defineProperty(window, 'ResizeObserver', {
+Object.defineProperty(window, "ResizeObserver", {
   writable: true,
   configurable: true,
-  value: MockResizeObserver
+  value: MockResizeObserver,
 });
 
 // Setup network connection API for tests
 const connectionMock = {
-  effectiveType: '4g',
+  effectiveType: "4g",
   downlink: 10,
   rtt: 50,
   saveData: false,
   onchange: undefined,
   addEventListener: vi.fn(),
   removeEventListener: vi.fn(),
-  dispatchEvent: vi.fn(() => true)
+  dispatchEvent: vi.fn(() => true),
 };
 
-Object.defineProperty(navigator, 'connection', {
+Object.defineProperty(navigator, "connection", {
   value: connectionMock,
   configurable: true,
-  writable: true
+  writable: true,
 });
 
 // Mock Next.js router
-vi.mock('next/navigation', () => ({
+vi.mock("next/navigation", () => ({
   useRouter: () => ({
     push: vi.fn(),
     replace: vi.fn(),
     prefetch: vi.fn(),
     back: vi.fn(),
-    route: '/',
-    pathname: '/',
+    route: "/",
+    pathname: "/",
     query: {},
-    asPath: '/',
+    asPath: "/",
   }),
-  usePathname: () => '/',
+  usePathname: () => "/",
   useSearchParams: () => new URLSearchParams(),
 }));
 
@@ -96,21 +96,21 @@ vi.mock('next/navigation', () => ({
 // This causes "Invalid hook call" errors
 
 // Mock GSAP
-vi.mock('gsap', () => {
+vi.mock("gsap", () => {
   // Create properly typed mock GSAP functions
   const createTween = () => ({ kill: vi.fn() });
-  
+
   const createTimelineFunction = () => {
-    return function() {
+    return function () {
       return {
         to: vi.fn().mockReturnThis(),
         from: vi.fn().mockReturnThis(),
         fromTo: vi.fn().mockReturnThis(),
-        kill: vi.fn()
+        kill: vi.fn(),
       };
     };
   };
-  
+
   return {
     to: vi.fn(() => createTween()),
     from: vi.fn(() => createTween()),
@@ -120,23 +120,23 @@ vi.mock('gsap', () => {
     core: {
       Animation: vi.fn(),
       PropTween: vi.fn(),
-      SimpleTimeline: vi.fn()
+      SimpleTimeline: vi.fn(),
     },
     gsap: {
       to: vi.fn(() => createTween()),
       from: vi.fn(() => createTween()),
       set: vi.fn(),
-      timeline: createTimelineFunction()
-    }
+      timeline: createTimelineFunction(),
+    },
   };
 });
 
 // Mock the theme context
-vi.mock('./src/lib/design-system/theme/ThemeContext', () => {
+vi.mock("./src/lib/design-system/theme/ThemeContext", () => {
   return {
     ThemeProvider: ({ children }) => children,
     useTheme: () => ({
-      colorMode: 'light',
+      colorMode: "light",
       setColorMode: vi.fn(),
       toggleColorMode: vi.fn(),
       tokens: {
@@ -151,11 +151,11 @@ vi.mock('./src/lib/design-system/theme/ThemeContext', () => {
 });
 
 // Mock the motion context
-vi.mock('./src/lib/motion/context/MotionContext', () => {
+vi.mock("./src/lib/motion/context/MotionContext", () => {
   return {
     MotionProvider: ({ children }) => children,
     useMotion: () => ({
-      motionMode: 'full',
+      motionMode: "full",
       setMotionMode: vi.fn(),
       isReducedMotion: false,
     }),
@@ -166,4 +166,4 @@ vi.mock('./src/lib/motion/context/MotionContext', () => {
 setupMockBrowserAPIs();
 setupMockPlatformAPIs();
 
-console.log('Vitest setup completed');
+console.log("Vitest setup completed");

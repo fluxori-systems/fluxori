@@ -29,7 +29,7 @@ The codebase currently uses two repository implementations:
 
 - [x] Update feature-flags module repositories
 - [x] Update inventory module repositories
-- [x] Update buybox module repositories 
+- [x] Update buybox module repositories
 - [ ] Update agent-framework module repositories
 - [ ] Update rag-retrieval module repositories
 - [ ] Update ai-insights module repositories
@@ -58,20 +58,22 @@ The codebase currently uses two repository implementations:
 When implementing repositories, follow these guidelines:
 
 1. **Import from the Public API**:
+
    ```typescript
    // CORRECT
-   import { FirestoreBaseRepository } from 'src/common/repositories';
-   
+   import { FirestoreBaseRepository } from "src/common/repositories";
+
    // INCORRECT
-   import { FirestoreBaseRepository } from 'src/common/repositories/firestore-base.repository';
+   import { FirestoreBaseRepository } from "src/common/repositories/firestore-base.repository";
    ```
 
 2. **Extend the FirestoreBaseRepository**:
+
    ```typescript
    @Injectable()
    export class ProductRepository extends FirestoreBaseRepository<Product> {
      constructor(firestoreConfigService: FirestoreConfigService) {
-       super(firestoreConfigService, 'products', {
+       super(firestoreConfigService, "products", {
          // options...
        });
      }

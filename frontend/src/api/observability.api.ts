@@ -1,4 +1,4 @@
-import { apiClient } from './apiClient';
+import { apiClient } from "./apiClient";
 import {
   SystemHealthInfo,
   HealthCheckResult,
@@ -6,8 +6,8 @@ import {
   Trace,
   ErrorInfo,
   ApiMetric,
-  PerformanceMetrics
-} from '../types/observability.types';
+  PerformanceMetrics,
+} from "../types/observability.types";
 
 /**
  * API client for the Observability system
@@ -17,7 +17,7 @@ export const observabilityApi = {
    * Get the overall system health status
    */
   getSystemHealth: async (): Promise<SystemHealthInfo> => {
-    const response = await apiClient.get<SystemHealthInfo>('/health');
+    const response = await apiClient.get<SystemHealthInfo>("/health");
     return response.data;
   },
 
@@ -25,15 +25,19 @@ export const observabilityApi = {
    * Get detailed health status with component-level information
    */
   getDetailedHealth: async (): Promise<SystemHealthInfo> => {
-    const response = await apiClient.get<SystemHealthInfo>('/health/detailed');
+    const response = await apiClient.get<SystemHealthInfo>("/health/detailed");
     return response.data;
   },
 
   /**
    * Get the status of a specific component
    */
-  getComponentHealth: async (componentName: string): Promise<HealthCheckResult> => {
-    const response = await apiClient.get<HealthCheckResult>(`/health/components/${componentName}`);
+  getComponentHealth: async (
+    componentName: string,
+  ): Promise<HealthCheckResult> => {
+    const response = await apiClient.get<HealthCheckResult>(
+      `/health/components/${componentName}`,
+    );
     return response.data;
   },
 
@@ -47,17 +51,24 @@ export const observabilityApi = {
       endTime?: string;
       interval?: string;
       labels?: Record<string, string>;
-    }
+    },
   ): Promise<Metric> => {
-    const response = await apiClient.get<Metric>(`/metrics/${name}`, { params });
+    const response = await apiClient.get<Metric>(`/metrics/${name}`, {
+      params,
+    });
     return response.data;
   },
 
   /**
    * Get a list of all available metrics
    */
-  listMetrics: async (): Promise<{ name: string; description: string; type: string }[]> => {
-    const response = await apiClient.get<{ name: string; description: string; type: string }[]>('/metrics');
+  listMetrics: async (): Promise<
+    { name: string; description: string; type: string }[]
+  > => {
+    const response =
+      await apiClient.get<
+        { name: string; description: string; type: string }[]
+      >("/metrics");
     return response.data;
   },
 
@@ -82,15 +93,17 @@ export const observabilityApi = {
     maxDuration?: number;
     limit?: number;
   }): Promise<Trace[]> => {
-    const response = await apiClient.get<Trace[]>('/traces', { params });
+    const response = await apiClient.get<Trace[]>("/traces", { params });
     return response.data;
   },
 
   /**
    * Report a frontend error to the backend
    */
-  reportError: async (error: Omit<ErrorInfo, 'id' | 'timestamp'>): Promise<{ id: string }> => {
-    const response = await apiClient.post<{ id: string }>('/errors', error);
+  reportError: async (
+    error: Omit<ErrorInfo, "id" | "timestamp">,
+  ): Promise<{ id: string }> => {
+    const response = await apiClient.post<{ id: string }>("/errors", error);
     return response.data;
   },
 
@@ -98,14 +111,16 @@ export const observabilityApi = {
    * Report frontend performance metrics
    */
   reportPerformance: async (metrics: PerformanceMetrics): Promise<void> => {
-    await apiClient.post('/metrics/frontend/performance', metrics);
+    await apiClient.post("/metrics/frontend/performance", metrics);
   },
 
   /**
    * Report API request metrics from the frontend
    */
-  reportApiMetric: async (metric: Omit<ApiMetric, 'timestamp'>): Promise<void> => {
-    await apiClient.post('/metrics/frontend/api', metric);
+  reportApiMetric: async (
+    metric: Omit<ApiMetric, "timestamp">,
+  ): Promise<void> => {
+    await apiClient.post("/metrics/frontend/api", metric);
   },
 
   /**
@@ -117,7 +132,9 @@ export const observabilityApi = {
     endpoint?: string;
     method?: string;
   }): Promise<ApiMetric[]> => {
-    const response = await apiClient.get<ApiMetric[]>('/metrics/api', { params });
+    const response = await apiClient.get<ApiMetric[]>("/metrics/api", {
+      params,
+    });
     return response.data;
-  }
+  },
 };

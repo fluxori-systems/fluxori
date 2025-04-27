@@ -3,15 +3,15 @@
  * Provides helpers for responsive usage and token access
  */
 
-import { lightTheme, darkTheme } from '../tokens';
-import { 
-  DesignTokens, 
-  ColorMode, 
-  FontSizeScale, 
+import { lightTheme, darkTheme } from "../tokens";
+import {
+  DesignTokens,
+  ColorMode,
+  FontSizeScale,
   SpacingScale,
   RadiusScale,
-  ShadowScale
-} from '../types/tokens';
+  ShadowScale,
+} from "../types/tokens";
 
 /**
  * Get a specific token value from the theme
@@ -21,20 +21,22 @@ export function getToken<K extends keyof DesignTokens>(
   theme: DesignTokens,
   tokenCategory: K,
   tokenName: string,
-  fallback?: string
+  fallback?: string,
 ): string | number {
   const category = theme[tokenCategory] as any;
-  
+
   if (!category) {
     console.warn(`Token category "${tokenCategory}" not found in theme`);
-    return fallback || '';
+    return fallback || "";
   }
-  
-  if (typeof category[tokenName] === 'undefined') {
-    console.warn(`Token "${tokenName}" not found in category "${String(tokenCategory)}"`);
-    return fallback || '';
+
+  if (typeof category[tokenName] === "undefined") {
+    console.warn(
+      `Token "${tokenName}" not found in category "${String(tokenCategory)}"`,
+    );
+    return fallback || "";
   }
-  
+
   return category[tokenName];
 }
 
@@ -42,26 +44,26 @@ export function getToken<K extends keyof DesignTokens>(
  * Get a color token from the theme
  */
 export function getColor(
-  theme: DesignTokens, 
-  colorPath: string, 
-  fallback?: string
+  theme: DesignTokens,
+  colorPath: string,
+  fallback?: string,
 ): string {
-  const parts = colorPath.split('.');
+  const parts = colorPath.split(".");
   let value: any = theme.colors;
-  
+
   for (const part of parts) {
-    if (!value || typeof value[part] === 'undefined') {
+    if (!value || typeof value[part] === "undefined") {
       console.warn(`Color path "${colorPath}" not found in theme`);
-      return fallback || '';
+      return fallback || "";
     }
     value = value[part];
   }
-  
-  if (typeof value !== 'string') {
+
+  if (typeof value !== "string") {
     console.warn(`Color at path "${colorPath}" is not a string value`);
-    return fallback || '';
+    return fallback || "";
   }
-  
+
   return value;
 }
 
@@ -71,9 +73,9 @@ export function getColor(
 export function getFontSize(
   theme: DesignTokens,
   size: keyof FontSizeScale,
-  fallback?: string
+  fallback?: string,
 ): string {
-  return theme.typography.fontSizes[size] || fallback || '';
+  return theme.typography.fontSizes[size] || fallback || "";
 }
 
 /**
@@ -82,9 +84,9 @@ export function getFontSize(
 export function getSpacing(
   theme: DesignTokens,
   space: keyof SpacingScale,
-  fallback?: string
+  fallback?: string,
 ): string {
-  return theme.spacing[space] || fallback || '';
+  return theme.spacing[space] || fallback || "";
 }
 
 /**
@@ -93,9 +95,9 @@ export function getSpacing(
 export function getRadius(
   theme: DesignTokens,
   radius: keyof RadiusScale,
-  fallback?: string
+  fallback?: string,
 ): string {
-  return theme.radii[radius] || fallback || '';
+  return theme.radii[radius] || fallback || "";
 }
 
 /**
@@ -104,9 +106,9 @@ export function getRadius(
 export function getShadow(
   theme: DesignTokens,
   shadow: keyof ShadowScale,
-  fallback?: string
+  fallback?: string,
 ): string {
-  return theme.shadows[shadow] || fallback || '';
+  return theme.shadows[shadow] || fallback || "";
 }
 
 /**
@@ -123,15 +125,15 @@ export function fluidFontSize(
   mobileFontSize: keyof FontSizeScale,
   desktopFontSize: keyof FontSizeScale,
   lockBelow: number = 375,
-  lockAbove: number = 1440
+  lockAbove: number = 1440,
 ): string {
   const mobileSize = parseFloat(theme.typography.fontSizes[mobileFontSize]);
   const desktopSize = parseFloat(theme.typography.fontSizes[desktopFontSize]);
-  
+
   // Calculate the slope and intercept for the fluid scaling
   const slope = (desktopSize - mobileSize) / (lockAbove - lockBelow);
   const intercept = mobileSize - slope * lockBelow;
-  
+
   // Create the clamp function
   return `clamp(${mobileSize}rem, ${intercept.toFixed(4)}rem + ${(slope * 100).toFixed(4)}vw, ${desktopSize}rem)`;
 }
@@ -140,7 +142,7 @@ export function fluidFontSize(
  * Get theme tokens based on color mode
  */
 export function getThemeTokens(colorMode: ColorMode): DesignTokens {
-  return colorMode === 'dark' ? darkTheme : lightTheme;
+  return colorMode === "dark" ? darkTheme : lightTheme;
 }
 
 /**

@@ -29,6 +29,13 @@ We will enforce strict module boundaries through automated tools and clear guide
 4. **ESLint Rules**: We will add ESLint rules to enforce import patterns
 5. **CI Validation**: Automated checks will be added to CI/CD pipelines to prevent violations from being merged
 
+### Philosophy
+
+- Modules encapsulate implementation details and expose a curated public API via `index.ts` barrels at each module root.
+- Internal implementation files reside under an `internal/` folder and are not importable by other modules.
+- Automated enforcement using dependency-cruiser and `eslint-plugin-boundaries` validates imports during development and CI.
+- This design reduces coupling, increases cohesion, and simplifies long-term maintenance of the codebase.
+
 ### Implementation
 
 We will implement the following rules in `.dependency-cruiser.js`:
@@ -68,6 +75,12 @@ In addition, we will enforce rules for common utilities:
 }
 ```
 
+### Tooling
+
+- **ESLint Boundaries**: Use `eslint-plugin-boundaries` configured in `backend/src/eslint.config.mjs` to enforce `boundaries/no-internal`. Internal implementation files live under `internal/`; public API exposed via `index.ts` barrels.
+- **Boundary Check Script**: Run with `npm run lint:boundaries` to validate module imports.
+- **Husky & CI**: Pre-commit hook (`lint-staged`) includes boundary checks; ensure `lint:boundaries` runs in CI pipelines.
+
 ## Module Dependencies
 
 ### Current Module Structure
@@ -77,6 +90,7 @@ In our current analysis of the module dependencies, we've found multiple cross-m
 ![Current Module Dependencies](visualizations/adr-001-module-boundary-enforcement.svg)
 
 This visualization illustrates several issues:
+
 - Direct imports from one module's internal files to another module
 - Bypass of public APIs
 - Common utility access violations
@@ -88,10 +102,12 @@ Red lines indicate dependency violations, showing where module boundaries are be
 We will enforce the following boundary rules:
 
 1. **Module Public API**: All inter-module dependencies must go through the module's public API
+
    - Modules must export their public interface through `index.ts`
    - Other modules must only import from these index files
 
 2. **Common Utilities**: Common utilities must be accessed through their public APIs
+
    - Common utilities should be organized in their own directories
    - Each utility directory should have an index.ts exporting the public API
    - Modules should import from the public API, not from internal implementation files
@@ -126,11 +142,13 @@ We will enforce the following boundary rules:
 Compliance with module boundaries will be validated through:
 
 1. **Automated Checks**:
+
    - dependency-cruiser validation in CI/CD pipelines
    - ESLint rules to catch violations during development
    - Pre-commit hooks to prevent committing violations
 
 2. **Visualization**:
+
    - Regularly updated dependency graphs to visualize compliance
    - Highlighted violations in dependency visualizations
 

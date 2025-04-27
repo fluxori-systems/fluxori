@@ -40,6 +40,7 @@ Before you begin, make sure:
 ### Step 3: Prepare the Environment
 
 1. Copy the downloaded key file to:
+
    ```
    /home/tarquin_stapa/fluxori/deployment/keys/service-account.json
    ```
@@ -59,6 +60,7 @@ cd /home/tarquin_stapa/fluxori
 ```
 
 The script will:
+
 1. Authenticate using the service account
 2. Set up the infrastructure on Google Cloud
 3. Store your SmartProxy token securely
@@ -71,6 +73,7 @@ The script will:
 After the script runs successfully, you need to:
 
 1. **Build and push the container image**:
+
    ```bash
    cd /home/tarquin_stapa/fluxori/marketplace-scraper
    docker build -t gcr.io/fluxori-marketplace-data/marketplace-scraper:latest -f ../deployment/Dockerfile .
@@ -78,6 +81,7 @@ After the script runs successfully, you need to:
    ```
 
 2. **Deploy to Cloud Run**:
+
    ```bash
    gcloud run deploy marketplace-scraper \
      --image=gcr.io/fluxori-marketplace-data/marketplace-scraper:latest \
@@ -93,10 +97,11 @@ After the script runs successfully, you need to:
    ```
 
 3. **Set up Cloud Scheduler jobs** (once your service is deployed):
+
    ```bash
    # Get your service URL
    SERVICE_URL=$(gcloud run services describe marketplace-scraper --platform=managed --region=africa-south1 --format="value(status.url)")
-   
+
    # Create sample scheduler job for Takealot product refresh
    gcloud scheduler jobs create http marketplace-scraper-takealot-refresh \
      --location=africa-south1 \
@@ -121,11 +126,13 @@ Verify your deployment by:
 ## Documentation
 
 Review the generated documentation at:
+
 - `deployment/docs/MONITORING_INSTRUCTIONS.md`
 
 ## Security
 
 After deployment:
+
 1. Store the service account key securely
 2. Consider revoking the key when no longer needed
 3. Regularly monitor the GCP audit logs

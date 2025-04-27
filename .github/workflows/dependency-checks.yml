@@ -2,48 +2,48 @@ name: Dependency Checks
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [main, develop]
     paths:
-      - 'backend/src/**'
-      - 'frontend/src/**'
-      - '.github/workflows/dependency-checks.yml'
+      - "backend/src/**"
+      - "frontend/src/**"
+      - ".github/workflows/dependency-checks.yml"
   pull_request:
-    branches: [ main, develop ]
+    branches: [main, develop]
     paths:
-      - 'backend/src/**'
-      - 'frontend/src/**'
-      - '.github/workflows/dependency-checks.yml'
+      - "backend/src/**"
+      - "frontend/src/**"
+      - ".github/workflows/dependency-checks.yml"
 
 jobs:
   validate-backend-dependencies:
     name: Backend Dependencies
     runs-on: ubuntu-latest
-    
+
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18'
-          cache: 'npm'
+          node-version: "18"
+          cache: "npm"
           cache-dependency-path: backend/package-lock.json
-          
+
       - name: Install dependencies
         run: |
           cd backend
           npm ci --legacy-peer-deps
-          
+
       - name: Check for circular dependencies
         run: |
           cd backend
           npm run dep:check-circular
-        
+
       - name: Check for module boundary violations
         run: |
           cd backend
           npm run dep:validate
-          
+
       - name: Generate dependency visualizations
         if: success() || failure()
         run: |
@@ -51,7 +51,7 @@ jobs:
           npm run dep:graph
           npm run dep:modules
           npm run dep:archi
-          
+
       - name: Upload dependency graphs
         if: success() || failure()
         uses: actions/upload-artifact@v3
@@ -61,36 +61,36 @@ jobs:
             backend/dependency-graph.svg
             backend/module-dependencies.svg
             backend/architecture.svg
-          
+
   validate-frontend-dependencies:
     name: Frontend Dependencies
     runs-on: ubuntu-latest
-    
+
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18'
-          cache: 'npm'
+          node-version: "18"
+          cache: "npm"
           cache-dependency-path: frontend/package-lock.json
-          
+
       - name: Install dependencies
         run: |
           cd frontend
           npm ci --legacy-peer-deps
-          
+
       - name: Check for circular dependencies
         run: |
           cd frontend
           npm run dep:check-circular
-        
+
       - name: Check for module boundary violations
         run: |
           cd frontend
           npm run dep:validate
-          
+
       - name: Generate dependency visualizations
         if: success() || failure()
         run: |
@@ -98,7 +98,7 @@ jobs:
           npm run dep:graph
           npm run dep:components
           npm run dep:archi
-          
+
       - name: Upload dependency graphs
         if: success() || failure()
         uses: actions/upload-artifact@v3
@@ -108,26 +108,26 @@ jobs:
             frontend/dependency-graph.svg
             frontend/component-dependencies.svg
             frontend/architecture.svg
-            
+
   dependency-report:
     name: Dependency Report
     needs: [validate-backend-dependencies, validate-frontend-dependencies]
     if: always() && (needs.validate-backend-dependencies.result == 'failure' || needs.validate-frontend-dependencies.result == 'failure')
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Download backend artifacts
         uses: actions/download-artifact@v3
         with:
           name: backend-dependency-graphs
           path: dependency-graphs/backend
-          
+
       - name: Download frontend artifacts
         uses: actions/download-artifact@v3
         with:
           name: frontend-dependency-graphs
           path: dependency-graphs/frontend
-          
+
       - name: Create issue for dependency violations
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         uses: peter-evans/create-issue-from-file@v4

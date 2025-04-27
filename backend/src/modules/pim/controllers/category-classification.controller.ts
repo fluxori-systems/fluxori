@@ -19,7 +19,7 @@ import {
 import { LoggingInterceptor } from '../../../common/observability/interceptors/logging.interceptor';
 import { TracingInterceptor } from '../../../common/observability/interceptors/tracing.interceptor';
 import { GetUser } from '../../auth/decorators/get-user.decorator';
-import { FirebaseAuthGuard } from '../../auth/guards/firebase-auth.guard';
+import { FirebaseAuthGuard } from '../../auth';
 import { CategoryService } from '../services/category.service';
 import { ProductAiService } from '../services/product-ai.service';
 import { ProductService } from '../services/product.service';
@@ -53,12 +53,12 @@ class ApplyClassificationDto {
   /**
    * Product ID to update
    */
-  productId: string;
+  productId!: string;
 
   /**
    * Category ID to assign
    */
-  categoryId: string;
+  categoryId!: string;
 
   /**
    * Attributes to apply (optional)
@@ -73,7 +73,7 @@ class BulkClassifyProductsDto {
   /**
    * List of product IDs to classify
    */
-  productIds: string[];
+  productIds!: string[];
 }
 
 /**
@@ -191,7 +191,7 @@ export class CategoryClassificationController {
       }
 
       // Verify category exists
-      const category = await this.categoryService.findById(
+      const category = await this.categoryService.getCategoryById(
         dto.categoryId,
         user.organizationId,
       );
@@ -320,9 +320,8 @@ export class CategoryClassificationController {
     }>
   > {
     // Get all available categories
-    const allCategories = await this.categoryService.findAll({
+    const { items: allCategories } = await this.categoryService.findCategories({
       organizationId,
-      includeHierarchy: true,
     });
 
     // Map of category path -> category ID

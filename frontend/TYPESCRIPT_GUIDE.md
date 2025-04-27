@@ -50,10 +50,7 @@ const config = JSON.parse(text) as Config;
 // ✅ Good - use type guards instead
 function isUser(data: unknown): data is User {
   return (
-    typeof data === 'object' && 
-    data !== null && 
-    'id' in data && 
-    'name' in data
+    typeof data === "object" && data !== null && "id" in data && "name" in data
   );
 }
 
@@ -74,7 +71,7 @@ Avoid using `any` type as it undermines TypeScript's type safety:
 ```tsx
 // ❌ Bad - using any
 function processData(data: any) {
-  return data.map(item => item.value);
+  return data.map((item) => item.value);
 }
 
 // ✅ Good - use generics or specific types
@@ -83,7 +80,7 @@ interface DataItem {
 }
 
 function processData<T extends DataItem>(data: T[]) {
-  return data.map(item => item.value);
+  return data.map((item) => item.value);
 }
 ```
 
@@ -109,7 +106,7 @@ export interface Product {
 
 // Use in API calls
 async function getProducts(): Promise<ApiResponse<Product[]>> {
-  const response = await fetch('/api/products');
+  const response = await fetch("/api/products");
   return response.json();
 }
 ```
@@ -122,25 +119,25 @@ Always use components from our UI library instead of importing directly from Man
 
 ```tsx
 // ❌ Bad - importing directly from Mantine
-import { Button } from '@mantine/core';
+import { Button } from "@mantine/core";
 
 // ✅ Good - using our UI library
-import { Button } from '@/lib/ui';
+import { Button } from "@/lib/ui";
 ```
 
 ### Use Modern Mantine Props
 
 Use the modern Mantine prop naming conventions:
 
-| Modern Prop | Legacy Prop (Don't Use) |
-|-------------|-------------------------|
-| `fw` | `weight` |
-| `ta` | `align` |
-| `gap` | `spacing` |
-| `justify` | `position` |
-| `leftSection` | `leftIcon` |
-| `rightSection` | `rightIcon` |
-| `c` | `color` |
+| Modern Prop    | Legacy Prop (Don't Use) |
+| -------------- | ----------------------- |
+| `fw`           | `weight`                |
+| `ta`           | `align`                 |
+| `gap`          | `spacing`               |
+| `justify`      | `position`              |
+| `leftSection`  | `leftIcon`              |
+| `rightSection` | `rightIcon`             |
+| `c`            | `color`                 |
 
 ```tsx
 // ❌ Bad - using legacy props
@@ -160,19 +157,15 @@ Add the 'use client' directive to all client components (components that use hoo
 
 ```tsx
 // ✅ Good - add 'use client' at the top of the file
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { Button } from '@/lib/ui';
+import { useState } from "react";
+import { Button } from "@/lib/ui";
 
 export default function Counter() {
   const [count, setCount] = useState(0);
-  
-  return (
-    <Button onClick={() => setCount(count + 1)}>
-      Count: {count}
-    </Button>
-  );
+
+  return <Button onClick={() => setCount(count + 1)}>Count: {count}</Button>;
 }
 ```
 
@@ -236,7 +229,7 @@ const AuthContext = createContext<AuthContextType | null>(null);
 export function useAuth(): AuthContextType {
   const context = useContext(AuthContext);
   if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 }
@@ -258,7 +251,7 @@ const fetchOrders = async (page, perPage, status) => {
 interface OrderQueryParams {
   page: number;
   perPage: number;
-  status?: 'pending' | 'completed' | 'cancelled';
+  status?: "pending" | "completed" | "cancelled";
 }
 
 const fetchOrders = async (params: OrderQueryParams): Promise<Order[]> => {
@@ -277,7 +270,7 @@ export const api = {
     const response = await fetch(`${url}?${new URLSearchParams(params)}`);
     return response.json();
   },
-  
+
   post: async <T, D = any>(url: string, data: D): Promise<T> => {
     const response = await fetch(url, {
       method: 'POST',
@@ -306,10 +299,10 @@ This error occurs when you're trying to assign a value to a variable of an incom
 
 ```tsx
 // ❌ Error TS2322
-const user: User = { name: 'John' }; // Missing required properties
+const user: User = { name: "John" }; // Missing required properties
 
 // ✅ Fix
-const user: User = { id: '123', name: 'John', email: 'john@example.com' };
+const user: User = { id: "123", name: "John", email: "john@example.com" };
 // Or use optional properties in the interface
 interface User {
   id: string;
@@ -340,12 +333,12 @@ This error occurs when passing an argument of the wrong type to a function:
 
 ```tsx
 // ❌ Error TS2345
-functionThatExpectsNumber('42'); // Passing string, expected number
+functionThatExpectsNumber("42"); // Passing string, expected number
 
 // ✅ Fix
 functionThatExpectsNumber(42); // Pass the correct type
 // Or convert the type
-functionThatExpectsNumber(parseInt('42', 10));
+functionThatExpectsNumber(parseInt("42", 10));
 ```
 
 ### TS2305, TS2339: Missing Properties/Exports
@@ -357,7 +350,7 @@ These errors occur when trying to access properties or imports that don't exist:
 console.log(user.address); // Property 'address' does not exist on type 'User'
 
 // ✅ Fix - check if property exists first
-if ('address' in user) {
+if ("address" in user) {
   console.log(user.address);
 }
 // Or update the interface to include the property

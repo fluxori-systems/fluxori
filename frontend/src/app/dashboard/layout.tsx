@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import RouteGuard from '../../components/auth/route-guard';
-import DashboardLayout from '../../components/layouts/dashboard-layout';
+import RouteGuard from "../../components/auth/route-guard";
+import DashboardLayout from "../../components/layouts/dashboard-layout";
 
 export default function DashboardRootLayout({
   children,

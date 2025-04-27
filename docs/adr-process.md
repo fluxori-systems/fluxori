@@ -13,22 +13,22 @@ Architecture Decision Records are documents that capture an important architectu
 The Fluxori ADR process follows these steps:
 
 1. **Identification**: Identify a significant architectural decision that needs to be documented
-2. **Analysis**: 
+2. **Analysis**:
    - Analyze the context, constraints, and forces influencing the decision
    - Explore alternative solutions
    - Use dependency analysis to understand the impact
-3. **Visualization**: 
+3. **Visualization**:
    - Generate visualizations of module dependencies related to the decision
    - Identify potential violations or areas of concern
-4. **Documentation**: 
+4. **Documentation**:
    - Document the decision using the ADR template
    - Include dependency visualizations to illustrate the impact
 5. **Review**: Share the ADR with stakeholders for feedback
 6. **Decision**: Accept, modify, or reject the proposed architecture
-7. **Implementation**: 
+7. **Implementation**:
    - Implement the decision in code
    - Add boundary rules to enforce architectural compliance
-8. **Maintenance**: 
+8. **Maintenance**:
    - Update the ADR as architecture evolves
    - Keep visualizations current with code changes
 

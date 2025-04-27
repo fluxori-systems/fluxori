@@ -17,8 +17,7 @@ import {
   FirebaseAuthGuard,
   GetUser,
   DecodedFirebaseToken,
-  AuthUtils,
-} from 'src/common/auth';
+} from '@modules/auth';
 
 import {
   ProductStatus,
@@ -61,7 +60,7 @@ export class InventoryController {
     );
 
     // Ensure the user is in the correct organization
-    if (!AuthUtils.isInOrganization(user, createProductDto.organizationId)) {
+    if (user.organizationId !== createProductDto.organizationId) {
       throw new BadRequestException(
         'You can only create products for your organization',
       );

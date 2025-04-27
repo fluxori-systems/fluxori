@@ -34,11 +34,11 @@ export class BobShopConnector extends BaseMarketplaceConnector {
   readonly connectorId: string = 'bob-shop';
   readonly connectorName: string = 'Bob Shop Seller API';
 
-  private apiClient: NetworkAwareClient;
+  private apiClient!: NetworkAwareClient;
   private baseUrl: string = 'https://api.bobshop.co.za/v2';
-  private apiKey: string;
-  private apiSecret: string;
-  private organizationId: string;
+  private apiKey!: string;
+  private apiSecret!: string;
+  private organizationId!: string;
 
   constructor() {
     super('BobShopConnector');

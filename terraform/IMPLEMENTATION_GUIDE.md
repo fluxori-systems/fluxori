@@ -16,45 +16,53 @@ npm install --save @google-cloud/firestore
 Create a configuration service for Firestore at `/backend/src/config/firestore.config.ts`:
 
 ```typescript
-import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { Firestore } from '@google-cloud/firestore';
+import { Injectable } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
+import { Firestore } from "@google-cloud/firestore";
 
 /**
  * Firestore Configuration Service
- * 
+ *
  * This service provides configuration and connection to Google Cloud Firestore.
  */
 @Injectable()
 export class FirestoreConfigService {
   private firestore: Firestore;
-  
+
   constructor(private configService: ConfigService) {
     this.firestore = new Firestore({
-      projectId: this.configService.get<string>('GCP_PROJECT_ID'),
-      databaseId: this.configService.get<string>('FIRESTORE_DATABASE_ID', 'fluxori-db'),
+      projectId: this.configService.get<string>("GCP_PROJECT_ID"),
+      databaseId: this.configService.get<string>(
+        "FIRESTORE_DATABASE_ID",
+        "fluxori-db",
+      ),
     });
   }
-  
+
   /**
    * Get the Firestore client instance
    */
   getFirestore(): Firestore {
     return this.firestore;
   }
-  
+
   /**
    * Get a Firestore collection with the correct prefix
    * @param collectionName Base collection name
    * @returns Firestore collection reference
    */
   getCollection(collectionName: string) {
-    const prefix = this.configService.get<string>('FIRESTORE_COLLECTION_PREFIX', '');
-    const fullCollectionName = prefix ? `${prefix}_${collectionName}` : collectionName;
-    
+    const prefix = this.configService.get<string>(
+      "FIRESTORE_COLLECTION_PREFIX",
+      "",
+    );
+    const fullCollectionName = prefix
+      ? `${prefix}_${collectionName}`
+      : collectionName;
+
     return this.firestore.collection(fullCollectionName);
   }
-  
+
   /**
    * Create a document reference
    * @param collectionName Collection name
@@ -72,31 +80,37 @@ export class FirestoreConfigService {
 Create a base repository for Firestore at `/backend/src/common/repositories/firestore-base.repository.ts`:
 
 ```typescript
-import { Injectable } from '@nestjs/common';
-import { FirestoreConfigService } from '../../config/firestore.config';
-import { Firestore, CollectionReference, DocumentReference, DocumentData, Query } from '@google-cloud/firestore';
+import { Injectable } from "@nestjs/common";
+import { FirestoreConfigService } from "../../config/firestore.config";
+import {
+  Firestore,
+  CollectionReference,
+  DocumentReference,
+  DocumentData,
+  Query,
+} from "@google-cloud/firestore";
 
 /**
  * Base Repository for Firestore
- * 
+ *
  * This class provides common CRUD operations for Firestore collections.
  */
 @Injectable()
 export abstract class FirestoreBaseRepository<T extends { id?: string }> {
   protected readonly firestore: Firestore;
   protected abstract readonly collectionName: string;
-  
+
   constructor(private firestoreConfigService: FirestoreConfigService) {
     this.firestore = firestoreConfigService.getFirestore();
   }
-  
+
   /**
    * Get the collection reference
    */
   protected getCollectionRef(): CollectionReference {
     return this.firestoreConfigService.getCollection(this.collectionName);
   }
-  
+
   /**
    * Get a document reference by ID
    * @param id Document ID
@@ -104,16 +118,16 @@ export abstract class FirestoreBaseRepository<T extends { id?: string }> {
   protected getDocRef(id: string): DocumentReference {
     return this.firestoreConfigService.getDocument(this.collectionName, id);
   }
-  
+
   /**
    * Create a new document
    * @param data Document data
    * @returns Created document with ID
    */
-  async create(data: Omit<T, 'id'>): Promise<T> {
+  async create(data: Omit<T, "id">): Promise<T> {
     const docRef = this.getCollectionRef().doc();
     const id = docRef.id;
-    
+
     // Add creation timestamp and ID
     const documentData = {
       ...data,
@@ -121,12 +135,12 @@ export abstract class FirestoreBaseRepository<T extends { id?: string }> {
       createdAt: new Date(),
       updatedAt: new Date(),
     };
-    
+
     await docRef.set(documentData);
-    
+
     return documentData as T;
   }
-  
+
   /**
    * Find document by ID
    * @param id Document ID
@@ -134,43 +148,50 @@ export abstract class FirestoreBaseRepository<T extends { id?: string }> {
    */
   async findById(id: string): Promise<T | null> {
     const docSnapshot = await this.getDocRef(id).get();
-    
+
     if (!docSnapshot.exists) {
       return null;
     }
-    
+
     return { id: docSnapshot.id, ...docSnapshot.data() } as T;
   }
-  
+
   /**
    * Find all documents matching a filter
    * @param filter Filter object
    * @param options Query options
    * @returns Array of documents
    */
-  async findAll(filter: Partial<T> = {}, options: { limit?: number, orderBy?: string, direction?: 'asc' | 'desc' } = {}): Promise<T[]> {
+  async findAll(
+    filter: Partial<T> = {},
+    options: {
+      limit?: number;
+      orderBy?: string;
+      direction?: "asc" | "desc";
+    } = {},
+  ): Promise<T[]> {
     let query: Query<DocumentData> = this.getCollectionRef();
-    
+
     // Apply filters
     Object.entries(filter).forEach(([key, value]) => {
-      query = query.where(key, '==', value);
+      query = query.where(key, "==", value);
     });
-    
+
     // Apply ordering
     if (options.orderBy) {
-      query = query.orderBy(options.orderBy, options.direction || 'asc');
+      query = query.orderBy(options.orderBy, options.direction || "asc");
     }
-    
+
     // Apply limit
     if (options.limit) {
       query = query.limit(options.limit);
     }
-    
+
     const snapshot = await query.get();
-    
-    return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as T));
+
+    return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }) as T);
   }
-  
+
   /**
    * Find one document matching a filter
    * @param filter Filter object
@@ -178,26 +199,28 @@ export abstract class FirestoreBaseRepository<T extends { id?: string }> {
    */
   async findOne(filter: Partial<T>): Promise<T | null> {
     const results = await this.findAll(filter, { limit: 1 });
-    
+
     if (results.length === 0) {
       return null;
     }
-    
+
     return results[0];
   }
-  
+
   /**
    * Find documents with a custom query
    * @param queryFn Function to build the query
    * @returns Array of matching documents
    */
-  async findWithQuery(queryFn: (collection: CollectionReference) => Query<DocumentData>): Promise<T[]> {
+  async findWithQuery(
+    queryFn: (collection: CollectionReference) => Query<DocumentData>,
+  ): Promise<T[]> {
     const query = queryFn(this.getCollectionRef());
     const snapshot = await query.get();
-    
-    return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as T));
+
+    return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }) as T);
   }
-  
+
   /**
    * Update a document
    * @param id Document ID
@@ -207,23 +230,23 @@ export abstract class FirestoreBaseRepository<T extends { id?: string }> {
   async update(id: string, data: Partial<T>): Promise<T | null> {
     const docRef = this.getDocRef(id);
     const docSnapshot = await docRef.get();
-    
+
     if (!docSnapshot.exists) {
       return null;
     }
-    
+
     const updateData = {
       ...data,
       updatedAt: new Date(),
     };
-    
+
     await docRef.update(updateData);
-    
+
     // Get the updated document
     const updatedSnapshot = await docRef.get();
     return { id, ...updatedSnapshot.data() } as T;
   }
-  
+
   /**
    * Delete a document
    * @param id Document ID
@@ -232,15 +255,15 @@ export abstract class FirestoreBaseRepository<T extends { id?: string }> {
   async delete(id: string): Promise<boolean> {
     const docRef = this.getDocRef(id);
     const docSnapshot = await docRef.get();
-    
+
     if (!docSnapshot.exists) {
       return false;
     }
-    
+
     await docRef.delete();
     return true;
   }
-  
+
   /**
    * Count documents matching a filter
    * @param filter Filter object
@@ -248,30 +271,34 @@ export abstract class FirestoreBaseRepository<T extends { id?: string }> {
    */
   async count(filter: Partial<T> = {}): Promise<number> {
     let query: Query<DocumentData> = this.getCollectionRef();
-    
+
     // Apply filters
     Object.entries(filter).forEach(([key, value]) => {
-      query = query.where(key, '==', value);
+      query = query.where(key, "==", value);
     });
-    
+
     const snapshot = await query.count().get();
     return snapshot.data().count;
   }
-  
+
   /**
    * Transaction support for Firestore
    * @param updateFunction Function to run within the transaction
    * @returns Result of the transaction function
    */
-  async withTransaction<R>(updateFunction: (transaction: FirebaseFirestore.Transaction) => Promise<R>): Promise<R> {
+  async withTransaction<R>(
+    updateFunction: (transaction: FirebaseFirestore.Transaction) => Promise<R>,
+  ): Promise<R> {
     return this.firestore.runTransaction(updateFunction);
   }
-  
+
   /**
    * Batch operations for Firestore
    * @param batchFunction Function that uses the batch
    */
-  async withBatch(batchFunction: (batch: FirebaseFirestore.WriteBatch) => void): Promise<void> {
+  async withBatch(
+    batchFunction: (batch: FirebaseFirestore.WriteBatch) => void,
+  ): Promise<void> {
     const batch = this.firestore.batch();
     batchFunction(batch);
     await batch.commit();
@@ -284,9 +311,9 @@ export abstract class FirestoreBaseRepository<T extends { id?: string }> {
 Update `/backend/src/app.module.ts` to register the Firestore configuration:
 
 ```typescript
-import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { FirestoreConfigService } from './config/firestore.config';
+import { Module } from "@nestjs/common";
+import { ConfigModule, ConfigService } from "@nestjs/config";
+import { FirestoreConfigService } from "./config/firestore.config";
 
 // ... other imports
 
@@ -296,18 +323,16 @@ import { FirestoreConfigService } from './config/firestore.config';
     ConfigModule.forRoot({
       isGlobal: true,
       validationSchema: configValidationSchema,
-      envFilePath: ['.env'],
+      envFilePath: [".env"],
     }),
-    
+
     // ... other modules
   ],
   providers: [
     // ... other providers
     FirestoreConfigService,
   ],
-  exports: [
-    FirestoreConfigService,
-  ],
+  exports: [FirestoreConfigService],
 })
 export class AppModule {}
 ```
@@ -319,10 +344,10 @@ Here's how to migrate the Product repository from MongoDB to Firestore:
 #### Before (MongoDB):
 
 ```typescript
-import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { Product, ProductDocument } from '../schemas/product.schema';
+import { Injectable } from "@nestjs/common";
+import { InjectModel } from "@nestjs/mongoose";
+import { Model } from "mongoose";
+import { Product, ProductDocument } from "../schemas/product.schema";
 
 @Injectable()
 export class ProductRepository {
@@ -344,7 +369,9 @@ export class ProductRepository {
   }
 
   async update(id: string, product: Partial<Product>): Promise<Product | null> {
-    return this.productModel.findByIdAndUpdate(id, product, { new: true }).exec();
+    return this.productModel
+      .findByIdAndUpdate(id, product, { new: true })
+      .exec();
   }
 
   async delete(id: string): Promise<boolean> {
@@ -357,14 +384,14 @@ export class ProductRepository {
 #### After (Firestore):
 
 ```typescript
-import { Injectable } from '@nestjs/common';
-import { FirestoreBaseRepository } from '../../../common/repositories/firestore-base.repository';
-import { FirestoreConfigService } from '../../../config/firestore.config';
-import { Product, ProductStatus } from '../models/product.model';
+import { Injectable } from "@nestjs/common";
+import { FirestoreBaseRepository } from "../../../common/repositories/firestore-base.repository";
+import { FirestoreConfigService } from "../../../config/firestore.config";
+import { Product, ProductStatus } from "../models/product.model";
 
 @Injectable()
 export class ProductRepository extends FirestoreBaseRepository<Product> {
-  protected readonly collectionName = 'products';
+  protected readonly collectionName = "products";
 
   constructor(firestoreConfigService: FirestoreConfigService) {
     super(firestoreConfigService);
@@ -385,9 +412,9 @@ export class ProductRepository extends FirestoreBaseRepository<Product> {
    * @returns Array of active products
    */
   async findActiveByOrganization(organizationId: string): Promise<Product[]> {
-    return this.findAll({ 
-      organizationId, 
-      status: ProductStatus.ACTIVE 
+    return this.findAll({
+      organizationId,
+      status: ProductStatus.ACTIVE,
     });
   }
 
@@ -397,7 +424,10 @@ export class ProductRepository extends FirestoreBaseRepository<Product> {
    * @param organizationId Organization ID
    * @returns Product or null if not found
    */
-  async findBySku(sku: string, organizationId: string): Promise<Product | null> {
+  async findBySku(
+    sku: string,
+    organizationId: string,
+  ): Promise<Product | null> {
     return this.findOne({ sku, organizationId });
   }
 
@@ -407,7 +437,10 @@ export class ProductRepository extends FirestoreBaseRepository<Product> {
    * @param organizationId Organization ID
    * @returns Array of products
    */
-  async findByCategory(category: string, organizationId: string): Promise<Product[]> {
+  async findByCategory(
+    category: string,
+    organizationId: string,
+  ): Promise<Product[]> {
     return this.findAll({ category, organizationId });
   }
 }
@@ -420,8 +453,8 @@ Convert MongoDB schemas to Firestore models:
 #### Before (MongoDB Schema):
 
 ```typescript
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument, Types } from 'mongoose';
+import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import { HydratedDocument, Types } from "mongoose";
 
 export type ProductDocument = HydratedDocument<Product>;
 
@@ -429,9 +462,9 @@ export type ProductDocument = HydratedDocument<Product>;
  * Product status in the system
  */
 export enum ProductStatus {
-  ACTIVE = 'active',
-  INACTIVE = 'inactive',
-  DISCONTINUED = 'discontinued',
+  ACTIVE = "active",
+  INACTIVE = "inactive",
+  DISCONTINUED = "discontinued",
 }
 
 /**
@@ -496,7 +529,7 @@ export class Product {
   @Prop()
   barcode?: string;
 
-  @Prop({ type: Types.ObjectId, ref: 'Organization', required: true })
+  @Prop({ type: Types.ObjectId, ref: "Organization", required: true })
   organizationId: Types.ObjectId;
 
   @Prop({ type: Object })
@@ -516,9 +549,9 @@ export const ProductSchema = SchemaFactory.createForClass(Product);
  * Product status in the system
  */
 export enum ProductStatus {
-  ACTIVE = 'active',
-  INACTIVE = 'inactive',
-  DISCONTINUED = 'discontinued',
+  ACTIVE = "active",
+  INACTIVE = "inactive",
+  DISCONTINUED = "discontinued",
 }
 
 /**
@@ -574,7 +607,7 @@ Create a storage interface at `/backend/src/common/storage/storage.interface.ts`
 ```typescript
 /**
  * Storage Service Interface
- * 
+ *
  * Defines the interface for storage services (Azure Blob Storage or Google Cloud Storage)
  */
 export interface StorageService {
@@ -590,20 +623,17 @@ export interface StorageService {
     path: string,
     content: Buffer | string,
     contentType?: string,
-    containerName?: string
+    containerName?: string,
   ): Promise<string>;
-  
+
   /**
    * Download a file from storage
    * @param path Path within the container/bucket
    * @param containerName Container/bucket name (optional)
    * @returns File content as Buffer
    */
-  downloadFile(
-    path: string,
-    containerName?: string
-  ): Promise<Buffer>;
-  
+  downloadFile(path: string, containerName?: string): Promise<Buffer>;
+
   /**
    * Generate a signed URL for temporary access
    * @param path Path within the container/bucket
@@ -614,29 +644,23 @@ export interface StorageService {
   generateSignedUrl(
     path: string,
     expiryMinutes?: number,
-    containerName?: string
+    containerName?: string,
   ): Promise<string>;
-  
+
   /**
    * Delete a file from storage
    * @param path Path within the container/bucket
    * @param containerName Container/bucket name (optional)
    */
-  deleteFile(
-    path: string,
-    containerName?: string
-  ): Promise<void>;
-  
+  deleteFile(path: string, containerName?: string): Promise<void>;
+
   /**
    * List files in storage
    * @param prefix Optional prefix to filter files
    * @param containerName Container/bucket name (optional)
    * @returns Array of file paths
    */
-  listFiles(
-    prefix?: string,
-    containerName?: string
-  ): Promise<string[]>;
+  listFiles(prefix?: string, containerName?: string): Promise<string[]>;
 }
 ```
 
@@ -645,32 +669,34 @@ export interface StorageService {
 Create a Google Cloud Storage implementation at `/backend/src/common/storage/google-cloud-storage.service.ts`:
 
 ```typescript
-import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { Storage, Bucket } from '@google-cloud/storage';
-import { StorageService } from './storage.interface';
-import { LoggerFactory } from '../utils/logger';
+import { Injectable } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
+import { Storage, Bucket } from "@google-cloud/storage";
+import { StorageService } from "./storage.interface";
+import { LoggerFactory } from "../utils/logger";
 
 /**
  * Google Cloud Storage Service
- * 
+ *
  * This service provides functionality to interact with Google Cloud Storage.
  */
 @Injectable()
 export class GoogleCloudStorageService implements StorageService {
   private storage: Storage;
   private defaultBucket: string;
-  private readonly logger = LoggerFactory.getLogger('GoogleCloudStorageService');
-  
+  private readonly logger = LoggerFactory.getLogger(
+    "GoogleCloudStorageService",
+  );
+
   constructor(private configService: ConfigService) {
     // Initialize Google Cloud Storage client
     this.storage = new Storage({
-      projectId: this.configService.get<string>('GCP_PROJECT_ID'),
+      projectId: this.configService.get<string>("GCP_PROJECT_ID"),
     });
-    
-    this.defaultBucket = this.configService.get<string>('GCP_STORAGE_BUCKET');
+
+    this.defaultBucket = this.configService.get<string>("GCP_STORAGE_BUCKET");
   }
-  
+
   /**
    * Get a bucket instance
    * @param bucketName Bucket name (uses default if not specified)
@@ -679,7 +705,7 @@ export class GoogleCloudStorageService implements StorageService {
   private getBucket(bucketName?: string): Bucket {
     return this.storage.bucket(bucketName || this.defaultBucket);
   }
-  
+
   /**
    * Upload a file to Cloud Storage
    * @param path File path within the bucket
@@ -692,22 +718,22 @@ export class GoogleCloudStorageService implements StorageService {
     path: string,
     content: Buffer | string,
     contentType?: string,
-    bucketName?: string
+    bucketName?: string,
   ): Promise<string> {
     const bucket = this.getBucket(bucketName);
     const file = bucket.file(path);
-    
+
     const options: any = {};
     if (contentType) {
       options.contentType = contentType;
     }
-    
+
     try {
       await file.save(content, options);
-      
+
       // Generate a public URL for the file
       const publicUrl = `https://storage.googleapis.com/${bucket.name}/${path}`;
-      
+
       this.logger.debug(`File uploaded successfully to ${publicUrl}`);
       return publicUrl;
     } catch (error) {
@@ -715,7 +741,7 @@ export class GoogleCloudStorageService implements StorageService {
       throw error;
     }
   }
-  
+
   /**
    * Download a file from Cloud Storage
    * @param path File path within the bucket
@@ -725,7 +751,7 @@ export class GoogleCloudStorageService implements StorageService {
   async downloadFile(path: string, bucketName?: string): Promise<Buffer> {
     const bucket = this.getBucket(bucketName);
     const file = bucket.file(path);
-    
+
     try {
       const [fileContent] = await file.download();
       return fileContent;
@@ -734,7 +760,7 @@ export class GoogleCloudStorageService implements StorageService {
       throw error;
     }
   }
-  
+
   /**
    * Generate a signed URL for temporary access to a file
    * @param path File path within the bucket
@@ -745,26 +771,28 @@ export class GoogleCloudStorageService implements StorageService {
   async generateSignedUrl(
     path: string,
     expiryMinutes: number = 60,
-    bucketName?: string
+    bucketName?: string,
   ): Promise<string> {
     const bucket = this.getBucket(bucketName);
     const file = bucket.file(path);
-    
+
     const options = {
-      version: 'v4',
-      action: 'read',
-      expires: Date.now() + (expiryMinutes * 60 * 1000)
+      version: "v4",
+      action: "read",
+      expires: Date.now() + expiryMinutes * 60 * 1000,
     };
-    
+
     try {
       const [url] = await file.getSignedUrl(options);
       return url;
     } catch (error) {
-      this.logger.error(`Error generating signed URL for ${path}: ${error.message}`);
+      this.logger.error(
+        `Error generating signed URL for ${path}: ${error.message}`,
+      );
       throw error;
     }
   }
-  
+
   /**
    * Delete a file from Cloud Storage
    * @param path File path within the bucket
@@ -773,7 +801,7 @@ export class GoogleCloudStorageService implements StorageService {
   async deleteFile(path: string, bucketName?: string): Promise<void> {
     const bucket = this.getBucket(bucketName);
     const file = bucket.file(path);
-    
+
     try {
       await file.delete();
       this.logger.debug(`File ${path} deleted successfully`);
@@ -782,7 +810,7 @@ export class GoogleCloudStorageService implements StorageService {
       throw error;
     }
   }
-  
+
   /**
    * List files in a bucket with an optional prefix
    * @param prefix Optional prefix to filter files
@@ -791,17 +819,19 @@ export class GoogleCloudStorageService implements StorageService {
    */
   async listFiles(prefix?: string, bucketName?: string): Promise<string[]> {
     const bucket = this.getBucket(bucketName);
-    
+
     const options: any = {};
     if (prefix) {
       options.prefix = prefix;
     }
-    
+
     try {
       const [files] = await bucket.getFiles(options);
-      return files.map(file => file.name);
+      return files.map((file) => file.name);
     } catch (error) {
-      this.logger.error(`Error listing files with prefix ${prefix}: ${error.message}`);
+      this.logger.error(
+        `Error listing files with prefix ${prefix}: ${error.message}`,
+      );
       throw error;
     }
   }
@@ -813,11 +843,11 @@ export class GoogleCloudStorageService implements StorageService {
 Update `/backend/src/app.module.ts` to use the new storage service:
 
 ```typescript
-import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { FirestoreConfigService } from './config/firestore.config';
-import { GoogleCloudStorageService } from './common/storage/google-cloud-storage.service';
-import { StorageService } from './common/storage/storage.interface';
+import { Module } from "@nestjs/common";
+import { ConfigModule, ConfigService } from "@nestjs/config";
+import { FirestoreConfigService } from "./config/firestore.config";
+import { GoogleCloudStorageService } from "./common/storage/google-cloud-storage.service";
+import { StorageService } from "./common/storage/storage.interface";
 
 // ... other imports
 
@@ -833,10 +863,7 @@ import { StorageService } from './common/storage/storage.interface';
       useClass: GoogleCloudStorageService,
     },
   ],
-  exports: [
-    FirestoreConfigService,
-    StorageService,
-  ],
+  exports: [FirestoreConfigService, StorageService],
 })
 export class AppModule {}
 ```
@@ -846,10 +873,10 @@ export class AppModule {}
 Here's an example of how to use the storage service in a product service:
 
 ```typescript
-import { Injectable } from '@nestjs/common';
-import { StorageService } from '../../common/storage/storage.interface';
-import { ProductRepository } from '../repositories/product.repository';
-import { Product } from '../models/product.model';
+import { Injectable } from "@nestjs/common";
+import { StorageService } from "../../common/storage/storage.interface";
+import { ProductRepository } from "../repositories/product.repository";
+import { Product } from "../models/product.model";
 
 @Injectable()
 export class ProductService {
@@ -858,7 +885,10 @@ export class ProductService {
     private readonly storageService: StorageService,
   ) {}
 
-  async createProduct(productData: Partial<Product>, productImage?: Buffer): Promise<Product> {
+  async createProduct(
+    productData: Partial<Product>,
+    productImage?: Buffer,
+  ): Promise<Product> {
     // Create the product in the database
     const product = await this.productRepository.create(productData);
 
@@ -866,36 +896,41 @@ export class ProductService {
     if (productImage) {
       const imagePath = `products/${product.id}/${Date.now()}.jpg`;
       const imageUrl = await this.storageService.uploadFile(
-        imagePath, 
-        productImage, 
-        'image/jpeg'
+        imagePath,
+        productImage,
+        "image/jpeg",
       );
-      
+
       // Update the product with the image URL
       if (!product.images) {
         product.images = [];
       }
-      
+
       product.images.push(imageUrl);
-      await this.productRepository.update(product.id, { images: product.images });
+      await this.productRepository.update(product.id, {
+        images: product.images,
+      });
     }
 
     return product;
   }
 
-  async getProductImageSignedUrl(productId: string, imageIndex: number = 0): Promise<string | null> {
+  async getProductImageSignedUrl(
+    productId: string,
+    imageIndex: number = 0,
+  ): Promise<string | null> {
     const product = await this.productRepository.findById(productId);
-    
+
     if (!product || !product.images || product.images.length <= imageIndex) {
       return null;
     }
-    
+
     // Extract the path from the URL
     const imageUrl = product.images[imageIndex];
-    const urlParts = imageUrl.split('/');
-    const bucketName = urlParts[2].split('.')[0]; // Extract bucket name from storage.googleapis.com
-    const path = urlParts.slice(3).join('/'); // Extract path after bucket name
-    
+    const urlParts = imageUrl.split("/");
+    const bucketName = urlParts[2].split(".")[0]; // Extract bucket name from storage.googleapis.com
+    const path = urlParts.slice(3).join("/"); // Extract path after bucket name
+
     // Generate a signed URL for the image
     return this.storageService.generateSignedUrl(path, 60, bucketName);
   }
@@ -909,88 +944,92 @@ export class ProductService {
 Create a migration script at `/scripts/migrate-db/mongo-to-firestore.js`:
 
 ```javascript
-const { MongoClient } = require('mongodb');
-const { Firestore } = require('@google-cloud/firestore');
-const dotenv = require('dotenv');
+const { MongoClient } = require("mongodb");
+const { Firestore } = require("@google-cloud/firestore");
+const dotenv = require("dotenv");
 
 // Load environment variables
 dotenv.config();
 
 // MongoDB connection settings
 const MONGODB_URI = process.env.MONGODB_URI;
-const MONGODB_DB_NAME = 'fluxori';
+const MONGODB_DB_NAME = "fluxori";
 
 // Firestore settings
 const PROJECT_ID = process.env.GCP_PROJECT_ID;
-const FIRESTORE_DATABASE_ID = process.env.FIRESTORE_DATABASE_ID || 'fluxori-db';
+const FIRESTORE_DATABASE_ID = process.env.FIRESTORE_DATABASE_ID || "fluxori-db";
 
 // Collection to migrate
 const collections = [
-  'users',
-  'organizations',
-  'products',
-  'warehouses',
-  'stockLevels',
-  'orders',
-  'marketplaceCredentials',
-  'buyboxStatuses',
-  'buyboxHistories',
-  'repricingRules',
-  'insights',
-  'aiModelConfigs',
-  'notifications',
-  'notificationSettings',
-  'internationalShipments',
-  'hsCodes',
-  'tradeRestrictions',
-  'complianceRequirements',
-  'documents',
-  'embeddingProviders',
+  "users",
+  "organizations",
+  "products",
+  "warehouses",
+  "stockLevels",
+  "orders",
+  "marketplaceCredentials",
+  "buyboxStatuses",
+  "buyboxHistories",
+  "repricingRules",
+  "insights",
+  "aiModelConfigs",
+  "notifications",
+  "notificationSettings",
+  "internationalShipments",
+  "hsCodes",
+  "tradeRestrictions",
+  "complianceRequirements",
+  "documents",
+  "embeddingProviders",
 ];
 
 async function migrateCollection(mongoDb, firestore, collectionName) {
   console.log(`Migrating collection: ${collectionName}`);
-  
+
   // Get MongoDB collection
   const mongoCollection = mongoDb.collection(collectionName);
-  
+
   // Get all documents
   const documents = await mongoCollection.find({}).toArray();
   console.log(`Found ${documents.length} documents in ${collectionName}`);
-  
+
   // Get Firestore collection
   const firestoreCollection = firestore.collection(collectionName);
-  
+
   // Process documents in batches of 500
   const batchSize = 500;
   const batches = Math.ceil(documents.length / batchSize);
-  
+
   for (let i = 0; i < batches; i++) {
-    console.log(`Processing batch ${i+1}/${batches} for ${collectionName}`);
+    console.log(`Processing batch ${i + 1}/${batches} for ${collectionName}`);
     const batch = firestore.batch();
-    
+
     const start = i * batchSize;
     const end = Math.min(start + batchSize, documents.length);
-    
+
     for (let j = start; j < end; j++) {
       const doc = documents[j];
-      
+
       // Convert MongoDB _id to Firestore id
       const id = doc._id.toString();
       delete doc._id;
-      
+
       // Convert MongoDB specific fields if needed
       if (doc.__v !== undefined) {
         delete doc.__v;
       }
-      
+
       // Convert MongoDB ObjectId references to strings
       for (const key in doc) {
-        if (doc[key] && typeof doc[key] === 'object' && doc[key]._bsontype === 'ObjectID') {
+        if (
+          doc[key] &&
+          typeof doc[key] === "object" &&
+          doc[key]._bsontype === "ObjectID"
+        ) {
           doc[key] = doc[key].toString();
         }
       }
-      
+
       // Add document to batch
       const docRef = firestoreCollection.doc(id);
       batch.set(docRef, {
@@ -998,45 +1037,45 @@ async function migrateCollection(mongoDb, firestore, collectionName) {
         id, // Add the id field
       });
     }
-    
+
     // Commit the batch
     await batch.commit();
-    console.log(`Committed batch ${i+1}/${batches} for ${collectionName}`);
+    console.log(`Committed batch ${i + 1}/${batches} for ${collectionName}`);
   }
-  
+
   console.log(`Migration complete for collection: ${collectionName}`);
 }
 
 async function migrateData() {
-  console.log('Starting migration from MongoDB to Firestore');
-  
+  console.log("Starting migration from MongoDB to Firestore");
+
   // Connect to MongoDB
   const mongoClient = new MongoClient(MONGODB_URI);
   await mongoClient.connect();
-  console.log('Connected to MongoDB');
-  
+  console.log("Connected to MongoDB");
+
   const mongoDb = mongoClient.db(MONGODB_DB_NAME);
-  
+
   // Initialize Firestore
   const firestore = new Firestore({
     projectId: PROJECT_ID,
     databaseId: FIRESTORE_DATABASE_ID,
   });
-  console.log('Connected to Firestore');
-  
+  console.log("Connected to Firestore");
+
   // Migrate each collection
   for (const collection of collections) {
     await migrateCollection(mongoDb, firestore, collection);
   }
-  
+
   // Close MongoDB connection
   await mongoClient.close();
-  console.log('Migration completed successfully');
+  console.log("Migration completed successfully");
 }
 
 // Run migration
-migrateData().catch(error => {
-  console.error('Migration failed:', error);
+migrateData().catch((error) => {
+  console.error("Migration failed:", error);
   process.exit(1);
 });
 ```
@@ -1046,30 +1085,30 @@ migrateData().catch(error => {
 Create a migration script at `/scripts/migrate-storage/azure-to-gcs.js`:
 
 ```javascript
-const { BlobServiceClient } = require('@azure/storage-blob');
-const { Storage } = require('@google-cloud/storage');
-const dotenv = require('dotenv');
-const fs = require('fs');
-const path = require('path');
-const os = require('os');
+const { BlobServiceClient } = require("@azure/storage-blob");
+const { Storage } = require("@google-cloud/storage");
+const dotenv = require("dotenv");
+const fs = require("fs");
+const path = require("path");
+const os = require("os");
 
 // Load environment variables
 dotenv.config();
 
 // Azure Blob Storage settings
 const AZURE_CONNECTION_STRING = process.env.AZURE_CONNECTION_STRING;
-const AZURE_CONTAINERS = ['files', 'documents', 'backups']; // Containers to migrate
+const AZURE_CONTAINERS = ["files", "documents", "backups"]; // Containers to migrate
 
 // Google Cloud Storage settings
 const GCP_PROJECT_ID = process.env.GCP_PROJECT_ID;
 const GCS_BUCKETS = {
-  'files': `${GCP_PROJECT_ID}-files`,
-  'documents': `${GCP_PROJECT_ID}-documents`,
-  'backups': `${GCP_PROJECT_ID}-backups`,
+  files: `${GCP_PROJECT_ID}-files`,
+  documents: `${GCP_PROJECT_ID}-documents`,
+  backups: `${GCP_PROJECT_ID}-backups`,
 };
 
 // Temporary directory for downloads
-const TEMP_DIR = path.join(os.tmpdir(), 'fluxori-migration');
+const TEMP_DIR = path.join(os.tmpdir(), "fluxori-migration");
 
 // Ensure temp directory exists
 if (!fs.existsSync(TEMP_DIR)) {
@@ -1078,14 +1117,14 @@ if (!fs.existsSync(TEMP_DIR)) {
 
 async function migrateContainer(container, azureClient, gcsClient) {
   console.log(`Migrating container: ${container}`);
-  
+
   // Get Azure container client
   const containerClient = azureClient.getContainerClient(container);
-  
+
   // Get GCS bucket
   const bucketName = GCS_BUCKETS[container];
   const bucket = gcsClient.bucket(bucketName);
-  
+
   // Create bucket if it doesn't exist
   try {
     await bucket.create();
@@ -1096,31 +1135,31 @@ async function migrateContainer(container, azureClient, gcsClient) {
       throw error;
     }
   }
-  
+
   // List all blobs in container
   const blobsIterator = containerClient.listBlobsFlat();
   let blobItem;
-  
+
   let count = 0;
-  
+
   // Iterate through all blobs
   for await (blobItem of blobsIterator) {
     count++;
     console.log(`Migrating blob ${count}: ${blobItem.name}`);
-    
+
     // Download blob to temp file
     const blobClient = containerClient.getBlobClient(blobItem.name);
     const tempFilePath = path.join(TEMP_DIR, path.basename(blobItem.name));
-    
+
     // Create directory structure if needed
     const tempDirPath = path.dirname(tempFilePath);
     if (!fs.existsSync(tempDirPath)) {
       fs.mkdirSync(tempDirPath, { recursive: true });
     }
-    
+
     // Download the blob
     await blobClient.downloadToFile(tempFilePath);
-    
+
     // Upload to GCS
     try {
       await bucket.upload(tempFilePath, {
@@ -1129,43 +1168,47 @@ async function migrateContainer(container, azureClient, gcsClient) {
           contentType: blobItem.properties.contentType,
         },
       });
-      
+
       console.log(`Uploaded ${blobItem.name} to GCS bucket ${bucketName}`);
     } catch (error) {
       console.error(`Error uploading ${blobItem.name} to GCS:`, error);
     }
-    
+
     // Delete temp file
     fs.unlinkSync(tempFilePath);
   }
-  
+
   console.log(`Migrated ${count} blobs from ${container} to ${bucketName}`);
 }
 
 async function migrateStorage() {
-  console.log('Starting migration from Azure Blob Storage to Google Cloud Storage');
-  
+  console.log(
+    "Starting migration from Azure Blob Storage to Google Cloud Storage",
+  );
+
   // Initialize Azure Blob Storage client
-  const azureClient = BlobServiceClient.fromConnectionString(AZURE_CONNECTION_STRING);
-  console.log('Connected to Azure Blob Storage');
-  
+  const azureClient = BlobServiceClient.fromConnectionString(
+    AZURE_CONNECTION_STRING,
+  );
+  console.log("Connected to Azure Blob Storage");
+
   // Initialize Google Cloud Storage client
   const gcsClient = new Storage({
     projectId: GCP_PROJECT_ID,
   });
-  console.log('Connected to Google Cloud Storage');
-  
+  console.log("Connected to Google Cloud Storage");
+
   // Migrate each container
   for (const container of AZURE_CONTAINERS) {
     await migrateContainer(container, azureClient, gcsClient);
   }
-  
-  console.log('Storage migration completed successfully');
+
+  console.log("Storage migration completed successfully");
 }
 
 // Run migration
-migrateStorage().catch(error => {
-  console.error('Storage migration failed:', error);
+migrateStorage().catch((error) => {
+  console.error("Storage migration failed:", error);
   process.exit(1);
 });
 ```
@@ -1228,13 +1271,13 @@ ENABLE_MONITORING=true
 ### Example Test for Firestore Repository
 
 ```typescript
-import { Test, TestingModule } from '@nestjs/testing';
-import { ProductRepository } from './product.repository';
-import { FirestoreConfigService } from '../../config/firestore.config';
-import { ConfigService } from '@nestjs/config';
-import { Product, ProductStatus } from '../models/product.model';
+import { Test, TestingModule } from "@nestjs/testing";
+import { ProductRepository } from "./product.repository";
+import { FirestoreConfigService } from "../../config/firestore.config";
+import { ConfigService } from "@nestjs/config";
+import { Product, ProductStatus } from "../models/product.model";
 
-describe('ProductRepository', () => {
+describe("ProductRepository", () => {
   let repository: ProductRepository;
   let firestoreConfigService: FirestoreConfigService;
 
@@ -1260,10 +1303,12 @@ describe('ProductRepository', () => {
     }).compile();
 
     repository = module.get<ProductRepository>(ProductRepository);
-    firestoreConfigService = module.get<FirestoreConfigService>(FirestoreConfigService);
+    firestoreConfigService = module.get<FirestoreConfigService>(
+      FirestoreConfigService,
+    );
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(repository).toBeDefined();
   });
 

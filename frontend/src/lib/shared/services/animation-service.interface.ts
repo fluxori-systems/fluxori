@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import { RefObject } from 'react';
+import { RefObject } from "react";
 
-import { 
-  AnimationMode, 
-  AnimationParams, 
-  AnimationStrategyConfig 
-} from '../types/motion-types';
+import {
+  AnimationMode,
+  AnimationParams,
+  AnimationStrategyConfig,
+} from "../types/motion-types";
 
 /**
  * Configuration options for component animations
@@ -79,58 +79,60 @@ export interface IAnimationService {
    * @returns Cleanup function
    */
   animateComponent(config: ComponentAnimationConfig): () => void;
-  
+
   /**
    * Get animation parameters based on strategy configuration
    * @param config Strategy configuration
    * @returns Animation parameters
    */
   getAnimationStrategy(config: AnimationStrategyConfig): AnimationParams;
-  
+
   /**
    * Check if animations should be reduced based on user preferences and system settings
    * @returns True if animations should be reduced
    */
   shouldReduceMotion(): boolean;
-  
+
   /**
    * Get the current motion mode setting
    * @returns Current motion mode
    */
   getMotionMode(): string;
-  
+
   /**
    * Start performance monitoring for an animation
    * @param settings Monitoring settings
    * @returns Monitoring session ID
    */
   startPerformanceMonitoring(settings: PerformanceMonitoringSettings): number;
-  
+
   /**
    * Record an animation frame
    * @param record Frame record
    */
   recordAnimationFrame(record: AnimationFrameRecord): void;
-  
+
   /**
    * Stop performance monitoring for an animation
    * @param settings Monitoring settings
    */
   stopPerformanceMonitoring(settings: PerformanceMonitoringSettings): void;
-  
+
   /**
    * Get performance analysis for a component
    * @param settings Analysis settings
    * @returns Performance analysis result
    */
-  getPerformanceAnalysis(settings: PerformanceMonitoringSettings): PerformanceAnalysisResult | null;
+  getPerformanceAnalysis(
+    settings: PerformanceMonitoringSettings,
+  ): PerformanceAnalysisResult | null;
 }
 
 /**
  * Context key for accessing the animation service
  * @internal
  */
-export const ANIMATION_SERVICE_KEY = 'animationService';
+export const ANIMATION_SERVICE_KEY = "animationService";
 
 /**
  * React hook to access the animation service
@@ -138,5 +140,5 @@ export const ANIMATION_SERVICE_KEY = 'animationService';
  * @returns The current animation service implementation
  */
 export function useAnimationService(): IAnimationService {
-  throw new Error('useAnimationService must be used within a ServiceProvider');
+  throw new Error("useAnimationService must be used within a ServiceProvider");
 }

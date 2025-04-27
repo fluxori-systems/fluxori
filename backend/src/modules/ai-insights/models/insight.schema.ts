@@ -1,19 +1,22 @@
-import { FirestoreEntity } from '../../../types/google-cloud.types';
+import { TenantEntity } from '../../../common/types/tenant-entity';
 import {
   InsightType,
   InsightSeverity,
   InsightStatus,
+  InsightData,
 } from '../interfaces/types';
 
 /**
  * Insight entity for Firestore
  */
-export interface Insight extends FirestoreEntity {
+import { FirestoreEntityWithMetadata } from '../../../common/repositories/base/repository-types';
+
+export interface Insight extends TenantEntity, FirestoreEntityWithMetadata {
   organizationId: string;
   type: InsightType;
   title: string;
   description: string;
-  data: Record<string, any>;
+  data: InsightData; // TODO: Refine fields as discovered
   severity: InsightSeverity;
   status: InsightStatus;
   confidence: number;

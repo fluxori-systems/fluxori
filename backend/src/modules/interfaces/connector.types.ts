@@ -1,8 +1,8 @@
 /**
- * Common connector types used across all connector modules
- *
+ * Common Connector Types (Regenerated, Strict)
+ * Strictly typed and documented for use across all connector modules.
  * These types define the common interface for working with external API connectors,
- * particularly for South African marketplace and service integrations.
+ * including South African marketplace and service integrations.
  */
 
 /**
@@ -11,36 +11,26 @@
 export interface ConnectorCredentials {
   /** Organization ID that owns these credentials */
   organizationId: string;
-
-  /** Type of credentials */
+  /** Type of credentials (e.g., 'API_KEY', 'OAUTH', etc.) */
   type: string;
-
   /** API Key (for API_KEY auth type) */
   apiKey?: string;
-
   /** API Secret (for API_KEY auth type) */
   apiSecret?: string;
-
   /** OAuth access token */
   accessToken?: string;
-
   /** OAuth refresh token */
   refreshToken?: string;
-
   /** OAuth token expiry date */
   tokenExpiresAt?: Date;
-
   /** Account or seller ID */
   accountId?: string;
-
   /** API endpoint URL */
   endpoint?: string;
-
   /** Additional settings */
-  settings?: Record<string, any>;
-
+  settings?: Record<string, unknown>;
   /** Any other custom properties */
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 /**
@@ -59,6 +49,7 @@ export enum ConnectionQuality {
  * Status of connection to API
  */
 export interface ConnectionStatus {
+  /** Connection quality assessment */
   /** Whether the connection is established */
   connected: boolean;
 
@@ -79,6 +70,7 @@ export interface ConnectionStatus {
  * Network status information specific to South African conditions
  */
 export interface NetworkStatus {
+  /** Network status information specific to South African conditions */
   /** Current connection quality */
   quality: ConnectionQuality;
 
@@ -120,7 +112,8 @@ export interface NetworkStatus {
 /**
  * Generic result type for operations
  */
-export interface OperationResult<T> {
+export interface OperationResult<T = unknown> {
+  /** Indicates whether the operation succeeded */
   /** Whether the operation succeeded */
   success: boolean;
 
@@ -144,6 +137,7 @@ export interface OperationResult<T> {
  * Pagination options for list operations
  */
 export interface PaginationOptions {
+  /** Pagination options for list operations */
   /** Page number (0-based) */
   page?: number;
 
@@ -163,7 +157,8 @@ export interface PaginationOptions {
 /**
  * Paginated response with data and pagination information
  */
-export interface PaginatedResponse<T> {
+export interface PaginatedResponse<T = unknown> {
+  /** Paginated response with data and pagination information */
   /** Response data */
   data: T[];
 

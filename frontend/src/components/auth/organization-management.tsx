@@ -1,25 +1,25 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
+import { useState } from "react";
 
-import { 
-  Title, 
-  Text, 
-  Button, 
-  Card, 
-  Stack, 
-  Group, 
-  TextInput, 
-  Select, 
-  Divider, 
+import {
+  Title,
+  Text,
+  Button,
+  Card,
+  Stack,
+  Group,
+  TextInput,
+  Select,
+  Divider,
   Alert,
-  Badge
-} from '@mantine/core';
+  Badge,
+} from "@mantine/core";
 
-import { IconAlertCircle, IconUserPlus } from '@tabler/icons-react';
+import { IconAlertCircle, IconUserPlus } from "@tabler/icons-react";
 
-import { useAuth } from '../../hooks/useAuth';
-import { UserRole } from '../../types/user/user.types';
+import { useAuth } from "../../hooks/useAuth";
+import { UserRole } from "../../types/user/user.types";
 
 /**
  * Organization Management Component
@@ -28,7 +28,7 @@ import { UserRole } from '../../types/user/user.types';
 export default function OrganizationManagement() {
   const { user, isAdmin } = useAuth();
   const [loading, setLoading] = useState(false);
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState("");
   const [role, setRole] = useState<string>(UserRole.USER);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
@@ -36,23 +36,23 @@ export default function OrganizationManagement() {
   // Mock function to invite a user
   const handleInviteUser = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!email) {
-      setError('Email is required');
+      setError("Email is required");
       return;
     }
-    
+
     setLoading(true);
     setError(null);
     setSuccess(null);
-    
+
     try {
       // Mock successful operation
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
       setSuccess(`Invitation sent to ${email}`);
-      setEmail('');
+      setEmail("");
     } catch (err) {
-      setError('Failed to send invitation');
+      setError("Failed to send invitation");
     } finally {
       setLoading(false);
     }
@@ -61,8 +61,10 @@ export default function OrganizationManagement() {
   return (
     <Stack>
       <Card withBorder shadow="sm" padding="lg">
-        <Title order={4} mb="md">Team Members</Title>
-        
+        <Title order={4} mb="md">
+          Team Members
+        </Title>
+
         {!user?.organizationId ? (
           <Alert c="blue" icon={<IconAlertCircle size={16} />}>
             You are not part of any organization.
@@ -70,34 +72,37 @@ export default function OrganizationManagement() {
         ) : (
           <>
             <Text mb="md">
-              You are a member of <strong>Organization ID: {user.organizationId}</strong>
+              You are a member of{" "}
+              <strong>Organization ID: {user.organizationId}</strong>
             </Text>
-            
+
             <Group>
-              <Badge c={isAdmin ? 'red' : 'blue'}>
-                {isAdmin ? 'Admin' : 'Member'}
+              <Badge c={isAdmin ? "red" : "blue"}>
+                {isAdmin ? "Admin" : "Member"}
               </Badge>
             </Group>
           </>
         )}
       </Card>
-      
+
       {isAdmin && user?.organizationId && (
         <Card withBorder shadow="sm" padding="lg" mt="md">
-          <Title order={4} mb="md">Invite Team Members</Title>
-          
+          <Title order={4} mb="md">
+            Invite Team Members
+          </Title>
+
           {error && (
             <Alert c="red" icon={<IconAlertCircle size={16} />} mb="md">
               {error}
             </Alert>
           )}
-          
+
           {success && (
             <Alert c="green" icon={<IconAlertCircle size={16} />} mb="md">
               {success}
             </Alert>
           )}
-          
+
           <form onSubmit={handleInviteUser}>
             <Stack>
               <TextInput
@@ -107,23 +112,23 @@ export default function OrganizationManagement() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
-              
+
               <Select
                 label="Role"
                 data={[
-                  { value: UserRole.ADMIN, label: 'Admin' },
-                  { value: UserRole.MANAGER, label: 'Manager' },
-                  { value: UserRole.USER, label: 'User' }
+                  { value: UserRole.ADMIN, label: "Admin" },
+                  { value: UserRole.MANAGER, label: "Manager" },
+                  { value: UserRole.USER, label: "User" },
                 ]}
                 value={role}
                 onChange={(value) => setRole(value || UserRole.USER)}
               />
-              
+
               <Divider my="sm" />
-              
+
               <Group justify="flex-end">
-                <Button 
-                  type="submit" 
+                <Button
+                  type="submit"
                   loading={loading}
                   leftSection={<IconUserPlus size={16} />}
                 >

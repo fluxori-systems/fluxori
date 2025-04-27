@@ -1,7 +1,9 @@
 # Module Refactoring Priorities
 
 ## High Priority
+
 - **Agent Framework Module**
+
   - Foundation for all AI agent interactions
   - Imported by multiple modules
   - Has direct dependencies on feature-flags module
@@ -14,7 +16,9 @@
   - Contains boundary violations in controllers
 
 ## Medium Priority
+
 - **Auth Module**
+
   - Provides authentication and authorization
   - Many modules depend on it directly
   - Need to create proper public interfaces
@@ -27,7 +31,9 @@
   - Used directly by many modules
 
 ## Low Priority
+
 - **Inventory Module**
+
   - Product and stock management
   - Contains boundary violations but less critical
   - Refactor after high/medium priority modules
@@ -38,11 +44,13 @@
   - Refactor after high/medium priority modules
 
 ## Dependencies Between Modules
+
 (To be populated from full dependency analysis)
 
 ## Initial Patterns to Implement
 
 ### 1. Authentication Access Pattern
+
 Create a standard way for modules to use authentication:
 
 ```typescript
@@ -50,12 +58,13 @@ Create a standard way for modules to use authentication:
 // import { FirebaseAuthGuard } from 'src/modules/auth/guards/firebase-auth.guard';
 
 // Create proxy in each module or use a common pattern:
-import { AuthUtils } from 'src/common/auth';
+import { AuthUtils } from "src/common/auth";
 // or
-import { Auth } from 'src/modules/auth';
+import { Auth } from "src/modules/auth";
 ```
 
 ### 2. Common Repository Access Pattern
+
 Standardize repository imports:
 
 ```typescript
@@ -63,10 +72,11 @@ Standardize repository imports:
 // import { UnifiedFirestoreRepository } from 'src/common/repositories/unified-firestore.repository';
 
 // Use:
-import { Repositories } from 'src/common/repositories';
+import { Repositories } from "src/common/repositories";
 ```
 
 ### 3. Feature Flag Access Pattern
+
 Create standard feature flag access:
 
 ```typescript
@@ -74,5 +84,5 @@ Create standard feature flag access:
 // import { FeatureFlagService } from 'src/modules/feature-flags/services/feature-flag.service';
 
 // Use:
-import { FeatureFlags } from 'src/modules/feature-flags';
+import { FeatureFlags } from "src/modules/feature-flags";
 ```

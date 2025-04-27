@@ -10,8 +10,10 @@ export enum UserRole {
 /**
  * User model for Firestore
  */
-export interface User {
-  id?: string;
+import { FirestoreEntityWithMetadata } from '../../../common/repositories/base/repository-types';
+
+export interface User extends FirestoreEntityWithMetadata {
+  id: string;
   name: string;
   email: string;
   password: string;
@@ -19,6 +21,4 @@ export interface User {
   organizationId?: string;
   isActive: boolean;
   lastLogin?: Date;
-  createdAt?: Date;
-  updatedAt?: Date;
 }

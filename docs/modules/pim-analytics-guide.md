@@ -13,24 +13,28 @@ The PIM Analytics system provides comprehensive insights into your product catal
 The analytics module includes several specialized reports:
 
 1. **Catalog Size Report**
+
    - Total product counts and distribution by status
    - Category and attribute statistics
    - Media usage metrics and estimated catalog size
    - Largest categories visualization
 
 2. **Product Activity Report**
+
    - Product creation and update trends over time
    - Most frequently edited products
    - Field change frequency analysis
    - Activity timeline visualization
 
 3. **Catalog Completeness Report**
+
    - Overall data quality score
    - Completeness breakdown by product status
    - Attribute fill rates across the catalog
-   - Identification of incomplete products 
+   - Identification of incomplete products
 
 4. **Marketplace Sync Report**
+
    - Integration status across marketplaces
    - Synchronization error analysis
    - Marketplace-specific performance metrics
@@ -47,12 +51,14 @@ The analytics module includes several specialized reports:
 The analytics system incorporates several optimizations specifically for South African market conditions:
 
 1. **Load Shedding Resilience**
+
    - Automatic detection of load shedding conditions
    - Adaptation of report complexity based on load shedding stage
    - Priority-based execution of analytics operations
    - Queuing of non-critical operations during outages
 
 2. **Network-Aware Components**
+
    - Adaptive visualization based on connection quality
    - Progressive data loading for large reports
    - Text alternatives for charts during poor connectivity
@@ -71,18 +77,21 @@ The analytics system incorporates several optimizations specifically for South A
 The backend implementation includes:
 
 1. **Analytics Service**
+
    - Core service that generates all report data
    - Implements caching strategies for report data
    - Handles data aggregation and computation
    - Integrates with load shedding detection
 
 2. **Analytics Controller**
+
    - REST endpoints for all report types
    - Export functionality (CSV, Excel, PDF)
    - Network-optimized endpoints for poor connectivity
    - Operational status reporting
 
 3. **Report Generation**
+
    - Efficient Firestore query optimization
    - Data sampling for very large catalogs
    - Cursor-based pagination for large result sets
@@ -102,12 +111,14 @@ The backend implementation includes:
 The frontend implementation includes:
 
 1. **Analytics Dashboard**
+
    - Central dashboard with report selection
    - Time period controls for relevant reports
    - Export functionality
    - Load shedding and network quality indicators
 
 2. **Network-Aware Visualizations**
+
    - Adaptive charts that respond to network conditions
    - Charts using the Chart.js library for optimal performance
    - Text alternatives for poor connectivity
@@ -132,18 +143,21 @@ The frontend implementation includes:
 ### Exporting Reports
 
 1. Standard export:
+
    - Select the desired report
    - Click the "Export" dropdown
    - Choose the desired format (CSV, Excel, PDF, JSON)
    - The report will download automatically
 
 2. Network-resilient export (for poor connectivity):
+
    - Select the desired report
    - Click the "Network-resilient Export" option
    - The system will automatically optimize the export based on current conditions
    - For critical load shedding (Stage 4+), the report is queued for later delivery by email
 
 3. Report bundling (for multiple reports):
+
    - Select multiple reports using the checkboxes
    - Click "Export Bundle"
    - Choose the format for all reports
@@ -161,6 +175,7 @@ The frontend implementation includes:
 The dashboard includes indicators for:
 
 1. **Load Shedding Status**
+
    - Green: No load shedding
    - Yellow: Stage 1-2 (minor outages)
    - Orange: Stage 3-4 (moderate outages)
@@ -199,18 +214,21 @@ In low bandwidth environments:
 Planned future enhancements include:
 
 1. **Predictive Analytics**
+
    - Stock level forecasting
    - Demand prediction
    - Price elasticity analysis
    - Seasonal trend detection
 
 2. **Advanced Visualizations**
+
    - Interactive drill-down capabilities
    - Comparative period analysis
    - Custom dashboard builder
    - Anomaly highlighting
 
 3. **Integration Enhancements**
+
    - Google Analytics integration
    - Marketplace-specific analytics
    - Competitor price monitoring

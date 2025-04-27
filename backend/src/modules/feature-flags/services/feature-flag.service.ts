@@ -567,6 +567,26 @@ export class FeatureFlagService implements OnModuleInit {
               : 'Organization is not in target group',
           };
 
+        case FeatureFlagType.ENVIRONMENT_TARGETED:
+          // Environment-targeted flag: environment restrictions checked above
+          return {
+            flagKey,
+            enabled: true,
+            source: 'evaluation',
+            timestamp: new Date(),
+            reason: `Environment-targeted flag enabled for environment: ${context.environment}`,
+          };
+
+        case FeatureFlagType.SCHEDULED:
+          // Scheduled flag within allowed time window (constraints checked above)
+          return {
+            flagKey,
+            enabled: true,
+            source: 'evaluation',
+            timestamp: new Date(),
+            reason: 'Scheduled flag within active time window',
+          };
+
         default:
           return {
             flagKey,

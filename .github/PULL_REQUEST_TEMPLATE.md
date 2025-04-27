@@ -21,11 +21,12 @@
 - [ ] This PR implements or is related to an ADR
 
 Relevant ADRs:
+
 <!-- Example: [ADR-001: Module Boundary Enforcement](/docs/adr/ADR-001-module-boundary-enforcement.md) -->
 
 ## Dependency Impact
 
-<!-- 
+<!--
 Describe how this PR affects module dependencies. Reference dependency visualizations if relevant.
 For significant architectural changes, consider creating a new ADR with dependency visualizations.
 -->

@@ -29,6 +29,7 @@ The deployment is handled by two main scripts:
 ### Step 1: Set up Infrastructure
 
 The first script handles:
+
 - Service account authentication
 - Enabling required APIs
 - Creating service account for the scraper
@@ -83,6 +84,7 @@ cd /home/tarquin_stapa/fluxori
 ```
 
 This will:
+
 - Create scheduler jobs for all marketplaces
 - Set up monitoring and alerting
 - Create final documentation

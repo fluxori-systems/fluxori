@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="800px" height="600px" viewBox="0 0 800 600">
+    <style>
+        .lib-module { fill: lightblue; stroke: #333; stroke-width: 2; }
+        .comp-module { fill: lightgreen; stroke: #333; stroke-width: 2; }
+        .label { font-family: Arial; font-size: 14px; text-anchor: middle; }
+        .arrow { stroke: #333; stroke-width: 1.5; fill: none; }
+        .arrowhead { fill: #333; }
+    </style>
+    <g id="modules">
+        <!-- Library modules -->
+        <rect class="lib-module" x="250" y="50" width="100" height="40" rx="5" />
+        <text class="label" x="300" y="75">Shared</text>
+        
+        <rect class="lib-module" x="100" y="150" width="100" height="40" rx="5" />
+        <text class="label" x="150" y="175">Motion</text>
+        
+        <rect class="lib-module" x="250" y="150" width="100" height="40" rx="5" />
+        <text class="label" x="300" y="175">UI</text>
+        
+        <rect class="lib-module" x="400" y="150" width="100" height="40" rx="5" />
+        <text class="label" x="450" y="175">Design System</text>
+        
+        <rect class="lib-module" x="550" y="150" width="100" height="40" rx="5" />
+        <text class="label" x="600" y="175">Firebase</text>
+        
+        <!-- Component modules -->
+        <rect class="comp-module" x="100" y="250" width="100" height="40" rx="5" />
+        <text class="label" x="150" y="275">Animations</text>
+        
+        <rect class="comp-module" x="250" y="250" width="100" height="40" rx="5" />
+        <text class="label" x="300" y="275">Feature Flags</text>
+        
+        <rect class="comp-module" x="400" y="250" width="100" height="40" rx="5" />
+        <text class="label" x="450" y="275">Auth</text>
+        
+        <rect class="comp-module" x="550" y="250" width="100" height="40" rx="5" />
+        <text class="label" x="600" y="275">Layouts</text>
+        
+        <rect class="comp-module" x="175" y="350" width="100" height="40" rx="5" />
+        <text class="label" x="225" y="375">Charts</text>
+        
+        <rect class="comp-module" x="325" y="350" width="100" height="40" rx="5" />
+        <text class="label" x="375" y="375">Observability</text>
+        
+        <rect class="comp-module" x="475" y="350" width="100" height="40" rx="5" />
+        <text class="label" x="525" y="375">South African</text>
+        
+        <rect class="comp-module" x="325" y="450" width="100" height="40" rx="5" />
+        <text class="label" x="375" y="475">PIM</text>
+    </g>
+    
+    <g id="arrows">
+        <!-- Library dependencies -->
+        <!-- UI -> Shared -->
+        <path class="arrow" d="M 300,150 L 300,90" marker-end="url(#arrowhead)" />
+        
+        <!-- Motion -> Shared -->
+        <path class="arrow" d="M 150,150 L 150,130 L 300,130 L 300,90" marker-end="url(#arrowhead)" />
+        
+        <!-- Design System -> UI -->
+        <path class="arrow" d="M 400,150 L 350,150" marker-end="url(#arrowhead)" />
+        
+        <!-- Component dependencies -->
+        <!-- Animations -> Motion -->
+        <path class="arrow" d="M 150,250 L 150,190" marker-end="url(#arrowhead)" />
+        
+        <!-- Feature Flags -> Shared -->
+        <path class="arrow" d="M 300,250 L 300,90" marker-end="url(#arrowhead)" />
+        
+        <!-- Auth -> UI -->
+        <path class="arrow" d="M 400,250 L 400,230 L 300,230 L 300,190" marker-end="url(#arrowhead)" />
+        
+        <!-- Auth -> Firebase -->
+        <path class="arrow" d="M 450,250 L 450,230 L 600,230 L 600,190" marker-end="url(#arrowhead)" />
+        
+        <!-- Layouts -> UI -->
+        <path class="arrow" d="M 550,250 L 550,230 L 300,230 L 300,190" marker-end="url(#arrowhead)" />
+        
+        <!-- Charts -> UI -->
+        <path class="arrow" d="M 225,350 L 225,330 L 300,330 L 300,190" marker-end="url(#arrowhead)" />
+        
+        <!-- Charts -> Shared -->
+        <path class="arrow" d="M 175,350 L 175,330 L 120,330 L 120,100 L 250,100" marker-end="url(#arrowhead)" />
+        
+        <!-- Observability -> Charts -->
+        <path class="arrow" d="M 325,350 L 275,350" marker-end="url(#arrowhead)" />
+        
+        <!-- Observability -> UI -->
+        <path class="arrow" d="M 375,350 L 375,330 L 300,330 L 300,190" marker-end="url(#arrowhead)" />
+        
+        <!-- South African -> UI -->
+        <path class="arrow" d="M 475,350 L 475,330 L 300,330 L 300,190" marker-end="url(#arrowhead)" />
+        
+        <!-- South African -> Shared -->
+        <path class="arrow" d="M 525,350 L 525,330 L 650,330 L 650,100 L 350,100" marker-end="url(#arrowhead)" />
+        
+        <!-- PIM -> UI -->
+        <path class="arrow" d="M 335,450 L 335,430 L 100,430 L 100,230 L 300,230 L 300,190" marker-end="url(#arrowhead)" />
+        
+        <!-- PIM -> Shared -->
+        <path class="arrow" d="M 325,450 L 325,430 L 80,430 L 80,70 L 250,70" marker-end="url(#arrowhead)" />
+        
+        <!-- PIM -> Charts -->
+        <path class="arrow" d="M 375,450 L 375,430 L 225,430 L 225,390" marker-end="url(#arrowhead)" />
+        
+        <!-- PIM -> South African -->
+        <path class="arrow" d="M 410,450 L 410,430 L 525,430 L 525,390" marker-end="url(#arrowhead)" />
+    </g>
+    
+    <defs>
+        <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto" class="arrowhead">
+            <polygon points="0 0, 10 3.5, 0 7" />
+        </marker>
+    </defs>
+</svg>

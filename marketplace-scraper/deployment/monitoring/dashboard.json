@@ -142,9 +142,7 @@
                       "alignmentPeriod": "60s",
                       "perSeriesAligner": "ALIGN_SUM",
                       "crossSeriesReducer": "REDUCE_SUM",
-                      "groupByFields": [
-                        "metric.label.task_type"
-                      ]
+                      "groupByFields": ["metric.label.task_type"]
                     }
                   }
                 },
@@ -176,9 +174,7 @@
                       "alignmentPeriod": "60s",
                       "perSeriesAligner": "ALIGN_SUM",
                       "crossSeriesReducer": "REDUCE_SUM",
-                      "groupByFields": [
-                        "metric.label.task_type"
-                      ]
+                      "groupByFields": ["metric.label.task_type"]
                     }
                   }
                 },
@@ -287,9 +283,7 @@
                       "alignmentPeriod": "86400s",
                       "perSeriesAligner": "ALIGN_SUM",
                       "crossSeriesReducer": "REDUCE_SUM",
-                      "groupByFields": [
-                        "metric.label.marketplace"
-                      ]
+                      "groupByFields": ["metric.label.marketplace"]
                     }
                   },
                   "unitOverride": "1"
@@ -314,9 +308,7 @@
                       "alignmentPeriod": "3600s",
                       "perSeriesAligner": "ALIGN_MEAN",
                       "crossSeriesReducer": "REDUCE_MEAN",
-                      "groupByFields": [
-                        "metric.label.priority"
-                      ]
+                      "groupByFields": ["metric.label.priority"]
                     }
                   }
                 },

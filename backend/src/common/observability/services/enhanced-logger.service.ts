@@ -27,7 +27,7 @@ import {
  */
 @Injectable()
 export class EnhancedLoggerService implements IEnhancedLoggerService {
-  private cloudLogging: Logging;
+  private cloudLogging!: Logging; // Definite assignment assertion
   private logName: string;
   private projectId: string;
   private isProduction: boolean;
@@ -234,12 +234,17 @@ export class EnhancedLoggerService implements IEnhancedLoggerService {
 
     // Parse the context
     let contextName: string | undefined;
-    let logContext: LogContext = {};
+    let logContext: LogContext = {
+      timestamp: new Date(),
+    };
 
     if (typeof context === 'string') {
       contextName = context;
     } else if (context) {
-      logContext = context;
+      logContext = {
+        ...context,
+        timestamp: context.timestamp ?? new Date(),
+      };
       contextName = logContext.service;
     }
 
@@ -259,14 +264,17 @@ export class EnhancedLoggerService implements IEnhancedLoggerService {
         ...this.globalContext,
         ...logContext,
         service: contextName || this.globalContext.service || 'fluxori-api',
+        timestamp: logContext.timestamp ?? new Date(),
       },
       data: logData,
-      timestamp: new Date(),
-    };
+      // timestamp is now part of context
+    } as StructuredLogEntry;
 
     // Add stack trace for errors
     if (trace) {
-      logEntry.stack = trace;
+      if (logEntry.context) {
+        logEntry.context.stack = trace;
+      }
     }
 
     // Sanitize sensitive data if enabled
@@ -275,7 +283,12 @@ export class EnhancedLoggerService implements IEnhancedLoggerService {
         logEntry.data = this.sanitizeObject(logEntry.data);
       }
       if (logEntry.context) {
-        logEntry.context = this.sanitizeObject(logEntry.context);
+        const sanitizedContext = this.sanitizeObject(
+          logEntry.context,
+        ) as Partial<LogContext>;
+        // Ensure timestamp is preserved (required by LogContext)
+        sanitizedContext.timestamp = logEntry.context.timestamp ?? new Date();
+        logEntry.context = sanitizedContext as LogContext;
       }
     }
 
@@ -286,20 +299,22 @@ export class EnhancedLoggerService implements IEnhancedLoggerService {
    * Format a structured log for console output
    */
   private formatForConsole(log: StructuredLogEntry): string {
-    const timestamp = log.timestamp.toISOString();
-    const context = log.context?.service ? `[${log.context.service}]` : '';
+    const timestamp = log.context?.timestamp
+      ? log.context.timestamp.toISOString()
+      : new Date().toISOString();
+    const contextStr = log.context?.service ? `[${log.context.service}]` : '';
     const traceId = log.context?.trace?.traceId
       ? `(trace: ${log.context.trace.traceId})`
       : '';
 
-    let message = `${timestamp} ${log.severity.toUpperCase()} ${context} ${log.message} ${traceId}`;
+    let message = `${timestamp} ${log.severity.toUpperCase()} ${contextStr} ${log.message} ${traceId}`;
 
     if (log.data && Object.keys(log.data).length > 0) {
       message += '\nData: ' + JSON.stringify(log.data, null, 2);
     }
 
-    if (log.stack) {
-      message += '\nStack: ' + log.stack;
+    if (log.context?.stack) {
+      message += '\nStack: ' + log.context.stack;
     }
 
     return message;
@@ -373,8 +388,12 @@ export class EnhancedLoggerService implements IEnhancedLoggerService {
           message: structuredLog.message,
           ...structuredLog.data,
           context: structuredLog.context,
-          timestamp: structuredLog.timestamp.toISOString(),
-          ...(structuredLog.stack && { stack: structuredLog.stack }),
+          timestamp: structuredLog.context?.timestamp
+            ? structuredLog.context.timestamp.toISOString()
+            : new Date().toISOString(),
+          ...(structuredLog.context?.stack && {
+            stack: structuredLog.context.stack,
+          }),
         };
 
         // Write to Cloud Logging
@@ -459,7 +478,9 @@ export class EnhancedLoggerService implements IEnhancedLoggerService {
     // Keep cache size reasonable
     if (this.sanitizeCache.size > 1000) {
       const oldestKey = this.sanitizeCache.keys().next().value;
-      this.sanitizeCache.delete(oldestKey);
+      if (typeof oldestKey === 'string') {
+        this.sanitizeCache.delete(oldestKey);
+      }
     }
 
     return result;

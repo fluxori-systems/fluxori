@@ -15,7 +15,7 @@ import { YourEntityController } from './your-entity.controller';
 
 /**
  * Template for a module using Firestore repositories
- * 
+ *
  * This shows the proper way to configure a module with Firestore repositories
  * in a Google Cloud native architecture.
  */
@@ -24,16 +24,14 @@ import { YourEntityController } from './your-entity.controller';
     // Make configuration available to services
     ConfigModule,
   ],
-  controllers: [
-    YourEntityController,
-  ],
+  controllers: [YourEntityController],
   providers: [
     // Firestore configuration service
     FirestoreConfigService,
-    
+
     // Repositories
     YourEntityRepository,
-    
+
     // Services
     YourEntityService,
   ],

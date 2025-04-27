@@ -211,9 +211,7 @@ export class RepricingEngineService {
           case PricingRuleOperation.PERCENTAGE_MARGIN:
             // Implement margin-based pricing
             // Since costPrice doesn't exist on BuyBoxStatus, we'll use metadata if available
-            const costPrice = buyBoxStatus.metadata?.costPrice as
-              | number
-              | undefined;
+            const costPrice = buyBoxStatus.metadata?.costPrice;
             if (costPrice) {
               const margin = rule.value || 0;
               newPrice = costPrice / (1 - margin / 100);

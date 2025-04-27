@@ -1,6 +1,14 @@
 /**
  * BuyBox History Schema
  */
+
+/**
+ * Placeholder for BuyBox history metadata. TODO: Add concrete fields as discovered.
+ */
+export interface BuyBoxHistoryMetadata {
+  // TODO: Add concrete metadata fields here as they are discovered in the codebase
+}
+
 import { FirestoreEntity } from '../../../types/google-cloud.types';
 import {
   BuyBoxStatus,
@@ -12,6 +20,8 @@ import {
  * BuyBox History entity for Firestore
  */
 export interface BuyBoxHistory extends FirestoreEntity {
+  version: number; // Ensure always present for FirestoreEntityWithMetadata compliance
+  isDeleted: boolean; // Ensure always present for FirestoreEntityWithMetadata compliance
   organizationId: string;
   productId: string;
   productSku: string;
@@ -32,5 +42,6 @@ export interface BuyBoxHistory extends FirestoreEntity {
     shipping: number;
     totalPrice: number;
   };
-  metadata?: Record<string, any>;
+  // TODO: Refine BuyBoxHistoryMetadata as requirements become clear
+  metadata?: BuyBoxHistoryMetadata;
 }

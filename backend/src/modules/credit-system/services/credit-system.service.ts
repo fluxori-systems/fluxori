@@ -17,6 +17,7 @@ import {
   CreditUsageRequest,
   CreditUsageType,
   TokenUsageCalculation,
+  CreditSystemMetadata,
 } from '../interfaces/types';
 import {
   CreditAllocationRepository,
@@ -152,7 +153,7 @@ export class CreditSystemService implements OnModuleInit {
     userId?: string,
     resetDate?: Date,
     expirationDate?: Date,
-    metadata?: Record<string, any>,
+    metadata?: CreditSystemMetadata, // TODO: Refine fields for metadata structure
   ): Promise<CreditAllocation> {
     this.logger.log(
       `Creating allocation of ${totalCredits} credits for organization ${organizationId}`,
@@ -664,7 +665,7 @@ export class CreditSystemService implements OnModuleInit {
     allocationId: string,
     amount: number,
     userId: string,
-    metadata?: Record<string, any>,
+    metadata?: CreditSystemMetadata, // TODO: Refine fields for metadata structure
   ): Promise<CreditAllocation> {
     try {
       // Get the allocation

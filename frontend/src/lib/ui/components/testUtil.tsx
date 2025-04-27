@@ -3,22 +3,22 @@
  * This file provides utilities for testing React components
  */
 
-import React, { ReactNode } from 'react';
+import React, { ReactNode } from "react";
 
-import { render, RenderOptions } from '@testing-library/react';
+import { render, RenderOptions } from "@testing-library/react";
 
 // Mock Theme Context
 export const ThemeContext = React.createContext({
-  theme: 'light',
+  theme: "light",
   toggleTheme: () => {},
 });
 
 // Mock Motion Context
 export const MotionContext = React.createContext({
-  motionMode: 'full',
+  motionMode: "full",
   setMotionMode: (_mode: string) => {},
   animationService: {
-    getMotionMode: () => 'full',
+    getMotionMode: () => "full",
     shouldReduceMotion: () => false,
     getAnimationStrategy: () => ({
       enabled: true,
@@ -32,7 +32,7 @@ export const MotionContext = React.createContext({
     animateComponent: () => () => {},
   },
   connectionQuality: {
-    quality: 'high',
+    quality: "high",
     isDataSaver: false,
     isMetered: false,
   },
@@ -41,13 +41,13 @@ export const MotionContext = React.createContext({
 // Provider wrapper for tests
 export function AllProviders({ children }: { children: ReactNode }) {
   return (
-    <ThemeContext.Provider value={{ theme: 'light', toggleTheme: () => {} }}>
+    <ThemeContext.Provider value={{ theme: "light", toggleTheme: () => {} }}>
       <MotionContext.Provider
         value={{
-          motionMode: 'full',
+          motionMode: "full",
           setMotionMode: () => {},
           animationService: {
-            getMotionMode: () => 'full',
+            getMotionMode: () => "full",
             shouldReduceMotion: () => false,
             getAnimationStrategy: () => ({
               enabled: true,
@@ -61,7 +61,7 @@ export function AllProviders({ children }: { children: ReactNode }) {
             animateComponent: () => () => {},
           },
           connectionQuality: {
-            quality: 'high',
+            quality: "high",
             isDataSaver: false,
             isMetered: false,
           },
@@ -76,10 +76,10 @@ export function AllProviders({ children }: { children: ReactNode }) {
 // Custom render with providers
 export function renderWithProviders(
   ui: React.ReactElement,
-  options?: Omit<RenderOptions, 'wrapper'>
+  options?: Omit<RenderOptions, "wrapper">,
 ) {
   return render(ui, { wrapper: AllProviders, ...options });
 }
 
 // Re-export everything from testing-library/react
-export * from '@testing-library/react';
+export * from "@testing-library/react";

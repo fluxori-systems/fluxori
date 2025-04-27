@@ -1,4 +1,5 @@
 # Fluxori Design System & Motion Framework
+
 Revised and Enhanced Edition
 
 ## Core Design Philosophy: The Agent-First Interface
@@ -50,22 +51,22 @@ Fluxori's design system reflects our unique position as an agent-first e-commerc
 
 #### Primary Font Family: Inter
 
-| Element | Weight | Size | Line Height | Usage |
-|---------|--------|------|-------------|-------|
-| Headings H1 | 700 | 28px | 36px | Page titles |
-| Headings H2 | 600 | 24px | 32px | Section headers |
-| Headings H3 | 600 | 20px | 28px | Card titles, panel headers |
-| Body | 400 | 16px | 24px | Primary content |
-| Small/Caption | 400 | 14px | 20px | Secondary information, labels |
-| Micro | 500 | 12px | 16px | Metadata, timestamps |
+| Element       | Weight | Size | Line Height | Usage                         |
+| ------------- | ------ | ---- | ----------- | ----------------------------- |
+| Headings H1   | 700    | 28px | 36px        | Page titles                   |
+| Headings H2   | 600    | 24px | 32px        | Section headers               |
+| Headings H3   | 600    | 20px | 28px        | Card titles, panel headers    |
+| Body          | 400    | 16px | 24px        | Primary content               |
+| Small/Caption | 400    | 14px | 20px        | Secondary information, labels |
+| Micro         | 500    | 12px | 16px        | Metadata, timestamps          |
 
 #### Secondary Font Family: Space Grotesk
 
-| Element | Weight | Size | Line Height | Usage |
-|---------|--------|------|-------------|-------|
-| Agent Responses | 400 | 16px | 24px | AI-generated content |
-| Data Viz Labels | 500 | 14px | 20px | Chart labels, numerical data |
-| Code/Technical | 400 | 14px | 20px | Code, technical data |
+| Element         | Weight | Size | Line Height | Usage                        |
+| --------------- | ------ | ---- | ----------- | ---------------------------- |
+| Agent Responses | 400    | 16px | 24px        | AI-generated content         |
+| Data Viz Labels | 500    | 14px | 20px        | Chart labels, numerical data |
+| Code/Technical  | 400    | 14px | 20px        | Code, technical data         |
 
 Font Pairing Rationale: Inter provides excellent readability for interface elements, while Space Grotesk offers a slightly more distinctive character for agent-generated content, creating subtle visual distinction between system UI and AI-generated content.
 
@@ -123,15 +124,16 @@ Font Pairing Rationale: Inter provides excellent readability for interface eleme
 
 ### Elevation & Shadows
 
-| Level | Usage | Shadow Value (Light Mode) | Shadow Value (Dark Mode) |
-|-------|-------|---------------------------|--------------------------|
-| 0 | Flat elements | none | none |
-| 1 | Cards, navigation | 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06) | 0 1px 3px rgba(0,0,0,0.25), 0 1px 2px rgba(0,0,0,0.15) |
-| 2 | Dropdowns, popovers | 0 4px 6px rgba(0,0,0,0.1), 0 2px 4px rgba(0,0,0,0.06) | 0 4px 6px rgba(0,0,0,0.3), 0 2px 4px rgba(0,0,0,0.2) |
-| 3 | Dialogs, modals | 0 10px 15px rgba(0,0,0,0.1), 0 4px 6px rgba(0,0,0,0.05) | 0 10px 15px rgba(0,0,0,0.35), 0 4px 6px rgba(0,0,0,0.2) |
-| 4 | Highest elevation elements | 0 20px 25px rgba(0,0,0,0.1), 0 10px 10px rgba(0,0,0,0.04) | 0 20px 25px rgba(0,0,0,0.4), 0 10px 10px rgba(0,0,0,0.2) |
+| Level | Usage                      | Shadow Value (Light Mode)                                 | Shadow Value (Dark Mode)                                 |
+| ----- | -------------------------- | --------------------------------------------------------- | -------------------------------------------------------- |
+| 0     | Flat elements              | none                                                      | none                                                     |
+| 1     | Cards, navigation          | 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06)     | 0 1px 3px rgba(0,0,0,0.25), 0 1px 2px rgba(0,0,0,0.15)   |
+| 2     | Dropdowns, popovers        | 0 4px 6px rgba(0,0,0,0.1), 0 2px 4px rgba(0,0,0,0.06)     | 0 4px 6px rgba(0,0,0,0.3), 0 2px 4px rgba(0,0,0,0.2)     |
+| 3     | Dialogs, modals            | 0 10px 15px rgba(0,0,0,0.1), 0 4px 6px rgba(0,0,0,0.05)   | 0 10px 15px rgba(0,0,0,0.35), 0 4px 6px rgba(0,0,0,0.2)  |
+| 4     | Highest elevation elements | 0 20px 25px rgba(0,0,0,0.1), 0 10px 10px rgba(0,0,0,0.04) | 0 20px 25px rgba(0,0,0,0.4), 0 10px 10px rgba(0,0,0,0.2) |
 
 Shadow Usage Guidelines:
+
 - Shadows should communicate interactive hierarchy
 - Higher elevation = higher importance or user attention
 - Dark mode shadows use higher opacity values for better visibility
@@ -142,6 +144,7 @@ Shadow Usage Guidelines:
 ### Core Motion Principles
 
 #### 1. Purposeful Intelligence
+
 Animations communicate meaning and reflect our AI-powered platform:
 
 - Informative Motion: Every animation serves a purpose - guiding attention, showing relationships, or providing feedback
@@ -153,6 +156,7 @@ Animations communicate meaning and reflect our AI-powered platform:
 Example: When an agent is analyzing inventory data, a subtle pulsing animation on the data visualization indicates processing, with the pulse becoming more regular and defined as confidence in the analysis increases.
 
 #### 2. Fluid Efficiency
+
 Animations are smooth and optimized for performance:
 
 - Performance First: All animations optimized for minimal CPU/GPU impact (<5% CPU usage)
@@ -163,11 +167,13 @@ Animations are smooth and optimized for performance:
 - Data Usage Consideration: Optional setting to reduce animation complexity for data-sensitive connections
 
 Implementation Metrics:
+
 - Target animation frame rate: 60fps on mid-range devices
 - Animation bundle size: <40KB (gzipped)
 - CPU usage during animations: <5% on target devices
 
 #### 3. Precision & Accuracy
+
 Animations are exact and intentional:
 
 - Calibrated Timing: Precise durations for different animation types
@@ -180,14 +186,14 @@ Orchestration Pattern: When multiple elements need to animate together (like a d
 
 ### Animation Timing Reference
 
-| Animation Type | Duration | Easing Function | Data Cost | Notes |
-|----------------|----------|-----------------|-----------|-------|
-| Micro-interactions | 100-150ms | ease-out | Minimal | Button clicks, toggles, ripples |
-| Element transitions | 200-300ms | ease-in-out | Low | Cards appearing/disappearing, expansion |
-| Page transitions | 300-400ms | cubic-bezier(0.83, 0, 0.17, 1) | Medium | Moving between major views |
-| Agent thinking indicators | Ongoing | ease-in-out (looping) | Low | Subtle pulsing during AI processing |
-| Data visualization updates | 500-800ms | ease-out | Medium | Chart transitions, data refreshes |
-| High-stakes confirmations | 400-600ms | ease-in-out | Medium | Actions with significant consequences |
+| Animation Type             | Duration  | Easing Function                | Data Cost | Notes                                   |
+| -------------------------- | --------- | ------------------------------ | --------- | --------------------------------------- |
+| Micro-interactions         | 100-150ms | ease-out                       | Minimal   | Button clicks, toggles, ripples         |
+| Element transitions        | 200-300ms | ease-in-out                    | Low       | Cards appearing/disappearing, expansion |
+| Page transitions           | 300-400ms | cubic-bezier(0.83, 0, 0.17, 1) | Medium    | Moving between major views              |
+| Agent thinking indicators  | Ongoing   | ease-in-out (looping)          | Low       | Subtle pulsing during AI processing     |
+| Data visualization updates | 500-800ms | ease-out                       | Medium    | Chart transitions, data refreshes       |
+| High-stakes confirmations  | 400-600ms | ease-in-out                    | Medium    | Actions with significant consequences   |
 
 ## South African Optimizations
 
@@ -314,13 +320,13 @@ Example:
 
 ```css
 :root {
-  --color-primary-500: #3055EE;
+  --color-primary-500: #3055ee;
   --typography-font-sizes-md: 1rem;
   --spacing-md: 1rem;
 }
 
 [data-theme="dark"] {
-  --color-primary-500: #4B6EF1;
+  --color-primary-500: #4b6ef1;
   --color-background-surface: #121212;
 }
 ```
@@ -340,21 +346,23 @@ The design system prioritizes accessibility with the following features:
 ### Accessing Design Tokens
 
 ```tsx
-'use client';
+"use client";
 
-import { useDesignTokens } from '@/lib/design-system';
+import { useDesignTokens } from "@/lib/design-system";
 
 function MyComponent() {
   const { color, fontSize, spacing } = useDesignTokens();
-  
+
   return (
-    <div style={{
-      color: color('text.primary'),
-      fontSize: fontSize('md'),
-      padding: spacing('md'),
-      borderRadius: radius('md'),
-      boxShadow: shadow('md'),
-    }}>
+    <div
+      style={{
+        color: color("text.primary"),
+        fontSize: fontSize("md"),
+        padding: spacing("md"),
+        borderRadius: radius("md"),
+        boxShadow: shadow("md"),
+      }}
+    >
       Styled using design tokens
     </div>
   );
@@ -364,25 +372,25 @@ function MyComponent() {
 ### Using South African Market Optimizations
 
 ```tsx
-'use client';
+"use client";
 
-import { useSouthAfricanMarketOptimizations } from '@/lib/shared/hooks';
+import { useSouthAfricanMarketOptimizations } from "@/lib/shared/hooks";
 
 function DataVisualizer({ data }) {
-  const { 
+  const {
     shouldReduceMotion,
     shouldReduceDataUsage,
     agentAppropriateness,
-    networkProfile
+    networkProfile,
   } = useSouthAfricanMarketOptimizations();
-  
+
   // Adjust visualization based on optimizations
   const chartAnimationDuration = shouldReduceMotion ? 0 : 600;
-  const imageQuality = shouldReduceDataUsage ? 'low' : 'high';
-  
+  const imageQuality = shouldReduceDataUsage ? "low" : "high";
+
   // Use agent appropriateness to determine interaction mode
-  const showAgentInterface = agentAppropriateness !== 'DISABLED';
-  
+  const showAgentInterface = agentAppropriateness !== "DISABLED";
+
   return (
     <div>
       {/* Render content differently based on optimizations */}
@@ -391,12 +399,10 @@ function DataVisualizer({ data }) {
       ) : (
         <RichDataView data={data} animationDuration={chartAnimationDuration} />
       )}
-      
+
       {/* Conditionally render agent UI */}
-      {showAgentInterface && (
-        <AgentAssistant valueImpact={1500} />
-      )}
-      
+      {showAgentInterface && <AgentAssistant valueImpact={1500} />}
+
       {/* Show data usage information */}
       <DataUsageIndicator networkProfile={networkProfile} />
     </div>
@@ -407,22 +413,24 @@ function DataVisualizer({ data }) {
 ### Animation with Motion Framework
 
 ```tsx
-'use client';
+"use client";
 
-import { AIProcessingIndicator } from '@/lib/motion/components';
-import { useAnimationPerformance } from '@/lib/motion/hooks';
-import { durations, easings } from '@/lib/motion/utils/motion-tokens';
+import { AIProcessingIndicator } from "@/lib/motion/components";
+import { useAnimationPerformance } from "@/lib/motion/hooks";
+import { durations, easings } from "@/lib/motion/utils/motion-tokens";
 
 function AgentProcessingView() {
   const { complexityPreset } = useAnimationPerformance();
-  
+
   // Adjust animation based on performance profile
   const duration = durations.agentThinking * complexityPreset.reduceDuration;
-  const ease = complexityPreset.useSimpleEasings ? easings.easeInOut : easings.easeInOutQuart;
-  
+  const ease = complexityPreset.useSimpleEasings
+    ? easings.easeInOut
+    : easings.easeInOutQuart;
+
   return (
     <div>
-      <AIProcessingIndicator 
+      <AIProcessingIndicator
         confidenceLevel="medium"
         duration={duration}
         ease={ease}

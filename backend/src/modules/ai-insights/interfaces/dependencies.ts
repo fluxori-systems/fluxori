@@ -2,6 +2,8 @@
 // Using Google Cloud services
 
 // Export the interfaces and types needed by this module
+import { InsightData } from './types';
+
 export interface IAIModelConfigDocument {
   id: string;
   name: string;
@@ -21,7 +23,7 @@ export interface IInsightDocument {
   type: InsightType;
   title: string;
   description: string;
-  data: any;
+  data: InsightData; // TODO: Refine fields as discovered
   severity: InsightSeverity;
   confidence: number;
   status: InsightStatus;

@@ -1,8 +1,5 @@
 #!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
+. "$(dirname "$0")/_/husky.sh"
 
-# Run lint-staged to verify changes
-npm run pre-commit
-
-# Run dependency checks separately to avoid performance issues with large changes
-# npm run check-depsecho 'Running TypeScript checks...' && cd frontend && npx tsc --noEmit || (echo '❌ TypeScript check failed. Please fix errors before committing.' && exit 1)
+echo "Running lint-staged..."
+npx lint-staged

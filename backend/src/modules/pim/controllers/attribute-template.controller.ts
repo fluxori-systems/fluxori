@@ -49,6 +49,12 @@ export class AttributeTemplateController {
     @GetUser() user: User,
   ): Promise<AttributeTemplate> {
     const organizationId = user.organizationId;
+    if (!organizationId) {
+      throw new HttpException(
+        'Missing organizationId for user',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
     const attributeTemplate =
       await this.attributeTemplateService.getAttributeTemplateById(
         id,
@@ -89,6 +95,12 @@ export class AttributeTemplateController {
     limit: number;
   }> {
     const organizationId = user.organizationId;
+    if (!organizationId) {
+      throw new HttpException(
+        'Missing organizationId for user',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
 
     return await this.attributeTemplateService.getAllAttributeTemplates(
       organizationId,
@@ -142,6 +154,12 @@ export class AttributeTemplateController {
     @GetUser() user: User,
   ): Promise<AttributeTemplate> {
     const organizationId = user.organizationId;
+    if (!organizationId) {
+      throw new HttpException(
+        'Missing organizationId for user',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
 
     // Ensure user can only update their organization's attribute templates
     updateAttributeTemplateDto.organizationId = organizationId;
@@ -176,6 +194,12 @@ export class AttributeTemplateController {
     @GetUser() user: User,
   ): Promise<void> {
     const organizationId = user.organizationId;
+    if (!organizationId) {
+      throw new HttpException(
+        'Missing organizationId for user',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
 
     const attributeTemplate =
       await this.attributeTemplateService.getAttributeTemplateById(
@@ -205,6 +229,12 @@ export class AttributeTemplateController {
     @GetUser() user: User,
   ): Promise<AttributeTemplate[]> {
     const organizationId = user.organizationId;
+    if (!organizationId) {
+      throw new HttpException(
+        'Missing organizationId for user',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
     return await this.attributeTemplateService.getAttributeTemplatesByCategory(
       organizationId,
       categoryId,
@@ -222,6 +252,12 @@ export class AttributeTemplateController {
     @GetUser() user: User,
   ): Promise<AttributeTemplate[]> {
     const organizationId = user.organizationId;
+    if (!organizationId) {
+      throw new HttpException(
+        'Missing organizationId for user',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
     return await this.attributeTemplateService.getGlobalAttributeTemplates(
       organizationId,
     );
@@ -240,6 +276,12 @@ export class AttributeTemplateController {
     @GetUser() user: User,
   ): Promise<AttributeTemplate[]> {
     const organizationId = user.organizationId;
+    if (!organizationId) {
+      throw new HttpException(
+        'Missing organizationId for user',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
     return await this.attributeTemplateService.getAttributeTemplatesByRegion(
       organizationId,
       region,
@@ -259,6 +301,12 @@ export class AttributeTemplateController {
     @GetUser() user: User,
   ): Promise<AttributeTemplate[]> {
     const organizationId = user.organizationId;
+    if (!organizationId) {
+      throw new HttpException(
+        'Missing organizationId for user',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
     return await this.attributeTemplateService.getAttributeTemplatesByMarketplace(
       organizationId,
       marketplaceId,
@@ -282,6 +330,12 @@ export class AttributeTemplateController {
     @GetUser() user: User,
   ): Promise<AttributeTemplate[]> {
     const organizationId = user.organizationId;
+    if (!organizationId) {
+      throw new HttpException(
+        'Missing organizationId for user',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
 
     // Validate scope
     if (!Object.values(AttributeScope).includes(scope)) {
@@ -317,6 +371,12 @@ export class AttributeTemplateController {
     @GetUser() user: User,
   ): Promise<AttributeTemplate[]> {
     const organizationId = user.organizationId;
+    if (!organizationId) {
+      throw new HttpException(
+        'Missing organizationId for user',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
 
     // Parse category IDs and marketplace IDs
     const categoryIds = categoryIdsParam ? categoryIdsParam.split(',') : [];
@@ -346,6 +406,12 @@ export class AttributeTemplateController {
     @GetUser() user: User,
   ): Promise<Array<OperationResult<AttributeTemplate>>> {
     const organizationId = user.organizationId;
+    if (!organizationId) {
+      throw new HttpException(
+        'Missing organizationId for user',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
 
     // Enforce organization ID for security
     operations = operations.map((op) => ({
@@ -374,6 +440,12 @@ export class AttributeTemplateController {
     @GetUser() user: User,
   ): Promise<Array<OperationResult>> {
     const organizationId = user.organizationId;
+    if (!organizationId) {
+      throw new HttpException(
+        'Missing organizationId for user',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
     return await this.attributeTemplateService.bulkDeleteAttributeTemplates(
       organizationId,
       body.templateIds,

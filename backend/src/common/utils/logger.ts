@@ -46,11 +46,11 @@ export class LoggerFactory {
  */
 @Injectable()
 export class Logger implements LoggerService {
-  private nestLogger: NestLogger;
-  private cloudLogging: Logging;
-  private logName: string;
-  private projectId: string;
-  private isProduction: boolean;
+  private nestLogger!: NestLogger;
+  private cloudLogging!: Logging;
+  private logName!: string;
+  private projectId!: string;
+  private isProduction!: boolean;
   private context: string = 'Fluxori';
 
   constructor(

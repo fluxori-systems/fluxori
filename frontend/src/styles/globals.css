@@ -5,59 +5,59 @@
 
 /* Font Face declarations */
 @font-face {
-  font-family: 'Inter';
+  font-family: "Inter";
   font-style: normal;
   font-weight: 400;
   font-display: swap;
-  src: url('/fonts/inter-regular.woff2') format('woff2');
+  src: url("/fonts/inter-regular.woff2") format("woff2");
 }
 
 @font-face {
-  font-family: 'Inter';
+  font-family: "Inter";
   font-style: normal;
   font-weight: 500;
   font-display: swap;
-  src: url('/fonts/inter-medium.woff2') format('woff2');
+  src: url("/fonts/inter-medium.woff2") format("woff2");
 }
 
 @font-face {
-  font-family: 'Inter';
+  font-family: "Inter";
   font-style: normal;
   font-weight: 600;
   font-display: swap;
-  src: url('/fonts/inter-semibold.woff2') format('woff2');
+  src: url("/fonts/inter-semibold.woff2") format("woff2");
 }
 
 @font-face {
-  font-family: 'Inter';
+  font-family: "Inter";
   font-style: normal;
   font-weight: 700;
   font-display: swap;
-  src: url('/fonts/inter-bold.woff2') format('woff2');
+  src: url("/fonts/inter-bold.woff2") format("woff2");
 }
 
 @font-face {
-  font-family: 'Space Grotesk';
+  font-family: "Space Grotesk";
   font-style: normal;
   font-weight: 400;
   font-display: swap;
-  src: url('/fonts/space-grotesk-regular.woff2') format('woff2');
+  src: url("/fonts/space-grotesk-regular.woff2") format("woff2");
 }
 
 @font-face {
-  font-family: 'Space Grotesk';
+  font-family: "Space Grotesk";
   font-style: normal;
   font-weight: 500;
   font-display: swap;
-  src: url('/fonts/space-grotesk-medium.woff2') format('woff2');
+  src: url("/fonts/space-grotesk-medium.woff2") format("woff2");
 }
 
 @font-face {
-  font-family: 'Space Grotesk';
+  font-family: "Space Grotesk";
   font-style: normal;
   font-weight: 700;
   font-display: swap;
-  src: url('/fonts/space-grotesk-bold.woff2') format('woff2');
+  src: url("/fonts/space-grotesk-bold.woff2") format("woff2");
 }
 
 /* Design system tokens as CSS variables */
@@ -74,7 +74,7 @@
   --color-primary-800: #1c4496;
   --color-primary-900: #1d3a7a;
   --color-primary-950: #0f1e45;
-  
+
   /* Secondary Colors */
   --color-secondary-50: #fdf2f7;
   --color-secondary-100: #fce7f1;
@@ -87,7 +87,7 @@
   --color-secondary-800: #9d174d;
   --color-secondary-900: #831843;
   --color-secondary-950: #500724;
-  
+
   /* Neutral Colors */
   --color-neutral-50: #f8fafc;
   --color-neutral-100: #f1f5f9;
@@ -100,51 +100,51 @@
   --color-neutral-800: #1e293b;
   --color-neutral-900: #0f172a;
   --color-neutral-950: #020617;
-  
+
   /* Semantic Colors */
   --color-success-light: #d1fae5;
   --color-success-base: #38b000;
   --color-success-dark: #166534;
   --color-success-contrast: #ffffff;
-  
+
   --color-warning-light: #fef3c7;
   --color-warning-base: #ffbe0b;
   --color-warning-dark: #92400e;
   --color-warning-contrast: #000000;
-  
+
   --color-error-light: #fee2e2;
   --color-error-base: #ff0a54;
   --color-error-dark: #991b1b;
   --color-error-contrast: #ffffff;
-  
+
   --color-info-light: #dbeafe;
   --color-info-base: #0ea5e9;
   --color-info-dark: #1e40af;
   --color-info-contrast: #ffffff;
-  
+
   /* Background Colors */
   --color-background-surface: #f8fafc;
   --color-background-card: #ffffff;
   --color-background-page: #f8fafc;
   --color-background-raised: #ffffff;
   --color-background-sunken: #f1f5f9;
-  
+
   /* Text Colors */
   --color-text-primary: #0f172a;
   --color-text-secondary: #475569;
   --color-text-disabled: #94a3b8;
   --color-text-inverse: #ffffff;
-  
+
   /* Border Colors */
   --color-border-light: #e2e8f0;
   --color-border-default: #cbd5e1;
   --color-border-strong: #94a3b8;
-  
+
   /* Typography */
   --typography-fonts-base: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji"';
   --typography-fonts-heading: '"Space Grotesk", Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif';
   --typography-fonts-mono: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace';
-  
+
   /* Font Sizes */
   --typography-font-sizes-2xs: 0.625rem;
   --typography-font-sizes-xs: 0.75rem;
@@ -157,13 +157,13 @@
   --typography-font-sizes-4xl: 2.25rem;
   --typography-font-sizes-5xl: 3rem;
   --typography-font-sizes-6xl: 3.75rem;
-  
+
   /* Font Weights */
   --typography-font-weights-regular: 400;
   --typography-font-weights-medium: 500;
   --typography-font-weights-semibold: 600;
   --typography-font-weights-bold: 700;
-  
+
   /* Line Heights */
   --typography-line-heights-none: 1;
   --typography-line-heights-tight: 1.25;
@@ -171,7 +171,7 @@
   --typography-line-heights-normal: 1.5;
   --typography-line-heights-relaxed: 1.625;
   --typography-line-heights-loose: 2;
-  
+
   /* Letter Spacing */
   --typography-letter-spacings-tighter: -0.05em;
   --typography-letter-spacings-tight: -0.025em;
@@ -179,7 +179,7 @@
   --typography-letter-spacings-wide: 0.025em;
   --typography-letter-spacings-wider: 0.05em;
   --typography-letter-spacings-widest: 0.1em;
-  
+
   /* Spacing */
   --spacing-3xs: 0.125rem;
   --spacing-2xs: 0.25rem;
@@ -192,7 +192,7 @@
   --spacing-3xl: 3rem;
   --spacing-4xl: 4rem;
   --spacing-5xl: 6rem;
-  
+
   /* Border Radius */
   --radius-none: 0;
   --radius-sm: 0.125rem;
@@ -200,17 +200,21 @@
   --radius-lg: 0.5rem;
   --radius-xl: 1rem;
   --radius-full: 9999px;
-  
+
   /* Shadows */
   --shadow-none: none;
   --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
-  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  --shadow-sm:
+    0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+  --shadow-md:
+    0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+  --shadow-lg:
+    0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  --shadow-xl:
+    0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
   --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
   --shadow-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.05);
-  
+
   /* Z-Index */
   --z-index-0: 0;
   --z-index-10: 10;
@@ -219,13 +223,13 @@
   --z-index-40: 40;
   --z-index-50: 50;
   --z-index-auto: auto;
-  
+
   /* Motion */
   --motion-durations-instant: 100ms;
   --motion-durations-fast: 200ms;
   --motion-durations-normal: 300ms;
   --motion-durations-slow: 500ms;
-  
+
   --motion-easings-ease-in: cubic-bezier(0.4, 0, 1, 1);
   --motion-easings-ease-out: cubic-bezier(0, 0, 0.2, 1);
   --motion-easings-ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
@@ -237,65 +241,72 @@
 [data-theme="dark"] {
   /* Primary Colors (adjusted for dark mode) */
   --color-primary-500: #57a5ff;
-  
+
   /* Secondary Colors (adjusted for dark mode) */
   --color-secondary-500: #f472b6;
-  
+
   /* Semantic Colors */
   --color-success-light: #132e1a;
   --color-success-base: #4ade80;
   --color-success-dark: #d1fae5;
   --color-success-contrast: #000000;
-  
+
   --color-warning-light: #2e2511;
   --color-warning-base: #fcd34d;
   --color-warning-dark: #fef3c7;
   --color-warning-contrast: #000000;
-  
+
   --color-error-light: #2a0e0e;
   --color-error-base: #f87171;
   --color-error-dark: #fee2e2;
   --color-error-contrast: #000000;
-  
+
   --color-info-light: #0e2954;
   --color-info-base: #38bdf8;
   --color-info-dark: #dbeafe;
   --color-info-contrast: #000000;
-  
+
   /* Background Colors */
   --color-background-surface: #111827;
   --color-background-card: #1f2937;
   --color-background-page: #0f172a;
   --color-background-raised: #1e293b;
   --color-background-sunken: #0f172a;
-  
+
   /* Text Colors */
   --color-text-primary: #f8fafc;
   --color-text-secondary: #cbd5e1;
   --color-text-disabled: #64748b;
   --color-text-inverse: #0f172a;
-  
+
   /* Border Colors */
   --color-border-light: #334155;
   --color-border-default: #475569;
   --color-border-strong: #64748b;
-  
+
   /* Shadows (adjusted for dark mode) */
   --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.2);
-  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.3), 0 1px 2px -1px rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -2px rgba(0, 0, 0, 0.4);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -4px rgba(0, 0, 0, 0.5);
-  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.6), 0 8px 10px -6px rgba(0, 0, 0, 0.6);
+  --shadow-sm:
+    0 1px 3px 0 rgba(0, 0, 0, 0.3), 0 1px 2px -1px rgba(0, 0, 0, 0.3);
+  --shadow-md:
+    0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -2px rgba(0, 0, 0, 0.4);
+  --shadow-lg:
+    0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -4px rgba(0, 0, 0, 0.5);
+  --shadow-xl:
+    0 20px 25px -5px rgba(0, 0, 0, 0.6), 0 8px 10px -6px rgba(0, 0, 0, 0.6);
   --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
   --shadow-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.2);
 }
 
 /* Global styles */
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
 
-html, body {
+html,
+body {
   margin: 0;
   padding: 0;
   font-family: var(--typography-fonts-base);
@@ -325,7 +336,9 @@ button {
 
 /* Accessibility - Reduced Motion */
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
+  *,
+  *::before,
+  *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
@@ -352,60 +365,150 @@ button {
 }
 
 /* Typography utility classes */
-.text-2xs { font-size: var(--typography-font-sizes-2xs); }
-.text-xs { font-size: var(--typography-font-sizes-xs); }
-.text-sm { font-size: var(--typography-font-sizes-sm); }
-.text-md { font-size: var(--typography-font-sizes-md); }
-.text-lg { font-size: var(--typography-font-sizes-lg); }
-.text-xl { font-size: var(--typography-font-sizes-xl); }
-.text-2xl { font-size: var(--typography-font-sizes-2xl); }
-.text-3xl { font-size: var(--typography-font-sizes-3xl); }
-.text-4xl { font-size: var(--typography-font-sizes-4xl); }
-.text-5xl { font-size: var(--typography-font-sizes-5xl); }
-.text-6xl { font-size: var(--typography-font-sizes-6xl); }
+.text-2xs {
+  font-size: var(--typography-font-sizes-2xs);
+}
+.text-xs {
+  font-size: var(--typography-font-sizes-xs);
+}
+.text-sm {
+  font-size: var(--typography-font-sizes-sm);
+}
+.text-md {
+  font-size: var(--typography-font-sizes-md);
+}
+.text-lg {
+  font-size: var(--typography-font-sizes-lg);
+}
+.text-xl {
+  font-size: var(--typography-font-sizes-xl);
+}
+.text-2xl {
+  font-size: var(--typography-font-sizes-2xl);
+}
+.text-3xl {
+  font-size: var(--typography-font-sizes-3xl);
+}
+.text-4xl {
+  font-size: var(--typography-font-sizes-4xl);
+}
+.text-5xl {
+  font-size: var(--typography-font-sizes-5xl);
+}
+.text-6xl {
+  font-size: var(--typography-font-sizes-6xl);
+}
 
-.font-regular { font-weight: var(--typography-font-weights-regular); }
-.font-medium { font-weight: var(--typography-font-weights-medium); }
-.font-semibold { font-weight: var(--typography-font-weights-semibold); }
-.font-bold { font-weight: var(--typography-font-weights-bold); }
+.font-regular {
+  font-weight: var(--typography-font-weights-regular);
+}
+.font-medium {
+  font-weight: var(--typography-font-weights-medium);
+}
+.font-semibold {
+  font-weight: var(--typography-font-weights-semibold);
+}
+.font-bold {
+  font-weight: var(--typography-font-weights-bold);
+}
 
 /* Spacing utility classes */
-.m-3xs { margin: var(--spacing-3xs); }
-.m-2xs { margin: var(--spacing-2xs); }
-.m-xs { margin: var(--spacing-xs); }
-.m-sm { margin: var(--spacing-sm); }
-.m-md { margin: var(--spacing-md); }
-.m-lg { margin: var(--spacing-lg); }
-.m-xl { margin: var(--spacing-xl); }
-.m-2xl { margin: var(--spacing-2xl); }
+.m-3xs {
+  margin: var(--spacing-3xs);
+}
+.m-2xs {
+  margin: var(--spacing-2xs);
+}
+.m-xs {
+  margin: var(--spacing-xs);
+}
+.m-sm {
+  margin: var(--spacing-sm);
+}
+.m-md {
+  margin: var(--spacing-md);
+}
+.m-lg {
+  margin: var(--spacing-lg);
+}
+.m-xl {
+  margin: var(--spacing-xl);
+}
+.m-2xl {
+  margin: var(--spacing-2xl);
+}
 
-.p-3xs { padding: var(--spacing-3xs); }
-.p-2xs { padding: var(--spacing-2xs); }
-.p-xs { padding: var(--spacing-xs); }
-.p-sm { padding: var(--spacing-sm); }
-.p-md { padding: var(--spacing-md); }
-.p-lg { padding: var(--spacing-lg); }
-.p-xl { padding: var(--spacing-xl); }
-.p-2xl { padding: var(--spacing-2xl); }
+.p-3xs {
+  padding: var(--spacing-3xs);
+}
+.p-2xs {
+  padding: var(--spacing-2xs);
+}
+.p-xs {
+  padding: var(--spacing-xs);
+}
+.p-sm {
+  padding: var(--spacing-sm);
+}
+.p-md {
+  padding: var(--spacing-md);
+}
+.p-lg {
+  padding: var(--spacing-lg);
+}
+.p-xl {
+  padding: var(--spacing-xl);
+}
+.p-2xl {
+  padding: var(--spacing-2xl);
+}
 
 /* Add directional spacing classes */
-.mt-md { margin-top: var(--spacing-md); }
-.mr-md { margin-right: var(--spacing-md); }
-.mb-md { margin-bottom: var(--spacing-md); }
-.ml-md { margin-left: var(--spacing-md); }
+.mt-md {
+  margin-top: var(--spacing-md);
+}
+.mr-md {
+  margin-right: var(--spacing-md);
+}
+.mb-md {
+  margin-bottom: var(--spacing-md);
+}
+.ml-md {
+  margin-left: var(--spacing-md);
+}
 
-.pt-md { padding-top: var(--spacing-md); }
-.pr-md { padding-right: var(--spacing-md); }
-.pb-md { padding-bottom: var(--spacing-md); }
-.pl-md { padding-left: var(--spacing-md); }
+.pt-md {
+  padding-top: var(--spacing-md);
+}
+.pr-md {
+  padding-right: var(--spacing-md);
+}
+.pb-md {
+  padding-bottom: var(--spacing-md);
+}
+.pl-md {
+  padding-left: var(--spacing-md);
+}
 
 /* Border radius utility classes */
-.rounded-none { border-radius: var(--radius-none); }
-.rounded-sm { border-radius: var(--radius-sm); }
-.rounded-md { border-radius: var(--radius-md); }
-.rounded-lg { border-radius: var(--radius-lg); }
-.rounded-xl { border-radius: var(--radius-xl); }
-.rounded-full { border-radius: var(--radius-full); }
+.rounded-none {
+  border-radius: var(--radius-none);
+}
+.rounded-sm {
+  border-radius: var(--radius-sm);
+}
+.rounded-md {
+  border-radius: var(--radius-md);
+}
+.rounded-lg {
+  border-radius: var(--radius-lg);
+}
+.rounded-xl {
+  border-radius: var(--radius-xl);
+}
+.rounded-full {
+  border-radius: var(--radius-full);
+}
 
 /* 
  * Animation classes are now handled by the Fluxori Motion Framework

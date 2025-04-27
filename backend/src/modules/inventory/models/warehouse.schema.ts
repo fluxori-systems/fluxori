@@ -1,13 +1,17 @@
 /**
  * Warehouse Schema
  */
-import { FirestoreEntity } from '../../../types/google-cloud.types';
-import { WarehouseType } from '../interfaces/types';
+import { TenantEntity } from '../../../common/types/tenant-entity';
+import {
+  WarehouseType,
+  InventoryMetadata,
+  WarehouseIntegrationConfig,
+} from '../interfaces/types';
 
 /**
  * Warehouse entity for Firestore
  */
-export interface Warehouse extends FirestoreEntity {
+export interface Warehouse extends TenantEntity {
   organizationId: string;
   name: string;
   code: string;
@@ -52,10 +56,10 @@ export interface Warehouse extends FirestoreEntity {
   // Integration info for 3PL
   externalId?: string;
   integrationProvider?: string;
-  integrationConfig?: Record<string, any>;
+  integrationConfig?: WarehouseIntegrationConfig; // TODO: Refine fields as discovered
 
   // Additional info
   notes?: string;
   tags?: string[];
-  metadata?: Record<string, any>;
+  metadata?: InventoryMetadata; // TODO: Refine fields as discovered
 }

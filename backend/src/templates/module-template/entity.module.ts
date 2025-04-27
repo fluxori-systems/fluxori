@@ -13,24 +13,18 @@ import { EntityController } from './entity.controller';
  * Module for Entity functionality
  */
 @Module({
-  imports: [
-    ConfigModule,
-  ],
-  controllers: [
-    EntityController,
-  ],
+  imports: [ConfigModule],
+  controllers: [EntityController],
   providers: [
     // Configuration
     FirestoreConfigService,
-    
+
     // Repositories
     EntityRepository,
-    
+
     // Services
     EntityService,
   ],
-  exports: [
-    EntityService,
-  ],
+  exports: [EntityService],
 })
 export class EntityModule {}

@@ -2,6 +2,14 @@
  * Types for the Notifications module
  */
 
+/**
+ * Placeholder for notification data payloads.
+ * TODO: Add concrete fields as discovered.
+ */
+export interface NotificationData {
+  // TODO: Add notification data fields
+}
+
 export enum NotificationType {
   ORDER = 'order',
   INVENTORY = 'inventory',
@@ -40,7 +48,7 @@ export interface INotification {
   type: NotificationType;
   title: string;
   message: string;
-  data?: Record<string, any>;
+  data?: NotificationData; // TODO: Refine fields as discovered
   priority: NotificationPriority;
   status: NotificationStatus;
   deliveryChannels: DeliveryChannel[];
@@ -61,7 +69,7 @@ export interface CreateNotificationDto {
   type: NotificationType;
   title: string;
   message: string;
-  data?: Record<string, any>;
+  data?: NotificationData; // TODO: Refine fields as discovered
   priority: NotificationPriority;
   deliveryChannels: DeliveryChannel[];
   relatedEntityType?: string;
@@ -98,7 +106,7 @@ export interface NotificationResponse {
   type: NotificationType;
   title: string;
   message: string;
-  data?: Record<string, any>;
+  data?: NotificationData; // TODO: Refine fields as discovered
   priority: NotificationPriority;
   status: NotificationStatus;
   deliveryChannels: DeliveryChannel[];

@@ -78,21 +78,11 @@ describe('ProductVariantService', () => {
     }).compile();
 
     service = module.get<ProductVariantService>(ProductVariantService);
-    productVariantRepository = module.get(
-      ProductVariantRepository,
-    ) as jest.Mocked<ProductVariantRepository>;
-    productRepository = module.get(
-      ProductRepository,
-    ) as jest.Mocked<ProductRepository>;
-    marketContextService = module.get(
-      MarketContextService,
-    ) as jest.Mocked<MarketContextService>;
-    networkAwareStorageService = module.get(
-      NetworkAwareStorageService,
-    ) as jest.Mocked<NetworkAwareStorageService>;
-    loadSheddingResilienceService = module.get(
-      LoadSheddingResilienceService,
-    ) as jest.Mocked<LoadSheddingResilienceService>;
+    productVariantRepository = module.get(ProductVariantRepository);
+    productRepository = module.get(ProductRepository);
+    marketContextService = module.get(MarketContextService);
+    networkAwareStorageService = module.get(NetworkAwareStorageService);
+    loadSheddingResilienceService = module.get(LoadSheddingResilienceService);
   });
 
   it('should be defined', () => {

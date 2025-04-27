@@ -7,6 +7,7 @@ A comprehensive animation framework for Fluxori that provides consistent, purpos
 The framework includes integration points for GSAP Business license animations. These premium features are currently commented out and will need to be activated with a valid GSAP Business license before use.
 
 Business animation features include:
+
 - SplitText for advanced text animations
 - DrawSVG for path drawing animations
 - MorphSVG for shape morphing
@@ -49,20 +50,20 @@ Business animation features include:
 ### Basic Animation
 
 ```tsx
-'use client';
+"use client";
 
-import { useRef, useEffect } from 'react';
-import { useGSAPAnimation } from '@/lib/motion';
+import { useRef, useEffect } from "react";
+import { useGSAPAnimation } from "@/lib/motion";
 
 export function MyComponent() {
   const elementRef = useRef<HTMLDivElement>(null);
   const animation = useGSAPAnimation(elementRef);
-  
+
   useEffect(() => {
     // Animate on mount
     animation.fadeIn({ duration: 0.4 });
   }, [animation]);
-  
+
   return (
     <div ref={elementRef} style={{ opacity: 0 }}>
       Content to animate
@@ -74,16 +75,16 @@ export function MyComponent() {
 ### AI Processing
 
 ```tsx
-import { AIProcessingIndicator } from '@/lib/motion';
+import { AIProcessingIndicator } from "@/lib/motion";
 
 export function AIComponent({ isThinking }) {
   return (
     <div>
-      <AIProcessingIndicator 
-        state={isThinking ? 'thinking' : 'idle'}
+      <AIProcessingIndicator
+        state={isThinking ? "thinking" : "idle"}
         size={40}
       />
-      {isThinking ? 'AI is thinking...' : 'Ask a question'}
+      {isThinking ? "AI is thinking..." : "Ask a question"}
     </div>
   );
 }

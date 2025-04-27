@@ -9,6 +9,7 @@ The PIM module serves as the single source of truth for all product information,
 ## Key Features
 
 ### Core Functionality (Market-Agnostic)
+
 - **Centralized Product Management**: Single source of truth for all product information
 - **Multi-Marketplace Support**: Framework for integration with global marketplaces
 - **Rich Media Management**: Support for product images and media assets
@@ -19,6 +20,7 @@ The PIM module serves as the single source of truth for all product information,
 - **Competitive Price Monitoring**: Track competitor prices with market position analysis and recommendations
 
 ### South African Market Optimizations (Phase 1)
+
 - **VAT Handling**: Proper 15% VAT calculation with future rate change support
 - **Load Shedding Resilience**: Graceful degradation during power outages
 - **Network-Aware Components**: UI adapts to variable connection quality
@@ -26,12 +28,14 @@ The PIM module serves as the single source of truth for all product information,
 - **Compliance Features**: South African regulatory compliance fields (ICASA, SABS, NRCS)
 
 ### African Market Extensions (Phase 2)
+
 - **Regional Warehouse Support**: Multi-warehouse inventory across African regions
 - **Pan-African Marketplace Integration**: Connectors for Jumia, Kilimall, etc.
 - **Cross-Border Trade**: Support for pan-African commerce
 - **Regional Payment Methods**: Support for diverse African payment systems
 
 ### European Market Extensions (Phase 3)
+
 - **EU VAT Compliance**: Complex European tax handling
 - **European Marketplace Connectors**: Amazon EU, Zalando, etc.
 - **EU Regulatory Compliance**: CE marking, GDPR product information
@@ -73,6 +77,7 @@ The PIM module has the following dependencies:
 The PIM module is currently in Phase 1 (South African Market) implementation. See [PIM Implementation Status](./pim-implementation-status.md) for detailed tracking of feature implementation.
 
 ### Completed Components
+
 - **South African VAT Handling**: Support for current and future rate changes (15%, 15.5%, 16%)
 - **Core Module Structure**: Comprehensive module architecture with proper boundary enforcement
 - **Data Models**: Complete schema definitions for products, categories, and attribute templates
@@ -88,6 +93,7 @@ The PIM module is currently in Phase 1 (South African Market) implementation. Se
 - **Dynamic Pricing Rules**: Comprehensive pricing rules system with operations, constraints, and scheduling
 
 ### In-Progress Components
+
 - **Testing Coverage**: Unit tests for core components
 - **Documentation**: API reference and integration guides
 - **Product Variants**: Implementation in progress for variant management
@@ -154,19 +160,25 @@ The PIM module integrates with marketplace connectors through the Connectors mod
 
 ```typescript
 // Example of marketplace integration (design pattern, not actual implementation)
-import { ConnectorFactoryService } from '../connectors';
+import { ConnectorFactoryService } from "../connectors";
 
 @Injectable()
 export class MarketplaceIntegrationService {
   constructor(private connectorFactory: ConnectorFactoryService) {}
 
-  async syncProductToMarketplace(productId: string, marketplaceId: string): Promise<SyncResult> {
+  async syncProductToMarketplace(
+    productId: string,
+    marketplaceId: string,
+  ): Promise<SyncResult> {
     const connector = this.connectorFactory.getConnector(marketplaceId);
     const product = await this.productService.getProduct(productId);
-    
+
     // Transform product for specific marketplace
-    const marketplaceProduct = this.transformForMarketplace(product, marketplaceId);
-    
+    const marketplaceProduct = this.transformForMarketplace(
+      product,
+      marketplaceId,
+    );
+
     // Sync to marketplace
     return connector.syncProduct(marketplaceProduct);
   }
@@ -179,14 +191,20 @@ The PIM module integrates with the Inventory module for stock management:
 
 ```typescript
 // Example of inventory integration (design pattern, not actual implementation)
-import { InventoryService } from '../inventory';
+import { InventoryService } from "../inventory";
 
 @Injectable()
 export class ProductInventoryService {
   constructor(private inventoryService: InventoryService) {}
 
-  async getProductStockLevels(organizationId: string, productId: string): Promise<StockLevelSummary> {
-    return this.inventoryService.getProductStockLevels(organizationId, productId);
+  async getProductStockLevels(
+    organizationId: string,
+    productId: string,
+  ): Promise<StockLevelSummary> {
+    return this.inventoryService.getProductStockLevels(
+      organizationId,
+      productId,
+    );
   }
 }
 ```
@@ -206,18 +224,20 @@ export class MarketContextService {
   getMarketContext(organizationId: string): MarketContext {
     // Determine market context from organization settings
     return {
-      region: 'south-africa', // Initially south-africa, will expand to other regions
-      country: 'za',
+      region: "south-africa", // Initially south-africa, will expand to other regions
+      country: "za",
       vatRate: 15,
       features: {
         loadSheddingResilience: true,
-        networkAwareComponents: true
-      }
+        networkAwareComponents: true,
+      },
     };
   }
-  
+
   isFeatureAvailable(feature: string, context: MarketContext): boolean {
-    return this.featureFlagService.isEnabled(`pim.${context.region}.${feature}`);
+    return this.featureFlagService.isEnabled(
+      `pim.${context.region}.${feature}`,
+    );
   }
 }
 ```
@@ -231,16 +251,16 @@ export class VatServiceFactory {
   constructor(
     private southAfricanVatService: SouthAfricanVatService,
     private europeanVatService: EuropeanVatService,
-    private marketContextService: MarketContextService
+    private marketContextService: MarketContextService,
   ) {}
 
   getVatService(organizationId: string): VatService {
     const context = this.marketContextService.getMarketContext(organizationId);
-    
+
     switch (context.region) {
-      case 'south-africa':
+      case "south-africa":
         return this.southAfricanVatService;
-      case 'europe':
+      case "europe":
         return this.europeanVatService;
       default:
         return this.southAfricanVatService; // Default implementation
@@ -286,89 +306,89 @@ The following API endpoints are available in the system:
 
 ### Product API
 
-| Endpoint | Method | Description | Status |
-|----------|--------|-------------|--------|
-| `/pim/products` | GET | Get product list with pagination | Implemented |
-| `/pim/products/{id}` | GET | Get product by ID | Implemented |
-| `/pim/products` | POST | Create a new product | Implemented |
-| `/pim/products/{id}` | PUT | Update a product | Implemented |
-| `/pim/products/{id}` | DELETE | Delete a product | Implemented |
-| `/pim/products/featured` | GET | Get featured products | Implemented |
-| `/pim/products/recent` | GET | Get recently updated products | Implemented |
-| `/pim/products/by-category/{categoryId}` | GET | Get products by category | Implemented |
-| `/pim/products/by-marketplace/{marketplaceId}` | GET | Get products by marketplace | Implemented |
-| `/pim/products/by-skus` | POST | Get products by SKUs | Implemented |
-| `/pim/products/bulk-update` | POST | Batch update products | Implemented |
-| `/pim/products/bulk-delete` | POST | Batch delete products | Implemented |
+| Endpoint                                       | Method | Description                      | Status      |
+| ---------------------------------------------- | ------ | -------------------------------- | ----------- |
+| `/pim/products`                                | GET    | Get product list with pagination | Implemented |
+| `/pim/products/{id}`                           | GET    | Get product by ID                | Implemented |
+| `/pim/products`                                | POST   | Create a new product             | Implemented |
+| `/pim/products/{id}`                           | PUT    | Update a product                 | Implemented |
+| `/pim/products/{id}`                           | DELETE | Delete a product                 | Implemented |
+| `/pim/products/featured`                       | GET    | Get featured products            | Implemented |
+| `/pim/products/recent`                         | GET    | Get recently updated products    | Implemented |
+| `/pim/products/by-category/{categoryId}`       | GET    | Get products by category         | Implemented |
+| `/pim/products/by-marketplace/{marketplaceId}` | GET    | Get products by marketplace      | Implemented |
+| `/pim/products/by-skus`                        | POST   | Get products by SKUs             | Implemented |
+| `/pim/products/bulk-update`                    | POST   | Batch update products            | Implemented |
+| `/pim/products/bulk-delete`                    | POST   | Batch delete products            | Implemented |
 
 ### Advanced Image API
 
-| Endpoint | Method | Description | Status |
-|----------|--------|-------------|--------|
-| `/pim/advanced-image/upload` | POST | Upload image with AI analysis | Implemented |
-| `/pim/advanced-image/analyze/:imageId` | POST | Analyze existing image | Implemented | 
-| `/pim/advanced-image/generate-alt-text/:imageId` | POST | Generate SEO alt text | Implemented |
-| `/pim/advanced-image/marketplace-compliance/:imageId` | GET | Check marketplace compliance | Implemented |
-| `/pim/advanced-image/quality-assessment/:imageId` | GET | Assess image quality | Implemented |
-| `/pim/advanced-image/select-main-image/:productId` | POST | Select main product image | Implemented |
-| `/pim/advanced-image/adaptive-compression-settings` | GET | Get network-aware settings | Implemented |
-| `/pim/products/{id}/variants` | GET | Get product variants | Planned |
+| Endpoint                                              | Method | Description                   | Status      |
+| ----------------------------------------------------- | ------ | ----------------------------- | ----------- |
+| `/pim/advanced-image/upload`                          | POST   | Upload image with AI analysis | Implemented |
+| `/pim/advanced-image/analyze/:imageId`                | POST   | Analyze existing image        | Implemented |
+| `/pim/advanced-image/generate-alt-text/:imageId`      | POST   | Generate SEO alt text         | Implemented |
+| `/pim/advanced-image/marketplace-compliance/:imageId` | GET    | Check marketplace compliance  | Implemented |
+| `/pim/advanced-image/quality-assessment/:imageId`     | GET    | Assess image quality          | Implemented |
+| `/pim/advanced-image/select-main-image/:productId`    | POST   | Select main product image     | Implemented |
+| `/pim/advanced-image/adaptive-compression-settings`   | GET    | Get network-aware settings    | Implemented |
+| `/pim/products/{id}/variants`                         | GET    | Get product variants          | Planned     |
 
 ### Category API
 
-| Endpoint | Method | Description | Status |
-|----------|--------|-------------|--------|
-| `/pim/categories` | GET | Get category list | Implemented |
-| `/pim/categories/{id}` | GET | Get category by ID | Implemented |
-| `/pim/categories` | POST | Create a new category | Implemented |
-| `/pim/categories/{id}` | PUT | Update a category | Implemented |
-| `/pim/categories/{id}` | DELETE | Delete a category | Implemented |
-| `/pim/categories/tree` | GET | Get category tree | Implemented |
-| `/pim/categories/roots` | GET | Get root categories | Implemented |
-| `/pim/categories/children/{parentId}` | GET | Get child categories | Implemented |
-| `/pim/categories/by-marketplace/{marketplaceId}` | GET | Get categories by marketplace | Implemented |
-| `/pim/categories/{id}/path` | GET | Get category path | Implemented |
-| `/pim/categories/bulk-update` | POST | Bulk update categories | Implemented |
-| `/pim/categories/bulk-delete` | POST | Bulk delete categories | Implemented |
-| `/pim/categories/reorder` | POST | Reorder categories | Implemented |
+| Endpoint                                         | Method | Description                   | Status      |
+| ------------------------------------------------ | ------ | ----------------------------- | ----------- |
+| `/pim/categories`                                | GET    | Get category list             | Implemented |
+| `/pim/categories/{id}`                           | GET    | Get category by ID            | Implemented |
+| `/pim/categories`                                | POST   | Create a new category         | Implemented |
+| `/pim/categories/{id}`                           | PUT    | Update a category             | Implemented |
+| `/pim/categories/{id}`                           | DELETE | Delete a category             | Implemented |
+| `/pim/categories/tree`                           | GET    | Get category tree             | Implemented |
+| `/pim/categories/roots`                          | GET    | Get root categories           | Implemented |
+| `/pim/categories/children/{parentId}`            | GET    | Get child categories          | Implemented |
+| `/pim/categories/by-marketplace/{marketplaceId}` | GET    | Get categories by marketplace | Implemented |
+| `/pim/categories/{id}/path`                      | GET    | Get category path             | Implemented |
+| `/pim/categories/bulk-update`                    | POST   | Bulk update categories        | Implemented |
+| `/pim/categories/bulk-delete`                    | POST   | Bulk delete categories        | Implemented |
+| `/pim/categories/reorder`                        | POST   | Reorder categories            | Implemented |
 
 ### Attribute Template API
 
-| Endpoint | Method | Description | Status |
-|----------|--------|-------------|--------|
-| `/pim/attribute-templates` | GET | Get attribute template list | Implemented |
-| `/pim/attribute-templates/{id}` | GET | Get attribute template by ID | Implemented |
-| `/pim/attribute-templates` | POST | Create a new attribute template | Implemented |
-| `/pim/attribute-templates/{id}` | PUT | Update an attribute template | Implemented |
-| `/pim/attribute-templates/{id}` | DELETE | Delete an attribute template | Implemented |
-| `/pim/attribute-templates/by-category/{categoryId}` | GET | Get templates by category | Implemented |
-| `/pim/attribute-templates/global` | GET | Get global templates | Implemented |
-| `/pim/attribute-templates/by-region/{region}` | GET | Get templates by region | Implemented |
-| `/pim/attribute-templates/by-marketplace/{marketplaceId}` | GET | Get templates by marketplace | Implemented |
-| `/pim/attribute-templates/by-scope/{scope}` | GET | Get templates by scope | Implemented |
-| `/pim/attribute-templates/applicable` | GET | Get applicable templates for a product | Implemented |
-| `/pim/attribute-templates/bulk-update` | POST | Bulk update templates | Implemented |
-| `/pim/attribute-templates/bulk-delete` | POST | Bulk delete templates | Implemented |
+| Endpoint                                                  | Method | Description                            | Status      |
+| --------------------------------------------------------- | ------ | -------------------------------------- | ----------- |
+| `/pim/attribute-templates`                                | GET    | Get attribute template list            | Implemented |
+| `/pim/attribute-templates/{id}`                           | GET    | Get attribute template by ID           | Implemented |
+| `/pim/attribute-templates`                                | POST   | Create a new attribute template        | Implemented |
+| `/pim/attribute-templates/{id}`                           | PUT    | Update an attribute template           | Implemented |
+| `/pim/attribute-templates/{id}`                           | DELETE | Delete an attribute template           | Implemented |
+| `/pim/attribute-templates/by-category/{categoryId}`       | GET    | Get templates by category              | Implemented |
+| `/pim/attribute-templates/global`                         | GET    | Get global templates                   | Implemented |
+| `/pim/attribute-templates/by-region/{region}`             | GET    | Get templates by region                | Implemented |
+| `/pim/attribute-templates/by-marketplace/{marketplaceId}` | GET    | Get templates by marketplace           | Implemented |
+| `/pim/attribute-templates/by-scope/{scope}`               | GET    | Get templates by scope                 | Implemented |
+| `/pim/attribute-templates/applicable`                     | GET    | Get applicable templates for a product | Implemented |
+| `/pim/attribute-templates/bulk-update`                    | POST   | Bulk update templates                  | Implemented |
+| `/pim/attribute-templates/bulk-delete`                    | POST   | Bulk delete templates                  | Implemented |
 
 ### Competitive Price Monitoring API
 
-| Endpoint | Method | Description | Status |
-|----------|--------|-------------|--------|
-| `/pim/competitive-price-monitoring/competitor-prices` | POST | Record competitor price | Implemented |
-| `/pim/competitive-price-monitoring/our-prices` | POST | Record our price | Implemented |
-| `/pim/competitive-price-monitoring/competitor-prices/{productId}` | GET | Get competitor prices for a product | Implemented |
-| `/pim/competitive-price-monitoring/market-position/{productId}` | GET | Get market position analysis | Implemented |
-| `/pim/competitive-price-monitoring/price-history/{productId}` | GET | Get price history | Implemented |
-| `/pim/competitive-price-monitoring/config/{productId}` | PUT | Configure price monitoring | Implemented |
-| `/pim/competitive-price-monitoring/config/{productId}` | GET | Get price monitoring config | Implemented |
-| `/pim/competitive-price-monitoring/alerts/{productId}` | GET | Get price alerts | Implemented |
-| `/pim/competitive-price-monitoring/alerts/{alertId}/read` | PUT | Mark alert as read | Implemented |
-| `/pim/competitive-price-monitoring/alerts/{alertId}/resolve` | PUT | Mark alert as resolved | Implemented |
-| `/pim/competitive-price-monitoring/report/{productId}` | GET | Generate comprehensive price report | Implemented |
-| `/pim/competitive-price-monitoring/batch-monitoring` | POST | Run batch monitoring | Implemented |
-| `/pim/competitive-price-monitoring/verify-prices` | POST | Verify competitor prices | Implemented |
-| `/pim/competitive-price-monitoring/ai-analysis/{productId}` | GET | Generate AI-powered price analysis | Implemented |
-| `/pim/competitive-price-monitoring/auto-adjust/{productId}` | POST | Automatically adjust price | Implemented |
+| Endpoint                                                          | Method | Description                         | Status      |
+| ----------------------------------------------------------------- | ------ | ----------------------------------- | ----------- |
+| `/pim/competitive-price-monitoring/competitor-prices`             | POST   | Record competitor price             | Implemented |
+| `/pim/competitive-price-monitoring/our-prices`                    | POST   | Record our price                    | Implemented |
+| `/pim/competitive-price-monitoring/competitor-prices/{productId}` | GET    | Get competitor prices for a product | Implemented |
+| `/pim/competitive-price-monitoring/market-position/{productId}`   | GET    | Get market position analysis        | Implemented |
+| `/pim/competitive-price-monitoring/price-history/{productId}`     | GET    | Get price history                   | Implemented |
+| `/pim/competitive-price-monitoring/config/{productId}`            | PUT    | Configure price monitoring          | Implemented |
+| `/pim/competitive-price-monitoring/config/{productId}`            | GET    | Get price monitoring config         | Implemented |
+| `/pim/competitive-price-monitoring/alerts/{productId}`            | GET    | Get price alerts                    | Implemented |
+| `/pim/competitive-price-monitoring/alerts/{alertId}/read`         | PUT    | Mark alert as read                  | Implemented |
+| `/pim/competitive-price-monitoring/alerts/{alertId}/resolve`      | PUT    | Mark alert as resolved              | Implemented |
+| `/pim/competitive-price-monitoring/report/{productId}`            | GET    | Generate comprehensive price report | Implemented |
+| `/pim/competitive-price-monitoring/batch-monitoring`              | POST   | Run batch monitoring                | Implemented |
+| `/pim/competitive-price-monitoring/verify-prices`                 | POST   | Verify competitor prices            | Implemented |
+| `/pim/competitive-price-monitoring/ai-analysis/{productId}`       | GET    | Generate AI-powered price analysis  | Implemented |
+| `/pim/competitive-price-monitoring/auto-adjust/{productId}`       | POST   | Automatically adjust price          | Implemented |
 
 ## Testing Strategy
 
@@ -384,31 +404,31 @@ The PIM module includes comprehensive testing:
 
 ```typescript
 // Example unit test for South African VAT (not actual implementation)
-describe('SouthAfricanVatService', () => {
-  it('should calculate VAT at 15% correctly', () => {
+describe("SouthAfricanVatService", () => {
+  it("should calculate VAT at 15% correctly", () => {
     const service = new SouthAfricanVatService();
-    const result = service.calculateVat(100, new Date('2024-01-01'));
+    const result = service.calculateVat(100, new Date("2024-01-01"));
     expect(result.vatAmount).toBe(15);
     expect(result.priceIncludingVat).toBe(115);
   });
-  
-  it('should handle future VAT rate changes', () => {
+
+  it("should handle future VAT rate changes", () => {
     const service = new SouthAfricanVatService();
-    const result = service.calculateVat(100, new Date('2025-06-01'));
+    const result = service.calculateVat(100, new Date("2025-06-01"));
     expect(result.vatAmount).toBe(15.5); // 15.5% after May 1, 2025
     expect(result.priceIncludingVat).toBe(115.5);
   });
 });
 
 // Example test for network-aware components
-describe('NetworkAwareImageUploader', () => {
-  it('should reduce quality for poor connections', () => {
+describe("NetworkAwareImageUploader", () => {
+  it("should reduce quality for poor connections", () => {
     const uploader = new NetworkAwareImageUploader();
     const options = uploader.getOptionsForNetworkCondition({
-      connectionType: 'cellular',
-      bandwidth: 'low'
+      connectionType: "cellular",
+      bandwidth: "low",
     });
-    expect(options.compressionQuality).toBe('high'); // High compression = low quality
+    expect(options.compressionQuality).toBe("high"); // High compression = low quality
     expect(options.generateThumbnails).toBe(false);
   });
 });
@@ -419,18 +439,21 @@ describe('NetworkAwareImageUploader', () => {
 The implementation follows the timeline defined in ADR-006:
 
 ### Phase 1: South African Market (Months 1-3)
+
 - Core product management
 - South African optimizations
 - Takealot integration
 - Basic import/export
 
 ### Phase 2: African Expansion (Months 4-6)
+
 - Regional warehouse support
 - Multiple African marketplace connectors
 - Cross-border trade features
 - Multi-currency pricing
 
 ### Phase 3: European Market (Months 7-9)
+
 - EU compliance features
 - European marketplace integrations
 - Advanced global analytics

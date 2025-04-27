@@ -1,6 +1,62 @@
 /**
  * Types for the Feature Flags module
  */
+
+/**
+ * Metadata for FeatureFlag (TODO: add concrete fields as discovered)
+ */
+export interface FeatureFlagMetadata {
+  // TODO: Add concrete metadata fields here as they are discovered in the codebase
+}
+
+/**
+ * Metadata for FeatureFlagAuditLog (TODO: add concrete fields as discovered)
+ */
+export interface FeatureFlagAuditLogMetadata {
+  // TODO: Add concrete metadata fields here as they are discovered in the codebase
+}
+
+/**
+ * Attributes for FlagEvaluationContext (TODO: add concrete fields as discovered)
+ */
+export interface FlagAttributes {
+  // TODO: Add concrete attribute fields here as they are discovered in the codebase
+}
+
+/**
+ * Metadata for FlagEvaluationResult (TODO: add concrete fields as discovered)
+ */
+export interface FlagEvaluationMetadata {
+  /** Unique identifier for the evaluation event */
+  evaluationId: string;
+  /** The rule or condition that matched */
+  matchedRule?: string;
+  /** Timestamp of evaluation */
+  evaluatedAt: Date;
+  /** Variant or value returned by the evaluation */
+  variant?: string;
+  /** Additional context or debug info */
+  context?: Record<string, unknown>;
+  /** Add further fields as real usage emerges */
+}
+
+/**
+ * Metadata for FeatureFlagDTO (TODO: add concrete fields as discovered)
+ */
+export interface FeatureFlagDTOMetadata {
+  /** Unique identifier for this metadata record */
+  id: string;
+  /** Source of the flag (e.g., manual, import, migration) */
+  source?: string;
+  /** Timestamp when this metadata was created or updated */
+  updatedAt: Date;
+  /** Author or system that last changed the flag */
+  updatedBy?: string;
+  /** Arbitrary notes or audit info */
+  notes?: string;
+  /** Add further fields as real usage emerges */
+}
+
 import { FirestoreEntity } from '../../../types/google-cloud.types';
 
 /**
@@ -91,7 +147,7 @@ export interface FeatureFlag extends FirestoreEntity {
   tags?: string[];
 
   // Additional metadata
-  metadata?: Record<string, any>;
+  metadata?: FeatureFlagMetadata;
 
   // Audit information
   lastModifiedBy?: string;
@@ -109,10 +165,10 @@ export interface FeatureFlagAuditLog extends FirestoreEntity {
   timestamp: Date;
   changes: {
     field: string;
-    oldValue: any;
-    newValue: any;
+    oldValue: unknown;
+    newValue: unknown;
   }[];
-  metadata?: Record<string, any>;
+  metadata?: FeatureFlagAuditLogMetadata;
 }
 
 /**
@@ -126,7 +182,7 @@ export interface FlagEvaluationContext {
   organizationType?: string;
   environment?: Environment;
   currentDate?: Date;
-  attributes?: Record<string, any>;
+  attributes?: FlagAttributes;
   defaultValue?: boolean;
 }
 
@@ -139,7 +195,7 @@ export interface FlagEvaluationResult {
   source: 'evaluation' | 'default' | 'override' | 'error';
   timestamp: Date;
   reason?: string;
-  metadata?: Record<string, any>;
+  metadata?: FlagEvaluationMetadata;
 }
 
 /**
@@ -158,7 +214,7 @@ export interface FeatureFlagDTO {
   schedule?: ScheduleConfig;
   defaultValue: boolean;
   tags?: string[];
-  metadata?: Record<string, any>;
+  metadata?: FeatureFlagDTOMetadata;
 }
 
 /**

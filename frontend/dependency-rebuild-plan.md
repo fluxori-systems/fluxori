@@ -7,6 +7,7 @@ This document outlines the plan to rebuild the dependencies between the UI and M
 ## Current State Analysis
 
 1. **Shared Module Structure**
+
    - A proper `/lib/shared` directory already exists with interfaces and providers
    - Service interfaces for animation and connection services exist
    - Service registry and provider implementations are in place
@@ -39,6 +40,7 @@ This document outlines the plan to rebuild the dependencies between the UI and M
 ### Phase 4: Update Component Implementation
 
 For each UI component:
+
 1. Remove direct imports from Motion module
 2. Use shared interfaces and service hooks instead
 3. Implement South African market optimizations
@@ -65,20 +67,23 @@ For each UI component:
 
 ```typescript
 // BEFORE: Direct imports from Motion
-import { useMotion } from '../../motion/context/MotionContext';
-import { useConnectionQuality } from '../../motion/hooks/useConnectionQuality';
+import { useMotion } from "../../motion/context/MotionContext";
+import { useConnectionQuality } from "../../motion/hooks/useConnectionQuality";
 
 // AFTER: Imports from shared module or UI hooks
-import { useConnectionQuality, useNetworkAware } from '../hooks/useConnection';
-import { useSouthAfricanMarketOptimizations } from '../../shared/hooks/useSouthAfricanMarketOptimizations';
+import { useConnectionQuality, useNetworkAware } from "../hooks/useConnection";
+import { useSouthAfricanMarketOptimizations } from "../../shared/hooks/useSouthAfricanMarketOptimizations";
 ```
 
 ### Service Implementation Pattern
 
 ```typescript
 // In Motion module implementing the shared interface
-import { IConnectionService, ConnectionQualityResult } from '../../shared/services/connection-service.interface';
-import { registerConnectionService } from '../../shared/services/service-registry';
+import {
+  IConnectionService,
+  ConnectionQualityResult,
+} from "../../shared/services/connection-service.interface";
+import { registerConnectionService } from "../../shared/services/service-registry";
 
 export class ConnectionServiceImpl implements IConnectionService {
   // Implementation...
@@ -114,6 +119,7 @@ export function AppProvider({ children }) {
 ## File Structure Changes
 
 New files to create:
+
 - `/lib/motion/services/animation-service.impl.ts`
 - `/lib/motion/services/connection-service.impl.ts`
 - `/lib/shared/types/index.ts`
@@ -122,6 +128,7 @@ New files to create:
 - `/lib/shared/hooks/index.ts`
 
 Files to update:
+
 - All UI components that import directly from Motion module
 - Any Motion components that import directly from UI module
 - Module index.ts files

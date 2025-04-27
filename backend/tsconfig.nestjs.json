@@ -1,0 +1,49 @@
+{
+  "compilerOptions": {
+    /* Basic Options */
+    "module": "CommonJS",
+    "declaration": true,
+    "removeComments": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "target": "ES2022",
+    "sourceMap": true,
+    "outDir": "./dist",
+    "baseUrl": "./",
+    "incremental": true,
+    "skipLibCheck": true,
+
+    /* Decorator Support */
+    "strict": false,
+    "strictNullChecks": false,
+    "noImplicitAny": false,
+    "strictBindCallApply": false,
+
+    /* Module Resolution Options */
+    "moduleResolution": "Node",
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+
+    /* Advanced Options */
+    "downlevelIteration": true,
+    "importHelpers": true,
+    "lib": ["ES2022", "DOM"],
+
+    /* Path Aliases */
+    "paths": {
+      "@app/*": ["src/*"],
+      "@common/*": ["src/common/*"],
+      "@config/*": ["src/config/*"],
+      "@modules/*": ["src/modules/*"],
+      "@shared/*": ["src/shared/*"],
+      "src/*": ["src/*"]
+    },
+
+    /* Type Definitions */
+    "typeRoots": ["./node_modules/@types", "./src/types"],
+    "types": ["node"]
+  },
+  "include": ["src/**/*", "src/health/*.d.ts", "src/types/*.d.ts"],
+  "exclude": ["src/templates/**/*", "node_modules", "dist/**/*"]
+}

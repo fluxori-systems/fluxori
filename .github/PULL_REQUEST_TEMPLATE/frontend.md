@@ -1,6 +1,7 @@
 # Frontend Pull Request
 
 ## Description
+
 <!-- Describe your changes in detail -->
 
 ## Type of change
@@ -30,7 +31,9 @@
 - [ ] Added/updated tests as needed
 
 ## Screenshots
+
 <!-- If applicable, add screenshots to demonstrate your changes -->
 
 ## Additional Notes
+
 <!-- Add any other context about the PR here -->

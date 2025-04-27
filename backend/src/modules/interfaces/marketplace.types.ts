@@ -6,6 +6,20 @@
  */
 
 /**
+ * Placeholder for marketplace product attributes. TODO: Add concrete fields as discovered.
+ */
+export interface MarketplaceAttributes {
+  // TODO: Add concrete attribute fields here as they are discovered in the codebase
+}
+
+/**
+ * Placeholder for marketplace order item properties. TODO: Add concrete fields as discovered.
+ */
+export interface MarketplaceProperties {
+  // TODO: Add concrete property fields here as they are discovered in the codebase
+}
+
+/**
  * Marketplace product interface
  * Common fields across different marketplaces
  */
@@ -44,7 +58,7 @@ export interface MarketplaceProduct {
   images?: string[];
 
   /** Product attributes (varies by marketplace) */
-  attributes?: Record<string, any>;
+  attributes?: MarketplaceAttributes; // TODO: replace with concrete fields as discovered
 
   /** Product variants (if applicable) */
   variants?: Omit<MarketplaceProduct, 'variants'>[];
@@ -163,7 +177,7 @@ export interface MarketplaceOrderItem {
   variantId?: string;
 
   /** Custom properties */
-  properties?: Record<string, any>;
+  properties?: MarketplaceProperties; // TODO: replace with concrete fields as discovered
 
   /** Additional marketplace-specific fields */
   [key: string]: any;

@@ -6,22 +6,22 @@
  * Feature flag types
  */
 export enum FeatureFlagType {
-  BOOLEAN = 'boolean',
-  PERCENTAGE = 'percentage',
-  USER_TARGETED = 'user_targeted',
-  ORGANIZATION_TARGETED = 'organization_targeted',
-  ENVIRONMENT_TARGETED = 'environment_targeted',
-  SCHEDULED = 'scheduled'
+  BOOLEAN = "boolean",
+  PERCENTAGE = "percentage",
+  USER_TARGETED = "user_targeted",
+  ORGANIZATION_TARGETED = "organization_targeted",
+  ENVIRONMENT_TARGETED = "environment_targeted",
+  SCHEDULED = "scheduled",
 }
 
 /**
  * Environment types for environment-specific flags
  */
 export enum Environment {
-  DEVELOPMENT = 'development',
-  STAGING = 'staging',
-  PRODUCTION = 'production',
-  ALL = 'all'
+  DEVELOPMENT = "development",
+  STAGING = "staging",
+  PRODUCTION = "production",
+  ALL = "all",
 }
 
 /**
@@ -49,11 +49,11 @@ export interface ScheduleConfig {
   endDate?: string | Date;
   timeZone?: string;
   recurrence?: {
-    type: 'once' | 'daily' | 'weekly' | 'monthly';
-    daysOfWeek?: number[];  // 0-6 for Sunday-Saturday
+    type: "once" | "daily" | "weekly" | "monthly";
+    daysOfWeek?: number[]; // 0-6 for Sunday-Saturday
     timeRanges?: Array<{
-      startTime: string;  // HH:MM format
-      endTime: string;    // HH:MM format
+      startTime: string; // HH:MM format
+      endTime: string; // HH:MM format
     }>;
   };
 }
@@ -68,31 +68,31 @@ export interface FeatureFlag {
   description?: string;
   type: FeatureFlagType;
   enabled: boolean;
-  
+
   // For percentage rollout
   percentage?: number;
-  
+
   // For user targeting
   userTargeting?: UserTargeting;
-  
+
   // For organization targeting
   organizationTargeting?: OrganizationTargeting;
-  
+
   // For environment targeting
   environments?: Environment[];
-  
+
   // For scheduled flags
   schedule?: ScheduleConfig;
-  
+
   // Default value if flag evaluation fails
   defaultValue: boolean;
-  
+
   // Flag tags for grouping and categorization
   tags?: string[];
-  
+
   // Additional metadata
   metadata?: Record<string, any>;
-  
+
   // Audit information
   lastModifiedBy?: string;
   lastModifiedAt?: string | Date;
@@ -119,7 +119,7 @@ export interface FlagEvaluationContext {
 export interface FlagEvaluationResult {
   flagKey: string;
   enabled: boolean;
-  source: 'evaluation' | 'default' | 'override' | 'error';
+  source: "evaluation" | "default" | "override" | "error";
   timestamp: string | Date;
   reason?: string;
   metadata?: Record<string, any>;
@@ -158,7 +158,7 @@ export interface FeatureFlagAuditLog {
   id: string;
   flagId: string;
   flagKey: string;
-  action: 'created' | 'updated' | 'deleted' | 'toggled';
+  action: "created" | "updated" | "deleted" | "toggled";
   performedBy: string;
   timestamp: string | Date;
   changes: Array<{

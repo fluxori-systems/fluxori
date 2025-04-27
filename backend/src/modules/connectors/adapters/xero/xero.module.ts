@@ -15,7 +15,7 @@ import { XeroConnector } from './xero-connector';
 // External dependencies
 import { ObservabilityService } from '../../../../common/observability';
 import { EnhancedLoggerService } from '../../../../common/observability/services/enhanced-logger.service';
-import { CredentialManagerService } from '../../../security/services/credential-manager.service';
+import { CredentialManagerService } from '@modules/security';
 
 @Module({
   imports: [

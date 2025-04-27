@@ -170,7 +170,7 @@ export class MarketplaceCredentialsRepository extends FirestoreBaseRepository<Ma
           timestamp: new Date(),
         },
         updatedAt: new Date(),
-      });
+      } as Partial<MarketplaceCredential>);
     } catch (error) {
       this.logger.error(
         `Error updating connection status: ${error.message}`,
@@ -227,7 +227,7 @@ export class MarketplaceCredentialsRepository extends FirestoreBaseRepository<Ma
       return this.update(id, {
         isActive: false,
         updatedAt: new Date(),
-      });
+      } as Partial<MarketplaceCredential>);
     } catch (error) {
       this.logger.error(
         `Error deactivating credential: ${error.message}`,

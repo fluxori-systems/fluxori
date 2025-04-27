@@ -116,13 +116,7 @@
       "pim",
       "south-african"
     ],
-    "libs": [
-      "design-system",
-      "firebase",
-      "motion",
-      "shared",
-      "ui"
-    ],
+    "libs": ["design-system", "firebase", "motion", "shared", "ui"],
     "dependencies": {}
   }
 }

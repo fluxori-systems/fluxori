@@ -1,6 +1,6 @@
 /**
  * Comprehensive type augmentations for Vitest and testing libraries
- * 
+ *
  * This file provides proper typing for:
  * - Vitest mocks and assertions
  * - Jest-DOM matchers
@@ -32,14 +32,17 @@ declare global {
       toHaveFocus(): any;
       toHaveFormValues(expectedValues: Record<string, any>): any;
       toHaveStyle(css: string | Record<string, any>): any;
-      toHaveTextContent(text: string | RegExp, options?: { normalizeWhitespace: boolean }): any;
+      toHaveTextContent(
+        text: string | RegExp,
+        options?: { normalizeWhitespace: boolean },
+      ): any;
       toHaveValue(value?: string | string[] | number): any;
       toHaveDisplayValue(value: string | RegExp | Array<string | RegExp>): any;
       toBeChecked(): any;
       toBePartiallyChecked(): any;
       toHaveErrorMessage(text?: string | RegExp): any;
     }
-    
+
     interface AsymmetricMatchersContaining {
       toBeInTheDocument(): any;
       toBeDisabled(): any;
@@ -59,7 +62,10 @@ declare global {
       toHaveFocus(): any;
       toHaveFormValues(expectedValues: Record<string, any>): any;
       toHaveStyle(css: string | Record<string, any>): any;
-      toHaveTextContent(text: string | RegExp, options?: { normalizeWhitespace: boolean }): any;
+      toHaveTextContent(
+        text: string | RegExp,
+        options?: { normalizeWhitespace: boolean },
+      ): any;
       toHaveValue(value?: string | string[] | number): any;
       toHaveDisplayValue(value: string | RegExp | Array<string | RegExp>): any;
       toBeChecked(): any;
@@ -70,7 +76,7 @@ declare global {
 }
 
 // Extend Vitest functionality without creating type parameter conflicts
-declare module 'vitest' {
+declare module "vitest" {
   // Add missing methods to Vi top-level object
   interface Vi {
     restoreAllMocks(): void;

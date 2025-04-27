@@ -4,16 +4,16 @@
  * This repository handles all inventory data operations.
  */
 
-import { TenantFirestoreService } from '../lib/firebase/firestore.service';
-import { QueryOptions } from '../types/core/entity.types';
-import { 
-  StockLevel, 
-  StockMovement, 
-  Warehouse, 
+import { TenantFirestoreService } from "../lib/firebase/firestore.service";
+import { QueryOptions } from "../types/core/entity.types";
+import {
+  StockLevel,
+  StockMovement,
+  Warehouse,
   InventoryCount,
   StockStatus,
-  WarehouseType
-} from '../types/inventory/inventory.types';
+  WarehouseType,
+} from "../types/inventory/inventory.types";
 
 /**
  * Repository for StockLevel entities
@@ -23,7 +23,7 @@ export class StockLevelRepository extends TenantFirestoreService<StockLevel> {
    * Create StockLevelRepository instance
    */
   constructor() {
-    super('stock_levels');
+    super("stock_levels");
   }
 
   /**
@@ -32,14 +32,19 @@ export class StockLevelRepository extends TenantFirestoreService<StockLevel> {
    * @param productId Product ID
    * @returns StockLevel entity or null
    */
-  async getByProductForOrganization(organizationId: string, productId: string): Promise<StockLevel[]> {
+  async getByProductForOrganization(
+    organizationId: string,
+    productId: string,
+  ): Promise<StockLevel[]> {
     try {
-      return this.findWithFiltersForOrganization(
-        organizationId,
-        [{ field: 'productId', operator: '==', value: productId }]
-      );
+      return this.findWithFiltersForOrganization(organizationId, [
+        { field: "productId", operator: "==", value: productId },
+      ]);
     } catch (error) {
-      console.error(`Error getting stock levels for product ${productId}:`, error);
+      console.error(
+        `Error getting stock levels for product ${productId}:`,
+        error,
+      );
       throw error;
     }
   }
@@ -54,16 +59,19 @@ export class StockLevelRepository extends TenantFirestoreService<StockLevel> {
   async getByWarehouseForOrganization(
     organizationId: string,
     warehouseId: string,
-    options?: QueryOptions
+    options?: QueryOptions,
   ): Promise<StockLevel[]> {
     try {
       return this.findWithFiltersForOrganization(
         organizationId,
-        [{ field: 'warehouseId', operator: '==', value: warehouseId }],
-        options
+        [{ field: "warehouseId", operator: "==", value: warehouseId }],
+        options,
       );
     } catch (error) {
-      console.error(`Error getting stock levels for warehouse ${warehouseId}:`, error);
+      console.error(
+        `Error getting stock levels for warehouse ${warehouseId}:`,
+        error,
+      );
       throw error;
     }
   }
@@ -78,13 +86,13 @@ export class StockLevelRepository extends TenantFirestoreService<StockLevel> {
   async getByStatusForOrganization(
     organizationId: string,
     status: StockStatus,
-    options?: QueryOptions
+    options?: QueryOptions,
   ): Promise<StockLevel[]> {
     try {
       return this.findWithFiltersForOrganization(
         organizationId,
-        [{ field: 'status', operator: '==', value: status }],
-        options
+        [{ field: "status", operator: "==", value: status }],
+        options,
       );
     } catch (error) {
       console.error(`Error getting stock levels by status ${status}:`, error);
@@ -100,14 +108,14 @@ export class StockLevelRepository extends TenantFirestoreService<StockLevel> {
    */
   async getLowStockForOrganization(
     organizationId: string,
-    options?: QueryOptions
+    options?: QueryOptions,
   ): Promise<StockLevel[]> {
     try {
       // Use the defined enum value for low stock
       return this.getByStatusForOrganization(
         organizationId,
         StockStatus.LOW_STOCK,
-        options
+        options,
       );
     } catch (error) {
       console.error(`Error getting low stock levels:`, error);
@@ -123,13 +131,13 @@ export class StockLevelRepository extends TenantFirestoreService<StockLevel> {
    */
   async getOutOfStockForOrganization(
     organizationId: string,
-    options?: QueryOptions
+    options?: QueryOptions,
   ): Promise<StockLevel[]> {
     try {
       return this.getByStatusForOrganization(
         organizationId,
         StockStatus.OUT_OF_STOCK,
-        options
+        options,
       );
     } catch (error) {
       console.error(`Error getting out of stock levels:`, error);
@@ -146,7 +154,7 @@ export class StockMovementRepository extends TenantFirestoreService<StockMovemen
    * Create StockMovementRepository instance
    */
   constructor() {
-    super('stock_movements');
+    super("stock_movements");
   }
 
   /**
@@ -159,16 +167,19 @@ export class StockMovementRepository extends TenantFirestoreService<StockMovemen
   async getByProductForOrganization(
     organizationId: string,
     productId: string,
-    options?: QueryOptions
+    options?: QueryOptions,
   ): Promise<StockMovement[]> {
     try {
       return this.findWithFiltersForOrganization(
         organizationId,
-        [{ field: 'productId', operator: '==', value: productId }],
-        { ...options, sortBy: 'date', sortDirection: 'desc' }
+        [{ field: "productId", operator: "==", value: productId }],
+        { ...options, sortBy: "date", sortDirection: "desc" },
       );
     } catch (error) {
-      console.error(`Error getting stock movements for product ${productId}:`, error);
+      console.error(
+        `Error getting stock movements for product ${productId}:`,
+        error,
+      );
       throw error;
     }
   }
@@ -183,16 +194,19 @@ export class StockMovementRepository extends TenantFirestoreService<StockMovemen
   async getByWarehouseForOrganization(
     organizationId: string,
     warehouseId: string,
-    options?: QueryOptions
+    options?: QueryOptions,
   ): Promise<StockMovement[]> {
     try {
       return this.findWithFiltersForOrganization(
         organizationId,
-        [{ field: 'warehouseId', operator: '==', value: warehouseId }],
-        { ...options, sortBy: 'date', sortDirection: 'desc' }
+        [{ field: "warehouseId", operator: "==", value: warehouseId }],
+        { ...options, sortBy: "date", sortDirection: "desc" },
       );
     } catch (error) {
-      console.error(`Error getting stock movements for warehouse ${warehouseId}:`, error);
+      console.error(
+        `Error getting stock movements for warehouse ${warehouseId}:`,
+        error,
+      );
       throw error;
     }
   }
@@ -209,16 +223,16 @@ export class StockMovementRepository extends TenantFirestoreService<StockMovemen
     organizationId: string,
     startDate: Date,
     endDate: Date,
-    options?: QueryOptions
+    options?: QueryOptions,
   ): Promise<StockMovement[]> {
     try {
       return this.findWithFiltersForOrganization(
         organizationId,
         [
-          { field: 'date', operator: '>=', value: startDate },
-          { field: 'date', operator: '<=', value: endDate },
+          { field: "date", operator: ">=", value: startDate },
+          { field: "date", operator: "<=", value: endDate },
         ],
-        { ...options, sortBy: 'date', sortDirection: 'desc' }
+        { ...options, sortBy: "date", sortDirection: "desc" },
       );
     } catch (error) {
       console.error(`Error getting stock movements by date range:`, error);
@@ -235,7 +249,7 @@ export class WarehouseRepository extends TenantFirestoreService<Warehouse> {
    * Create WarehouseRepository instance
    */
   constructor() {
-    super('warehouses');
+    super("warehouses");
   }
 
   /**
@@ -244,11 +258,14 @@ export class WarehouseRepository extends TenantFirestoreService<Warehouse> {
    * @param code Warehouse code
    * @returns Warehouse entity or null
    */
-  async getByCodeForOrganization(organizationId: string, code: string): Promise<Warehouse | null> {
+  async getByCodeForOrganization(
+    organizationId: string,
+    code: string,
+  ): Promise<Warehouse | null> {
     try {
       const warehouses = await this.findWithFiltersForOrganization(
         organizationId,
-        [{ field: 'code', operator: '==', value: code }]
+        [{ field: "code", operator: "==", value: code }],
       );
 
       return warehouses.length > 0 ? warehouses[0] : null;
@@ -263,11 +280,13 @@ export class WarehouseRepository extends TenantFirestoreService<Warehouse> {
    * @param organizationId Organization ID
    * @returns Default warehouse entity or null
    */
-  async getDefaultForOrganization(organizationId: string): Promise<Warehouse | null> {
+  async getDefaultForOrganization(
+    organizationId: string,
+  ): Promise<Warehouse | null> {
     try {
       const warehouses = await this.findWithFiltersForOrganization(
         organizationId,
-        [{ field: 'isDefault', operator: '==', value: true }]
+        [{ field: "isDefault", operator: "==", value: true }],
       );
 
       return warehouses.length > 0 ? warehouses[0] : null;
@@ -285,13 +304,12 @@ export class WarehouseRepository extends TenantFirestoreService<Warehouse> {
    */
   async getByTypeForOrganization(
     organizationId: string,
-    type: WarehouseType
+    type: WarehouseType,
   ): Promise<Warehouse[]> {
     try {
-      return this.findWithFiltersForOrganization(
-        organizationId,
-        [{ field: 'type', operator: '==', value: type }]
-      );
+      return this.findWithFiltersForOrganization(organizationId, [
+        { field: "type", operator: "==", value: type },
+      ]);
     } catch (error) {
       console.error(`Error getting warehouses by type ${type}:`, error);
       throw error;
@@ -305,10 +323,9 @@ export class WarehouseRepository extends TenantFirestoreService<Warehouse> {
    */
   async getActiveForOrganization(organizationId: string): Promise<Warehouse[]> {
     try {
-      return this.findWithFiltersForOrganization(
-        organizationId,
-        [{ field: 'isActive', operator: '==', value: true }]
-      );
+      return this.findWithFiltersForOrganization(organizationId, [
+        { field: "isActive", operator: "==", value: true },
+      ]);
     } catch (error) {
       console.error(`Error getting active warehouses:`, error);
       throw error;
@@ -324,7 +341,7 @@ export class InventoryCountRepository extends TenantFirestoreService<InventoryCo
    * Create InventoryCountRepository instance
    */
   constructor() {
-    super('inventory_counts');
+    super("inventory_counts");
   }
 
   /**
@@ -332,18 +349,20 @@ export class InventoryCountRepository extends TenantFirestoreService<InventoryCo
    * @param organizationId Organization ID
    * @returns Array of active InventoryCount entities
    */
-  async getActiveForOrganization(organizationId: string): Promise<InventoryCount[]> {
+  async getActiveForOrganization(
+    organizationId: string,
+  ): Promise<InventoryCount[]> {
     try {
       return this.findWithFiltersForOrganization(
         organizationId,
         [
-          { 
-            field: 'status', 
-            operator: 'in', 
-            value: ['draft', 'in_progress'] 
-          }
+          {
+            field: "status",
+            operator: "in",
+            value: ["draft", "in_progress"],
+          },
         ],
-        { sortBy: 'startDate', sortDirection: 'desc' }
+        { sortBy: "startDate", sortDirection: "desc" },
       );
     } catch (error) {
       console.error(`Error getting active inventory counts:`, error);
@@ -361,16 +380,19 @@ export class InventoryCountRepository extends TenantFirestoreService<InventoryCo
   async getByWarehouseForOrganization(
     organizationId: string,
     warehouseId: string,
-    options?: QueryOptions
+    options?: QueryOptions,
   ): Promise<InventoryCount[]> {
     try {
       return this.findWithFiltersForOrganization(
         organizationId,
-        [{ field: 'warehouseId', operator: '==', value: warehouseId }],
-        { ...options, sortBy: 'startDate', sortDirection: 'desc' }
+        [{ field: "warehouseId", operator: "==", value: warehouseId }],
+        { ...options, sortBy: "startDate", sortDirection: "desc" },
       );
     } catch (error) {
-      console.error(`Error getting inventory counts for warehouse ${warehouseId}:`, error);
+      console.error(
+        `Error getting inventory counts for warehouse ${warehouseId}:`,
+        error,
+      );
       throw error;
     }
   }

@@ -26,3 +26,4 @@ export { RegisterDto } from './dtos/register.dto';
 
 // Re-export interfaces
 export * from './interfaces/jwt-payload.interface';
+export { DecodedFirebaseToken } from './interfaces/decoded-firebase-token.interface';

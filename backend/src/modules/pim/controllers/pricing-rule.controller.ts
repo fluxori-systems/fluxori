@@ -19,7 +19,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 
-import { FirebaseAuthGuard } from '../../../common/auth/firebase-auth.guard';
+import { FirebaseAuthGuard } from '../../auth';
 import {
   PricingRule,
   PricingRuleOperation,

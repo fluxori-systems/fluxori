@@ -6,17 +6,17 @@ This guide covers the specifics of connecting to and optimizing your presence on
 
 Fluxori currently supports these major South African marketplaces:
 
-| Marketplace | Integration Type | Auto-Sync Interval | Notes |
-|-------------|-----------------|-------------------|-------|
-| Takealot | Full API | 15 minutes | Includes Takealot Marketplace and Takealot Direct |
-| Amazon SA | Full API | 15 minutes | Full Amazon South Africa marketplace support |
-| Bob Shop | Full API | 30 minutes | Includes auction management support (formerly Bidorbuy) |
-| Makro | Full API | 15 minutes | Includes store pickup integration |
-| Loot | Order Import | Manual/Daily | Limited to order import only |
-| OneDayOnly | Order Import | Manual/Daily | Limited to order import only |
-| Wantitall | Full API | 30 minutes | |
-| Superbalist | Full API | 30 minutes | |
-| Raru | Order Import | Manual/Daily | Limited to order import only |
+| Marketplace | Integration Type | Auto-Sync Interval | Notes                                                   |
+| ----------- | ---------------- | ------------------ | ------------------------------------------------------- |
+| Takealot    | Full API         | 15 minutes         | Includes Takealot Marketplace and Takealot Direct       |
+| Amazon SA   | Full API         | 15 minutes         | Full Amazon South Africa marketplace support            |
+| Bob Shop    | Full API         | 30 minutes         | Includes auction management support (formerly Bidorbuy) |
+| Makro       | Full API         | 15 minutes         | Includes store pickup integration                       |
+| Loot        | Order Import     | Manual/Daily       | Limited to order import only                            |
+| OneDayOnly  | Order Import     | Manual/Daily       | Limited to order import only                            |
+| Wantitall   | Full API         | 30 minutes         |                                                         |
+| Superbalist | Full API         | 30 minutes         |                                                         |
+| Raru        | Order Import     | Manual/Daily       | Limited to order import only                            |
 
 ## Marketplace Integration Overview
 
@@ -27,18 +27,21 @@ As part of our April 2025 update, we've significantly enhanced our South African
 1. **Expanded Takealot Integration**: Our Takealot connector now includes improved category mapping, enhanced reporting, and faster synchronization.
 
 2. **Full Bob Shop Support**: Our new Bob Shop connector (formerly Bidorbuy) includes comprehensive auction management features, allowing you to:
+
    - Create and manage auctions directly from Fluxori
    - Set auction parameters including start price, reserve price, and duration
    - Monitor bidding activity and auction status
    - Convert successful auctions to orders automatically
 
 3. **Enhanced Makro Integration**: Our updated Makro connector now includes:
+
    - Store pickup eligibility checking for each product
    - Multi-store inventory visibility
    - Promotion and discount management
    - Regional stock distribution optimization
 
 4. **New Amazon SA Integration**: Our all-new Amazon South Africa connector provides:
+
    - Complete ASIN-based product management
    - South African marketplace-specific category mapping
    - Fulfillment by Amazon integration
@@ -98,50 +101,50 @@ The connection process is similar for other marketplaces, though authentication 
 
 ### Takealot Connection Issues
 
-* **Authentication Errors**: Ensure you're using the correct Takealot seller account credentials
-* **Permission Denied**: Make sure your Takealot account has API access enabled (contact Takealot Seller Support if needed)
-* **API Rate Limits**: If you hit rate limits, try spacing out your operations or contact us to upgrade your plan
+- **Authentication Errors**: Ensure you're using the correct Takealot seller account credentials
+- **Permission Denied**: Make sure your Takealot account has API access enabled (contact Takealot Seller Support if needed)
+- **API Rate Limits**: If you hit rate limits, try spacing out your operations or contact us to upgrade your plan
 
 ### Amazon SA Connection Issues
 
-* **Invalid Credentials**: Ensure you're using the correct Amazon Seller Central credentials
-* **Marketplace Access**: Verify your seller account has access to the Amazon South Africa marketplace
-* **IP Restrictions**: If your account has IP restrictions, whitelist Fluxori's IP addresses
-* **MWS Token Issues**: If your MWS token is invalid, generate a new one in Amazon Seller Central
+- **Invalid Credentials**: Ensure you're using the correct Amazon Seller Central credentials
+- **Marketplace Access**: Verify your seller account has access to the Amazon South Africa marketplace
+- **IP Restrictions**: If your account has IP restrictions, whitelist Fluxori's IP addresses
+- **MWS Token Issues**: If your MWS token is invalid, generate a new one in Amazon Seller Central
 
 ### Bob Shop Connection Issues
 
-* **Invalid API Key**: Ensure you're using the correct API key. Try regenerating the key in your Bob Shop account
-* **Connection Timeout**: Bob Shop's API sometimes experiences high latency. Try again after a few minutes
-* **Missing Permissions**: Ensure your Bob Shop account has the correct seller level to access API features
+- **Invalid API Key**: Ensure you're using the correct API key. Try regenerating the key in your Bob Shop account
+- **Connection Timeout**: Bob Shop's API sometimes experiences high latency. Try again after a few minutes
+- **Missing Permissions**: Ensure your Bob Shop account has the correct seller level to access API features
 
 ## Marketplace-Specific Features
 
 ### Takealot-Specific Features
 
-* **Lead Time Management**: Manage lead times for different products
-* **Offer Management**: Create and manage offers directly from Fluxori
-* **RMA Processing**: Handle returns and refunds from within Fluxori
-* **Performance Metrics**: Track Takealot-specific seller metrics
-* **Daily Deals Management**: Apply for and manage Daily Deals
-* **Competitive Monitoring**: Track competitor prices and visibility
+- **Lead Time Management**: Manage lead times for different products
+- **Offer Management**: Create and manage offers directly from Fluxori
+- **RMA Processing**: Handle returns and refunds from within Fluxori
+- **Performance Metrics**: Track Takealot-specific seller metrics
+- **Daily Deals Management**: Apply for and manage Daily Deals
+- **Competitive Monitoring**: Track competitor prices and visibility
 
 ### Amazon SA-Specific Features
 
-* **ASIN Management**: Manage Amazon Standard Identification Numbers
-* **A+ Content**: Create and manage enhanced product descriptions
-* **FBA Management**: Handle Fulfillment by Amazon inventory
-* **Amazon Advertising**: Manage sponsored products and brands
-* **Prime Eligibility**: Monitor and maintain Prime eligibility
-* **Bestseller Rank Tracking**: Monitor your products' bestseller rankings
-* **Review Management**: Track and respond to product reviews
+- **ASIN Management**: Manage Amazon Standard Identification Numbers
+- **A+ Content**: Create and manage enhanced product descriptions
+- **FBA Management**: Handle Fulfillment by Amazon inventory
+- **Amazon Advertising**: Manage sponsored products and brands
+- **Prime Eligibility**: Monitor and maintain Prime eligibility
+- **Bestseller Rank Tracking**: Monitor your products' bestseller rankings
+- **Review Management**: Track and respond to product reviews
 
 ### Bob Shop-Specific Features
 
-* **Listing Enhancements**: Optimize your Bob Shop listings with templates
-* **Auction Management**: Schedule and manage auctions
-* **Featured Listings**: Manage and schedule featured listings
-* **Category Optimization**: Get suggestions for optimal category placement
+- **Listing Enhancements**: Optimize your Bob Shop listings with templates
+- **Auction Management**: Schedule and manage auctions
+- **Featured Listings**: Manage and schedule featured listings
+- **Category Optimization**: Get suggestions for optimal category placement
 
 ## Marketplace Data Collection and Competitive Intelligence
 
@@ -150,6 +153,7 @@ The connection process is similar for other marketplaces, though authentication 
 The April 2025 update brings significant enhancements to our competitive intelligence capabilities, powered by our new marketplace data collection framework with specialized Amazon templates and advanced South African market adaptations:
 
 #### Key Enhancements:
+
 - **95.4% Template Success Rate**: Our new template-based extraction achieves industry-leading accuracy
 - **Historical Data Analysis**: Track trends with up to 12 months of historical data
 - **South African Market Focus**: Specialized features for the unique South African e-commerce landscape
@@ -299,11 +303,11 @@ If you need different inventory levels for different marketplaces:
 
 South African marketplaces have different fee structures that affect your profitability:
 
-* **Takealot**: Success fees range from 7-12% depending on category
-* **Amazon SA**: Referral fees range from 8-15% depending on category, plus FBA fees if applicable
-* **Bob Shop**: Commission ranges from 4-10% depending on category
-* **Makro**: Commission ranges from 5-8% depending on category
-* **Other marketplaces**: Variable fee structures
+- **Takealot**: Success fees range from 7-12% depending on category
+- **Amazon SA**: Referral fees range from 8-15% depending on category, plus FBA fees if applicable
+- **Bob Shop**: Commission ranges from 4-10% depending on category
+- **Makro**: Commission ranges from 5-8% depending on category
+- **Other marketplaces**: Variable fee structures
 
 Fluxori's pricing tools can help you set prices that account for these fees to maintain your desired profit margin.
 
@@ -319,10 +323,10 @@ Fluxori offers automatic repricing specifically optimized for South African mark
 
 With our enhanced competitive intelligence, you can now:
 
-* Create rules based on real-time competitor price data
-* Set dynamic pricing based on bestseller rank
-* Adjust prices based on search visibility
-* Implement time-based pricing strategies for peak shopping times
+- Create rules based on real-time competitor price data
+- Set dynamic pricing based on bestseller rank
+- Adjust prices based on search visibility
+- Implement time-based pricing strategies for peak shopping times
 
 ## Analytics and Reporting
 
@@ -338,12 +342,12 @@ Compare performance across South African marketplaces:
 
 Fluxori provides insights specific to the South African e-commerce market:
 
-* Regional sales analysis by province
-* Top-performing categories in the South African market
-* South African shopping seasonal trends
-* Local competitor analysis
-* Load shedding impact analysis
-* Marketplace growth comparisons
+- Regional sales analysis by province
+- Top-performing categories in the South African market
+- South African shopping seasonal trends
+- Local competitor analysis
+- Load shedding impact analysis
+- Marketplace growth comparisons
 
 ### Competitive Intelligence Reports
 
@@ -371,20 +375,20 @@ If orders aren't syncing from South African marketplaces:
 
 Common listing errors for South African marketplaces:
 
-* **Image Requirements**: Ensure images meet marketplace specifications (especially Takealot's strict requirements)
-* **Category Mapping**: Verify proper category mapping for each marketplace
-* **Attribute Requirements**: Some categories require specific attributes (especially electronics on Takealot and Amazon SA)
-* **ASIN Issues (Amazon)**: Ensure correct ASIN mapping and product data
-* **Description Formatting**: Each marketplace has specific HTML/formatting requirements
+- **Image Requirements**: Ensure images meet marketplace specifications (especially Takealot's strict requirements)
+- **Category Mapping**: Verify proper category mapping for each marketplace
+- **Attribute Requirements**: Some categories require specific attributes (especially electronics on Takealot and Amazon SA)
+- **ASIN Issues (Amazon)**: Ensure correct ASIN mapping and product data
+- **Description Formatting**: Each marketplace has specific HTML/formatting requirements
 
 ## Best Practices
 
 ### South African Market Optimization
 
-* **Localized Content**: Use South African English spelling and terminology
-* **Shipping Expectations**: Set clear delivery timeframes accounting for South African logistics
-* **Payment Methods**: Highlight supported South African payment methods
-* **Local Pricing**: Price in Rand without decimal points when possible (e.g., R499 instead of R499.00)
-* **Mobile Optimization**: Optimize listings for mobile as most South African shoppers use mobile devices
-* **Load Shedding Awareness**: Consider load shedding schedules when planning promotions and customer service hours
-* **Competitive Positioning**: Use Fluxori's competitive intelligence to optimize your market position
+- **Localized Content**: Use South African English spelling and terminology
+- **Shipping Expectations**: Set clear delivery timeframes accounting for South African logistics
+- **Payment Methods**: Highlight supported South African payment methods
+- **Local Pricing**: Price in Rand without decimal points when possible (e.g., R499 instead of R499.00)
+- **Mobile Optimization**: Optimize listings for mobile as most South African shoppers use mobile devices
+- **Load Shedding Awareness**: Consider load shedding schedules when planning promotions and customer service hours
+- **Competitive Positioning**: Use Fluxori's competitive intelligence to optimize your market position

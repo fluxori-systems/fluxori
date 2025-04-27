@@ -12,33 +12,32 @@ The common auth module provides a unified interface for accessing auth component
 
 ```typescript
 // Import all needed auth components from the common auth module
-import { 
-  FirebaseAuthGuard, 
-  GetUser, 
+import {
+  FirebaseAuthGuard,
+  GetUser,
   DecodedFirebaseToken,
-  AuthUtils 
-} from 'src/common/auth';
+  AuthUtils,
+} from "src/common/auth";
 
-@Controller('my-endpoint')
+@Controller("my-endpoint")
 @UseGuards(FirebaseAuthGuard)
 export class MyController {
-  
   @Get()
   async myEndpoint(@GetUser() user: DecodedFirebaseToken) {
     // Use the typed user object
     const userId = user.uid;
     const userOrg = user.organizationId;
-    
+
     // Use auth utilities for common checks
     if (AuthUtils.isAdmin(user)) {
       // User is an admin
     }
-    
-    if (AuthUtils.isInOrganization(user, 'org-123')) {
+
+    if (AuthUtils.isInOrganization(user, "org-123")) {
       // User belongs to the organization
     }
-    
-    if (AuthUtils.isOwner(user, 'resource-owner-id')) {
+
+    if (AuthUtils.isOwner(user, "resource-owner-id")) {
       // User owns the resource
     }
   }
@@ -103,14 +102,17 @@ AuthUtils.isOwner(user, ownerId);
 ## Best Practices
 
 1. **Always use the common auth module**
+
    - Import from `src/common/auth` instead of directly from the auth module
    - This ensures consistent usage and simplifies future refactoring
 
 2. **Type your user objects**
+
    - Always type user objects as `DecodedFirebaseToken`
    - This provides better type safety and code completion
 
 3. **Use auth utilities for common checks**
+
    - Use the provided utility functions rather than reimplementing checks
    - This ensures consistent behavior across the application
 
@@ -129,8 +131,8 @@ export {
   GetUser,
   Public,
   AuthService,
-  FirebaseAuthService
-} from 'src/modules/auth';
+  FirebaseAuthService,
+} from "src/modules/auth";
 
 // Additional utilities and types...
 ```

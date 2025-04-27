@@ -7,6 +7,13 @@ import { CreditTransaction, CreditUsageType } from '../interfaces/types';
 /**
  * Repository for credit transactions
  */
+// TODO: Refine this interface to match actual filter fields as needed
+export interface CreditTransactionFilter {
+  organizationId: string;
+  transactionType: 'credit' | 'debit';
+  [key: string]: unknown; // Placeholder for additional filter fields
+}
+
 @Injectable()
 export class CreditTransactionRepository extends FirestoreBaseRepository<CreditTransaction> {
   protected readonly collectionName = 'credit_transactions';
@@ -136,7 +143,8 @@ export class CreditTransactionRepository extends FirestoreBaseRepository<CreditT
     startDate?: Date,
     endDate?: Date,
   ): Promise<number> {
-    const filter: Record<string, any> = {
+    // TODO: Replace with a more specific filter interface as fields are clarified
+    const filter: CreditTransactionFilter = {
       organizationId,
       transactionType,
     };

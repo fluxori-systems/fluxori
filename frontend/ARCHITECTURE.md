@@ -3,6 +3,7 @@
 This document outlines the architecture and design decisions for the Fluxori frontend application.
 
 ## Table of Contents
+
 - [Project Overview](#project-overview)
 - [Technology Stack](#technology-stack)
 - [Project Structure](#project-structure)
@@ -111,11 +112,13 @@ Authentication is implemented using Firebase Authentication with a comprehensive
 ```
 
 1. **Authentication Providers**:
+
    - Email/password authentication with secure password policies
    - Google OAuth 2.0 integration
    - Future support for additional social auth providers
 
 2. **Token Management**:
+
    - JWT tokens handled securely via Firebase Auth
    - Tokens stored in cookies with appropriate security attributes
    - Automatic token refresh mechanism
@@ -132,18 +135,21 @@ Authentication is implemented using Firebase Authentication with a comprehensive
 The authorization system implements multiple layers of security:
 
 1. **Role-Based Access Control (RBAC)**:
+
    - **Admin**: Full access to organization resources
    - **Manager**: Access to operational features, limited settings
    - **User**: Basic access to day-to-day operations
    - **Guest**: Read-only access to specific resources
 
 2. **Permission-Based Access Control**:
+
    - Granular permissions for specific operations (e.g., `users:read`, `inventory:write`)
    - Permissions can be assigned directly or inherited through roles
    - Component-level permissions checks for UI rendering
    - API-level permission validation
 
 3. **Organization Scoping**:
+
    - All data queries scoped to user's organization ID
    - Cross-organization data access prevented by:
      - Repository layer filtering
@@ -151,6 +157,7 @@ The authorization system implements multiple layers of security:
      - API request validation
 
 4. **Route Protection**:
+
    - Next.js middleware for server-side route guarding
    - Client-side route guards using React components
    - Redirection to login or unauthorized pages based on access rights
@@ -164,23 +171,27 @@ The authorization system implements multiple layers of security:
 ### Implementation Components
 
 1. **Authentication Context** (`/src/contexts/firebase-context.tsx`):
+
    - Central state for authentication information
    - Methods for login, logout, registration
    - Token refresh and session management
    - Organization context integration
 
 2. **Route Guards** (`/src/components/auth/route-guard.tsx`):
+
    - Protects routes based on authentication status
    - Role-based access control for pages
    - Permission-based access verification
    - Organization validation
 
 3. **Permission Guards** (`/src/components/auth/permission-guard.tsx`):
+
    - Component-level access control
    - Conditionally renders UI elements based on permissions
    - Supports fallback content for unauthorized users
 
 4. **Auth Hooks** (`/src/hooks/useAuth.ts`):
+
    - React hooks for accessing authentication state
    - Permission checking utilities
    - Role validation helpers
@@ -196,7 +207,8 @@ The authorization system implements multiple layers of security:
 
 ### Data Security
 
-1. **Firestore Security Rules**: 
+1. **Firestore Security Rules**:
+
    - Comprehensive rules to enforce data access control
    - Organization-scoped document access
    - Role-based permission validation
@@ -204,6 +216,7 @@ The authorization system implements multiple layers of security:
    - Rule versioning and testing
 
 2. **Input Validation**:
+
    - Client-side validation using React Hook Form
    - Server-side validation with Zod schemas
    - Field type and constraint enforcement
@@ -218,6 +231,7 @@ The authorization system implements multiple layers of security:
 ### Authentication Security
 
 4. **Firebase Auth Protections**:
+
    - Email verification enforcement
    - Password strength requirements
    - Account lockout after multiple failed attempts
@@ -225,6 +239,7 @@ The authorization system implements multiple layers of security:
    - Secure session management
 
 5. **Token Security**:
+
    - JWT token validation
    - Short-lived access tokens (1 hour)
    - Longer-lived refresh tokens (30 days)
@@ -241,6 +256,7 @@ The authorization system implements multiple layers of security:
 ### Network Security
 
 7. **API Security**:
+
    - HTTPS-only communication
    - Request rate limiting
    - API key validation
@@ -257,6 +273,7 @@ The authorization system implements multiple layers of security:
 ### Operational Security
 
 9. **Monitoring and Alerting**:
+
    - Security event logging
    - Anomaly detection for authentication events
    - Real-time security alerts

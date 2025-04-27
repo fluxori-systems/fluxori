@@ -8,8 +8,10 @@ export interface MotionContextType {
   prefersReducedMotion: boolean;
   isAnimating: boolean;
   setIsAnimating: (isAnimating: boolean) => void;
-  animationComplexity: 'none' | 'minimal' | 'standard' | 'enhanced';
+  animationComplexity: "none" | "minimal" | "standard" | "enhanced";
   enableAnimations: () => void;
   disableAnimations: () => void;
-  setAnimationComplexity: (complexity: 'none' | 'minimal' | 'standard' | 'enhanced') => void;
+  setAnimationComplexity: (
+    complexity: "none" | "minimal" | "standard" | "enhanced",
+  ) => void;
 }

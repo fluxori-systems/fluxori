@@ -34,11 +34,11 @@ export class SuperbalistConnector extends BaseMarketplaceConnector {
   readonly connectorId: string = 'superbalist';
   readonly connectorName: string = 'Superbalist Marketplace API';
 
-  private apiClient: NetworkAwareClient;
+  private apiClient!: NetworkAwareClient;
   private baseUrl: string = 'https://api.superbalist.com/v1';
-  private apiKey: string;
-  private apiSecret: string;
-  private organizationId: string;
+  private apiKey!: string;
+  private apiSecret!: string;
+  private organizationId!: string;
 
   constructor() {
     super('SuperbalistConnector');

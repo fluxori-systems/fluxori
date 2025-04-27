@@ -4,8 +4,11 @@
  * This repository handles all organization data operations.
  */
 
-import { FirestoreService } from '../lib/firebase/firestore.service';
-import { Organization, OrganizationInvitation } from '../types/organization/organization.types';
+import { FirestoreService } from "../lib/firebase/firestore.service";
+import {
+  Organization,
+  OrganizationInvitation,
+} from "../types/organization/organization.types";
 
 /**
  * Repository for Organization entities
@@ -16,7 +19,7 @@ export class OrganizationRepository extends FirestoreService<Organization> {
    * Create OrganizationRepository instance
    */
   constructor() {
-    super('organizations');
+    super("organizations");
   }
 
   /**
@@ -58,7 +61,7 @@ export class OrganizationRepository extends FirestoreService<Organization> {
       // Mock implementation
       return [];
     } catch (error) {
-      console.error('Error getting active organizations:', error);
+      console.error("Error getting active organizations:", error);
       throw error;
     }
   }
@@ -72,7 +75,7 @@ export class OrganizationInvitationRepository extends FirestoreService<Organizat
    * Create OrganizationInvitationRepository instance
    */
   constructor() {
-    super('organization_invitations');
+    super("organization_invitations");
   }
 
   /**
@@ -95,7 +98,9 @@ export class OrganizationInvitationRepository extends FirestoreService<Organizat
    * @param email User email
    * @returns Array of pending invitations
    */
-  async getPendingInvitationsByEmail(email: string): Promise<OrganizationInvitation[]> {
+  async getPendingInvitationsByEmail(
+    email: string,
+  ): Promise<OrganizationInvitation[]> {
     try {
       // Mock implementation
       return [];
