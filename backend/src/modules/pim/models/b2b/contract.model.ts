@@ -253,11 +253,13 @@ export interface ContractApproval {
 /**
  * B2B Customer Contract model
  */
-export interface CustomerContract {
+import { FirestoreEntityWithMetadata } from '../../../../common/repositories/base/repository-types';
+
+export interface CustomerContract extends FirestoreEntityWithMetadata {
   /**
    * Unique identifier for the contract
    */
-  id?: string;
+  id: string;
 
   /**
    * Organization that owns this contract
@@ -370,7 +372,7 @@ export interface CustomerContract {
   /**
    * Custom fields specific to this contract
    */
-  customFields?: Record<string, any>;
+  customFields?: import('../custom-fields.model').CustomFields;
 
   /**
    * Creation timestamp
@@ -381,4 +383,14 @@ export interface CustomerContract {
    * Last update timestamp
    */
   updatedAt: Date;
+
+  /**
+   * Whether the contract is soft-deleted
+   */
+  isDeleted: boolean;
+
+  /**
+   * Version number for optimistic concurrency
+   */
+  version: number;
 }

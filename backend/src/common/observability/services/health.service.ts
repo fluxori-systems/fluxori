@@ -16,6 +16,7 @@ import {
 } from '../interfaces/observability.interfaces';
 
 // Import constants
+import { toError } from '../../utils/error.util';
 
 /**
  * Health service that provides health check capabilities.
@@ -195,14 +196,15 @@ export class HealthService implements IHealthService, OnModuleInit {
           }
 
           return result;
-        } catch (error) {
+        } catch (error: unknown) {
+          const err = toError(error);
           // If a health check throws, consider it unhealthy
           const unhealthyResult: ComponentHealth = {
             component,
             status: HealthStatus.UNHEALTHY,
             details: {
-              error: error.message,
-              stack: this.exposeDetails ? error.stack : undefined,
+              error: err.message,
+              stack: this.exposeDetails ? err.stack : undefined,
             },
             timestamp: new Date(),
           };

@@ -23,6 +23,7 @@ import { FirebaseAuthGuard } from '../../auth';
 import { CategoryService } from '../services/category.service';
 import { ProductAiService } from '../services/product-ai.service';
 import { ProductService } from '../services/product.service';
+import { ProductAttribute } from '../interfaces/types';
 
 /**
  * DTO for product classification
@@ -41,7 +42,7 @@ class ClassifyProductDto {
   productData?: {
     name: string;
     description: string;
-    attributes?: Record<string, any>;
+    attributes?: ProductAttribute[];
     features?: string[];
   };
 }
@@ -121,8 +122,8 @@ export class CategoryClassificationController {
         productData = {
           name: product.name,
           description: product.description || '',
-          attributes: product.attributes || {},
-          features: product.features || [],
+          attributes: product.attributes || [],
+          features: [],
         };
       } else if (dto.productData) {
         // Use provided product data
@@ -142,9 +143,25 @@ export class CategoryClassificationController {
 
       // If product ID is provided, enhance results with available categories
       if (dto.productId && classificationResult.success) {
-        // Convert category paths to actual category IDs where possible
+        let aiCategories: { path: string; confidence: number }[] = [];
+        if (Array.isArray(classificationResult.categories)) {
+          if (
+            classificationResult.categories.length > 0 &&
+            typeof classificationResult.categories[0] === 'string'
+          ) {
+            aiCategories = (classificationResult.categories as string[]).map((cat) => ({ path: cat, confidence: 1 }));
+          } else {
+            aiCategories = (classificationResult.categories as unknown[]).filter(
+              (cat): cat is { path: string; confidence: number } =>
+                typeof cat === 'object' &&
+                cat !== null &&
+                'path' in cat &&
+                'confidence' in cat
+            );
+          }
+        }
         const enhancedCategories = await this.enhanceWithCategoryIds(
-          classificationResult.categories,
+          aiCategories,
           user.organizationId,
         );
 
@@ -206,10 +223,7 @@ export class CategoryClassificationController {
 
       // Add attributes if provided
       if (dto.attributes) {
-        updates.attributes = {
-          ...product.attributes,
-          ...dto.attributes,
-        };
+        updates.attributes = dto.attributes;
       }
 
       // Update product

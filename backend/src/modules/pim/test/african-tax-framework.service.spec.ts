@@ -5,7 +5,9 @@ import {
   TaxRateResult,
   TaxJurisdiction,
   TaxType,
+  TaxJurisdictionLevel
 } from '../interfaces/tax-rate.interface';
+
 import { TaxRateRepository } from '../repositories/tax-rate.repository';
 import { AfricanTaxFrameworkService } from '../services/african-tax-framework.service';
 import { TaxRateService } from '../services/tax-rate.service';
@@ -113,7 +115,7 @@ describe('AfricanTaxFrameworkService', () => {
         ratePercentage: 8,
         name: 'Sales Tax',
         taxType: TaxType.SALES,
-        jurisdiction: { country: 'US', level: 'country' },
+        jurisdiction: { country: 'US', level: TaxJurisdictionLevel.COUNTRY },
         validFrom: new Date(),
         validTo: null,
         scheduleId: 'test-id',
@@ -139,7 +141,7 @@ describe('AfricanTaxFrameworkService', () => {
         ratePercentage: 15,
         name: 'Standard Rate',
         taxType: TaxType.VAT,
-        jurisdiction: { country: 'ZA', level: 'country' },
+        jurisdiction: { country: 'ZA', level: TaxJurisdictionLevel.COUNTRY },
         validFrom: new Date('1991-09-30'),
         validTo: null,
         scheduleId: 'za-vat-1',
@@ -166,7 +168,7 @@ describe('AfricanTaxFrameworkService', () => {
         ratePercentage: 12.5,
         name: 'Standard Rate',
         taxType: TaxType.VAT,
-        jurisdiction: { country: 'GH', level: 'country' },
+        jurisdiction: { country: 'GH', level: TaxJurisdictionLevel.COUNTRY },
         validFrom: new Date('1998-01-01'),
         validTo: null,
         scheduleId: 'gh-vat-1',
@@ -195,7 +197,7 @@ describe('AfricanTaxFrameworkService', () => {
         ratePercentage: 16,
         name: 'Standard Rate',
         taxType: TaxType.VAT,
-        jurisdiction: { country: 'KE', level: 'country' },
+        jurisdiction: { country: 'KE', level: TaxJurisdictionLevel.COUNTRY },
         validFrom: new Date('1990-01-01'),
         validTo: null,
         scheduleId: 'ke-vat-1',
@@ -222,7 +224,7 @@ describe('AfricanTaxFrameworkService', () => {
         ratePercentage: 7.5,
         name: 'Federal VAT',
         taxType: TaxType.VAT,
-        jurisdiction: { country: 'NG', level: 'country' },
+        jurisdiction: { country: 'NG', level: TaxJurisdictionLevel.COUNTRY },
         validFrom: new Date('1994-01-01'),
         validTo: null,
         scheduleId: 'ng-vat-1',
@@ -236,7 +238,7 @@ describe('AfricanTaxFrameworkService', () => {
         jurisdiction: {
           country: 'NG',
           region: 'Lagos',
-          level: 'province' as const,
+          level: TaxJurisdictionLevel.PROVINCE,
         },
         taxType: TaxType.VAT,
         rate: 0.025,
@@ -317,7 +319,7 @@ describe('AfricanTaxFrameworkService', () => {
         ratePercentage: 15,
         name: 'Standard Rate',
         taxType: TaxType.VAT,
-        jurisdiction: { country: 'ZA', level: 'country' },
+        jurisdiction: { country: 'ZA', level: TaxJurisdictionLevel.COUNTRY },
         validFrom: new Date('2018-04-01'),
         validTo: null,
         scheduleId: 'za-vat-1',
@@ -342,7 +344,7 @@ describe('AfricanTaxFrameworkService', () => {
         ratePercentage: 15,
         name: 'Standard Rate',
         taxType: TaxType.VAT,
-        jurisdiction: { country: 'ZA', level: 'country' },
+        jurisdiction: { country: 'ZA', level: TaxJurisdictionLevel.COUNTRY },
         validFrom: new Date('2018-04-01'),
         validTo: null,
         scheduleId: 'za-vat-1',
@@ -351,7 +353,7 @@ describe('AfricanTaxFrameworkService', () => {
 
       const futureRate = {
         id: 'za-vat-2',
-        jurisdiction: { country: 'ZA', level: 'country' as const },
+        jurisdiction: { country: 'ZA', level: TaxJurisdictionLevel.COUNTRY },
         taxType: TaxType.VAT,
         rate: 0.155,
         name: 'VAT Increase 2025',
@@ -396,7 +398,7 @@ describe('AfricanTaxFrameworkService', () => {
       const specialRates = [
         {
           id: 'za-spec-1',
-          jurisdiction: { country: 'ZA', level: 'country' as const },
+          jurisdiction: { country: 'ZA', level: TaxJurisdictionLevel.COUNTRY },
           taxType: TaxType.VAT,
           rate: 0,
           name: 'Zero-Rated Books',
@@ -411,7 +413,7 @@ describe('AfricanTaxFrameworkService', () => {
         },
         {
           id: 'za-spec-2',
-          jurisdiction: { country: 'ZA', level: 'country' as const },
+          jurisdiction: { country: 'ZA', level: TaxJurisdictionLevel.COUNTRY },
           taxType: TaxType.VAT,
           rate: 0,
           name: 'Zero-Rated Medical',

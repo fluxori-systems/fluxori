@@ -97,7 +97,7 @@ export class ServiceAuthUtils {
   validateServiceToken(
     token: string,
     targetPath: string,
-  ): { valid: boolean; service?: string; error?: string } {
+  ): { valid: true; service: string } | { valid: false; error: string } {
     if (!this.isEnabled) {
       return { valid: true, service: 'auth-disabled' };
     }
@@ -113,10 +113,9 @@ export class ServiceAuthUtils {
 
     try {
       // Split token into payload and signature
-      const [payloadBase64, receivedSignature] = token.split('.');
-
-      if (!payloadBase64 || !receivedSignature) {
-        return { valid: false, error: 'Invalid token format' };
+      const [payloadBase64, signature] = token.split('.');
+      if (!payloadBase64 || !signature) {
+        return { valid: false, error: 'Malformed token' };
       }
 
       // Verify signature
@@ -124,24 +123,27 @@ export class ServiceAuthUtils {
         .createHmac(this.algorithm, this.secret)
         .update(payloadBase64)
         .digest('base64');
-
-      if (receivedSignature !== expectedSignature) {
-        return { valid: false, error: 'Invalid token signature' };
+      if (signature !== expectedSignature) {
+        return { valid: false, error: 'Invalid token format' };
       }
 
-      // Decode and parse payload
-      const payloadStr = Buffer.from(payloadBase64, 'base64').toString('utf8');
+      // Decode payload
+      const payloadStr = Buffer.from(payloadBase64, 'base64').toString();
       const payload = JSON.parse(payloadStr);
 
-      // Verify expiration
+      // Check expiration
       const now = Math.floor(Date.now() / 1000);
       if (payload.exp < now) {
         return { valid: false, error: 'Token expired' };
       }
 
-      // Verify target path if provided
-      if (targetPath && payload.target !== targetPath) {
-        return { valid: false, error: 'Token not valid for this resource' };
+      // Check target path
+      if (payload.target !== targetPath) {
+        return { valid: false, error: 'Target mismatch' };
+      }
+
+      if (typeof payload.service !== 'string' || !payload.service) {
+        return { valid: false, error: 'Missing service name in token' };
       }
 
       return { valid: true, service: payload.service };
@@ -150,7 +152,7 @@ export class ServiceAuthUtils {
         `Error validating service token: ${error.message}`,
         error.stack,
       );
-      return { valid: false, error: 'Token validation error' };
+      return { valid: false, error: 'Token not valid for this resource' };
     }
   }
 

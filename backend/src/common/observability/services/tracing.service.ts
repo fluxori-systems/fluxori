@@ -2,6 +2,7 @@ import { Injectable, Inject, Optional } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
 import { v4 as uuidv4 } from 'uuid';
+import { toError } from '../../utils/error.util';
 
 // Import interfaces
 
@@ -464,19 +465,19 @@ export class TracingService implements ITracingService {
             span.end();
             return value;
           })
-          .catch((error) => {
-            span.recordException(error);
+          .catch((error: unknown) => {
+            span.recordException(toError(error));
             span.end();
-            throw error;
+            throw toError(error);
           });
       } else {
         span.end();
         return Promise.resolve(result);
       }
-    } catch (error) {
-      span.recordException(error);
+    } catch (error: unknown) {
+      span.recordException(toError(error));
       span.end();
-      throw error;
+      throw toError(error);
     }
   }
 

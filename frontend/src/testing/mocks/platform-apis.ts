@@ -5,6 +5,18 @@
  */
 
 import { vi } from "vitest";
+// If NetworkInformation is not globally available, declare it for test mocks
+// Remove this if you have a real type elsewhere
+// interface NetworkInformation {
+//   effectiveType: "slow-2g" | "2g" | "3g" | "4g";
+//   downlink: number;
+//   rtt: number;
+//   saveData: boolean;
+//   onchange?: (() => void) | null;
+//   addEventListener: (...args: any[]) => void;
+//   removeEventListener: (...args: any[]) => void;
+//   dispatchEvent: (...args: any[]) => boolean;
+// }
 
 /**
  * Creates a properly typed navigator.connection mock
@@ -41,22 +53,25 @@ type GSAPTarget = string | Element | Element[] | NodeList;
 function createGSAPMock() {
   // Create a basic tween object that can be returned by to/from/etc.
   const createTween = () => {
-    const tween = {
+    const tween: any = {
       kill: vi.fn(() => undefined),
-      pause: vi.fn(() => tween),
+      pause: vi.fn((): typeof tween => tween),
       play: vi.fn(() => tween),
       restart: vi.fn(() => tween),
       resume: vi.fn(() => tween),
       reverse: vi.fn(() => tween),
-      progress: vi.fn((value?: number) =>
-        typeof value === "undefined" ? 0 : tween,
-      ),
-      duration: vi.fn((value?: number) =>
-        typeof value === "undefined" ? 1 : tween,
-      ),
-      time: vi.fn((value?: number) =>
-        typeof value === "undefined" ? 0 : tween,
-      ),
+      progress: function(this: typeof tween, value?: number): number | typeof tween {
+        if (typeof value === "undefined") return 0;
+        return this;
+      } as any,
+      duration: function(this: typeof tween, value?: number): number | typeof tween {
+        if (typeof value === "undefined") return 1;
+        return this;
+      } as any,
+      time: function(this: typeof tween, value?: number): number | typeof tween {
+        if (typeof value === "undefined") return 0;
+        return this;
+      } as any,
     };
     return tween;
   };
@@ -64,9 +79,9 @@ function createGSAPMock() {
   // Create a timeline object with chaining methods
   const createTimeline = () => {
     const timelineTween = createTween();
-    const timeline = {
+    const timeline: any = {
       ...timelineTween,
-      to: vi.fn(() => timeline),
+      to: vi.fn((): typeof timeline => timeline),
       from: vi.fn(() => timeline),
       fromTo: vi.fn(() => timeline),
       add: vi.fn(() => timeline),

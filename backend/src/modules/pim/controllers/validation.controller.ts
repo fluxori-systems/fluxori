@@ -31,7 +31,7 @@ class ValidateProductRequestDto {
   /**
    * Product ID to validate
    */
-  productId: string;
+  productId!: string;
 
   /**
    * Include category-specific validation rules
@@ -170,7 +170,7 @@ export class ValidationController {
       }
 
       // Get variants if needed
-      const variants = [];
+      const variants: any[] = [];
 
       if (includeVariants) {
         // In a real implementation, you would load variants
@@ -289,7 +289,7 @@ export class ValidationController {
       const marketplaces = ['takealot', 'amazon'];
 
       // Validate for each marketplace
-      const results = {};
+      const results: { [marketplace: string]: any } = {};
 
       for (const marketplace of marketplaces) {
         const result = this.marketplaceValidationService.validateProduct(

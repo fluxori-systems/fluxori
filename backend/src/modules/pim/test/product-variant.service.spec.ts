@@ -121,6 +121,11 @@ describe('ProductVariantService', () => {
           vatIncluded: true,
           currency: 'ZAR',
         },
+        organizationId: tenantId,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        isDeleted: false,
+        version: 1,
       };
 
       const mockCreatedVariant = {
@@ -128,7 +133,7 @@ describe('ProductVariantService', () => {
         ...dto,
       } as ProductVariant;
 
-      productRepository.findById.mockResolvedValue(mockParentProduct);
+      productRepository.findById.mockResolvedValue(mockParentProduct as any);
       productVariantRepository.create.mockResolvedValue(mockCreatedVariant);
       marketContextService.getMarketContext.mockResolvedValue({
         region: 'south-africa',
@@ -180,10 +185,26 @@ describe('ProductVariantService', () => {
 
       const mockProduct = {
         id: productId,
+        sku: 'PRODUCT',
+        name: 'Test Product',
+        description: 'Test product',
+        status: ProductStatus.ACTIVE,
+        type: ProductType.SIMPLE,
+        categories: [],
+        pricing: {
+          basePrice: 100,
+          vatIncluded: true,
+          currency: 'ZAR',
+        },
         attributes: [
-          { code: 'color', label: 'Color', usedForVariants: true },
-          { code: 'size', label: 'Size', usedForVariants: true },
+          { code: 'color', label: 'Color', type: 'string', value: 'Red', usedForVariants: true },
+          { code: 'size', label: 'Size', type: 'string', value: 'Large', usedForVariants: true },
         ],
+        organizationId: tenantId,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        isDeleted: false,
+        version: 1,
       };
 
       const mockVariants = [
@@ -223,6 +244,10 @@ describe('ProductVariantService', () => {
         id: productId,
         name: 'Test Product',
         sku: 'TEST',
+        description: 'Test product',
+        status: ProductStatus.ACTIVE,
+        type: ProductType.SIMPLE,
+        categories: [],
         attributes: [
           {
             code: 'color',
@@ -248,6 +273,11 @@ describe('ProductVariantService', () => {
           vatIncluded: true,
           currency: 'ZAR',
         },
+        organizationId: tenantId,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        isDeleted: false,
+        version: 1,
       };
 
       productRepository.findById.mockResolvedValue(mockProduct);
@@ -281,7 +311,7 @@ describe('ProductVariantService', () => {
       );
 
       expect(result.success).toBe(true);
-      expect(result.data.variants.length).toBe(9);
+      expect(result.data && result.data.variants.length).toBe(9);
     });
   });
 });

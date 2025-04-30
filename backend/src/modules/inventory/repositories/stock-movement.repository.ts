@@ -1,4 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
+import { toJSDate } from '../../../common/utils/date.util';
 
 import {
   FirestoreBaseRepository,
@@ -245,7 +246,7 @@ export class StockMovementRepository extends FirestoreBaseRepository<StockMoveme
     }
 
     if (params.toDate) {
-      const toDate = new Date(params.toDate);
+      const toDate = toJSDate(params.toDate);
       movements = movements.filter((movement) => {
         const createdAt =
           movement.createdAt instanceof Date

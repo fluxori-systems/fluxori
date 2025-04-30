@@ -37,6 +37,8 @@ interface BundleComponentDto {
   isRequired?: boolean;
 }
 
+import { ProductAttribute } from '../interfaces/types';
+
 class CreateBundleDto {
   /**
    * Name of the bundle
@@ -89,7 +91,7 @@ class CreateBundleDto {
   /**
    * Additional attributes for the bundle
    */
-  attributes?: Record<string, any>;
+  attributes?: ProductAttribute[];
 
   /**
    * Whether the bundle is active
@@ -148,7 +150,7 @@ class UpdateBundleDto {
   /**
    * Additional attributes for the bundle
    */
-  attributes?: Record<string, any>;
+  attributes?: ProductAttribute[];
 
   /**
    * Whether the bundle is active

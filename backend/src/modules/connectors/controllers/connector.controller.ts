@@ -19,6 +19,7 @@ import {
 import { FirebaseAuthGuard } from '../../../common/guards/firebase-auth.guard';
 import { ConnectorCredentials, CredentialType } from '../interfaces/types';
 import { ConnectorFactoryService } from '../services/connector-factory.service';
+import { toError } from '../../../common/utils/error.util';
 
 /**
  * Controller for connector-related operations
@@ -58,12 +59,13 @@ export class ConnectorController {
     try {
       const result = await connector.testConnection();
       return { success: true, status: result };
-    } catch (error) {
-      this.logger.error(`Connection test failed: ${error.message}`);
+    } catch (error: unknown) {
+      const err = toError(error);
+      this.logger.error(`Connection test failed: ${err.message}`, err.stack);
       return {
         success: false,
-        error: error.message,
-        details: error.details || error,
+        error: err.message,
+        details: (err as any).details || err,
       };
     }
   }

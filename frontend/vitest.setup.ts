@@ -134,7 +134,7 @@ vi.mock("gsap", () => {
 // Mock the theme context
 vi.mock("./src/lib/design-system/theme/ThemeContext", () => {
   return {
-    ThemeProvider: ({ children }) => children,
+    ThemeProvider: ({ children }: { children: React.ReactNode }) => children,
     useTheme: () => ({
       colorMode: "light",
       setColorMode: vi.fn(),
@@ -153,7 +153,7 @@ vi.mock("./src/lib/design-system/theme/ThemeContext", () => {
 // Mock the motion context
 vi.mock("./src/lib/motion/context/MotionContext", () => {
   return {
-    MotionProvider: ({ children }) => children,
+    MotionProvider: ({ children }: { children: React.ReactNode }) => children,
     useMotion: () => ({
       motionMode: "full",
       setMotionMode: vi.fn(),

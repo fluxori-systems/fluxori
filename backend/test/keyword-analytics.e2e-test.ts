@@ -3,21 +3,21 @@ import { INestApplication } from "@nestjs/common";
 import * as request from "supertest";
 import { AppModule } from "../src/app.module";
 import { FirebaseAuthGuard } from "../src/common/guards/firebase-auth.guard";
-import { mockFirebaseUser } from "./mocks/auth.mock";
 
 /**
  * E2E tests for the Keyword Analytics Service
  */
 describe("Keyword Analytics (e2e)", () => {
   let app: INestApplication;
-  let mockUser: any;
+  let mockUser: { uid: string; organizationId: string };
 
   beforeAll(async () => {
-    // Mock user with organization ID
+    // Inline mock user (was previously imported)
     mockUser = {
       uid: "test-user-123",
       organizationId: "test-org-123",
     };
+    // No import needed
 
     // Create testing module with mocked auth guard
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -32,10 +32,18 @@ describe("Keyword Analytics (e2e)", () => {
     app = moduleFixture.createNestApplication();
 
     // Mock the user extraction from request
-    app.use((req, res, next) => {
-      req.user = mockUser;
-      next();
-    });
+    app.use(
+      (
+        req: import("express").Request & {
+          user?: { uid: string; organizationId: string };
+        },
+        res: import("express").Response,
+        next: import("express").NextFunction,
+      ) => {
+        req.user = mockUser;
+        next();
+      },
+    );
 
     await app.init();
   });
@@ -58,10 +66,10 @@ describe("Keyword Analytics (e2e)", () => {
         includeGrowthOpportunities: "true",
       })
       .expect(200)
-      .expect((res) => {
-        expect(res.body).toHaveProperty("creditCost");
-        expect(res.body.creditCost).toBeGreaterThan(0);
-        expect(res.body).toHaveProperty("hasCredits");
+      .expect((result: import("supertest").Response) => {
+        expect(result.body).toHaveProperty("creditCost");
+        expect(result.body.creditCost).toBeGreaterThan(0);
+        expect(result.body).toHaveProperty("hasCredits");
       });
   });
 
@@ -80,18 +88,18 @@ describe("Keyword Analytics (e2e)", () => {
         },
       })
       .expect(201)
-      .expect((res) => {
-        expect(res.body).toHaveProperty("id");
-        expect(res.body).toHaveProperty("keyword", "smartphone");
-        expect(res.body).toHaveProperty("marketplace", "takealot");
-        expect(res.body).toHaveProperty("searchVolume");
-        expect(res.body).toHaveProperty("searchVolumeHistory");
+      .expect((result: import("supertest").Response) => {
+        expect(result.body).toHaveProperty("id");
+        expect(result.body).toHaveProperty("keyword", "smartphone");
+        expect(result.body).toHaveProperty("marketplace", "takealot");
+        expect(result.body).toHaveProperty("searchVolume");
+        expect(result.body).toHaveProperty("searchVolumeHistory");
 
         // Check if optional components exist based on options
-        expect(res.body).toHaveProperty("seasonalityData");
-        expect(res.body).toHaveProperty("marketShareData");
-        expect(res.body).toHaveProperty("trendPrediction");
-        expect(res.body).toHaveProperty("competitionAnalysis");
+        expect(result.body).toHaveProperty("seasonalityData");
+        expect(result.body).toHaveProperty("marketShareData");
+        expect(result.body).toHaveProperty("trendPrediction");
+        expect(result.body).toHaveProperty("competitionAnalysis");
       });
   });
 
@@ -114,9 +122,9 @@ describe("Keyword Analytics (e2e)", () => {
     return request(app.getHttpServer())
       .get(`/credit-system/analytics/${analyticsId}`)
       .expect(200)
-      .expect((res) => {
-        expect(res.body).toHaveProperty("id", analyticsId);
-        expect(res.body).toHaveProperty("keyword", "laptop");
+      .expect((result: import("supertest").Response) => {
+        expect(result.body).toHaveProperty("id", analyticsId);
+        expect(result.body).toHaveProperty("keyword", "laptop");
       });
   });
 
@@ -132,12 +140,12 @@ describe("Keyword Analytics (e2e)", () => {
         },
       })
       .expect(201)
-      .expect((res) => {
-        expect(res.body).toHaveProperty("results");
-        expect(res.body.results).toHaveLength(3);
+      .expect((result: import("supertest").Response) => {
+        expect(result.body).toHaveProperty("results");
+        expect(result.body.results).toHaveLength(3);
 
         // Check each result
-        res.body.results.forEach((result) => {
+        result.body.results.forEach((result: any) => {
           expect(result).toHaveProperty("id");
           expect(result).toHaveProperty("keyword");
           expect(["headphones", "earbuds", "speakers"]).toContain(
@@ -153,14 +161,14 @@ describe("Keyword Analytics (e2e)", () => {
       .get("/credit-system/analytics/popular")
       .query({ marketplace: "takealot", limit: 5 })
       .expect(200)
-      .expect((res) => {
-        expect(Array.isArray(res.body)).toBe(true);
-        expect(res.body.length).toBeLessThanOrEqual(5);
+      .expect((result: import("supertest").Response) => {
+        expect(Array.isArray(result.body)).toBe(true);
+        expect(result.body.length).toBeLessThanOrEqual(5);
 
         // Check results are sorted by search volume
-        if (res.body.length > 1) {
-          const firstVolume = res.body[0].searchVolume;
-          const secondVolume = res.body[1].searchVolume;
+        if (result.body.length > 1) {
+          const firstVolume = result.body[0].searchVolume;
+          const secondVolume = result.body[1].searchVolume;
           expect(firstVolume).toBeGreaterThanOrEqual(secondVolume);
         }
       });
@@ -171,12 +179,12 @@ describe("Keyword Analytics (e2e)", () => {
       .get("/credit-system/analytics/trending")
       .query({ marketplace: "takealot", limit: 5 })
       .expect(200)
-      .expect((res) => {
-        expect(Array.isArray(res.body)).toBe(true);
-        expect(res.body.length).toBeLessThanOrEqual(5);
+      .expect((result: import("supertest").Response) => {
+        expect(Array.isArray(result.body)).toBe(true);
+        expect(result.body.length).toBeLessThanOrEqual(5);
 
         // All results should have trend prediction
-        res.body.forEach((result) => {
+        result.body.forEach((result: any) => {
           expect(result).toHaveProperty("trendPrediction");
         });
       });
@@ -187,11 +195,11 @@ describe("Keyword Analytics (e2e)", () => {
       .get("/credit-system/analytics/seasonal")
       .query({ marketplace: "takealot", limit: 5 })
       .expect(200)
-      .expect((res) => {
-        expect(Array.isArray(res.body)).toBe(true);
+      .expect((result: import("supertest").Response) => {
+        expect(Array.isArray(result.body)).toBe(true);
 
         // All results should have seasonality data
-        res.body.forEach((result) => {
+        result.body.forEach((result: any) => {
           expect(result).toHaveProperty("seasonalityData");
           expect(result.seasonalityData).toHaveProperty("peakMonths");
         });

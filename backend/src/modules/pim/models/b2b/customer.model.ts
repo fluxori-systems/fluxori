@@ -452,28 +452,19 @@ export interface OrganizationalHierarchy {
 import { FirestoreEntityWithMetadata } from '../../../../common/repositories/base/repository-types';
 
 export interface B2BCustomer extends FirestoreEntityWithMetadata {
-  /**
-   * Unique identifier for the B2B customer
-   */
+  /** Unique identifier */
   id: string;
-
-  /**
-   * Timestamp when the customer was created
-   */
-
-  /**
-   * Timestamp when the customer was last updated
-   */
-
-  /**
-   * Whether the customer is soft-deleted
-   */
+  /** Soft delete flag */
   isDeleted: boolean;
-
-  /**
-   * Version number for optimistic concurrency
-   */
+  /** Version for optimistic locking */
   version: number;
+  /** Creation timestamp */
+  createdAt: Date;
+  /** Last update timestamp */
+  updatedAt: Date;
+  /** Deletion timestamp (optional) */
+  deletedAt?: Date | undefined;
+
 
   /**
    * Organization that owns this customer record
@@ -664,7 +655,11 @@ export interface B2BCustomer extends FirestoreEntityWithMetadata {
   /**
    * Custom fields specific to this customer
    */
-  customFields?: Record<string, any>;
+  /**
+   * Custom fields specific to this customer. Use a strict union for allowed types.
+   */
+  customFields?: import('../custom-fields.model').CustomFields;
+  // TODO: If extensibility is needed, consider using 'unknown' with runtime validation.
 
   /**
    * Creation timestamp

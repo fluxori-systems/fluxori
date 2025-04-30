@@ -4,7 +4,7 @@
  * Core model for attribute templates in the PIM module
  */
 
-import { TenantEntity } from '../../../types/google-cloud.types';
+import { FirestoreEntityWithMetadata } from '../../../common/repositories/base/repository-types';
 import { ProductAttribute } from '../interfaces/types';
 
 /**
@@ -42,7 +42,19 @@ export enum AttributeScope {
 /**
  * Attribute template entity
  */
-export interface AttributeTemplate extends TenantEntity {
+export interface AttributeTemplate extends FirestoreEntityWithMetadata {
+  /** Unique identifier */
+  id: string;
+  /** Soft delete flag */
+  isDeleted: boolean;
+  /** Version for optimistic locking */
+  version: number;
+  /** Creation timestamp */
+  createdAt: Date;
+  /** Last update timestamp */
+  updatedAt: Date;
+  /** Deletion timestamp (optional) */
+  deletedAt?: Date | undefined;
   /**
    * Template name
    */
@@ -132,6 +144,11 @@ export interface AttributeTemplate extends TenantEntity {
      */
     attributeMappings: Record<string, string>;
   }[];
+
+  /** Organization ID */
+  organizationId: string;
+  /** Tenant ID (optional) */
+  tenantId?: string;
 }
 
 /**

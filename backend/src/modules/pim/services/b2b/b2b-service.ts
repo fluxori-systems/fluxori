@@ -235,7 +235,10 @@ export class B2BService {
    * @returns The customer if found
    */
   async findCustomerById(id: string): Promise<B2BCustomer> {
-    const customer = await this.b2bCustomerRepository.findById(id);
+    const customer = await this.b2bCustomerRepository.findById(id, {
+      // Using the new parameter format with options object
+      includeDeleted: false,
+    });
 
     if (!customer) {
       throw new Error(`Customer with ID ${id} not found`);
@@ -261,50 +264,70 @@ export class B2BService {
     },
     organizationId: string,
   ): Promise<B2BCustomer[]> {
+    // Base options object with tenant ID for all queries
+    const baseOptions = {
+      filter: {
+        organizationId: organizationId,
+        isDeleted: false,
+      },
+    };
+
     if (filters.tierId) {
       return this.b2bCustomerRepository.findByTierId(
         filters.tierId,
-        organizationId,
+        {
+          ...baseOptions,
+        },
       );
     }
 
     if (filters.groupId) {
       return this.b2bCustomerRepository.findByGroupId(
         filters.groupId,
-        organizationId,
+        {
+          ...baseOptions,
+        },
       );
     }
 
     if (filters.status) {
       return this.b2bCustomerRepository.findByStatus(
         filters.status,
-        organizationId,
+        {
+          ...baseOptions,
+        },
       );
     }
 
     if (filters.accountType) {
       return this.b2bCustomerRepository.findByAccountType(
         filters.accountType,
-        organizationId,
+        {
+          ...baseOptions,
+        },
       );
     }
 
     if (filters.creditStatus) {
       return this.b2bCustomerRepository.findByCreditStatus(
         filters.creditStatus,
-        organizationId,
+        {
+          ...baseOptions,
+        },
       );
     }
 
     if (filters.marketRegion) {
       return this.b2bCustomerRepository.findByMarketRegion(
         filters.marketRegion,
-        organizationId,
+        {
+          ...baseOptions,
+        },
       );
     }
 
     // If no specific filters, get all customers for the organization
-    return this.b2bCustomerRepository.findByOrganizationId(organizationId);
+    return this.b2bCustomerRepository.findByTenant(organizationId);
   }
 
   /*
@@ -361,8 +384,12 @@ export class B2BService {
   ): Promise<B2BCustomer> {
     // Verify customer and tier exist
     const [customer, tier] = await Promise.all([
-      this.b2bCustomerRepository.findById(customerId),
-      this.customerTierRepository.findById(tierId),
+      this.b2bCustomerRepository.findById(customerId, {
+        includeDeleted: false,
+      }),
+      this.customerTierRepository.findById(tierId, {
+        includeDeleted: false,
+      }),
     ]);
 
     if (!customer) {
@@ -388,7 +415,9 @@ export class B2BService {
    */
   async createCustomerGroup(group: CustomerGroup): Promise<CustomerGroup> {
     // Verify tier exists
-    const tier = await this.customerTierRepository.findById(group.tierId);
+    const tier = await this.customerTierRepository.findById(group.tierId, {
+      includeDeleted: false,
+    });
 
     if (!tier) {
       throw new Error(`Tier with ID ${group.tierId} not found`);
@@ -419,8 +448,12 @@ export class B2BService {
   ): Promise<CustomerGroup> {
     // Verify customer and group exist
     const [customer, group] = await Promise.all([
-      this.b2bCustomerRepository.findById(customerId),
-      this.customerGroupRepository.findById(groupId),
+      this.b2bCustomerRepository.findById(customerId, {
+        includeDeleted: false,
+      }),
+      this.customerGroupRepository.findById(groupId, {
+        includeDeleted: false,
+      }),
     ]);
 
     if (!customer) {
@@ -544,28 +577,38 @@ export class B2BService {
     organizationId: string,
   ): Promise<B2BPriceList[]> {
     // Get the customer record
-    const customer = await this.b2bCustomerRepository.findById(customerId);
+    const customer = await this.b2bCustomerRepository.findById(customerId, {
+      includeDeleted: false,
+    });
 
     if (!customer) {
       throw new Error(`Customer with ID ${customerId} not found`);
     }
 
+    // Create base options object for tenant ID
+    const baseOptions = {
+      filter: {
+        organizationId,
+        isDeleted: false,
+      },
+    };
+
     // Build an array of price lists from various sources
     const priceListPromises: Promise<B2BPriceList[]>[] = [
       // 1. Direct customer price lists
-      this.priceListRepository.findByCustomerId(customerId, organizationId),
+      this.priceListRepository.findByCustomer(customerId, baseOptions),
 
       // 2. Customer group price lists
       ...(customer.customerGroupIds?.map((groupId) =>
-        this.priceListRepository.findByGroupId(groupId, organizationId),
+        this.priceListRepository.findByGroupId(groupId, baseOptions),
       ) || []),
 
       // 3. Customer tier price lists
       ...(customer.customerTierId
         ? [
-            this.priceListRepository.findByTierId(
+            this.priceListRepository.findByCustomerTier(
               customer.customerTierId,
-              organizationId,
+              baseOptions,
             ),
           ]
         : []),
@@ -575,13 +618,13 @@ export class B2BService {
     const contracts =
       await this.contractRepository.findActiveContractsByCustomer(
         customerId,
-        organizationId,
+        baseOptions,
       );
 
     // 4. Contract price lists
     const contractPromises = contracts.map((contract) =>
       contract.id
-        ? this.priceListRepository.findByContractId(contract.id, organizationId)
+        ? this.priceListRepository.findByContractId(contract.id, baseOptions)
         : [],
     );
 
@@ -625,6 +668,9 @@ export class B2BService {
     // Verify customer exists
     const customer = await this.b2bCustomerRepository.findById(
       contract.customerId,
+      {
+        includeDeleted: false,
+      },
     );
 
     if (!customer) {
@@ -632,9 +678,16 @@ export class B2BService {
     }
 
     // Check if contract with the same number already exists
+    const baseOptions = {
+      filter: {
+        organizationId: contract.organizationId,
+        isDeleted: false,
+      },
+    };
+    
     const existing = await this.contractRepository.findByContractNumber(
       contract.contractNumber,
-      contract.organizationId,
+      baseOptions,
     );
 
     if (existing) {
@@ -670,7 +723,9 @@ export class B2BService {
     reason?: string,
   ): Promise<CustomerContract> {
     // Verify contract exists
-    const contract = await this.contractRepository.findById(contractId);
+    const contract = await this.contractRepository.findById(contractId, {
+      includeDeleted: false,
+    });
 
     if (!contract) {
       throw new Error(`Contract with ID ${contractId} not found`);
@@ -694,9 +749,16 @@ export class B2BService {
     customerId: string,
     organizationId: string,
   ): Promise<CustomerContract[]> {
+    const baseOptions = {
+      filter: {
+        organizationId,
+        isDeleted: false,
+      },
+    };
+    
     return this.contractRepository.findActiveContractsByCustomer(
       customerId,
-      organizationId,
+      baseOptions,
     );
   }
 
@@ -710,9 +772,16 @@ export class B2BService {
     days: number,
     organizationId: string,
   ): Promise<CustomerContract[]> {
+    const baseOptions = {
+      filter: {
+        organizationId,
+        isDeleted: false,
+      },
+    };
+    
     return this.contractRepository.findContractsExpiringWithinDays(
       days,
-      organizationId,
+      baseOptions,
     );
   }
 
@@ -746,7 +815,9 @@ export class B2BService {
     }
 
     // Get the customer
-    const customer = await this.b2bCustomerRepository.findById(customerId);
+    const customer = await this.b2bCustomerRepository.findById(customerId, {
+      includeDeleted: false,
+    });
 
     if (!customer) {
       throw new Error(`Customer with ID ${customerId} not found`);
@@ -780,6 +851,9 @@ export class B2BService {
       // If a specific contract ID is provided, only check that contract
       const contract = await this.contractRepository.findById(
         options.contractId,
+        {
+          includeDeleted: false,
+        },
       );
 
       if (contract && contract.status === ContractStatus.ACTIVE) {
@@ -800,10 +874,17 @@ export class B2BService {
       }
     } else {
       // Otherwise, check all active contracts for this customer
+      const baseOptions = {
+        filter: {
+          organizationId,
+          isDeleted: false,
+        },
+      };
+      
       const activeContracts =
         await this.contractRepository.findActiveContractsByCustomer(
           customerId,
-          organizationId,
+          baseOptions,
         );
 
       // Find the contract with the best price for this product
@@ -963,6 +1044,9 @@ export class B2BService {
     if (priceSource === 'standard' && customer.customerTierId) {
       const tier = await this.customerTierRepository.findById(
         customer.customerTierId,
+        {
+          includeDeleted: false,
+        },
       );
 
       if (tier && tier.isActive && tier.discountPercentage) {
@@ -979,7 +1063,9 @@ export class B2BService {
       // Find customer groups with discounts
       const customerGroups = await Promise.all(
         customer.customerGroupIds.map((groupId) =>
-          this.customerGroupRepository.findById(groupId),
+          this.customerGroupRepository.findById(groupId, {
+            includeDeleted: false,
+          }),
         ),
       );
 
@@ -1129,6 +1215,9 @@ export class B2BService {
     // Verify customer exists
     const customer = await this.b2bCustomerRepository.findById(
       purchaseOrder.customerId,
+      {
+        includeDeleted: false,
+      },
     );
 
     if (!customer) {
@@ -1137,10 +1226,17 @@ export class B2BService {
 
     // Check if PO number is already used
     if (purchaseOrder.purchaseOrderNumber) {
+      const baseOptions = {
+        filter: {
+          organizationId: purchaseOrder.organizationId,
+          isDeleted: false,
+        },
+      };
+      
       const existing =
         await this.purchaseOrderRepository.findByPurchaseOrderNumber(
           purchaseOrder.purchaseOrderNumber,
-          purchaseOrder.organizationId,
+          baseOptions,
         );
 
       if (existing) {
@@ -1187,7 +1283,9 @@ export class B2BService {
     submitterName: string,
   ): Promise<PurchaseOrder> {
     // Verify purchase order exists
-    const order = await this.purchaseOrderRepository.findById(orderId);
+    const order = await this.purchaseOrderRepository.findById(orderId, {
+      includeDeleted: false,
+    });
 
     if (!order) {
       throw new Error(`Purchase order with ID ${orderId} not found`);
@@ -1206,7 +1304,9 @@ export class B2BService {
 
     if (workflowId) {
       const workflow =
-        await this.approvalWorkflowRepository.findById(workflowId);
+        await this.approvalWorkflowRepository.findById(workflowId, {
+          includeDeleted: false,
+        });
 
       if (workflow && workflow.steps.length > 0) {
         // Get the first step in the workflow
@@ -1260,7 +1360,9 @@ export class B2BService {
     comments?: string,
   ): Promise<PurchaseOrder> {
     // Verify purchase order exists
-    const order = await this.purchaseOrderRepository.findById(orderId);
+    const order = await this.purchaseOrderRepository.findById(orderId, {
+      includeDeleted: false,
+    });
 
     if (!order) {
       throw new Error(`Purchase order with ID ${orderId} not found`);
@@ -1280,6 +1382,9 @@ export class B2BService {
     if (order.approvalWorkflowId && order.currentApprovalStep !== undefined) {
       const workflow = await this.approvalWorkflowRepository.findById(
         order.approvalWorkflowId,
+        {
+          includeDeleted: false,
+        },
       );
 
       if (workflow) {
@@ -1334,7 +1439,14 @@ export class B2BService {
   async findOrdersPendingApproval(
     organizationId: string,
   ): Promise<PurchaseOrder[]> {
-    return this.purchaseOrderRepository.findPendingApproval(organizationId);
+    const baseOptions = {
+      filter: {
+        organizationId,
+        isDeleted: false,
+      },
+    };
+    
+    return this.purchaseOrderRepository.findPendingApproval(baseOptions);
   }
 
   /**
@@ -1347,9 +1459,16 @@ export class B2BService {
     approverId: string,
     organizationId: string,
   ): Promise<PurchaseOrder[]> {
+    const baseOptions = {
+      filter: {
+        organizationId,
+        isDeleted: false,
+      },
+    };
+    
     return this.purchaseOrderRepository.findPendingOrdersForApprover(
       approverId,
-      organizationId,
+      baseOptions,
     );
   }
 
@@ -1365,10 +1484,20 @@ export class B2BService {
     organizationId: string,
     status?: PurchaseOrderStatus,
   ): Promise<PurchaseOrder[]> {
+    const baseOptions = {
+      filter: {
+        organizationId,
+        isDeleted: false,
+      },
+    };
+    
+    if (status) {
+      baseOptions.filter.status = status;
+    }
+    
     return this.purchaseOrderRepository.findByCustomer(
       customerId,
-      organizationId,
-      status,
+      baseOptions,
     );
   }
 

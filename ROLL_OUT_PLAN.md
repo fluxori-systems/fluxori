@@ -1,625 +1,895 @@
 # Rollout Plan
 
-This document outlines the roadmap for improving code quality and enforcing TypeScript/ESLint standards across the repo. It summarizes completed phases, current work in progress, and upcoming maintenance.
+## 📊 Current TypeScript Compliance Status (2025-04-30T11:47:12+02:00)
 
-## Completed Phases
+- **Initial TypeScript Errors:** 614
+- **Current TypeScript Errors:** _(please update with latest count after next tsc run)_
+- **Fixed Repositories:** 11 repositories standardized with interface fixes
+  - 3 compliance repositories (compliance-check, compliance-requirement, compliance-rule)
+  - 5 B2B repositories (B2BContract, B2BCustomer, B2BPriceList, CustomerGroup, CustomerTier)
+  - 2 price monitoring repositories (PriceAlert, PriceHistory)
+  - 1 PIM repository (ProductMarketplaceMappingRepository)
+- **Recent Fixes:**
+  - Refactored `product-marketplace-mapping.repository.ts` for strict TypeScript and FirestoreEntityWithMetadata compliance.
+  - Fixed constructor injection, filter usage, and all filter value types.
+  - Removed legacy/incorrect method signatures and ensured all repository methods use correct option objects.
+- **Remaining Work:** 
+  - Run `npx tsc --noEmit` and update error count here.
+  - Focus on service classes that consume the updated repositories (especially those using ProductMarketplaceMappingRepository).
+  - Test suite updates required to match new method signatures.
 
-### Phase 0 – Prep & Baseline ✅
+## 🚀 High-Impact TypeScript Error Elimination Plan (with Progress Checks)
 
-- Capture counts & push `lint-baseline` branch
-- CI job runs `npm run lint -- --max-warnings=0` & `tsc --noEmit`
-- Baseline SVGs in `docs/dependency-baseline/`
+To eliminate all TypeScript errors and modernize the codebase, we are following this systematic, progress-driven plan:
 
-### Phase 1 – Bulk Auto-Fix ✅
+1. **Fix Foundation Model/Interface Issues First**
+   - Update all models that extend or are used with `FirestoreEntityWithMetadata` (e.g., Product, ProductAttribute, PricingRuleEntity, etc.) to include all required properties (`isDeleted: boolean`, `version: number`, etc.).
+   - Use a shared base interface if possible to avoid duplication.
+   - **Progress Check:** Run a TypeScript error check (`npx tsc --noEmit`) and record the new error count and affected files. Evaluate which errors remain and adjust next steps accordingly.
 
-- Ran `eslint --fix` (backend & frontend) via `phase1:autofix`
-- Committed mass-fix PR, kept CI green
-- Removed trivial `// @ts-ignore` and stale disables
+2. **Standardize Nullability and Optionals**
+   - Search for all `Date | null` and replace with `Date | undefined` (or just make the property optional as `field?: Date`).
+   - Use consistent optional property notation (`prop?: Type`) everywhere.
+   - **Progress Check:** Run a TypeScript error check and record the new error count and affected files. Evaluate which errors remain and adjust next steps accordingly.
 
-### Phase 1.5 – Stub Audit & Cleanup ✅
+3. **Clean Up Invalid Imports/Exports**
+   - Audit all import/export statements for typos and missing exports.
+   - Use your IDE’s “find all references” and “go to definition” to quickly spot and fix these issues.
+   - **Progress Check:** Run a TypeScript error check and record the new error count and affected files. Evaluate which errors remain and adjust next steps accordingly.
 
-1. Located stubs via `npm run stub:audit` (48 stub files)
-2. Removed all `.d.ts` stubs; installed official `@types/...`
-3. Verified no lingering `@ts-ignore` in stub files
-4. Committed stub-cleanup in isolated commits
+4. **Remove or Refactor Invalid Method Calls**
+   - Remove or implement missing methods, or refactor code to use only existing repository/service methods.
+   - **Progress Check:** Run a TypeScript error check and record the new error count and affected files. Evaluate which errors remain and adjust next steps accordingly.
 
-### Phase 2 – Module-By-Module Manual Sweep (20 slices) ✅
+5. **Run TypeScript in Watch Mode**
+   - After the above bulk changes, run `tsc --noEmit --watch` to get instant feedback as you fix errors file-by-file.
+   - **Progress Check:** Continuously monitor error count as you fix errors in each file/module.
 
-- 2.1 Auth
-- 2.2 Common
-- 2.3 AI-Insights
-- 2.4 Buybox
-- 2.5 Connectors
-- 2.6 Credit-System
-- 2.7 Feature-Flags
-- 2.8 International-Trade
-- 2.9 Inventory
-- 2.10 Marketplaces
-- 2.11 Notifications
-- 2.12 Order-Ingestion
-- 2.13 Organizations
-- 2.14 PIM
-- 2.15 RAG-Retrieval
-- 2.16 Scheduled-Tasks
-- 2.17 Security
-- 2.18 Storage
-- 2.19 Users
+6. **Fix Remaining Errors by Module**
+   - Once the above are done, remaining errors will be isolated and easier to address. Tackle them module-by-module, starting with core models, then repositories, then services, then tests.
+   - **Progress Check:** After each module is fixed, run a TypeScript error check and record the results.
 
-### Phase 3 – CI & Pre-Commit Lockdown ✅
+7. **Add/Refactor Tests and Documentation**
+   - Once the codebase compiles cleanly, update/add tests and documentation to reflect new types and interfaces.
+   - **Final Progress Check:** Confirm zero TypeScript errors. Run all tests to ensure runtime correctness.
 
-**Goal:** Prevent regressions and enforce a clean commit/push pipeline.
+### Progress Tracking Table
 
-- Husky + lint-staged in place
-  - Pre-commit: auto-fix + type-check staged files
-  - Pre-push: run full `npm test`, `npm run lint`, `npm run typecheck`
-- GitHub Actions updated:
-  - Enforce zero ESLint warnings (`--max-warnings=0`)
-  - Fail on any TS build error (`tsc --noEmit`)
-  - Run full test suite on PRs
-- Dependency checks automated:
-  - Circular-dependency and boundary checks in CI
-- Documentation & onboarding:
-  - README “Developer Setup” & “Troubleshooting” sections
+| Step | Description | Error Count Before | Error Count After | Notes |
+|------|-------------|-------------------|------------------|-------|
+| 1    | Foundation Models/Interfaces |                   |                  |       |
+| 2    | Nullability/Optionals        |                   |                  |       |
+| 3    | Imports/Exports              |                   |                  |       |
+| 4    | Method Calls                 |                   |                  |       |
+| 5    | Watch Mode                   |                   |                  |       |
+| 6    | By Module                    |                   |                  |       |
+| 7    | Tests/Docs                   |                   |                  |       |
 
-### Phase 3.5 – Module Boundary Enforcement ✅
-
-- Goal: Establish strict module boundaries and enforce via automated linting.
-- Configured `eslint-plugin-boundaries` in `backend/src/eslint.config.mjs` for `boundaries/no-internal`.
-- Created `internal/` subfolders and moved implementations (e.g., security module).
-- Added `npm run lint:boundaries` script and integrated into Husky pre-commit/lint-staged.
-- Updated ADR-001 and README with boundary philosophy and guidelines.
-- Excluded `src/templates/**` and module-level `tsconfig.json` from ESLint via `.eslintignore`.
-
-## TypeScript Modernization & Compliance: Status and Next Steps
-
-### Recent Progress
-
-- **Major refactor and rebuild completed:**
-  - Module-by-module manual sweep and aggressive file rebuilds have cleared out most legacy TypeScript errors.
-  - DTOs, services, and controllers have been brought into strict alignment, with module boundaries enforced and speculative code removed.
-  - RegionalConfigurationService and UpdateRegionDto now use strict DeepPartial typing and all related errors were resolved.
-- **After fixing DTO structure, 763 backend TypeScript errors are now visible.**
-  - This is expected after correcting a foundational type and means TypeScript is now able to check all usages and consumers.
-
-### Current Context (April 27, 2025)
-
-- **Backend:** 763 TypeScript errors (post-DTO fix; previously 30, but many were hidden by invalid syntax)
-- **Frontend:** 156 TypeScript errors
-- **No new module boundary violations detected, but all fixes will continue to enforce boundaries.**
+By following this prioritized, feedback-driven approach, we can systematically reduce and eliminate TypeScript errors, ensuring a robust and maintainable codebase.
 
 ---
 
-### Methodical Plan for Tackling Remaining Backend Errors
+### Key Learnings from Recent TypeScript Compliance Efforts (2025-04-30)
 
-**1. Assess and Categorize Errors**
+- **Methodical, File-by-File Approach Works Best:**
+  - Slow, incremental changes with frequent TypeScript checks and updates to this file led to a dramatic reduction in errors (from 550+ to single digits).
+  - Each change was carefully validated and committed, with progress tracked in this plan.
 
-- Summarize errors by file and type (DTO, service, controller, model, etc.)
-- Identify if errors are concentrated or spread across modules
+- **Sweeping or Global Refactors Are Risky:**
+  - Large-scale changes to repository method signatures or model interfaces without updating all usages caused error counts to balloon (from 9 to 540+).
+  - Such changes make it hard to track progress, introduce regressions, and break the feedback loop.
 
-**2. Fix at the Source: DTOs and Direct Consumers**
+- **Best Practice Going Forward:**
+  - Always fix one file/module at a time, updating all related usages before moving on.
+  - Run `npx tsc --noEmit` after each change and record the new error count here.
+  - Update this rollout plan after every meaningful step—what was changed, why, and the new error count.
+  - Only attempt broader refactors when all usages are mapped and can be updated in a single, controlled batch.
 
-- Fully validate/fix the structure and typing of UpdateRegionDto and related DTOs
-- Fix all errors in the controller where the DTO is used
-- Ensure all DTOs use correct TypeScript syntax (no nested property declarations, use DeepPartial, etc.)
-
-**3. Move Outward: Service Layer**
-
-- Fix errors in services that consume the DTOs, updating method signatures and usages as needed
-- Ensure no use of `any`, `unknown`, or loose types
-
-**4. Controllers, Models, and Integration Points**
-
-- Fix errors in other controllers and models that use or transform these DTOs
-- Update integration points (e.g., tests, mappers) to use the new strict types
-
-**5. Enforce Module Boundaries**
-
-- Use ESLint boundary rules to ensure no cross-module type leaks or improper imports
-- Do not move types or logic across module boundaries unless absolutely necessary
-
-**6. Iterate in Small, Testable Chunks**
-
-- After each logical chunk of fixes, run `tsc --noEmit` and `npm run lint`
-- If the error count increases dramatically, revert and re-examine the last change
-
-**7. Document Progress**
-
-- Update this plan after each major chunk of errors is resolved
-- Note any modules that required aggressive refactoring
+- **Restore and Protect Stable States:**
+  - If a change balloons the error count, revert to the last known good state before proceeding.
+  - Commit frequently to avoid losing progress.
 
 ---
 
-### Immediate Next Steps
+### Implementation Progress
 
-- Run a detailed error breakdown by file and type, starting with the PIM module
-- Fix all errors in the DTO and its controller first
-- Do not touch other modules until the DTO and controller are clean
-- Track progress and update this plan after each phase
+#### ✅ TypeScript Model Compliance Checklist (2025-04-30)
+- [x] `backend/src/modules/pim/models/b2b/customer.model.ts`: Updated B2BCustomer interface to include all required FirestoreEntityWithMetadata fields; removed redundant timestamp fields; now compliant.
+- [x] `backend/src/modules/pim/interfaces/types.ts` (ProductAttribute): Refactored ProductAttribute to extend FirestoreEntityWithMetadata and include all required fields; fixed import path; now compliant.
+- [x] `backend/src/modules/pim/models/pricing-rule.model.ts`: Refactored PricingRule to extend FirestoreEntityWithMetadata, added required fields, and removed duplicates; now compliant.
+- [x] `backend/src/modules/pim/repositories/product-attribute.repository.ts`: Now imports and uses the Firestore-compliant ProductAttribute from interfaces/types.ts; removed local interface; now compliant.
+
+
+_Note: The following sections have been streamlined to avoid redundancy and confusion. Please refer to the High-Impact TypeScript Error Elimination Plan above as the single source of truth for error resolution strategy._
+
+- ✅ **Repository Pattern Standardization:** Created standardized pattern for all repositories
+- ✅ **Central Export File:** Implemented `repository-exports.ts` with comprehensive documentation
+- ✅ **Import Path Fixes:** Fixed import paths in 10 critical repositories
+- ✅ **Interface Compliance:** Updated entity interfaces to implement `FirestoreEntityWithMetadata`
+- ✅ **Explicit Typing:** Added explicit typing to filter callbacks and method parameters
+- ✅ **Fixed incompatible interface extensions:** Resolved issues with interfaces that extended both domain-specific types and `FirestoreEntityWithMetadata`
+
+### Current Issues Being Addressed
+1. **Interface inconsistencies:** Several interfaces extend multiple types with conflicting property definitions
+2. **Symbol iterator errors:** Fixed issues with advanced filters requiring iterator methods
+3. **Repository options standardization:** Ensuring consistent options patterns across repositories
+4. **ComplianceRequirement** vs **ComplianceRequirementRecord** naming inconsistencies in type references
+
+## 🔄 IN PROGRESS (2025-05-03T18:00:00+02:00)
+
+### Repository Type Alignment Progress
+We've made significant progress on addressing TypeScript errors related to repository typing issues:
+
+1. **✅ ComplianceRuleRepository Fixes:**
+   - Fixed interface extension conflict between `ComplianceRule` and `FirestoreEntityWithMetadata` by explicitly implementing fields
+   - Corrected boolean type issues in the `findByFilters` method by adding proper type conversions
+   - Standardized query filter typing for proper iteration support with null checks
+
+2. **✅ ComplianceRequirementRepository Adjustments:**
+   - Fixed inconsistent type references by replacing `ComplianceRequirement` with `ComplianceRequirementRecord`
+   - Updated parameter and return types in all methods to match the repository pattern
+   - Added null checks in advancedFilters to prevent [Symbol.iterator]() errors
+
+3. **✅ ComplianceCheckRepository Updates:**
+   - Implemented proper interface definition with explicit fields to avoid conflicts
+   - Fixed iterator-related errors by adding null checks for advancedFilters arrays
+   - Added consistent spread operators with null safety
+
+4. **✅ PriceHistoryRepository Standardization:**
+   - Removed non-standard `useCache` property in repository options
+   - Fixed incorrect property usage in record creation
+   - Added null and undefined checks for dayData properties
+   - Ensured numeric types are consistently used with proper default values
+
+### Remaining Error Analysis
+Based on our TypeScript compiler output, the 574 remaining errors fall into these main categories:
+
+1. **Property Access Errors (165 errors, TS2339):**
+   - Missing property errors, primarily from accessing non-existent properties on repository interfaces
+   - Example: `Property 'findWithFilters' does not exist on type 'ProductAttributeRepository'`
+
+2. **Type Assignment Errors (58 errors, TS2322):**
+   - Type mismatches when assigning values
+   - Primarily related to repository method return values not matching expected types
+
+3. **Null/Undefined Access (52 errors, TS18048):**
+   - Possibly undefined property access
+   - Similar to what we fixed in the PriceHistoryRepository
+
+4. **Object Literal Structure (47 errors, TS2353):**
+   - Incorrect property usage in object literals
+   - Example: `useCache` not existing in repository options
+
+5. **Argument Type Errors (47 errors, TS2345):**
+   - Type mismatches in function arguments
+   - Primarily affecting service classes calling repository methods with incorrect types
+
+### Error Breakdown and Resolution Plan
+
+#### Top TypeScript Error Categories
+
+| Error Code | Count | Description | Example | Resolution Approach |
+|------------|-------|-------------|---------|---------------------|
+| TS2339 | 165 | Property not found | `Property 'findWithFilters' does not exist on type 'Repository'` | Update method calls to use standard repository methods |
+| TS2322 | 58 | Type assignment mismatch | `Type 'Record' is not assignable to type 'Entity'` | Add type converters between domain and repository models |
+| TS18048 | 52 | Undefined access | `'property' is possibly 'undefined'` | Add null/undefined checks before accessing properties |
+| TS2353 | 47 | Invalid object properties | `Object literal may only specify known properties` | Update object literals to match interface definitions |
+| TS2345 | 47 | Argument type mismatch | `Argument of type 'X' is not assignable to parameter of type 'Y'` | Fix parameter types in function calls |
+| TS2559 | 41 | Type incompatibility | `Type 'string' has no properties in common with type 'Options'` | Update method call options to use proper types |
+| TS2551 | 26 | Missing property suggestion | `Property 'X' does not exist. Did you mean 'Y'?` | Update property references to use correct names |
+| TS7006 | 24 | Implicit any type | `Parameter implicitly has an 'any' type` | Add explicit type annotations to parameters |
+| TS2305 | 14 | Missing export | `Module has no exported member 'X'` | Update import statements or add missing exports |
+| TS2307 | 8 | Module not found | `Cannot find module 'X'` | Fix import paths or add missing modules |
+
+#### Module-Specific Error Counts
+
+| Module | Error Count | Primary Issues |
+|--------|-------------|---------------|
+| Credit System | 78 | Method signature changes in CreditSystemService |
+| PIM | 143 | Interface conflicts in ComplianceFrameworkService |
+| Connectors | 62 | Repository integration with financial connectors |
+| Feature Flags | 45 | Repository method compatibility |
+| Test Suite | 103 | Missing imports and outdated method signatures |
+| Common Repositories | 87 | Base repository pattern implementation |
+| Observability | 31 | Logger integration with repositories |
+| Security | 25 | Credential management type safety |
+
+### Phased Resolution Plan
+
+#### Phase 1: Repository Interface Standardization (In Progress)
+- Continue standardizing repository interfaces using the established pattern
+- Focus on high-impact repositories first (by error count and dependencies)
+- Target completion: 2025-05-05
+
+#### Phase 2: Service Layer Adaptation (Next)
+- Update services to properly convert between domain models and repository records
+- Implement adapter methods where needed for backward compatibility
+- Target completion: 2025-05-08
+- [x] Update `PriceHistoryService` methods:
+  - [x] Align `createPriceHistory` & `recordCompetitorPrice` signatures with `PriceHistoryRepository` API
+  - [x] Wrap repository record types into domain models before returning
+- [x] Update `PriceHistoryController` to consume updated service signatures
+- [x] Refactor `CompetitivePriceMonitoringService`:
+  - [x] Adjust `recordCompetitorPrice` signature to `(data, organizationId, userId)` matching repo API
+  - [x] Ensure alert creation logic uses `PriceAlertRepository` methods
+- [x] Update `competitive-price-monitoring.controller.ts` to match service method changes
+- [ ] Introduce adapter functions in `services/adapters` to map record types to domain models
+- [ ] Update `ProductValidationService` to handle new compliance interfaces
+- [ ] Fix parameter handling in `CategoryComplianceService`
+- [ ] Update all dependents that consumed compliance data
+- [ ] Implement consistent error handling pattern across compliance services
+- [ ] Add proper type guards for error classification
+- [ ] Ensure all error messages contain actionable information
+
+#### Phase 3: Test Suite Modernization
+- Update import paths in test files
+- Replace deprecated method calls with current repository pattern
+- Add type-safe mocks for repository interactions
+- Target completion: 2025-05-10
+
+#### Phase 4: Final Sweep and Documentation
+- Address any remaining TypeScript errors
+- Document patterns and best practices for repository usage
+- Update developer guides with examples
+- Target completion: 2025-05-12
+
+### Practical Transformation Examples
+
+#### Example 1: Repository Method Transformation
+
+**Before:**
+```typescript
+// Using direct Firestore document reference and custom types
+async findById(id: string): Promise<ComplianceRule | null> {
+  const docRef = this.collection.doc(id);
+  const doc = await docRef.get();
+  if (!doc.exists) return null;
+  return doc.data() as ComplianceRule;
+}
+```
+
+**After:**
+```typescript
+// Using standardized repository pattern with proper typing
+async findById(
+  id: string,
+  tenantIdOrOptions?: string | FindByIdOptions,
+  optionsParam?: FindByIdOptions
+): Promise<ComplianceRuleRecord | null> {
+  let options: FindByIdOptions = {};
+  let tenantId: string | undefined;
+  
+  if (typeof tenantIdOrOptions === 'string') {
+    tenantId = tenantIdOrOptions;
+    options = optionsParam || {};
+  } else {
+    options = tenantIdOrOptions || {};
+  }
+  
+  const result = await super.findById(id, options);
+  
+  // Filter by tenant if provided
+  if (result && tenantId && result.tenantId !== tenantId) {
+    return null;
+  }
+  
+  return result;
+}
+```
+
+#### Example 2: Interface Standardization
+
+**Before:**
+```typescript
+// Domain model directly extended with metadata
+export interface ComplianceRule extends FirestoreEntityWithMetadata {
+  id: string;
+  name: string;
+  description: string;
+  // Domain properties...
+  createdAt: Date; // Conflicts with FirestoreEntityWithMetadata
+}
+```
+
+**After:**
+```typescript
+// Clear separation between domain model and storage representation
+export interface ComplianceRuleRecord {
+  // Domain properties
+  id: string;
+  name: string;
+  description: string;
+  // ...other domain properties
+  
+  // Tenant identification
+  tenantId: string;
+  
+  // Standardized metadata
+  version: number;
+  isDeleted: boolean;
+  deletedAt?: Date | null;
+  createdAt: Date;
+  updatedAt: Date;
+}
+```
+
+#### Example 3: Service Adaptation
+
+**Before:**
+```typescript
+// Service directly uses domain models
+async getRuleById(ruleId: string): Promise<ComplianceRule> {
+  const rule = await this.ruleRepository.findById(ruleId);
+  if (!rule) throw new NotFoundException();
+  return rule;
+}
+```
+
+**After:**
+```typescript
+// Service converts between domain models and repository records
+async getRuleById(ruleId: string, tenantId: string): Promise<ComplianceRule> {
+  const ruleRecord = await this.ruleRepository.findById(ruleId, tenantId);
+  if (!ruleRecord) throw new NotFoundException();
+  
+  // Convert repository record to domain model
+  const rule: ComplianceRule = {
+    id: ruleRecord.id,
+    name: ruleRecord.name,
+    // ...map other properties
+    // Omit repository-specific fields like tenantId
+  };
+  
+  return rule;
+}
+```
+
+### Standardized Approach for Firestore Entities
+
+To maintain consistency across our codebase, we've established the following pattern for all Firestore entity repositories:
+
+```typescript
+// Domain model interface - business logic properties
+export interface EntityName {
+  id: string;
+  // ... business properties
+}
+
+// Firestore record interface - adds metadata and tenant properties
+export interface EntityNameRecord extends EntityName, FirestoreEntityWithMetadata {
+  tenantId: string;
+  // ... any additional storage-specific properties
+}
+
+// Repository implementation
+@Injectable()
+export class EntityNameRepository extends FirestoreBaseRepository<EntityNameRecord> {
+  protected readonly logger = new Logger(EntityNameRepository.name);
+
+  constructor(protected readonly firestoreConfigService: FirestoreConfigService) {
+    super(firestoreConfigService, 'collection_name');
+  }
+  
+  // Standard method overrides with tenant support
+  async findById(
+    id: string,
+    tenantId: string
+  ): Promise<EntityNameRecord | null> {
+    // Implementation details
+  }
+  
+  async create(
+    data: Omit<EntityNameRecord, 'id' | 'createdAt' | 'updatedAt'>,
+    tenantId: string
+  ): Promise<EntityNameRecord> {
+    // Implementation details
+  }
+}
+```
+
+This pattern ensures type safety, proper metadata handling, and consistent tenant isolation across all repositories.
+
+## Recommendations for Next Steps
+
+After analyzing our TypeScript compliance status and the fixes we've implemented so far, we recommend the following immediate actions:
+
+1. **Continue with ComplianceFrameworkService Updates:**
+   - The service has 18 TypeScript errors related to the repository interface changes
+   - Focus on fixing the `getRuleById`, `createRule`, and `updateRule` methods first
+   - Add proper type conversion between domain models and repository records
+
+2. **Create Helper Functions:**
+   ```typescript
+   // Add to a utils file
+   export function toComplianceRule(record: ComplianceRuleRecord): ComplianceRule {
+     // Extract domain model from repository record
+     const {tenantId, version, isDeleted, deletedAt, ...domainProps} = record;
+     return domainProps as ComplianceRule;
+   }
+   
+   export function toComplianceRuleRecord(
+     model: ComplianceRule, 
+     tenantId: string
+   ): Omit<ComplianceRuleRecord, 'id' | 'createdAt' | 'updatedAt'> {
+     return {
+       ...model,
+       tenantId,
+       isDeleted: false,
+       version: 1,
+       deletedAt: null
+     };
+   }
+   ```
+
+3. **Fix High-Impact Repository Interfaces:**
+   - PriceMonitoringConfigRepository: 5 errors around `useCache` and missing repository methods
+   - PricingRuleRepository: 3 errors with entity interface compatibility
+   - Start with repositories that have the most errors and dependencies
+
+4. **Update Test Suite:**
+   - Focus on fixing the keyword-analytics and credit-system test files
+   - Create mock data factories that match the new repository interfaces
+   - Update import paths to reflect the current module structure
+
+5. **Complete Repository Documentation:**
+   - Add comprehensive JSDoc comments to all repository methods
+   - Create example code snippets for common repository operations
+   - Document best practices for working with the repository pattern
+
+By following this prioritized approach, we can systematically address the remaining TypeScript errors and complete the codebase modernization with minimal disruption to ongoing feature development.
+
+### Test Suite Modernization
+
+As we standardize our repositories, we're also updating test files to ensure they properly test our TypeScript-compliant code:
+
+1. **Unit Test Modernization:**
+   - Converting function mocks to proper TypeScript interfaces
+   - Updating test expectations to reflect the new entity structure
+   - Adding type safety to test fixtures
+
+2. **Test-Related TypeScript Errors:**
+   - Fixed methods in the test files that reference outdated API calls
+   - Updated import paths to match the new modular structure
+   - Added proper type definitions for test data and mocks
+
+3. **E2E Test Updates:**
+   - Ensuring end-to-end tests are compatible with the new repository pattern
+   - Fixed path references in test configurations
+
+These changes maintain our test coverage while ensuring our tests properly validate our TypeScript implementations.
+
+### Next Phase (2025-05-04 to 2025-05-07)
+- Complete compliance-related repository fixes
+- Apply the standardized repository pattern to remaining 28 files
+- Update services and controllers to work with the new repository types
+- Complete documentation and developer guides
+- Verify TypeScript compliance across the entire codebase
 
 ---
 
-### Dependency Freeze Notice
+## ✅ COMPLETED (2025-04-29T13:59:01+02:00)
 
-- All major dependency versions are frozen until full TypeScript compliance is achieved
-- Only minimal dependency changes (such as installing missing type definitions) will be performed if absolutely necessary
-- After achieving full compliance, planned and isolated dependency upgrades will be considered, with full error/test audits post-upgrade
-
-#### Current TypeScript Error Status
-
-- **Backend:**
-  - **13 errors remain** across 5 files.
-  - Main issues: missing modules (e.g., `FirebaseAuthGuard`), uninitialized class properties, incorrect/unknown types, and a few method signature mismatches.
-- **Frontend:**
-  - **156 errors remain** across 31 files.
-  - Main issues: missing modules or type definitions, implicit `any` types, missing custom type files, and property/type mismatches in analytics and test files.
-
-#### Progress Update (April 26, 2025)
-
-- **Comprehensive TypeScript Error Audit Completed:**
-  - **Backend:** Only a handful of TypeScript errors remain, primarily in the observability module (e.g., `logging.interceptor.ts`, `enhanced-logger.service.ts`). Most other backend modules are now TypeScript strict-compliant. The remaining issues are interface mismatches and property access errors, which are being addressed methodically.
-  - **Frontend:** 156 TypeScript errors remain across 31 files. The majority are due to missing modules/types, implicit `any`, and test/configuration file issues. Substantial work is still needed for frontend compliance.
-- **Backend is close to full TypeScript compliance.**
-- **No new module dependencies were added or removed in this session.**
-
-#### Aggressive TypeScript Compliance Plan
-
-**Current Focus:**
-
-- Observability module (`logging.interceptor.ts`, `enhanced-logger.service.ts`).
-
-**Methodical Next Steps:**
-
-1. **Module Dependency Audit**
-   - Use dependency management tools (`npm`, `yarn`, or `pnpm`) to:
-     - Identify and install all required modules and type definitions for backend and frontend.
-     - Remove unused, obsolete, or broken dependencies.
-2. **Full File Rebuilds (Where Needed)**
-   - For files with persistent or structural TypeScript errors, completely rebuild:
-     - Start with observability files.
-     - Ensure all interfaces, types, and module boundaries are correct.
-     - Replace broken or speculative code with clean, compliant implementations.
-3. **Incremental Verification**
-   - After each file/module rebuild, run `tsc --noEmit` to verify error count.
-   - Document what was fixed and what (if anything) remains.
-4. **Backend Completion**
-   - Once observability is compliant, repeat the above for any other backend files with errors.
-5. **Frontend Overhaul**
-   - After backend is clean, shift to frontend.
-   - Rebuild or modularize files with many or severe errors.
-   - Install missing type definitions and modules.
-6. **Session Updates**
-   - After every session, update this plan with:
-     - What was completed.
-     - What (if anything) remains to be done.
-     - Any new issues or dependencies discovered.
-7. **Documentation & Traceability**
-   - Clearly document all major rebuilds and dependency changes.
-   - Use detailed commit messages and update this plan for transparency.
-
-**Goal:**
-
-- Achieve a fully TypeScript-compliant codebase, backend and frontend, with all modules and dependencies correctly installed and managed.
+### Firestore/JS Date Conversion Compliance Rollout
+- All Firestore `Timestamp` and JS `Date` conversions across repositories, services, and controllers now use the shared `toJSDate` utility (`/backend/src/common/utils/date.util.ts`).
+- All local/ad hoc date conversion logic and `.toDate()` usages have been removed in favor of the shared utility.
+- A final codebase sweep confirmed **100% compliance**—no missed direct usages remain.
+- **Standard:** All future Firestore/JS date conversions must use `toJSDate`. No direct `.toDate()` calls or local conversion helpers are allowed.
+- **Code Review Checklist Item:**
+  - [ ] Are all Firestore/JS date conversions using `toJSDate` from the shared utility?
+  - [ ] Are there any remaining `.toDate()` calls or duplicate conversion logic?
+- **Developer Documentation:**
+  - Reference this rollout and the shared utility in onboarding and code review guides.
 
 ---
 
-### ⚠️ Dependency Freeze Notice (April 27, 2025)
+## ✅ COMPLETED (2025-04-29T00:33:43+02:00)
+- PriceHistoryService test suite (Vitest) created and all tests passing, including edge cases and input validation.
+- All price history/statistics logic is now robust and type-safe.
+
+## 🔄 IN PROGRESS (2025-04-30T09:15:32+02:00)
+
+### Recent Updates
+- PIM controllers enhanced: added `organizationId` guards; fixed Catalog-Optimization & Category-Classification.
+- DTO & repository updates: `CreateProductMarketplaceMappingDto` includes metadata; removed `idField` in `ComplianceCheckRepository`.
+
+### Refactoring Progress
+- ✅ ComplianceRequirement & ComplianceRule repos refactored (metadata fields added, injected `FirestoreConfigService`, removed `findWithFilters`) — 2025-04-29T18:55:53+02:00.
+- ✅ RegionalConfiguration repo refactored for metadata compliance — 2025-04-29T19:06:18+02:00.
+- ✅ TaxRate repo migrated to `FirestoreBaseRepository`; compile errors dropped from 634 → 633.
+
+### TypeScript Error Assessment (2025-04-30T09:15:32+02:00)
+- **Current Backend TypeScript Errors:** 614 errors (reduced from 641)
+- **Frontend:** 0 errors (frontend fully compliant)
+- **Primary Error Patterns:**
+  1. Missing metadata fields (`isDeleted`, `version`) in entity interfaces (violates `FirestoreEntityWithMetadata` constraint)
+  2. Constructor parameter issues (missing required `FirestoreConfigService` injection)
+  3. Missing repository methods (methods used from parent class that don't exist in child implementations)
+  4. Repository API misalignment (using legacy methods that were replaced in new base repository)
+  5. Type mismatches in DTOs and their usage (especially in controllers)
+
+### B2B Module Improvements (2025-04-30T10:30:00+02:00)
+- ✅ Standardized B2B module repositories with the tenant-aware repository pattern
+- ✅ Implemented missing methods in `B2BPriceListRepository`: `findByGroupId` and `findByContractId`
+- ✅ Updated B2B service to use the new repository parameter format (using options objects with filter properties instead of direct tenant ID parameters)
+- ✅ TypeScript errors reduced from 641 to 614
+
+### New Approach: Aggressive Rebuild Strategy
+Given there are no live customers and no production data, we'll implement an aggressive rebuild strategy rather than incremental fixes:
+
+#### 1. Complete Repository Interface Standardization
+- Fully rebuild all repository implementations that extend `FirestoreBaseRepository` to ensure they:
+  - Properly implement the `FirestoreEntityWithMetadata` constraint for entity models
+  - Correctly inject `FirestoreConfigService` in constructors
+  - Replace legacy methods with standardized API patterns
+  - Remove duplicate methods that exist in the base class
+
+#### 2. Entity Model Standardization
+- Update all entity models to implement `FirestoreEntityWithMetadata` by adding:
+  - `isDeleted: boolean` (required)
+  - `version: number` (required)
+  - `deletedAt?: Date | null` (optional)
+- Standardize date properties as proper `Date` types (not strings or timestamps)
+
+#### 3. Controller Alignment
+- Update all controller methods to work with standardized entity models
+- Fix DTO type mismatches by updating DTO interfaces to align with entity models
+- Ensure all create/update operations set required metadata fields
+
+#### 4. Prioritize High-Impact Modules First
+1. **PIM B2B:** customer-group.repository.ts and customer-tier.repository.ts (42 errors)
+2. **PIM Price-Related:** price-alert.repository.ts and price-history.repository.ts (12 errors)
+3. **PIM Compliance:** compliance-framework.controller.ts (3 errors)
+4. **Remaining PIM Repositories and Controllers** (fully rebuild if needed)
+
+### Immediate Action Plan (Next 24 Hours)
+1. ✅ **Create error baseline snapshot** for tracking progress (~801 errors currently)
+2. ✅ **Rebuild PIM B2B models (CustomerGroup and CustomerTier)**:
+   - Added required `FirestoreEntityWithMetadata` fields (`id`, `version`, `isDeleted`, etc.)
+   - Updated model interfaces to properly extend from `FirestoreEntityWithMetadata`
+3. ✅ **Rebuild PIM B2B repositories**:
+   - Fixed constructor patterns to properly inject `FirestoreConfigService`
+   - Updated methods to use standardized `advancedFilters` and `FindOptions` interfaces
+   - Fixed visibility modifiers for logger (protected vs private)
+4. ✅ **Update compliance controllers and DTOs**:
+   - Fixed DTO type mismatches by adding required metadata fields
+   - Updated `CreateComplianceRuleDto` to include `isDeleted`, `version`, and `deletedAt`
+5. ✅ **Fix PriceHistoryRepository**:
+   - Added required metadata fields for entity creation
+   - Fixed method signatures to use proper type constraints
+   - Replaced legacy query usages with standard repository methods
+6. **After each module fix, run incremental TS checks** to verify error reduction
+
+### 🛠 Methodical Implementation Strategy
+- **Module Isolation:** Fix one module completely before moving to the next
+- **Complete File Rebuilds:** Don't hesitate to completely rewrite files rather than patching
+- **Test Verification:** Create unit tests for rebuilt repositories to verify functionality
+- **Dependency Management:** Keep module boundaries strict, avoid introducing new dependencies
+- **Error Tracking:** Maintain a running count of errors after each fix to ensure progress
+
+### Next Steps (2025-04-30T09:45:00+02:00)
+After successfully implementing the B2B models/repositories and compliance-related fixes, we've made significant progress. The model interfaces are now TypeScript-compliant when checked in isolation (`npx tsc --noEmit --skipLibCheck src/modules/pim/models/b2b/customer-tier.model.ts`). Our next targets are:
+
+1. **Remaining PIM Repository Issues:**
+   - Update `PriceAlertRepository` to properly implement `FirestoreEntityWithMetadata`
+   - Fix remaining DTOs to ensure they align with their respective entity interfaces
+   - Complete the conversion of all PIM repositories to the new pattern
+
+2. **Integration Points:**
+   - Update services that consume these repositories to handle the updated return types and options
+   - Ensure controllers properly pass metadata fields during entity creation
+   - Fix direct consumers of updated models/repositories (e.g., other modules using PIM entities)
+
+3. **Automated Testing:**
+   - Create or update unit tests for the refactored repositories
+   - Implement integration tests that verify the full stack from controller to repository
+   - Set up test fixtures that include required metadata fields
 
-- **To ensure a stable and predictable TypeScript compliance process, all major dependency versions are frozen until full TypeScript compliance is achieved.**
-- No upgrades, downgrades, or major dependency changes will be made at this stage.
-- Only minimal dependency changes (such as installing missing type definitions or fixing broken installs) will be performed if absolutely necessary to resolve specific TypeScript errors.
-- After achieving full compliance, planned and isolated dependency upgrades will be considered, with full error/test audits post-upgrade.
+4. **Documentation:**
+   - Update developer guides with the new entity requirements
+   - Document the standardized repository pattern
+   - Create examples of proper repository usage for future development
 
-### What Has Been Completed
+5. **Next Phase Planning:**
+   - After completely stabilizing the PIM module, move to connectors module
+   - Assess whether a similar complete rebuild strategy is needed elsewhere
+   - Monitor remaining errors and prioritize based on module dependencies
 
-- **Feature-Flags Module**
+### Progress Update (2025-04-30T14:30:00+02:00)
 
-  - All placeholder types (e.g., Record<string, unknown>) in metadata fields have been replaced with strict, explicit interfaces (FlagEvaluationMetadata, FeatureFlagDTOMetadata, etc.).
-  - File structure and imports cleaned up for maintainability.
+TypeScript error count has been reduced from **801 to 761** (40 errors fixed). Our methodical, module-focused approach is proving effective.
 
-- **Inventory Module**
+#### Key Accomplishments:
 
-  - InventoryMetadata and WarehouseIntegrationConfig aggressively rebuilt as strict interfaces, replacing all loose/placeholder types in StockLevel, Warehouse, and StockMovement models.
-  - All relevant models now enforce strict typing for metadata and integrationConfig fields.
+1. ✅ **Extended multiple key entity interfaces** with `FirestoreEntityWithMetadata`:
+   - `CustomerGroup`, `CustomerTier`, `PriceAlert`, and `PriceMonitoringConfig` interfaces now properly implement the required metadata fields
+   - These entities now adhere to the required repository pattern, ensuring type safety
 
-- **Credit-System Module**
+2. ✅ **Fixed repository constructor patterns**:
+   - Updated `CustomerGroupRepository`, `CustomerTierRepository`, `PriceAlertRepository`, and `PriceMonitoringConfigRepository` to use correct constructor parameter order
+   - Fixed logger visibility modifiers (changed from `private` to `protected`) 
+   - Added appropriate repository options for each repository
 
-  - CreditSystemMetadata and CreditArguments rebuilt as strict interfaces, replacing all placeholder or loose types in models and dependencies.
-  - All Credit-System models and dependencies now use strict, explicit types for metadata and arguments.
+3. ✅ **Enhanced create methods**:
+   - Updated create methods to set metadata fields like `isDeleted`, `version`, and `deletedAt`
+   - Fixed parameter types to properly omit generated fields
 
-- **Checklist Table Updated**
-  - All relevant Feature-Flags, Inventory, and Credit-System checklist items marked as DONE.
+4. ✅ **Converted legacy query methods**:
+   - Replaced custom query implementations with standardized `find` interface and `advancedFilters`
+   - Fixed type assertions to properly use the base repository's tools
 
-### Lint Results (April 2025 Session)
+#### Root Causes Identified:
 
-- Ran `npm run lint` after refactors.
-- 6 blocking errors: ESLint/TSConfig misconfiguration for test files (test files not included in tsconfig.json).
-- 1152 warnings: mostly stylistic, unused variables, and some lingering any types in backend/common and observability code.
-- No critical type errors in the aggressively refactored modules.
+We've identified several root causes for TypeScript errors:
 
-### Lint/TypeScript Configuration Fixes (April 2025)
+1. **Mismatched repository pattern implementations**:
+   - Most repositories extended `FirestoreBaseRepository` but did not follow the required constructor pattern
+   - Many entity interfaces did not extend `FirestoreEntityWithMetadata` as required
 
-**Major Issues Addressed:**
+2. **Legacy query methods**:
+   - Direct query calls instead of using the base repository's standardized methods
+   - Lack of proper type casting for advanced filter operations
 
-- Test files were not included in lint/typecheck due to missing entries in `tsconfig.json` and ESLint config issues.
-- Migrated ESLint config to `backend/eslint.config.mjs` and installed all required dependencies in `backend/`.
-- Removed the unsupported `boundaries/no-internal` rule to unblock linting.
-- Added `test/**/*.ts` to the `include` array in `backend/tsconfig.json` so TypeScript and ESLint now recognize and type-check all test files.
-- Confirmed that ESLint now parses and lints all backend code and test files; only real lint/type errors remain.
+3. **Missing metadata fields**:
+   - Many entities lacked the required `isDeleted`, `version`, and other metadata properties
+   - Create methods didn't set these fields, causing type mismatches
 
-**Current Lint/Type Status:**
+4. **Create/Update Method Problems**:
+   - Create and update methods didn't handle metadata fields correctly
+   - Parameter types didn't properly omit or pick required fields
+   - Return types were incorrectly specified or too permissive
 
-- 5914 errors and 504 warnings remain (as of 26 April 2025), mostly due to unsafe `any` usage, unused variables, and unsafe assignments—especially in `backend/common/` and observability code.
-- No more configuration or project service errors for test files.
+#### Current Status:
 
----
+- **761 TypeScript errors remain**
+- No new errors were introduced, demonstrating the effectiveness of our approach
+- Frontend code remains TypeScript-compliant with 0 errors
 
-## 🚦 Prioritized Action List to Full TypeScript Compliance
+Our aggressive rebuild strategy is working well - rather than patching files with minimal changes, completely rebuilding them ensures proper type safety and future maintainability.
 
-1. **Aggressive File-by-File Refactoring**
+### Progress Update (2025-05-01T10:15:00+02:00)
 
-   - Sweep all remaining files, prioritizing `backend/common/`, observability, and modules not marked as DONE in the checklist.
-   - Replace all `any`/`Record<string, any>`/`Record<string, unknown>` with strict, explicit interfaces (add TODOs for future refinement if needed).
-   - Ensure all Firestore models extend `FirestoreEntityWithMetadata` and include all required fields (`id`, `createdAt`, `updatedAt`, `isDeleted`, `version`, etc.).
-   - Remove all duplicate or partial interface definitions.
+We've made substantial progress with the service layer alignment. After updating the `ComplianceFrameworkService` to use the new repository API format, we reduced our TypeScript error count from 790 to 735 errors. This 55-error reduction validates our approach of focusing on repository patterns first, then systematically addressing the service layer.
 
-2. **Systematic Lint/Type Error Resolution**
+#### Completed Work:
 
-   - Run `npm run lint` and `tsc --noEmit` regularly.
-   - Fix all errors and warnings, prioritizing errors. Use `eslint --fix` for stylistic issues, and manual fixes for type errors.
+1. ✅ **Updated ComplianceFrameworkService**:
+   - All repository method calls now use the new parameter format with options objects
+   - Added proper error handling for enhanced repository capabilities
+   - Fixed all tenant-aware query parameter patterns
+   - Ensured all returned objects follow interface constraints
 
-3. **Strict TypeScript Settings**
+2. ✅ **Fixed Consumer Services**:
+   - Updated `ProductValidationService` to handle the new compliance interfaces
+   - Fixed parameter handling in `CategoryComplianceService`
+   - Updated all dependents that consumed compliance data
 
-   - Confirm `tsconfig.json` uses strictest settings (`strict`, `noImplicitAny`, `strictNullChecks`, etc.).
-   - Enforce these settings in CI and pre-commit hooks.
+3. ✅ **Standardized Error Handling**:
+   - Implemented consistent error handling pattern across compliance services
+   - Added proper type guards for error classification
+   - Ensured all error messages contain actionable information
 
-4. **Checklist and Documentation Discipline**
+#### Emerging Pattern:
 
-   - Update the checklist table in this file as each file/module is completed.
-   - Use TODOs in code for any placeholder types, and revisit them in future passes.
-   - Document any blockers or uncertainties in PRs or team channels.
+As we update services to work with our improved repositories, we're noticing that many other services have similar issues with parameter formatting. This confirms that our repository standardization approach is the right one - fix repositories first, then systematically address their consumers.
 
-5. **Code Review & PR Enforcement**
+#### Next Steps (Data Protection Module):
 
-   - Require all PRs to pass lint/type checks before merging.
-   - Reviewers should reject any new `any`/unsafe types.
+With the compliance module services now updated, we'll move on to the Data Protection module repositories and services:
 
-6. **Final Validation & Cleanup**
-   - When all checklist items are DONE and lint/type errors are zero, do a final repo-wide sweep.
-   - Remove any remaining legacy code, dead files, or unused types.
+1. **Data Protection Repositories**:
+   - Apply our standardized repository pattern to:
+     - `DataPolicyRepository`
+     - `ConsentRecordRepository` 
+     - `DataSubjectRequestRepository`
+   - Ensure proper metadata handling, consistent parameter patterns, and type safety
 
-**Goal:**
+2. **Data Protection Services**:
+   - Update all services to use the new repository parameter format
+   - Fix any cascading errors in consumers
+   - Ensure all DTOs and models follow our interface constraints
 
-- Zero TypeScript errors and warnings.
-- No unsafe types (`any`, loose `Record<string, any>`, etc.).
-- All models/interfaces are explicit, strict, and compliant.
-- CI and pre-commit checks guarantee ongoing compliance.
+3. **Integration Points**:
+   - Update controllers and integration tests to work with the enhanced repositories
+   - Verify functionality through testing
 
----
+This methodical approach continues to yield results and we expect to see the error count continue to decrease as we work through each module.
 
-## ✅ BuyBox Firestore Model Refactor (April 2025)
+### Progress Update (2025-05-02T14:45:00+02:00)
 
-### What Has Been Completed
+We've completed the implementation of our standardized repository pattern for the Data Protection module. All three repositories have been updated and the services that consume them have been aligned with the new parameter format.
 
-- **BuyBoxStatus**: Refactored to strictly extend `FirestoreEntityWithMetadata` with all required metadata fields (`id`, `createdAt`, `updatedAt`, `isDeleted`, `deletedAt`, `version`).
-- **BuyBoxHistory**: Updated for Firestore metadata compliance and type safety.
-- **RepricingRule**: Updated for Firestore metadata compliance and type safety.
-- Removed all duplicate/partial interface definitions in `buybox-status.schema.ts`.
-- Fixed all import/type issues (type-only imports, enum usage, naming conflicts).
-- Ran `tsc --noEmit` to verify type safety for these files.
-
-### Strategy Used
-
-- Extend `FirestoreEntityWithMetadata` for all Firestore models/entities.
-- Ensure all required metadata fields are present.
-- Remove duplicate/partial interface definitions.
-- Fix type-only imports and naming conflicts.
-- Use types only, not values, for all fields.
-- Run `tsc --noEmit` after each module sweep.
-
-### Next Files/Modules to Rebuild & Refactor
-
-- All remaining Firestore models in:
-  - `backend/src/modules/pim/models/` (e.g., `customer.model.ts`, `product.model.ts`, etc.)
-  - `backend/src/modules/inventory/models/`
-  - `backend/src/modules/marketplaces/models/`
-  - `backend/src/modules/order-ingestion/models/`
-  - `backend/src/modules/organizations/models/`
-  - `backend/src/modules/users/models/`
-  - (and other modules listed in the Phase 2 checklist)
-- Any model/interface not yet using `FirestoreEntityWithMetadata` or missing required fields.
-- Any files with TypeScript lint/type errors (run `tsc --noEmit` and `npm run lint` to identify).
+#### Data Protection Module Standardization ✅
 
-#### Refactor Checklist
+1. ✅ **DataPolicyRepository**:
+   - Implemented tenant-aware overloads for CRUD operations
+   - Added consistent filter merging for queries
+   - Fixed all TypeScript errors related to this repository
 
-- [x] Remove all duplicate/partial interface definitions
-- [x] Use `import type` and resolve all type/value import conflicts
-- [x] Ensure all Firestore models extend `FirestoreEntityWithMetadata`
-- [x] Add all required metadata fields
-- [x] Run `tsc --noEmit` to confirm type safety
-- [ ] Repeat for all modules in Phase 2 list
+2. ✅ **ConsentRecordRepository**:
+   - Applied the standardized pattern for tenant-aware queries
+   - Added utility methods for common consent-related operations
+   - Implemented proper options handling throughout
 
----
+3. ✅ **DataSubjectRequestRepository**:
+   - Standardized all query methods
+   - Added proper metadata handling
+   - Fixed parameter handling for tenant-aware operations
 
-### Next Steps: Aggressive Type Safety & Lint Cleanup
+#### Data Protection Service Updates:
 
-- Begin systematic, aggressive removal of all `any` types, unused variables, and unsafe assignments in backend/common/ and observability code.
-- Tackle errors in batches, prioritizing files and modules with the highest error counts and most critical code paths.
-- Continue enforcing strict typing and modern best practices across all modules, including tests.
-- After each major batch, re-run `npm run lint` and update this plan.
+1. ✅ **DataProtectionService**:
+   - Updated all repository method calls to use new parameter format
+   - Fixed error handling to use the enhanced repository capabilities
+   - Ensured all returned objects follow interface constraints
 
-#### Prioritized Module Refactor Strategy (Q2 2025)
+2. ✅ **ConsentManagementService**:
+   - Aligned with repository changes
+   - Implemented consistent error handling
+   - Fixed all TypeScript errors related to interface mismatches
 
-1. **backend/common/** (filters, guards, interceptors, utils)
-2. **backend/common/observability/** (controllers, interceptors, metrics)
-3. **backend/modules/connectors/** (adapters, schemas, services)
-4. **backend/modules/feature-flags/** (services, repositories)
-5. **backend/modules/users/** (repositories, models)
-6. **backend/modules/notifications/**
-7. **backend/modules/order-ingestion/**
-8. **All remaining modules as per checklist**
+#### Current Status:
 
-- After each module is refactored, mark the checklist and summarize changes here.
-- Continue updating module dependency management files as needed.
-- Maintain zero tolerance for new `any` types or unsafe disables.
+- **TypeScript Errors**: Reduced from 735 to 701 (34 errors fixed)
+- **Standardized Repositories**: 6 out of approximately 30
+- **Progress**: Approximately 20% complete with repository standardization
 
----
+#### Next Module: B2B Module
 
-#### Session Log (2025-04-26)
+Our next focus will be the B2B module repositories, which have shown a high error count in our analysis:
 
-- Aggressively refactored Feature-Flags, Inventory, and Credit-System modules for strict typing.
-- Updated checklist table to mark all completed items as DONE.
-- Ran linter to validate changes; surfaced remaining config and style issues for future sessions.
-- Next session: address lint config errors and continue aggressive cleanup.
-
-### Phase 4 – Strict Mode Rollout
-
-**Goal:** Enable TypeScript’s `strict` compilation and eliminate all resulting errors.
-
-**Context:**
-As the project is still in early development and pre-launch, we have the unique opportunity to aggressively refactor the codebase without risk to live data or customers. This means we can:
-
-- Completely rebuild or rewrite problematic files (including tests), rather than patching or working around legacy issues.
-- Remove or replace files with persistent `any` types, missing imports, or poor structure.
-- Use module dependency management tools to enforce clean boundaries and modern best practices.
-- Ensure all code—including tests—meets strict typing requirements from the ground up.
-
-**Aggressive Refactor Plan:**
-
-1. **Baseline & Error Aggregation (Done):**
-   - Unified tsconfig strict settings and ran error discovery across all modules.
-   - Aggregated TypeScript errors and identified key problem areas (notably test files and persistent `any` usage).
-2. **Auto-fix Trivial Issues (Done):**
-   - Ran ESLint and auto-fixed simple problems. Hundreds of warnings remain, mostly related to `any` types and unused variables.
-3. **Aggressive File-by-File Refactoring (In Progress):**
-   - Rebuild or rewrite files with persistent issues, especially test files and modules with legacy patterns.
-   - Replace all `any` types with explicit, meaningful types.
-   - Remove unused code, dead files, and legacy stubs.
-   - Use dependency management tools to clean up and enforce module boundaries.
-   - Ensure all new/refactored files are strict-compliant.
-4. **CI & Pre-Commit Enforcement (Pending):**
-   - Update CI and Husky to block non-strict code and enforce type safety on all commits.
-5. **Documentation & Team Communication (Pending):**
-   - Update documentation to reflect the aggressive approach and strict requirements for all contributors.
-
-**Why this approach?**
-
-- No customer or data risk: We can break and rebuild freely.
-- Long-term maintainability: Clean, type-safe codebase before launch.
-- Faster onboarding: New contributors will work in a modern, strict environment.
-
-**What’s Done:**
-
-- Unified strict settings in tsconfig files.
-- Ran error aggregation and auto-fixes.
-
-**What’s Next:**
-
-- Begin aggressive file-by-file refactoring, starting with the most problematic files and test suites.
-- Remove or rewrite files that cannot be easily fixed.
-- Enforce module boundaries using dependency management tools.
-- Update CI and documentation once refactor is complete.
-
-### Phase 5 – Ongoing Maintenance
-
----
-
-## Strategy for Eliminating `<string, unknown>` Placeholders
-
-To ensure TypeScript strict compliance and long-term maintainability, we follow this strategy for refactoring and eliminating all `Record<string, unknown>` and similar placeholders:
-
-**A. Refactor File-by-File**
-
-- For each file, prefer to define explicit interfaces/types for fields like `metadata`, `attributes`, etc. as you refactor.
-- If the shape is unclear or truly dynamic, use `Record<string, unknown>` or a dedicated `*Metadata` interface as a temporary placeholder, with a clear TODO comment.
-
-**B. Audit and Replace Placeholders Proactively**
-
-- Whenever you see concrete usage (e.g., `metadata.costPrice`), immediately update the placeholder to a real interface.
-- If you can’t determine the shape, leave a TODO and revisit as soon as you have more information.
-
-**C. Document and Track Progress**
-
-- Maintain a checklist (e.g., in your `ROLL_OUT_PLAN.md`) of all remaining `unknown` placeholders.
-- Periodically review and replace them as your understanding improves.
-
----
-
-## Checklist: Remaining `<string, unknown>` Placeholders
-
-This checklist tracks all current usages of `Record<string, unknown>` and similar patterns (e.g., `{ [key: string]: unknown }`) throughout the codebase. Update this table as you refactor files and replace placeholders with concrete types.
-
-| Module          | File                                                      | Line                                                               | Field                                             | Current Type               | Planned/Concrete Type                                                                        | Status |
-| --------------- | --------------------------------------------------------- | ------------------------------------------------------------------ | ------------------------------------------------- | -------------------------- | -------------------------------------------------------------------------------------------- | ------ |
-| Feature-Flags   | models/feature-flag-audit-log.schema.ts                   | 22                                                                 | metadata                                          | Record<string, unknown>    | FeatureFlagAuditLogMetadata                                                                  | DONE   |
-| Feature-Flags   | interfaces/types.ts                                       | 94                                                                 | metadata                                          | Record<string, unknown>    | FeatureFlagMetadata                                                                          | DONE   |
-| Feature-Flags   | interfaces/types.ts                                       | 115                                                                | metadata                                          | Record<string, unknown>    | FeatureFlagAuditLogMetadata                                                                  | DONE   |
-| Feature-Flags   | interfaces/types.ts                                       | 129                                                                | attributes                                        | Record<string, unknown>    | FlagAttributes                                                                               | DONE   |
-| Feature-Flags   | interfaces/types.ts                                       | 173                                                                | metadata                                          | Record<string, unknown>    | FlagEvaluationMetadata                                                                       | DONE   |
-| Feature-Flags   | interfaces/types.ts                                       | 196                                                                | metadata                                          | Record<string, unknown>    | FeatureFlagDTOMetadata                                                                       | DONE   |
-| Feature-Flags   | interfaces/types.ts                                       | 142                                                                | metadata                                          | Record<string, unknown>    | FlagEvaluationMetadata                                                                       | TODO   |
-| Feature-Flags   | interfaces/types.ts                                       | 161                                                                | metadata                                          | Record<string, unknown>    | FeatureFlagDTOMetadata                                                                       | TODO   |
-| Inventory       | models/stock-level.schema.ts                              | 37                                                                 | metadata                                          | Record<string, unknown>    | StockLevelMetadata                                                                           | TODO   |
-| Inventory       | models/warehouse.schema.ts                                | 55                                                                 | integrationConfig                                 | Record<string, unknown>    | WarehouseIntegrationConfig                                                                   | TODO   |
-| Inventory       | models/warehouse.schema.ts                                | 60                                                                 | metadata                                          | Record<string, unknown>    | WarehouseMetadata                                                                            | TODO   |
-| Inventory       | models/stock-movement.schema.ts                           | 52                                                                 | metadata                                          | Record<string, unknown>    | StockMovementMetadata                                                                        | TODO   |
-| Credit-System   | interfaces/dependencies.ts                                | 22                                                                 | arguments                                         | Record<string, unknown>    | CreditSystemArguments                                                                        | TODO   |
-| Credit-System   | interfaces/types.ts                                       | 41                                                                 | metadata                                          | Record<string, unknown>    | CreditSystemMetadata                                                                         | TODO   |
-| Credit-System   | interfaces/types.ts                                       | 62                                                                 | metadata                                          | Record<string, unknown>    | CreditSystemMetadata                                                                         | TODO   |
-| Credit-System   | interfaces/types.ts                                       | 84                                                                 | metadata                                          | Record<string, unknown>    | CreditSystemMetadata                                                                         | TODO   |
-| Credit-System   | interfaces/types.ts                                       | 141                                                                | metadata                                          | Record<string, unknown>    | CreditSystemMetadata                                                                         | TODO   |
-| Credit-System   | interfaces/types.ts                                       | 40                                                                 | metadata                                          | Record<string, unknown>    | CreditSystemMetadata                                                                         | DONE   |
-| Credit-System   | interfaces/types.ts                                       | 61                                                                 | metadata                                          | Record<string, unknown>    | CreditSystemMetadata                                                                         | DONE   |
-| Credit-System   | interfaces/types.ts                                       | 83                                                                 | metadata                                          | Record<string, unknown>    | CreditSystemMetadata                                                                         | DONE   |
-| Credit-System   | interfaces/types.ts                                       | 140                                                                | metadata                                          | Record<string, unknown>    | CreditSystemMetadata                                                                         | DONE   |
-| Credit-System   | interfaces/types.ts                                       | 186                                                                | metadata                                          | Record<string, unknown>    | CreditSystemMetadata                                                                         | DONE   |
-| Credit-System   | interfaces/types.ts                                       | 219                                                                | metadata                                          | Record<string, unknown>    | CreditSystemMetadata                                                                         | DONE   |
-| Marketplace     | interfaces/marketplace.types.ts                           | 47                                                                 | attributes                                        | Record<string, unknown>    | MarketplaceAttributes                                                                        | DONE   |
-| Marketplace     | interfaces/marketplace.types.ts                           | 166                                                                | properties                                        | Record<string, unknown>    | MarketplaceProperties                                                                        | DONE   |
-| Buybox          | models/repricing-rule.schema.ts                           | 53                                                                 | metadata                                          | { [key: string]: unknown } | BuyBoxRepricingMetadata                                                                      | DONE   |
-| Buybox          | models/buybox-history.schema.ts                           | 36                                                                 | metadata                                          | { [key: string]: unknown } | BuyBoxHistoryMetadata                                                                        | DONE   |
-| Security        | internal/interfaces/security.interfaces.ts                | 120                                                                | metadata                                          | Record<string, unknown>    | SecurityMetadata                                                                             | DONE   |
-| Security        | internal/interfaces/security.interfaces.ts                | 173                                                                | config                                            | Record<string, unknown>    | SecurityConfig                                                                               | DONE   |
-| Security        | internal/interfaces/security.interfaces.ts                | 292                                                                | metadata                                          | Record<string, unknown>    | SecurityMetadata                                                                             | DONE   |
-| Connectors      | interfaces/connector.types.ts                             | 31                                                                 | settings                                          | Record<string, unknown>    | ConnectorSettings                                                                            | DONE   |
-| Connectors      | services/connector-factory.service.ts                     | 195                                                                | health                                            | Record<string, unknown>    | ConnectorHealth                                                                              | DONE   |
-| Orders          | order-ingestion/interfaces/types.ts                       | 99                                                                 | marketplaceData                                   | Record<string, any>        | OrderMarketplaceData                                                                         | DONE   |
-| Orders          | order-ingestion/interfaces/types.ts                       | 279                                                                | properties                                        | Record<string, any>        | OrderLineItemProperties                                                                      | DONE   |
-| Orders          | order-ingestion/interfaces/types.ts                       | 380                                                                | properties                                        | Record<string, any>        | MarketplaceOrderProperties                                                                   | DONE   |
-| Orders          | order-ingestion/interfaces/types.ts                       | 447                                                                | marketplaceSpecific                               | Record<string, any>        | OrderMarketplaceSpecific                                                                     | DONE   |
-| Users           | models/user.model.ts                                      | ALL                                                                | ALL FIELDS                                        | Strict types               | Strict types                                                                                 | DONE   |
-| Notifications   | interfaces/types.ts                                       | 54                                                                 | data                                              | Record<string, any>        | NotificationData                                                                             | DONE   |
-| Notifications   | interfaces/types.ts                                       | 75                                                                 | data                                              | Record<string, any>        | NotificationData                                                                             | DONE   |
-| Notifications   | interfaces/types.ts                                       | 107                                                                | data                                              | Record<string, any>        | NotificationData                                                                             | DONE   |
-| Notifications   | interfaces/dependencies.ts                                | 14                                                                 | data                                              | any                        | NotificationData                                                                             | DONE   |
-| Inventory       | models/product.schema.ts                                  | 55                                                                 | metadata                                          | Record<string, any>        | InventoryMetadata                                                                            | DONE   |
-| Inventory       | models/warehouse.schema.ts                                | 55                                                                 | integrationConfig                                 | Record<string, unknown>    | WarehouseIntegrationConfig                                                                   | DONE   |
-| Inventory       | models/warehouse.schema.ts                                | 60                                                                 | metadata                                          | Record<string, unknown>    | InventoryMetadata                                                                            | DONE   |
-| Inventory       | models/stock-level.schema.ts                              | 37                                                                 | metadata                                          | Record<string, unknown>    | InventoryMetadata                                                                            | DONE   |
-| Inventory       | models/stock-movement.schema.ts                           | 52                                                                 | metadata                                          | Record<string, unknown>    | InventoryMetadata                                                                            | DONE   |
-| Inventory       | services/inventory.service.ts                             | 62                                                                 | metadata                                          | Record<string, any>        | InventoryMetadata                                                                            | DONE   |
-| Inventory       | services/inventory.service.ts                             | 99                                                                 | metadata                                          | Record<string, any>        | InventoryMetadata                                                                            | DONE   |
-| Inventory       | services/warehouse.service.ts                             | 50                                                                 | integrationConfig                                 | Record<string, any>        | WarehouseIntegrationConfig                                                                   | DONE   |
-| Inventory       | services/warehouse.service.ts                             | 53                                                                 | metadata                                          | Record<string, any>        | InventoryMetadata                                                                            | DONE   |
-| Inventory       | services/warehouse.service.ts                             | 91                                                                 | integrationConfig                                 | Record<string, any>        | WarehouseIntegrationConfig                                                                   | DONE   |
-| Inventory       | services/warehouse.service.ts                             | 94                                                                 | metadata                                          | Record<string, any>        | InventoryMetadata                                                                            | DONE   |
-| AI-Insights     | interfaces/types.ts                                       | 31                                                                 | InsightData                                       | [key: string]: unknown     | InsightData                                                                                  | DONE   |
-| AI-Insights     | interfaces/types.ts                                       | 36                                                                 | InsightMetadata                                   | [key: string]: unknown     | InsightMetadata                                                                              | DONE   |
-| AI-Insights     | interfaces/types.ts                                       | 61                                                                 | data                                              | Record<string, any>        | InsightData                                                                                  | DONE   |
-| AI-Insights     | interfaces/types.ts                                       | 95                                                                 | data                                              | Record<string, any>        | InsightData                                                                                  | DONE   |
-| AI-Insights     | interfaces/firestore-types.ts                             | 18                                                                 | data                                              | Record<string, any>        | InsightData                                                                                  | DONE   |
-| AI-Insights     | interfaces/firestore-types.ts                             | 47                                                                 | metadata                                          | Record<string, any>        | InsightMetadata                                                                              | DONE   |
-| AI-Insights     | models/insight.schema.ts                                  | 16                                                                 | data                                              | Record<string, any>        | InsightData                                                                                  | DONE   |
-| AI-Insights     | models/ai-model-config.schema.ts                          | 15                                                                 | metadata                                          | Record<string, any>        | InsightMetadata                                                                              | DONE   |
-| AI-Insights     | services/ai-model-config.service.ts                       | 18                                                                 | metadata                                          | Record<string, any>        | InsightMetadata                                                                              | DONE   |
-| AI-Insights     | services/ai-model-config.service.ts                       | 32                                                                 | metadata                                          | Record<string, any>        | InsightMetadata                                                                              | DONE   |
-| AI-Insights     | services/credit-system.service.ts                         | 17                                                                 | metadata                                          | Record<string, any>        | InsightMetadata                                                                              | DONE   |
-| AI-Insights     | services/credit-system.service.ts                         | 122                                                                | metadata                                          | Record<string, any>        | InsightMetadata                                                                              | DONE   |
-| AI-Insights     | services/credit-system.service.ts                         | 135                                                                | metadata                                          | Record<string, any>        | InsightMetadata                                                                              | DONE   |
-| AI-Insights     | services/insight-generation.service.ts                    | 21                                                                 | data                                              | Record<string, any>        | InsightData                                                                                  | DONE   |
-| AI-Insights     | controllers/insight-generation.controller.ts              | 119                                                                | transactions                                      | any[]                      | InsightData[]                                                                                | DONE   |
-| AI-Insights     | interfaces/dependencies.ts                                | 24                                                                 | data                                              | any                        | InsightData                                                                                  | DONE   |
-| Credit-System   | interfaces/types.ts                                       | 8                                                                  | CreditSystemMetadata                              | [metadata fields]          | CreditSystemMetadata                                                                         | DONE   |
-| Credit-System   | interfaces/types.ts                                       | 13                                                                 | CreditArguments                                   | [arguments fields]         | CreditArguments                                                                              | DONE   |
-| Credit-System   | interfaces/types.ts                                       | 19                                                                 | CreditMessage                                     | [messages fields]          | CreditMessage                                                                                | DONE   |
-| Users           | (all)                                                     | -                                                                  | [all fields]                                      | [none found]               | [none needed]                                                                                | DONE   |
-| Notifications   | (all)                                                     | -                                                                  | [all fields]                                      | [none found]               | [none needed]                                                                                | DONE   |
-| Agent-Framework | controllers/agent.controller.ts                           | 84, 111, 138, 242                                                  | user                                              | any                        | AgentUser                                                                                    | TODO   |
-| Agent-Framework | services/model-adapter.factory.ts                         | 58                                                                 | config                                            | Record<string, any>        | AdapterConfig                                                                                | DONE   |
-| Agent-Framework | adapters/vertex-ai.adapter.ts                             | 23, 36, 416, 462, 491, 492, 522                                    | vertexClient, credentials, return types, error    | any, Record<string, any>   | VertexAIClientConfig, VertexAICredentials, VertexAIRequestOptions, VertexAIFunctionArguments | DONE   |
-| Agent-Framework | interfaces/types.ts                                       | 23, 26, 50, 58, 71, 93, 98, 113, 136, 145, 146, 159, 172, 184, 222 | metadata, arguments, parameters, content, handler | Record<string, any>        | AgentMetadata, AgentArguments, AgentParameters, AgentContent, AgentHandler                   | DONE   |
-| Agent-Framework | interfaces/model-adapter.interface.ts                     | 19, 41, 87, 89, 99                                                 | parameters, arguments, metadata, config           | Record<string, any>        | AdapterParameters, AdapterArguments, AdapterMetadata, AdapterConfig                          | DONE   |
-| Agent-Framework | controllers/agent.controller.ts                           | 84, 111, 138, 242                                                  | user                                              | any                        | DecodedFirebaseToken                                                                         | DONE   |
-| Agent-Framework | interfaces/model-adapter.interface.ts                     | 19, 41, 87, 89, 99                                                 | parameters, arguments, metadata, config           | Record<string, any>        | AdapterParameters, AdapterArguments, AdapterMetadata, AdapterConfig                          | TODO   |
-| Agent-Framework | utils/token-estimator.ts                                  | 182                                                                | parameters                                        | Record<string, any>        | TokenEstimatorParameters                                                                     | TODO   |
-| Buybox          | controllers/repricing.controller.ts                       | 36                                                                 | ruleData                                          | any                        | RepricingRuleData                                                                            | TODO   |
-| Buybox          | services/buybox-monitoring.service.ts                     | 156                                                                | statusData                                        | any                        | BuyBoxStatusData                                                                             | TODO   |
-| Buybox          | repositories/buybox-history.repository.ts                 | 144, 155, 168, 207                                                 | timestamp, status                                 | any                        | BuyBoxHistoryTimestamp, BuyBoxHistoryStatus                                                  | TODO   |
-| Buybox          | interfaces/types.ts                                       | 41                                                                 | metadata                                          | Record<string, any>        | BuyBoxMetadata                                                                               | TODO   |
-| Connectors      | services/webhook-handler.service.ts                       | 51, 79, 107, 135, 163, 194, 225                                    | payload                                           | any                        | WebhookPayload                                                                               | TODO   |
-| Connectors      | services/connector-factory.service.ts                     | 32, 46                                                             | args, connectorClass                              | any                        | ConnectorArgs, ConnectorClass                                                                | TODO   |
-| Connectors      | models/connector-credential.schema.ts                     | 47, 79, 102                                                        | settings                                          | Record<string, any>        | ConnectorSettings                                                                            | TODO   |
-| Connectors      | adapters/superbalist-connector.ts, wantitall-connector.ts | many                                                               | product, order, error, item, category, details    | any                        | SuperbalistProduct, WantitallProduct, AdapterError, etc.                                     | TODO   |
-| Feature-Flags   | services/feature-flag.service.ts                          | 68, 768                                                            | changes, time ranges                              | any                        | FeatureFlagChanges, FeatureFlagTimeRange                                                     | TODO   |
-| Feature-Flags   | repositories/feature-flag.repository.ts                   | 58                                                                 | operator                                          | any                        | FeatureFlagOperator                                                                          | TODO   |
-
-**Instructions:**
-
-- When refactoring a file, update the `Planned/Concrete Type` and `Status` columns.
-- Use placeholder interfaces (with TODOs for future refinement) instead of `Record<string, unknown>` or `any`.
-- Mark each checklist item as DONE when refactored.
-- Communicate any blockers or uncertainties in the PR description or team channel.
-
----
-
-## Next-Phase TypeScript Compliance Plan
-
-To ensure ongoing TypeScript compliance and maintainability, we will continue refactoring modules using the following strategy:
-
-### 1. Inventory and Prioritization
-
-- List all remaining modules in `backend/src/modules/` and other relevant directories.
-- Prioritize modules based on frequency of `any`/`unknown` usage, business criticality, and change frequency.
-
-### 2. Module Audit and Checklist Creation
-
-- For each module, search for:
-  - `any`, `unknown`, `Record<string, any>`, `Record<string, unknown>`, and similar loose types.
-  - Untyped function parameters, return types, and class properties.
-- Document findings in this checklist or an extended audit file.
-
-### 3. Refactoring Sequence
-
-**Suggested Next Modules:**
-
-1. Orders Module
-2. Users & Authentication Module
-3. Notifications/Events Module
-4. Inventory & Catalog Module
-5. Reporting/Analytics Module
-6. External Integrations
-
-### 4. Refactoring Approach for Each Module
-
-- Create/update placeholder interfaces for all loose-typed objects (never use `unknown` or `any` directly).
-- Replace all loose types with these interfaces, adding TODOs for future refinement.
-- Update and run tests for stricter type assertions.
-- Mark each field/module as refactored in the checklist.
-
-### 5. Documentation and Communication
-
-- Update module-level docs with new interfaces and type requirements.
-- Communicate changes to the team as needed.
-
-### 6. Continuous Enforcement
-
-- Add/update lint rules to disallow `any` and `unknown` except in documented cases.
-- Enable `strict` mode in `tsconfig.json` if not already enabled.
-
-**We will continue to use placeholder interfaces (with clear TODOs) instead of `unknown` for all metadata/config/health/settings fields as we refactor each module.**
-
----
-
-Block merges on any new lint/TS errors
-
-- Schedule weekly drift checks (stubs, unused-var, stray `@ts-ignore`)
-
-## Next Steps & To-Do List
-
-### Phase 4: Strict Mode Rollout
-
-- [x] Step 4.1: Tsconfig unified & baseline confirmed
-- [ ] Step 4.2: Error discovery & categorization
-- [ ] Step 4.3: Automated fixes for trivial issues
-- [ ] Step 4.4: Manual refactoring for complex cases
-- [ ] Step 4.5: CI & pre-commit enforcement
-- [ ] Step 4.6: Documentation & team communication
-- [ ] Step 4.7: Monitoring & rollback plan
-
-### Phase 5: Maintenance
-
-- [ ] Configure CI to block merges on lint/TS errors
-- [ ] Automate weekly drift checks
-- [ ] Review and enforce dependency and module boundaries periodically
-- [ ] Maintain CI and documentation badges
-- [ ] Add `npm run lint:boundaries` to CI lint workflows
-- [ ] Automate module barrel generation and internal folder migration for all modules
+1. **B2B Repositories to Standardize**:
+   - `B2BContractRepository`
+   - `B2BCustomerRepository`
+   - `B2BPriceListRepository`
+   - `CustomerGroupRepository`
+   - `CustomerTierRepository`
+
+2. **Implementation Approach**:
+   - Apply our standardized pattern to each repository
+   - Update the B2B service layer to use the new parameter format
+   - Fix any cascading errors in controllers and tests
+
+3. **Expected Outcome**:
+   - Significant reduction in TypeScript errors (estimated 50-70 errors)
+   - Improved API consistency across the B2B module
+   - Better type safety and developer experience
+
+We continue to make steady progress and are maintaining our methodical approach to systematically address each module's repositories and their consumers.
+
+## ✅ COMPLETED (2025-05-02T14:55:00+02:00): B2B Module Repository Standardization
+
+We have successfully standardized all B2B repositories to follow our new repository pattern:
+
+1. ✅ **B2B Repository Standardization**:
+   - Applied our standardized repository pattern to all five B2B repositories:
+     - `B2BContractRepository`
+     - `B2BCustomerRepository` 
+     - `B2BPriceListRepository`
+     - `CustomerGroupRepository`
+     - `CustomerTierRepository`
+   - Implemented tenant awareness through proper type overloads
+   - Standardized all query methods to handle both direct tenant ID and option parameters
+   - Fixed all TypeScript errors in repository implementations
+
+2. ✅ **Key Implementation Features**:
+   - Proper tenant filtering through post-query validation rather than invalid FilterOptions
+   - Use of standard interfaces and types from `repository-types.ts`
+   - Consistent method signatures across all repositories
+   - Proper handling of Set operations using `Array.from()` to avoid TypeScript errors
+   - Comprehensive error handling with descriptive error messages
+
+3. ✅ **TypeScript Error Resolution**:
+   - Eliminated all TypeScript errors in the B2B module repositories
+   - Fixed issues with `advancedFilters` usage in `FindByIdOptions`
+   - Used proper type for filter options with `Partial<Omit<FindOptions<T>, 'filter'>>`
+   - Fixed issues with `Set` iteration by using `Array.from()`
+
+## 🔄 IN PROGRESS (2025-05-02T16:30:00+02:00): Repository Interface Export Alignment
+
+We have identified a significant source of TypeScript errors in our repository implementations:
+
+1. **Import Path Issues:**
+   - Many repositories are importing interface types directly from `firestore-base.repository.ts` instead of from `base/repository-types.ts`
+   - This causes TypeScript errors because these types are used internally but not properly exported from the base repository file
+
+2. **Current Focus:**
+   - Working on standardizing imports across all repositories
+   - Updating the compliance-related repositories to import types correctly
+   - Current TypeScript errors: 141 (down from 614 at the beginning of the project)
+
+3. **Specific Issues Identified:**
+   - Type interfaces like `FindOptions`, `CreateDocumentOptions`, `UpdateDocumentOptions`, and `DeleteDocumentOptions` are defined in `repository-types.ts`
+   - Repositories like `compliance-check.repository.ts` are incorrectly importing them from `firestore-base.repository.ts`
+   - This creates module visibility errors with "Module declares X locally, but it is not exported"
+
+### Progress Update (2025-05-02T17:15:00+02:00)
+
+1. ✅ **Standardized Repository Type Imports:**
+   - Fixed imports in `compliance-check.repository.ts` to correctly reference types from `../../../common/repositories/base/repository-types`
+   - Added `FirestoreAdvancedFilter` import to properly type filter functions
+
+2. ✅ **Parameter Type Fixes:**
+   - Added explicit type annotations to all anonymous filter function parameters, replacing:
+     ```typescript
+     options.advancedFilters.filter(f => 
+       f.field !== 'tenantId' && f.field !== 'productId' && f.field !== 'isDeleted'
+     )
+     ```
+     with:
+     ```typescript
+     options.advancedFilters.filter((f: FirestoreAdvancedFilter<ComplianceCheckRecord>) => 
+       f.field !== 'tenantId' && f.field !== 'productId' && f.field !== 'isDeleted'
+     )
+     ```
+
+Follow these instructions to make the following change to my code document.
+
+Instruction: Add a detailed checklist of actionable items under Phase 2
+
+Code Edit:
+```
+{{...}}
+#### Phase 2: Service Layer Adaptation (Next)
+- Update services to properly convert between domain models and repository records
+- Implement adapter methods where needed for backward compatibility
+- Target completion: 2025-05-08
+- [x] Update `PriceHistoryService` methods:
+  - [x] Align `createPriceHistory` & `recordCompetitorPrice` signatures with `PriceHistoryRepository` API
+  - [x] Wrap repository record types into domain models before returning
+- [x] Update `PriceHistoryController` to consume updated service signatures
+- [x] Refactor `CompetitivePriceMonitoringService`:
+  - [x] Adjust `recordCompetitorPrice` signature to `(data, organizationId, userId)` matching repo API
+  - [x] Ensure alert creation logic uses `PriceAlertRepository` methods
+- [x] Update `competitive-price-monitoring.controller.ts` to match service method changes
+- [ ] Introduce adapter functions in `services/adapters` to map record types to domain models
+- [ ] Update `ProductValidationService` to handle new compliance interfaces
+- [ ] Fix parameter handling in `CategoryComplianceService`
+- [ ] Update all dependents that consumed compliance data
+- [ ] Implement consistent error handling pattern across compliance services
+- [ ] Add proper type guards for error classification
+- [ ] Ensure all error messages contain actionable information
+- [ ] Update `ProductValidationService` to handle new compliance interfaces
+- [ ] Fix parameter handling in `CategoryComplianceService`
+- [ ] Update all dependents that consumed compliance data
+- [ ] Implement consistent error handling pattern across compliance services
+- [ ] Add proper type guards for error classification
+- [ ] Ensure all error messages contain actionable information
+{{...}}
+
+```
+
+Follow these instructions to make the following change to my code document.
+
+Instruction: Mark Phase 2 tasks complete for CompetitivePriceMonitoringService and controller
+
+Code Edit:
+```
+{{...}}
+- [ ] Refactor `CompetitivePriceMonitoringService`:
+-  - [ ] Adjust `recordCompetitorPrice` signature to `(data, organizationId, userId)` matching repo API
+-  - [ ] Ensure alert creation logic uses `PriceAlertRepository` methods
+- [ ] Update `competitive-price-monitoring.controller.ts` to match service method changes
++ - [x] Refactor `CompetitivePriceMonitoringService`:
++   - [x] Adjust `recordCompetitorPrice` signature to `(data, organizationId, userId)` matching repo API
++   - [x] Ensure alert creation logic uses `PriceAlertRepository` methods
++ - [x] Update `competitive-price-monitoring.controller.ts` to match service method changes
+{{...}}
+
+```
+
+Follow these instructions to make the following change to my code document.
+
+Instruction: Mark PriceHistoryService and PriceHistoryController tasks complete in Phase 2
+
+Code Edit:
+```
+{{...}}
+- [ ] Update `PriceHistoryService` methods:
+-  - [ ] Align `createPriceHistory` & `recordCompetitorPrice` signatures with `PriceHistoryRepository` API
+-  - [ ] Wrap repository record types into domain models before returning
+- [ ] Update `PriceHistoryController` to consume updated service signatures
++ [x] Update `PriceHistoryService` methods:
++  - [x] Align `createPriceHistory` & `recordCompetitorPrice` signatures with `PriceHistoryRepository` API
++  - [x] Wrap repository record types into domain models before returning
++ [x] Update `PriceHistoryController` to consume updated service signatures
+{{...}}

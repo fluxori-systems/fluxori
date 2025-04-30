@@ -26,6 +26,7 @@ import {
   TaxRateSchedule,
   TaxJurisdiction,
   TaxType,
+  TaxJurisdictionLevel,
   TaxRateResult,
 } from '../interfaces/tax-rate.interface';
 import { TaxRateService } from '../services/tax-rate.service';
@@ -125,7 +126,11 @@ export class TaxRateController {
       country,
       region,
       city,
-      level: city ? 'city' : region ? 'province' : 'country',
+      level: city
+        ? TaxJurisdictionLevel.CITY
+        : region
+        ? TaxJurisdictionLevel.PROVINCE
+        : TaxJurisdictionLevel.COUNTRY,
     };
 
     try {
@@ -165,11 +170,20 @@ export class TaxRateController {
       country,
       region,
       city,
-      level: city ? 'city' : region ? 'province' : 'country',
+      level: city
+        ? TaxJurisdictionLevel.CITY
+        : region
+        ? TaxJurisdictionLevel.PROVINCE
+        : TaxJurisdictionLevel.COUNTRY,
     };
 
     try {
-      return await this.taxRateService.getRateChanges(jurisdiction, taxType);
+      // Ensure taxType is a valid TaxType enum value if possible
+      let typeToUse: TaxType | string = taxType;
+      if (typeof taxType === 'string' && Object.values(TaxType).includes(taxType as TaxType)) {
+        typeToUse = taxType as TaxType;
+      }
+      return await this.taxRateService.getRateChanges(jurisdiction, typeToUse);
     } catch (error) {
       this.logger.error(
         `Error getting rate changes: ${error.message}`,
@@ -225,7 +239,11 @@ export class TaxRateController {
       country,
       region,
       city,
-      level: city ? 'city' : region ? 'province' : 'country',
+      level: city
+        ? TaxJurisdictionLevel.CITY
+        : region
+        ? TaxJurisdictionLevel.PROVINCE
+        : TaxJurisdictionLevel.COUNTRY,
     };
 
     try {

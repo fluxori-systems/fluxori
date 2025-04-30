@@ -12,6 +12,10 @@ import { Request } from 'express';
 import { Observable } from 'rxjs';
 
 import { ServiceAuthUtils } from '../utils/service-auth';
+import {
+  ExtendedRequest,
+  ServiceInfo,
+} from '../guards/extended-request.interface';
 
 /**
  * Service Authentication Interceptor
@@ -41,7 +45,7 @@ export class ServiceAuthInterceptor implements NestInterceptor {
       return next.handle();
     }
 
-    const request = context.switchToHttp().getRequest<Request>();
+    const request = context.switchToHttp().getRequest<ExtendedRequest>();
     const path = request.path || '';
 
     // Check if this is an internal service endpoint
@@ -58,7 +62,7 @@ export class ServiceAuthInterceptor implements NestInterceptor {
       path,
     );
 
-    if (!validationResult.valid) {
+    if (validationResult.valid === false) {
       this.logger.warn(
         `Service auth failed: ${validationResult.error} for path ${path}`,
       );
@@ -66,10 +70,11 @@ export class ServiceAuthInterceptor implements NestInterceptor {
     }
 
     // Add service info to request for downstream handlers
-    (request as any).serviceInfo = {
+    const serviceInfo: ServiceInfo = {
       serviceName: validationResult.service,
       authenticated: true,
     };
+    request.serviceInfo = serviceInfo;
 
     return next.handle();
   }

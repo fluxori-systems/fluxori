@@ -236,15 +236,16 @@ export interface ConnectorError extends Error {
   retryable: boolean;
 
   /** Original error object if this wraps another error */
-  // TODO: Refine originalError type as requirements become clear
-  originalError?: unknown;
+  originalError?: Error | string | null; // Explicit, no unknown
 
-  /** Additional error details */
-  details?: any;
+  /** Additional error details (structured, not any) */
+  details?: Record<string, unknown>;
 
   /** Timestamp when the error occurred */
   timestamp: Date;
 }
+
+// If more specific error types are needed, use discriminated unions or extend ConnectorError as appropriate.
 
 /**
  * Generic result type for all operations

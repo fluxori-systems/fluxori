@@ -1,11 +1,5 @@
-import { Controller, Get, Query, Param } from '@nestjs/common';
-import {
-  ApiTags,
-  ApiOperation,
-  ApiResponse,
-  ApiQuery,
-  ApiParam,
-} from '@nestjs/swagger';
+import { Controller, Get, Param } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
 
 // Import services
 import { METRIC_NAMES } from '../constants/observability.constants';

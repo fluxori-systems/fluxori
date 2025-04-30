@@ -8,7 +8,7 @@ import { Stack, Center, Loader, Text, ThemeIcon } from "@mantine/core";
 
 import { IconAlertTriangle, IconLock } from "@tabler/icons-react";
 
-import { useAuth } from "../../hooks/useAuth";
+import { useAuth } from "../../lib/firebase/useAuth";
 
 interface RouteGuardProps {
   children: ReactNode;

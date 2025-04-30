@@ -1,4 +1,5 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { toJSDate } from '../../../common/utils/date.util';
 
 import { v4 as uuidv4 } from 'uuid';
 
@@ -887,7 +888,7 @@ export class CreditSystemService implements OnModuleInit {
           latestTransaction = new Date(txCreatedAt);
         } else if (txCreatedAt && typeof txCreatedAt.toDate === 'function') {
           // Handle Firestore Timestamp
-          latestTransaction = txCreatedAt.toDate();
+          latestTransaction = toJSDate(txCreatedAt);
         }
       }
 

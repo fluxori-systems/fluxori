@@ -5,6 +5,8 @@
  * with South African optimizations.
  */
 
+import 'express';
+import 'multer';
 import {
   Controller,
   Post,
@@ -27,7 +29,7 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 
 import { Response as ExpressResponse } from 'express';
-import * as Multer from 'multer';
+// import * as Multer from 'multer'; // Removed: use Express.Multer.File instead
 
 import { FirebaseAuthGuard } from '../../auth';
 import { GetUser } from '../../auth/decorators/get-user.decorator';
@@ -74,7 +76,7 @@ export class ImportExportController {
         ],
       }),
     )
-    file: Multer.File,
+    file: Express.Multer.File,
     @Query('updateExisting') updateExisting: boolean = false,
     @Query('continueOnError') continueOnError: boolean = false,
     @GetUser() user: any,

@@ -15,7 +15,7 @@ import {
   Stack,
 } from "@mantine/core";
 
-import { useFirebase } from "../../contexts/firebase-context";
+import { useFirebase } from "../../lib/firebase/firebase-context";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;

@@ -42,11 +42,22 @@ vi.mock("next/navigation", () => ({
 // Mock the theme context
 vi.mock("../../lib/design-system/theme/ThemeContext", () => {
   return {
-    ThemeProvider: ({ children }) => children,
-    useTheme: () => ({
+    ThemeProvider: ({ children }: { children: React.ReactNode }) => children,
+    useTheme: (): {
+      colorMode: string;
+      setColorMode: () => void;
+      toggleColorMode: () => void;
+      tokens: {
+        colors: Record<string, unknown>;
+        spacing: Record<string, unknown>;
+        typography: Record<string, unknown>;
+        radii: Record<string, unknown>;
+        shadows: Record<string, unknown>;
+      };
+    } => ({
       colorMode: "light",
-      setColorMode: vi.fn(),
-      toggleColorMode: vi.fn(),
+      setColorMode: vi.fn(() => {}),
+      toggleColorMode: vi.fn(() => {}),
       tokens: {
         colors: {},
         spacing: {},
@@ -61,7 +72,7 @@ vi.mock("../../lib/design-system/theme/ThemeContext", () => {
 // Mock the motion context
 vi.mock("../../lib/motion/context/MotionContext", () => {
   return {
-    MotionProvider: ({ children }) => children,
+    MotionProvider: ({ children }: { children: React.ReactNode }) => children,
     useMotion: () => ({
       motionMode: "full",
       setMotionMode: vi.fn(),
@@ -112,9 +123,9 @@ vi.mock("../../lib/ui/utils/use-combined-refs", () => {
 // This is needed to avoid issues with React hooks in tests
 
 // Create a simple component factory to avoid repetition
-const createMockComponent = (name) => {
+const createMockComponent = (name: string) => {
   return {
-    [name]: ({ children, ...props }) => ({
+    [name]: ({ children, ...props }: { children: React.ReactNode; [key: string]: any }) => ({
       type: name,
       className: name,
       children,
@@ -134,27 +145,27 @@ vi.mock("@mantine/core", () => {
     ...createMockComponent("Group"),
     ...createMockComponent("Stack"),
     Menu: {
-      Root: ({ children, ...props }) => ({
+      Root: ({ children, ...props }: { children: React.ReactNode; [key: string]: any }) => ({
         type: "Menu.Root",
         children,
         ...props,
       }),
-      Target: ({ children, ...props }) => ({
+      Target: ({ children, ...props }: { children: React.ReactNode; [key: string]: any }) => ({
         type: "Menu.Target",
         children,
         ...props,
       }),
-      Dropdown: ({ children, ...props }) => ({
+      Dropdown: ({ children, ...props }: { children: React.ReactNode; [key: string]: any }) => ({
         type: "Menu.Dropdown",
         children,
         ...props,
       }),
-      Item: ({ children, ...props }) => ({
+      Item: ({ children, ...props }: { children: React.ReactNode; [key: string]: any }) => ({
         type: "Menu.Item",
         children,
         ...props,
       }),
-      Divider: (props) => ({ type: "Menu.Divider", ...props }),
+      Divider: (props: any) => ({ type: "Menu.Divider", ...props }),
     },
     useMantineTheme: () => ({
       colorScheme: "light",
@@ -167,78 +178,78 @@ vi.mock("@mantine/core", () => {
 // Mock our UI components
 vi.mock("../../lib/ui", () => {
   return {
-    Alert: ({ children, ...props }) => ({
+    Alert: ({ children, ...props }: { children: React.ReactNode; [key: string]: any }) => ({
       type: "Alert",
       className: "Alert",
       children,
       ...props,
     }),
-    Button: ({ children, ...props }) => ({
+    Button: ({ children, ...props }: { children: React.ReactNode; [key: string]: any }) => ({
       type: "Button",
       className: "Button",
       children,
       ...props,
     }),
-    Card: ({ children, ...props }) => ({
+    Card: ({ children, ...props }: { children: React.ReactNode; [key: string]: any }) => ({
       type: "Card",
       className: "Card",
       children,
       ...props,
     }),
-    Container: ({ children, ...props }) => ({
+    Container: ({ children, ...props }: { children: React.ReactNode; [key: string]: any }) => ({
       type: "Container",
       className: "Container",
       children,
       ...props,
     }),
-    FormField: ({ children, ...props }) => ({
+    FormField: ({ children, ...props }: { children: React.ReactNode; [key: string]: any }) => ({
       type: "FormField",
       className: "FormField",
       children,
       ...props,
     }),
-    Grid: ({ children, ...props }) => ({
+    Grid: ({ children, ...props }: { children: React.ReactNode; [key: string]: any }) => ({
       type: "Grid",
       className: "Grid",
       children,
       ...props,
     }),
-    Group: ({ children, ...props }) => ({
+    Group: ({ children, ...props }: { children: React.ReactNode; [key: string]: any }) => ({
       type: "Group",
       className: "Group",
       children,
       ...props,
     }),
     Menu: {
-      Root: ({ children, ...props }) => ({
+      Root: ({ children, ...props }: { children: React.ReactNode; [key: string]: any }) => ({
         type: "Menu.Root",
         children,
         ...props,
       }),
-      Target: ({ children, ...props }) => ({
+      Target: ({ children, ...props }: { children: React.ReactNode; [key: string]: any }) => ({
         type: "Menu.Target",
         children,
         ...props,
       }),
-      Dropdown: ({ children, ...props }) => ({
+      Dropdown: ({ children, ...props }: { children: React.ReactNode; [key: string]: any }) => ({
         type: "Menu.Dropdown",
         children,
         ...props,
       }),
-      Item: ({ children, ...props }) => ({
+      Item: ({ children, ...props }: { children: React.ReactNode; [key: string]: any }) => ({
         type: "Menu.Item",
         children,
         ...props,
       }),
-      Divider: (props) => ({ type: "Menu.Divider", ...props }),
+      Divider: (props: any) => ({ type: "Menu.Divider", ...props }),
     },
-    Stack: ({ children, ...props }) => ({
+    Stack: ({ children, ...props }: { children: React.ReactNode; [key: string]: any }) => ({
       type: "Stack",
       className: "Stack",
       children,
       ...props,
     }),
-    Text: ({ children, ...props }) => ({
+    Text: ({ children, ...props }: { children: React.ReactNode; [key: string]: any }) => ({
       type: "Text",
       className: "Text",
       children,
@@ -260,9 +271,19 @@ vi.mock("../../lib/ui/components/Alert", () => {
       radius,
       networkAware,
       ...props
+    }: {
+      children: React.ReactNode;
+      variant?: string;
+      color?: string;
+      title?: React.ReactNode;
+      withCloseButton?: boolean;
+      onClose?: () => void;
+      radius?: string | number;
+      networkAware?: boolean;
+      [key: string]: any;
     }) => {
       // Create data attributes based on props
-      const dataAttrs = {};
+      const dataAttrs: Record<string, unknown> = {};
       if (networkAware) {
         // Check navigator.connection to determine network quality
         const connection = navigator.connection || ({} as NetworkInformation);
@@ -316,6 +337,14 @@ vi.mock("../../lib/ui/components/Button", () => {
       intent,
       disabled,
       ...props
+    }: {
+      children: React.ReactNode;
+      onClick?: () => void;
+      variant?: string;
+      size?: string;
+      intent?: string;
+      disabled?: boolean;
+      [key: string]: any;
     }) => {
       return {
         type: "button",
@@ -342,6 +371,15 @@ vi.mock("../../lib/ui/components/FormField", () => {
       fieldType,
       intent,
       ...props
+    }: {
+      children: React.ReactNode;
+      label?: string;
+      description?: string;
+      error?: string;
+      required?: boolean;
+      fieldType?: string;
+      intent?: string;
+      [key: string]: any;
     }) => {
       return {
         type: "div",
@@ -393,31 +431,31 @@ vi.mock("../../lib/ui/components/FormField", () => {
 // Mock the Menu component
 vi.mock("../../lib/ui/components/Menu", () => {
   return {
-    Menu: ({ children, ...props }) => ({
+    Menu: ({ children, ...props }: { children: React.ReactNode; [key: string]: any }) => ({
       type: "div",
       className: "menu",
       children,
       ...props,
     }),
-    Target: ({ children, ...props }) => ({
+    Target: ({ children, ...props }: { children: React.ReactNode; [key: string]: any }) => ({
       type: "div",
       className: "menu-target",
       children,
       ...props,
     }),
-    Dropdown: ({ children, ...props }) => ({
+    Dropdown: ({ children, ...props }: { children: React.ReactNode; [key: string]: any }) => ({
       type: "div",
       className: "menu-dropdown",
       children,
       ...props,
     }),
-    Item: ({ children, ...props }) => ({
+    Item: ({ children, ...props }: { children: React.ReactNode; [key: string]: any }) => ({
       type: "div",
       className: "menu-item",
       children,
       ...props,
     }),
-    Divider: (props) => ({
+    Divider: (props: any) => ({
       type: "div",
       className: "menu-divider",
       ...props,
@@ -428,7 +466,7 @@ vi.mock("../../lib/ui/components/Menu", () => {
 // Mock the currency formatter
 vi.mock("../../utils/currency-formatter", () => {
   return {
-    formatCurrency: (value, currency) =>
+    formatCurrency: (value: number, currency: string) =>
       currency === "ZAR" ? `R${value.toFixed(2)}` : `$${value.toFixed(2)}`,
   };
 });
@@ -471,6 +509,7 @@ vi.mock("../../lib/motion/gsap/gsap-business", () => {
 Object.defineProperty(navigator, "connection", {
   value: {
     effectiveType: "4g",
+    type: "wifi",
     downlink: 10,
     rtt: 50,
     saveData: false,

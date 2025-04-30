@@ -16,8 +16,8 @@ import {
   ApiBearerAuth,
 } from '@nestjs/swagger';
 
-import { ObservabilityService } from '../../../common/observability';
-import { FirebaseAuthGuard } from '../../auth/guards/firebase-auth.guard';
+import { ObservabilityService } from '../../../../common/observability';
+import { FirebaseAuthGuard } from '../../../auth/guards/firebase-auth.guard';
 import { CredentialManagerService } from '../services/credential-manager.service';
 
 /**
@@ -85,7 +85,11 @@ export class CredentialController {
     this.observability.log(`Credential stored: ${body.key}`, {
       service: CredentialController.name,
       userId: request.user.id,
-      action: 'store_credential',
+      customFields: {
+        action: 'store_credential',
+        key: body.key,
+      },
+      timestamp: new Date(),
     });
 
     return {
@@ -118,7 +122,11 @@ export class CredentialController {
     this.observability.log(`Credential rotated: ${key}`, {
       service: CredentialController.name,
       userId: request.user.id,
-      action: 'rotate_credential',
+      customFields: {
+        action: 'rotate_credential',
+        key,
+      },
+      timestamp: new Date(),
     });
 
     return {

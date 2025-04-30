@@ -18,7 +18,7 @@ import {
 
 import { useForm } from "react-hook-form";
 
-import { useFirebase } from "../../contexts/firebase-context";
+import { useFirebase } from "../../lib/firebase/firebase-context";
 import { LoginCredentials } from "../../types/user/user.types";
 
 interface LoginFormProps {

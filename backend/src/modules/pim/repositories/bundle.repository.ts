@@ -1,4 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
+import { toJSDate } from '../../../common/utils/date.util';
 
 import { FirestoreBaseRepository } from '../../../common/repositories/firestore-base.repository';
 import { FirestoreConfigService } from '../../../config/firestore.config';
@@ -9,10 +10,10 @@ import { Bundle } from '../models/bundle.model';
  */
 @Injectable()
 export class BundleRepository extends FirestoreBaseRepository<Bundle> {
-  private readonly logger = new Logger(BundleRepository.name);
+  protected readonly logger = new Logger(BundleRepository.name);
 
-  constructor(firestoreConfigService: FirestoreConfigService) {
-    super('bundles', firestoreConfigService);
+  constructor(firestoreConfigService: FirestoreConfigService, collectionName = 'bundles') {
+    super(firestoreConfigService, collectionName);
   }
 
   /**
@@ -65,8 +66,8 @@ export class BundleRepository extends FirestoreBaseRepository<Bundle> {
         return {
           ...data,
           id: doc.id,
-          createdAt: data.createdAt.toDate(),
-          updatedAt: data.updatedAt.toDate(),
+          createdAt: toJSDate(data.createdAt),
+          updatedAt: toJSDate(data.updatedAt),
         };
       });
 
@@ -123,8 +124,8 @@ export class BundleRepository extends FirestoreBaseRepository<Bundle> {
     return {
       ...data,
       id: doc.id,
-      createdAt: data.createdAt?.toDate() || new Date(),
-      updatedAt: data.updatedAt?.toDate() || new Date(),
+      createdAt: toJSDate(data.createdAt),
+      updatedAt: toJSDate(data.updatedAt),
     } as Bundle;
   }
 
@@ -134,15 +135,8 @@ export class BundleRepository extends FirestoreBaseRepository<Bundle> {
    */
   protected entityToDoc(entity: Bundle): Record<string, any> {
     // Handle dates for Firestore
-    const createdAt =
-      entity.createdAt instanceof Date
-        ? entity.createdAt
-        : new Date(entity.createdAt || Date.now());
-
-    const updatedAt =
-      entity.updatedAt instanceof Date
-        ? entity.updatedAt
-        : new Date(entity.updatedAt || Date.now());
+    const createdAt = toJSDate(entity.createdAt);
+    const updatedAt = toJSDate(entity.updatedAt);
 
     return {
       ...entity,

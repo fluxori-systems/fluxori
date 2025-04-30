@@ -4,6 +4,7 @@
  * Defines the tiering structure for B2B customers with associated benefits and requirements.
  * This is a core component of the Advanced B2B Support feature.
  */
+import { FirestoreEntityWithMetadata } from '../../../../common/repositories/base/repository-types';
 
 /**
  * Standard customer tier types
@@ -19,13 +20,21 @@ export enum CustomerTierType {
 
 /**
  * Customer tier model for B2B functionality
+ * Implements FirestoreEntityWithMetadata for repository compliance
  */
-export interface CustomerTier {
-  /**
-   * Unique identifier for the customer tier
-   */
-  id?: string;
-
+export interface CustomerTier extends FirestoreEntityWithMetadata {
+  /** Unique identifier */
+  id: string;
+  /** Soft delete flag */
+  isDeleted: boolean;
+  /** Version for optimistic locking */
+  version: number;
+  /** Creation timestamp */
+  createdAt: Date;
+  /** Last update timestamp */
+  updatedAt: Date;
+  /** Deletion timestamp (optional) */
+  deletedAt?: Date | undefined;
   /**
    * Organization that owns this tier configuration
    */
@@ -126,33 +135,31 @@ export interface CustomerTier {
   /**
    * Additional custom fields specific to this tier
    */
-  customFields?: Record<string, any>;
+  customFields?: import('../custom-fields.model').CustomFields;
 
   /**
    * Visibility level of the tier (public = visible to all, private = only to assigned customers)
    */
   visibility: 'public' | 'private';
-
-  /**
-   * Creation timestamp
-   */
-  createdAt: Date;
-
-  /**
-   * Last update timestamp
-   */
-  updatedAt: Date;
 }
 
 /**
  * Customer group model - allows grouping B2B customers for specialized pricing and rules
+ * Implements FirestoreEntityWithMetadata for repository compliance
  */
-export interface CustomerGroup {
-  /**
-   * Unique identifier for the customer group
-   */
-  id?: string;
-
+export interface CustomerGroup extends FirestoreEntityWithMetadata {
+  /** Unique identifier */
+  id: string;
+  /** Soft delete flag */
+  isDeleted: boolean;
+  /** Version for optimistic locking */
+  version: number;
+  /** Creation timestamp */
+  createdAt: Date;
+  /** Last update timestamp */
+  updatedAt: Date;
+  /** Deletion timestamp (optional) */
+  deletedAt?: Date | undefined;
   /**
    * Organization that owns this customer group
    */
@@ -223,15 +230,5 @@ export interface CustomerGroup {
   /**
    * Additional custom fields specific to this group
    */
-  customFields?: Record<string, any>;
-
-  /**
-   * Creation timestamp
-   */
-  createdAt: Date;
-
-  /**
-   * Last update timestamp
-   */
-  updatedAt: Date;
+  customFields?: import('../custom-fields.model').CustomFields;
 }

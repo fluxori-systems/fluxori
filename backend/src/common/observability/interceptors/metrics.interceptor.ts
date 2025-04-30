@@ -12,10 +12,7 @@ import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 
 // Import services
-import {
-  METRIC_NAMES,
-  SA_PERFORMANCE_THRESHOLDS,
-} from '../constants/observability.constants';
+import { METRIC_NAMES } from '../constants/observability.constants';
 import {
   ObservabilityModuleOptions,
   DEFAULT_OBSERVABILITY_OPTIONS,
@@ -58,15 +55,19 @@ export class MetricsInterceptor implements NestInterceptor {
       return next.handle();
     }
 
-    const request = context
-      .switchToHttp()
-      .getRequest<Request & { user?: any; traceId?: string; span?: any }>();
+    const request = context.switchToHttp().getRequest<
+      Request & {
+        user?: import('../../guards/extended-request.interface').AuthenticatedUser;
+        traceId?: string;
+        span?: unknown;
+      }
+    >();
     const startTime = Date.now();
 
     // Process the request and collect metrics
     return next.handle().pipe(
       tap({
-        next: (data) => {
+        next: () => {
           const response = context.switchToHttp().getResponse<Response>();
           const duration = Date.now() - startTime;
           const path = this.normalizePath(request);
@@ -91,7 +92,7 @@ export class MetricsInterceptor implements NestInterceptor {
             path,
             response.statusCode,
             duration,
-            request.user?.id,
+            request.user?.uid,
             request.user?.organizationId,
           );
 
@@ -112,9 +113,16 @@ export class MetricsInterceptor implements NestInterceptor {
           // Monitor system resource usage periodically
           this.recordSystemMetrics();
         },
-        error: (error) => {
+        error: (error: unknown) => {
           const duration = Date.now() - startTime;
-          const statusCode = error.status || 500;
+          // Type guard for errors with status property
+          const statusCode =
+            typeof error === 'object' &&
+            error !== null &&
+            'status' in error &&
+            typeof (error as any).status === 'number'
+              ? (error as any).status
+              : 500;
           const path = this.normalizePath(request);
 
           // Use trackHttpRequest which handles all the error metrics
@@ -123,7 +131,7 @@ export class MetricsInterceptor implements NestInterceptor {
             path,
             statusCode,
             duration,
-            request.user?.id,
+            request.user?.uid,
             request.user?.organizationId,
           );
         },
@@ -137,12 +145,17 @@ export class MetricsInterceptor implements NestInterceptor {
    */
   private normalizePath(request: Request): string {
     // Use route pattern if available (from NestJS)
-    if (request.route?.path) {
+    if (
+      request.route &&
+      typeof request.route === 'object' &&
+      'path' in request.route &&
+      typeof request.route.path === 'string'
+    ) {
       return request.route.path;
     }
 
     // Otherwise, try to normalize common ID patterns
-    let path = request.path;
+    let path = typeof request.path === 'string' ? request.path : '';
 
     // Replace UUIDs
     path = path.replace(
@@ -160,6 +173,7 @@ export class MetricsInterceptor implements NestInterceptor {
    * Extract the API group from the path (e.g., /api/users/1 -> users)
    */
   private getPathGroup(path: string): string {
+    if (typeof path !== 'string') return 'other';
     const match = path.match(this.pathGroupPattern);
     return match ? match[1] : 'other';
   }

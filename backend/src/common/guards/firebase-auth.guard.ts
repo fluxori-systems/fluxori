@@ -10,6 +10,10 @@ import { Reflector } from '@nestjs/core';
 
 import { Request } from 'express';
 import * as admin from 'firebase-admin';
+import {
+  ExtendedRequest,
+  AuthenticatedUser,
+} from './extended-request.interface';
 
 /**
  * Firebase Authentication Guard
@@ -38,7 +42,7 @@ export class FirebaseAuthGuard implements CanActivate {
       // Check if Firebase is already initialized
       admin.app();
       this.initialized = true;
-    } catch (error) {
+    } catch (error: unknown) {
       try {
         // Initialize Firebase App
         const projectId = this.configService.get<string>('GCP_PROJECT_ID');
@@ -53,9 +57,12 @@ export class FirebaseAuthGuard implements CanActivate {
           `Firebase Admin SDK initialized for project ${projectId}`,
         );
       } catch (initError) {
+        // Type guard for Error
+        const err =
+          initError instanceof Error ? initError : new Error(String(initError));
         this.logger.error(
-          `Failed to initialize Firebase: ${initError.message}`,
-          initError.stack,
+          `Failed to initialize Firebase: ${err.message}`,
+          err.stack,
         );
         // Allow app to start even if Firebase fails to initialize
         // We'll check this.initialized before using Firebase
@@ -77,11 +84,10 @@ export class FirebaseAuthGuard implements CanActivate {
       return true;
     }
 
-    const request = context.switchToHttp().getRequest<Request>();
+    const request = context.switchToHttp().getRequest<ExtendedRequest>();
 
     // Check for service-to-service authentication
-    const serviceInfo = (request as any).serviceInfo;
-    if (serviceInfo && serviceInfo.authenticated) {
+    if (request.serviceInfo?.authenticated) {
       return true;
     }
 
@@ -99,18 +105,23 @@ export class FirebaseAuthGuard implements CanActivate {
       const decodedToken = await admin.auth().verifyIdToken(token);
 
       // Add user to request for controllers
-      (request as any).user = {
-        uid: decodedToken.uid,
-        email: decodedToken.email,
-        emailVerified: decodedToken.email_verified,
+      const user: AuthenticatedUser = {
+        uid: decodedToken.uid ?? '',
+        email: decodedToken.email ?? '',
+        emailVerified:
+          typeof decodedToken.email_verified === 'boolean'
+            ? decodedToken.email_verified
+            : false,
         displayName: decodedToken.name,
         roles: decodedToken.roles || [],
         claims: decodedToken,
       };
+      request.user = user;
 
       return true;
-    } catch (error) {
-      this.logger.warn(`Authentication failed: ${error.message}`);
+    } catch (error: unknown) {
+      const err = error instanceof Error ? error : new Error(String(error));
+      this.logger.warn(`Authentication failed: ${err.message}`);
       throw new UnauthorizedException('Invalid authentication token');
     }
   }

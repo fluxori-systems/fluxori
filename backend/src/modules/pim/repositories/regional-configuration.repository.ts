@@ -5,7 +5,8 @@
  */
 
 import { Injectable, Logger } from '@nestjs/common';
-
+import { FirestoreConfigService } from '../../../config/firestore.config';
+import { QueryFilterOperator } from '../../../types/google-cloud.types';
 import { FirestoreBaseRepository } from '../../../common/repositories/firestore-base.repository';
 import { RegionConfiguration } from '../services/enhanced-regional/regional-configuration.service';
 
@@ -14,14 +15,9 @@ import { RegionConfiguration } from '../services/enhanced-regional/regional-conf
  */
 @Injectable()
 export class RegionalConfigurationRepository extends FirestoreBaseRepository<RegionConfiguration> {
-  constructor() {
-    super('regional_configurations', {
-      idField: 'id',
-      defaultOrderField: 'name',
-      defaultOrderDirection: 'asc',
-    });
-
-    this.logger = new Logger(RegionalConfigurationRepository.name);
+  protected readonly logger = new Logger(RegionalConfigurationRepository.name);
+  constructor(protected readonly firestoreConfigService: FirestoreConfigService) {
+    super(firestoreConfigService, 'regional_configurations');
   }
 
   /**
@@ -35,16 +31,12 @@ export class RegionalConfigurationRepository extends FirestoreBaseRepository<Reg
     countryCode: string,
     tenantId: string,
   ): Promise<RegionConfiguration[]> {
-    return this.findWithFilters(
-      [
-        {
-          field: 'countryCode',
-          operator: '==',
-          value: countryCode.toLowerCase(),
-        },
+    return this.find({
+      advancedFilters: [
+        { field: 'tenantId', operator: '==' as QueryFilterOperator, value: tenantId },
+        { field: 'countryCode', operator: '==' as QueryFilterOperator, value: countryCode.toLowerCase() },
       ],
-      tenantId,
-    );
+    });
   }
 
   /**
@@ -54,16 +46,12 @@ export class RegionalConfigurationRepository extends FirestoreBaseRepository<Reg
    * @returns Active region configurations
    */
   async findActive(tenantId: string): Promise<RegionConfiguration[]> {
-    return this.findWithFilters(
-      [
-        {
-          field: 'active',
-          operator: '==',
-          value: true,
-        },
+    return this.find({
+      advancedFilters: [
+        { field: 'tenantId', operator: '==' as QueryFilterOperator, value: tenantId },
+        { field: 'active', operator: '==' as QueryFilterOperator, value: true },
       ],
-      tenantId,
-    );
+    });
   }
 
   /**
@@ -77,7 +65,11 @@ export class RegionalConfigurationRepository extends FirestoreBaseRepository<Reg
     currencyCode: string,
     tenantId: string,
   ): Promise<RegionConfiguration[]> {
-    const regions = await this.findAll(tenantId);
+    const regions = await this.find({
+      advancedFilters: [
+        { field: 'tenantId', operator: '==' as QueryFilterOperator, value: tenantId },
+      ],
+    });
 
     return regions.filter(
       (region) =>
@@ -97,7 +89,11 @@ export class RegionalConfigurationRepository extends FirestoreBaseRepository<Reg
     languageCode: string,
     tenantId: string,
   ): Promise<RegionConfiguration[]> {
-    const regions = await this.findAll(tenantId);
+    const regions = await this.find({
+      advancedFilters: [
+        { field: 'tenantId', operator: '==' as QueryFilterOperator, value: tenantId },
+      ],
+    });
 
     return regions.filter(
       (region) =>
@@ -117,7 +113,11 @@ export class RegionalConfigurationRepository extends FirestoreBaseRepository<Reg
     marketplaceId: string,
     tenantId: string,
   ): Promise<RegionConfiguration[]> {
-    const regions = await this.findAll(tenantId);
+    const regions = await this.find({
+      advancedFilters: [
+        { field: 'tenantId', operator: '==' as QueryFilterOperator, value: tenantId },
+      ],
+    });
 
     return regions.filter((region) =>
       region.supportedMarketplaces.includes(marketplaceId),
@@ -137,7 +137,11 @@ export class RegionalConfigurationRepository extends FirestoreBaseRepository<Reg
     value: any,
     tenantId: string,
   ): Promise<RegionConfiguration[]> {
-    const regions = await this.findAll(tenantId);
+    const regions = await this.find({
+      advancedFilters: [
+        { field: 'tenantId', operator: '==' as QueryFilterOperator, value: tenantId },
+      ],
+    });
 
     return regions.filter((region) => region.businessRules[rule] === value);
   }

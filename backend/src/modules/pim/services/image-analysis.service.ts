@@ -257,6 +257,8 @@ export interface ImageOptimizationResult {
 /**
  * Product context for image analysis
  */
+import { CustomFields } from '../models/custom-fields.model';
+
 export interface ProductContext {
   /**
    * Product name
@@ -275,8 +277,10 @@ export interface ProductContext {
 
   /**
    * Product attributes
+   *
+   * Strictly typed for PIM compliance. Extend as needed for additional types, but prefer to use unknown with runtime validation if truly necessary.
    */
-  attributes?: Record<string, any>;
+  attributes?: import('../models/custom-fields.model').CustomFields;
 }
 
 /**

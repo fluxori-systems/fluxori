@@ -4,7 +4,6 @@
  * Core model for products in the PIM module
  */
 
-import { TenantEntity } from '../../../types/google-cloud.types';
 import {
   ProductStatus,
   ProductType,
@@ -14,11 +13,34 @@ import {
   CategoryReference,
   ComplianceInfo,
 } from '../interfaces/types';
+import { FirestoreEntityWithMetadata } from '../../../common/repositories/base/repository-types';
 
 /**
  * Product entity
  */
-export interface Product extends TenantEntity {
+export interface Product extends FirestoreEntityWithMetadata {
+  /** Unique identifier */
+  id: string;
+  /** Soft delete flag */
+  isDeleted: boolean;
+  /** Version for optimistic locking */
+  version: number;
+  /** Creation timestamp */
+  createdAt: Date;
+  /** Last update timestamp */
+  updatedAt: Date;
+  /** Deletion timestamp (optional) */
+  deletedAt?: Date | undefined;
+  /**
+   * Organization ID
+   */
+  organizationId: string;
+
+  /**
+   * Tenant ID (optional)
+   */
+  tenantId?: string;
+
   /**
    * Stock Keeping Unit - unique product identifier
    */

@@ -1,10 +1,11 @@
 import { Injectable, Logger, Inject } from '@nestjs/common';
+import { toJSDate } from '../../../../common/utils/date.util';
 import { ConfigService } from '@nestjs/config';
 
 import { Firestore, Query } from '@google-cloud/firestore';
 import { v4 as uuidv4 } from 'uuid';
 
-import { ObservabilityService } from '../../../common/observability';
+import { ObservabilityService } from '../../../../common/observability';
 import {
   SecurityAuditService as ISecurityAuditService,
   SecurityAuditRecord,
@@ -187,7 +188,7 @@ export class SecurityAuditService implements ISecurityAuditService {
 
         // Convert Firestore timestamps to JavaScript Dates
         if (data.timestamp && typeof data.timestamp !== 'string') {
-          data.timestamp = (data.timestamp as any).toDate();
+          data.timestamp = toJSDate(data.timestamp);
         }
 
         records.push(data);

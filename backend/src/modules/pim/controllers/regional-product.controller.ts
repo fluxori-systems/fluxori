@@ -59,7 +59,7 @@ class UpdateRegionalProductDataDto
 class BulkUpdateRegionalDataDto {
   productIds!: string[];
   regionId!: string;
-  data: Partial<RegionalProductAttributes>;
+  data!: Partial<RegionalProductAttributes>;
 }
 
 /**
@@ -215,8 +215,8 @@ export class RegionalProductController {
   @Post(':productId/generate-regional-data')
   async generateRegionalData(
     @Param('productId') productId: string,
-    @Query('regions') regionIds?: string,
     @GetUser() user: any,
+    @Query('regions') regionIds?: string,
   ) {
     try {
       // Parse region IDs if provided

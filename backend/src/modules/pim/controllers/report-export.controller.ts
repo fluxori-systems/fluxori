@@ -68,7 +68,7 @@ export class ReportExportController {
         const networkQuality =
           await this.networkAwareStorageService.getNetworkQuality();
         body.options.enableNetworkOptimization =
-          networkQuality.quality !== 'excellent';
+          networkQuality.quality !== 'high';
       }
 
       // Auto-detect load shedding for resilience
@@ -294,7 +294,7 @@ export class ReportExportController {
       if (body.enableNetworkOptimization === undefined) {
         const networkQuality =
           await this.networkAwareStorageService.getNetworkQuality();
-        body.enableNetworkOptimization = networkQuality.quality !== 'excellent';
+        body.enableNetworkOptimization = networkQuality.quality !== 'high';
       }
 
       // Auto-detect load shedding for resilience

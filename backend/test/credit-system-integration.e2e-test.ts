@@ -3,21 +3,21 @@ import { INestApplication } from "@nestjs/common";
 import * as request from "supertest";
 import { AppModule } from "../src/app.module";
 import { FirebaseAuthGuard } from "../src/common/guards/firebase-auth.guard";
-import { mockFirebaseUser } from "./mocks/auth.mock";
 
 /**
  * E2E tests for the Credit System integration
  */
 describe("Credit System Integration (e2e)", () => {
   let app: INestApplication;
-  let mockUser: any;
+  let mockUser: { uid: string; organizationId: string };
 
   beforeAll(async () => {
-    // Mock user with organization ID
+    // Inline mock user (was previously imported)
     mockUser = {
       uid: "test-user-123",
       organizationId: "test-org-123",
     };
+    // No import needed
 
     // Create testing module with mocked auth guard
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -32,10 +32,18 @@ describe("Credit System Integration (e2e)", () => {
     app = moduleFixture.createNestApplication();
 
     // Mock the user extraction from request
-    app.use((req, res, next) => {
-      req.user = mockUser;
-      next();
-    });
+    app.use(
+      (
+        req: import("express").Request & {
+          user?: { uid: string; organizationId: string };
+        },
+        res: import("express").Response,
+        next: import("express").NextFunction,
+      ) => {
+        req.user = mockUser;
+        next();
+      },
+    );
 
     await app.init();
   });
@@ -54,7 +62,7 @@ describe("Credit System Integration (e2e)", () => {
           usageType: "KEYWORD_RESEARCH",
         })
         .expect(200)
-        .expect((res) => {
+        .expect((res: request.Response) => {
           expect(res.body).toHaveProperty("creditCost");
           expect(res.body.creditCost).toBeGreaterThan(0);
           expect(res.body).toHaveProperty("hasCredits");
@@ -72,7 +80,7 @@ describe("Credit System Integration (e2e)", () => {
           notificationEnabled: true,
         })
         .expect(201)
-        .expect((res) => {
+        .expect((res: request.Response) => {
           expect(res.body).toHaveProperty("id");
           expect(res.body).toHaveProperty("creditCost");
           expect(res.body).toHaveProperty("reservationId");
@@ -96,7 +104,7 @@ describe("Credit System Integration (e2e)", () => {
       return request(app.getHttpServer())
         .get(`/credit-system/research/status/${requestId}`)
         .expect(200)
-        .expect((res) => {
+        .expect((res: request.Response) => {
           expect(res.body).toHaveProperty("totalPendingRequests");
           expect(res.body).toHaveProperty("queuePosition");
           expect(res.body).toHaveProperty("estimatedCompletionTime");
@@ -122,7 +130,7 @@ describe("Credit System Integration (e2e)", () => {
           },
         })
         .expect(201)
-        .expect((res) => {
+        .expect((res: request.Response) => {
           expect(res.body).toHaveProperty("success", true);
           expect(res.body).toHaveProperty("creditUsage");
           expect(res.body.creditUsage).toHaveProperty("recorded", true);
@@ -146,7 +154,7 @@ describe("Credit System Integration (e2e)", () => {
           },
         })
         .expect(201)
-        .expect((res) => {
+        .expect((res: request.Response) => {
           expect(res.body).toHaveProperty("id");
           expect(res.body).toHaveProperty("searchVolume");
           expect(res.body).toHaveProperty("keyword", "smartphone");
@@ -169,7 +177,7 @@ describe("Credit System Integration (e2e)", () => {
           isActive: true,
         })
         .expect(201)
-        .expect((res) => {
+        .expect((res: request.Response) => {
           expect(res.body).toHaveProperty("id");
           expect(res.body).toHaveProperty("creditCost");
           expect(res.body).toHaveProperty("keyword", "smartphone");
@@ -189,7 +197,7 @@ describe("Credit System Integration (e2e)", () => {
           optimizeListingTitles: false,
         })
         .expect(201)
-        .expect((res) => {
+        .expect((res: request.Response) => {
           expect(res.body).toHaveProperty("keywordResearchResult");
           expect(res.body).toHaveProperty("mappingsCreated");
         });
@@ -208,7 +216,7 @@ describe("Credit System Integration (e2e)", () => {
           includeSouthAfricanInsights: true,
         })
         .expect(201)
-        .expect((res) => {
+        .expect((res: request.Response) => {
           expect(res.body).toHaveProperty("id");
           expect(res.body).toHaveProperty("aiGeneratedSummary");
           expect(res.body).toHaveProperty("recommendedActions");
@@ -222,7 +230,7 @@ describe("Credit System Integration (e2e)", () => {
       return request(app.getHttpServer())
         .get("/credit-system/balance")
         .expect(200)
-        .expect((res) => {
+        .expect((res: request.Response) => {
           expect(res.body).toHaveProperty("totalCredits");
           expect(res.body).toHaveProperty("remainingCredits");
           expect(res.body).toHaveProperty("usageStats");
@@ -237,7 +245,7 @@ describe("Credit System Integration (e2e)", () => {
           type: "subscription",
         })
         .expect(201)
-        .expect((res) => {
+        .expect((res: request.Response) => {
           expect(res.body).toHaveProperty("success", true);
           expect(res.body).toHaveProperty("updatedBalance");
           expect(res.body.updatedBalance).toBeGreaterThanOrEqual(100);

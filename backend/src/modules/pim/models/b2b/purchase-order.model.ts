@@ -169,10 +169,12 @@ export interface ApprovalAction {
  * Approval workflow definition
  */
 export interface ApprovalWorkflow {
+  isDeleted: boolean;
+  version: number;
   /**
    * Unique identifier for the approval workflow
    */
-  id?: string;
+  id: string;
 
   /**
    * Organization that owns this workflow
@@ -695,7 +697,7 @@ export interface PurchaseOrder {
   /**
    * Custom fields specific to this order
    */
-  customFields?: Record<string, any>;
+  customFields?: import('../custom-fields.model').CustomFields;
 
   /**
    * Creation timestamp

@@ -55,9 +55,12 @@ export class LoggingInterceptor implements NestInterceptor {
       return next.handle();
     }
 
-    const request = context
-      .switchToHttp()
-      .getRequest<Request & { traceId?: string; user?: any }>();
+    // Use ExtendedRequest for strict typing
+    const request = context.switchToHttp().getRequest<
+      import('../../guards/extended-request.interface').ExtendedRequest & {
+        traceId?: string;
+      }
+    >();
     const startTime = Date.now();
     const traceId = request.traceId;
     const shouldSample = Math.random() < this.debugSamplingRate;
@@ -71,7 +74,7 @@ export class LoggingInterceptor implements NestInterceptor {
 
     // Add user context if available
     if (request.user) {
-      logContext.userId = request.user.id;
+      logContext.userId = request.user.uid;
       logContext.organizationId = request.user.organizationId;
     }
 
@@ -80,15 +83,16 @@ export class LoggingInterceptor implements NestInterceptor {
       this.logger.debug(`${request.method} ${request.path} - Request`, {
         ...logContext,
         customFields: {
-          method: request.method,
-          path: request.path,
-          query: JSON.stringify(request.query),
-          params: JSON.stringify(request.params),
+          method: String(request.method),
+          path: String(request.path),
+          query: JSON.stringify(request.query ?? {}),
+          params: JSON.stringify(request.params ?? {}),
           // headers can be large, so only log selected headers or summary
-          headers: JSON.stringify(this.sanitizeHeaders(request.headers)),
+          headers: JSON.stringify(this.sanitizeHeaders(request.headers ?? {})),
           ...(this.logRequestBodies &&
-            request.body && { body: JSON.stringify(request.body) }),
-        },
+            typeof request.body === 'object' &&
+            request.body !== null && { body: JSON.stringify(request.body) }),
+        } as { [key: string]: string | number | boolean | undefined },
       });
     }
 
@@ -105,11 +109,11 @@ export class LoggingInterceptor implements NestInterceptor {
             {
               ...logContext,
               customFields: {
-                responseStatusCode: response.statusCode,
-                responseDurationMs: duration,
+                responseStatusCode: Number(response.statusCode),
+                responseDurationMs: Number(duration),
                 ...(this.logResponseBodies &&
                   data && { responseBody: JSON.stringify(data) }),
-              },
+              } as { [key: string]: string | number | boolean | undefined },
             },
           );
 
@@ -118,17 +122,21 @@ export class LoggingInterceptor implements NestInterceptor {
             this.logger.debug(`${request.method} ${request.path} - Response`, {
               ...logContext,
               customFields: {
-                responseStatusCode: response.statusCode,
-                responseDurationMs: duration,
+                responseStatusCode: Number(response.statusCode),
+                responseDurationMs: Number(duration),
                 ...(this.logResponseBodies &&
                   data && { responseBody: JSON.stringify(data) }),
-              },
+              } as { [key: string]: string | number | boolean | undefined },
             });
           }
         },
-        error: (error) => {
+        error: (error: Error) => {
           const duration = Date.now() - startTime;
-          const statusCode = error.status || 500;
+          // Type guard for errors with status property
+          const statusCode =
+            typeof (error as any).status === 'number'
+              ? (error as any).status
+              : 500;
 
           // Always log errors
           this.logger.error(
@@ -138,10 +146,10 @@ export class LoggingInterceptor implements NestInterceptor {
               ...logContext,
               stack: error.stack,
               customFields: {
-                errorMessage: error.message,
-                errorStatusCode: statusCode,
-                errorDurationMs: duration,
-              },
+                errorMessage: String(error.message),
+                errorStatusCode: Number(statusCode),
+                errorDurationMs: Number(duration),
+              } as { [key: string]: string | number | boolean | undefined },
             },
           );
         },

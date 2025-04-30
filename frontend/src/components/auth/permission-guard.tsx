@@ -2,7 +2,7 @@
 
 import { ReactNode } from "react";
 
-import { useAuth } from "../../hooks/useAuth";
+import { useAuth } from "../../lib/firebase/useAuth";
 import { UserRole } from "../../types/user/user.types";
 
 interface PermissionGuardProps {

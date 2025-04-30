@@ -22,6 +22,7 @@ import { GetUser } from '../../auth/decorators/get-user.decorator';
 import { FirebaseAuthGuard } from '../../auth/guards/firebase-auth.guard';
 import { ProductAiService } from '../services/product-ai.service';
 import { ProductService } from '../services/product.service';
+import { ProductAttribute } from '../interfaces/types';
 
 /**
  * DTO for generating product descriptions
@@ -40,7 +41,7 @@ class GenerateProductDescriptionDto {
   productData?: {
     name: string;
     category: string;
-    attributes: Record<string, any>;
+    attributes: ProductAttribute[];
     features?: string[];
     keywords?: string[];
     targetAudience?: string;
@@ -150,12 +151,12 @@ export class CatalogOptimizationController {
         // Format product data for AI service
         productData = {
           name: product.name,
-          category: product.category?.name || '',
-          attributes: product.attributes || {},
-          features: product.features || [],
-          keywords: product.keywords || [],
-          targetAudience: product.targetAudience || '',
-          tone: product.tone || 'professional',
+          category: product.categories[0]?.name || '',
+          attributes: product.attributes || [],
+          features: [],
+          keywords: [],
+          targetAudience: '',
+          tone: 'professional',
         };
       } else if (dto.productData) {
         // Use provided product data
@@ -221,8 +222,8 @@ export class CatalogOptimizationController {
         id: product.id,
         name: product.name,
         description: product.description || '',
-        category: product.category?.name || '',
-        attributes: product.attributes || {},
+        category: product.categories[0]?.name || '',
+        attributes: product.attributes || [],
       };
 
       // Generate SEO suggestions

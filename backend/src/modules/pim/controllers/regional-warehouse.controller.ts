@@ -112,27 +112,26 @@ export class RegionalWarehouseController {
    */
   @Get('search')
   async findWarehouses(
+    @GetUser() user: any,
     @Query('region') region?: string,
     @Query('country') country?: string,
-    @Query('supportsCrossBorderShipping') supportsCrossBorderShipping?: boolean,
     @Query('canShipToCountry') canShipToCountry?: string,
-    @Query('activeOnly') activeOnly?: boolean,
     @Query('requiredCapabilities') requiredCapabilities?: string,
     @Query('maxUtilization') maxUtilization?: number,
-    @GetUser() user: any,
+    @Query('supportsCrossBorderShipping') supportsCrossBorderShipping?: boolean,
+    @Query('activeOnly') activeOnly?: boolean,
   ): Promise<any> {
     try {
       // Parse boolean values
       const parsedSupportsCrossBorder =
-        supportsCrossBorderShipping === undefined
-          ? undefined
-          : supportsCrossBorderShipping === true ||
-            supportsCrossBorderShipping === 'true';
+        typeof supportsCrossBorderShipping === 'string'
+          ? supportsCrossBorderShipping === 'true'
+          : supportsCrossBorderShipping;
 
       const parsedActiveOnly =
-        activeOnly === undefined
-          ? undefined
-          : activeOnly === true || activeOnly === 'true';
+        typeof activeOnly === 'string'
+          ? activeOnly === 'true'
+          : activeOnly;
 
       // Parse array
       const parsedCapabilities = requiredCapabilities
@@ -231,8 +230,8 @@ export class RegionalWarehouseController {
   async getOptimalWarehouse(
     @Query('productId') productId: string,
     @Query('destinationCountry') destinationCountry: string,
-    @Query('strategy') strategy?: AllocationStrategy,
     @GetUser() user: any,
+    @Query('strategy') strategy?: AllocationStrategy,
   ): Promise<any> {
     if (!productId) {
       throw new BadRequestException('Product ID is required');

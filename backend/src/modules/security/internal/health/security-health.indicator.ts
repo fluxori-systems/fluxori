@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { HealthIndicator, HealthIndicatorResult } from '@nestjs/terminus';
 import { HealthCheckError } from '@nestjs/terminus/dist/health-check';
 
-import { ObservabilityService } from '../../../common/observability';
+import { ObservabilityService } from '../../../../common/observability';
 import { CloudArmorService } from '../services/cloud-armor.service';
 import { CredentialManagerService } from '../services/credential-manager.service';
 import { DlpService } from '../services/dlp.service';

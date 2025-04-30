@@ -3,10 +3,10 @@
  */
 
 // Authentication hooks
-export * from "./useAuth";
+export * from "../lib/firebase/useAuth";
 
 // Firebase hooks
-export * from "./useFirestore";
+export * from "../lib/firebase/useFirestore";
 
 // Feature flag hooks
 export * from "./useFeatureFlag";

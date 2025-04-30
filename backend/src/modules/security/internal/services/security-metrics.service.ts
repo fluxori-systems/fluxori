@@ -4,7 +4,7 @@ import { SecurityModuleOptions } from '../interfaces/security.interfaces';
 
 import * as monitoring from '@google-cloud/monitoring';
 
-import { ObservabilityService } from '../../../common/observability';
+import { ObservabilityService } from '../../../../common/observability';
 
 /**
  * Service for collecting and reporting security metrics

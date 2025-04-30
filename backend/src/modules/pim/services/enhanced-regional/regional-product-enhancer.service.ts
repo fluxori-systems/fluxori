@@ -60,10 +60,10 @@ export interface RegionalProductAttributes {
   urlKey?: string;
 
   /** Region-specific custom attributes */
-  customAttributes?: Record<string, any>;
+  customAttributes?: Record<string, string | number | boolean | Date | null | undefined>;
 
   /** Region-specific marketplace attributes */
-  marketplaceAttributes?: Record<string, any>;
+  marketplaceAttributes?: Record<string, string | number | boolean | Date | null | undefined>;
 
   /** Region-specific tax class */
   taxClass?: string;

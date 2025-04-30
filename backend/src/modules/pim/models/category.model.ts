@@ -4,7 +4,7 @@
  * Core model for product categories in the PIM module
  */
 
-import { TenantEntity } from '../../../types/google-cloud.types';
+import { FirestoreEntityWithMetadata } from '../../../common/repositories/base/repository-types';
 import { ProductAttribute } from '../interfaces/types';
 
 /**
@@ -19,7 +19,29 @@ export enum CategoryStatus {
 /**
  * Category entity
  */
-export interface Category extends TenantEntity {
+export interface Category extends FirestoreEntityWithMetadata {
+  /** Unique identifier */
+  id: string;
+  /** Soft delete flag */
+  isDeleted: boolean;
+  /** Version for optimistic locking */
+  version: number;
+  /** Creation timestamp */
+  createdAt: Date;
+  /** Last update timestamp */
+  updatedAt: Date;
+  /** Deletion timestamp (optional) */
+  deletedAt?: Date | undefined;
+  /**
+   * Organization ID
+   */
+  organizationId: string;
+
+  /**
+   * Tenant ID (optional)
+   */
+  tenantId?: string;
+
   /**
    * Category name
    */

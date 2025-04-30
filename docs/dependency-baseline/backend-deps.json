@@ -1,0 +1,171 @@
+{
+  "common/repositories/base/index.js": [
+    "common/repositories/base/repository-cache.js",
+    "common/repositories/base/repository-converter.js",
+    "common/repositories/base/repository-stats.js",
+    "common/repositories/base/repository-transactions.js",
+    "common/repositories/base/repository-types.js",
+    "common/repositories/base/repository-validation.js"
+  ],
+  "common/repositories/base/repository-cache.js": [],
+  "common/repositories/base/repository-converter.js": [
+    "types/google-cloud.types.js"
+  ],
+  "common/repositories/base/repository-stats.js": [],
+  "common/repositories/base/repository-transactions.js": [],
+  "common/repositories/base/repository-types.js": [],
+  "common/repositories/base/repository-validation.js": [],
+  "common/repositories/firestore-base.repository.js": [
+    "common/repositories/base/index.js"
+  ],
+  "common/repositories/migration-tools/full-migration.js": [],
+  "common/repositories/migration-tools/migrate-repositories.js": [],
+  "common/repositories/migration-tools/simple-test-migration.js": [],
+  "common/repositories/migration-tools/update-imports.js": [],
+  "common/storage/storage.interface.js": [],
+  "common/utils/network-status.service.js": [],
+  "config/firestore.config.js": [],
+  "modules/agent-framework/adapters/vertex-ai.adapter.js": [
+    "modules/agent-framework/interfaces/types.js"
+  ],
+  "modules/agent-framework/agent-framework.module.js": [
+    "modules/agent-framework/adapters/vertex-ai.adapter.js",
+    "modules/agent-framework/controllers/agent.controller.js",
+    "modules/agent-framework/repositories/agent-config.repository.js",
+    "modules/agent-framework/repositories/agent-conversation.repository.js",
+    "modules/agent-framework/repositories/model-registry.repository.js",
+    "modules/agent-framework/services/agent.service.js",
+    "modules/agent-framework/services/model-adapter.factory.js",
+    "modules/agent-framework/utils/token-estimator.js"
+  ],
+  "modules/agent-framework/controllers/agent.controller.js": [],
+  "modules/agent-framework/index.js": [
+    "modules/agent-framework/adapters/vertex-ai.adapter.js",
+    "modules/agent-framework/agent-framework.module.js",
+    "modules/agent-framework/interfaces/types.js",
+    "modules/agent-framework/repositories/agent-config.repository.js",
+    "modules/agent-framework/repositories/agent-conversation.repository.js",
+    "modules/agent-framework/repositories/model-registry.repository.js",
+    "modules/agent-framework/services/agent.service.js",
+    "modules/agent-framework/services/model-adapter.factory.js",
+    "modules/agent-framework/utils/token-estimator.js"
+  ],
+  "modules/agent-framework/interfaces/model-adapter.interface.js": [],
+  "modules/agent-framework/interfaces/types.js": [],
+  "modules/agent-framework/repositories/agent-config.repository.js": [],
+  "modules/agent-framework/repositories/agent-conversation.repository.js": [],
+  "modules/agent-framework/repositories/model-registry.repository.js": [],
+  "modules/agent-framework/services/agent.service.js": [
+    "modules/agent-framework/interfaces/types.js"
+  ],
+  "modules/agent-framework/services/model-adapter.factory.js": [],
+  "modules/agent-framework/utils/token-estimator.js": [],
+  "modules/auth/decorators/get-user.decorator.js": [],
+  "modules/auth/decorators/public.decorator.js": [],
+  "modules/auth/guards/firebase-auth.guard.js": [
+    "modules/auth/decorators/public.decorator.js"
+  ],
+  "modules/auth/services/firebase-auth.service.js": [],
+  "modules/credit-system/controllers/credit-system.controller.js": [],
+  "modules/credit-system/credit-system.module.js": [
+    "modules/credit-system/controllers/credit-system.controller.js",
+    "modules/credit-system/repositories/credit-allocation.repository.js",
+    "modules/credit-system/repositories/credit-pricing-tier.repository.js",
+    "modules/credit-system/repositories/credit-reservation.repository.js",
+    "modules/credit-system/repositories/credit-transaction.repository.js",
+    "modules/credit-system/repositories/credit-usage-log.repository.js",
+    "modules/credit-system/services/credit-system.service.js",
+    "modules/credit-system/services/token-tracking.service.js",
+    "modules/credit-system/utils/agent-framework-adapter.js",
+    "modules/credit-system/utils/feature-flag-adapter.js"
+  ],
+  "modules/credit-system/index.js": [
+    "modules/credit-system/credit-system.module.js",
+    "modules/credit-system/interfaces/types.js",
+    "modules/credit-system/models/credit-dto.js",
+    "modules/credit-system/services/credit-system.service.js",
+    "modules/credit-system/services/token-tracking.service.js"
+  ],
+  "modules/credit-system/interfaces/dependencies.js": [],
+  "modules/credit-system/interfaces/types.js": [],
+  "modules/credit-system/models/credit-dto.js": [],
+  "modules/credit-system/repositories/credit-allocation.repository.js": [
+    "common/repositories/firestore-base.repository.js"
+  ],
+  "modules/credit-system/repositories/credit-pricing-tier.repository.js": [
+    "common/repositories/firestore-base.repository.js"
+  ],
+  "modules/credit-system/repositories/credit-reservation.repository.js": [
+    "common/repositories/firestore-base.repository.js"
+  ],
+  "modules/credit-system/repositories/credit-transaction.repository.js": [
+    "common/repositories/firestore-base.repository.js"
+  ],
+  "modules/credit-system/repositories/credit-usage-log.repository.js": [
+    "common/repositories/firestore-base.repository.js"
+  ],
+  "modules/credit-system/repositories/index.js": [
+    "modules/credit-system/repositories/credit-allocation.repository.js",
+    "modules/credit-system/repositories/credit-pricing-tier.repository.js",
+    "modules/credit-system/repositories/credit-reservation.repository.js",
+    "modules/credit-system/repositories/credit-transaction.repository.js",
+    "modules/credit-system/repositories/credit-usage-log.repository.js"
+  ],
+  "modules/credit-system/services/credit-system.service.js": [
+    "modules/credit-system/interfaces/types.js"
+  ],
+  "modules/credit-system/services/token-tracking.service.js": [
+    "modules/credit-system/interfaces/types.js"
+  ],
+  "modules/credit-system/utils/agent-framework-adapter.js": [],
+  "modules/credit-system/utils/feature-flag-adapter.js": [],
+  "modules/feature-flags/controllers/feature-flag.controller.js": [],
+  "modules/feature-flags/feature-flags.module.js": [
+    "config/firestore.config.js",
+    "modules/feature-flags/controllers/feature-flag.controller.js",
+    "modules/feature-flags/repositories/feature-flag-audit-log.repository.js",
+    "modules/feature-flags/repositories/feature-flag.repository.js",
+    "modules/feature-flags/services/feature-flag-cache.service.js",
+    "modules/feature-flags/services/feature-flag.service.js"
+  ],
+  "modules/feature-flags/index.js": [
+    "modules/feature-flags/feature-flags.module.js",
+    "modules/feature-flags/interfaces/types.js",
+    "modules/feature-flags/repositories/feature-flag-audit-log.repository.js",
+    "modules/feature-flags/repositories/feature-flag.repository.js",
+    "modules/feature-flags/services/feature-flag-cache.service.js",
+    "modules/feature-flags/services/feature-flag.service.js"
+  ],
+  "modules/feature-flags/interfaces/types.js": [],
+  "modules/feature-flags/models/feature-flag-audit-log.schema.js": [],
+  "modules/feature-flags/models/feature-flag.schema.js": [],
+  "modules/feature-flags/repositories/feature-flag-audit-log.repository.js": [],
+  "modules/feature-flags/repositories/feature-flag.repository.js": [
+    "modules/feature-flags/interfaces/types.js"
+  ],
+  "modules/feature-flags/services/feature-flag-cache.service.js": [],
+  "modules/feature-flags/services/feature-flag.service.js": [
+    "modules/feature-flags/interfaces/types.js"
+  ],
+  "modules/pim/controllers/advanced-image.controller.js": [
+    "modules/auth/guards/firebase-auth.guard.js",
+    "modules/pim/models/image.model.js"
+  ],
+  "modules/pim/interfaces/image-upload-options.interface.js": [],
+  "modules/pim/interfaces/market-context.interface.js": [],
+  "modules/pim/interfaces/types.js": [],
+  "modules/pim/models/image.model.js": [],
+  "modules/pim/services/image-analysis.service.js": [],
+  "modules/pim/services/load-shedding-resilience.service.js": [],
+  "modules/pim/services/market-context.service.js": [
+    "modules/pim/utils/south-african-vat.js"
+  ],
+  "modules/pim/services/network-aware-storage.service.js": [
+    "modules/pim/models/image.model.js"
+  ],
+  "modules/pim/services/pim-storage.service.js": [
+    "modules/pim/models/image.model.js"
+  ],
+  "modules/pim/utils/south-african-vat.js": [],
+  "types/google-cloud.types.js": []
+}

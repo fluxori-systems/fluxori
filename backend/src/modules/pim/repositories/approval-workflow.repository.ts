@@ -7,6 +7,7 @@ import { Injectable, Logger } from '@nestjs/common';
 
 import { FirestoreBaseRepository } from '../../../common/repositories/firestore-base.repository';
 import { ApprovalWorkflow } from '../models/b2b/purchase-order.model';
+import { FirestoreConfigService } from '../../../config/firestore.config';
 
 /**
  * Repository for approval workflows
@@ -18,8 +19,8 @@ export class ApprovalWorkflowRepository extends FirestoreBaseRepository<Approval
   /**
    * Constructor initializes the repository with collection name
    */
-  constructor() {
-    super('approval_workflows');
+  constructor(firestoreConfigService: FirestoreConfigService) {
+    super(firestoreConfigService, 'approval_workflows');
   }
 
   /**
@@ -27,15 +28,15 @@ export class ApprovalWorkflowRepository extends FirestoreBaseRepository<Approval
    * @param organizationId The organization ID
    * @returns Array of active approval workflows
    */
+  /**
+   * Finds all active approval workflows for a given organization.
+   * @param organizationId The organization ID.
+   * @returns Array of active ApprovalWorkflow entities.
+   */
   async findActiveWorkflows(
     organizationId: string,
   ): Promise<ApprovalWorkflow[]> {
-    const query = this.collection
-      .where('isActive', '==', true)
-      .where('organizationId', '==', organizationId);
-
-    const snapshot = await this.executeQuery(query);
-    return snapshot.docs.map((doc) => this.mapSnapshotToEntity(doc));
+    return this.find({ filter: { isActive: true, organizationId } });
   }
 
   /**
@@ -44,17 +45,19 @@ export class ApprovalWorkflowRepository extends FirestoreBaseRepository<Approval
    * @param organizationId The organization ID
    * @returns Array of approval workflows for the specified tier
    */
+  /**
+   * Finds approval workflows for a specific customer tier.
+   * @param customerTierId The customer tier ID.
+   * @param organizationId The organization ID.
+   * @returns Array of approval workflows for the specified tier.
+   */
   async findByCustomerTier(
     customerTierId: string,
     organizationId: string,
   ): Promise<ApprovalWorkflow[]> {
-    const query = this.collection
-      .where('customerTierIds', 'array-contains', customerTierId)
-      .where('organizationId', '==', organizationId)
-      .where('isActive', '==', true);
-
-    const snapshot = await this.executeQuery(query);
-    return snapshot.docs.map((doc) => this.mapSnapshotToEntity(doc));
+    // Firestore can only query one array-contains at a time; fallback to in-memory filtering
+    const all = await this.find({ filter: { isActive: true, organizationId } });
+    return all.filter(wf => wf.customerTierIds?.includes(customerTierId));
   }
 
   /**
@@ -63,17 +66,19 @@ export class ApprovalWorkflowRepository extends FirestoreBaseRepository<Approval
    * @param organizationId The organization ID
    * @returns Array of approval workflows for the specified group
    */
+  /**
+   * Finds approval workflows for a specific customer group.
+   * @param customerGroupId The customer group ID.
+   * @param organizationId The organization ID.
+   * @returns Array of approval workflows for the specified group.
+   */
   async findByCustomerGroup(
     customerGroupId: string,
     organizationId: string,
   ): Promise<ApprovalWorkflow[]> {
-    const query = this.collection
-      .where('customerGroupIds', 'array-contains', customerGroupId)
-      .where('organizationId', '==', organizationId)
-      .where('isActive', '==', true);
-
-    const snapshot = await this.executeQuery(query);
-    return snapshot.docs.map((doc) => this.mapSnapshotToEntity(doc));
+    // Firestore can only query one array-contains at a time; fallback to in-memory filtering
+    const all = await this.find({ filter: { isActive: true, organizationId } });
+    return all.filter(wf => wf.customerGroupIds?.includes(customerGroupId));
   }
 
   /**
@@ -82,24 +87,19 @@ export class ApprovalWorkflowRepository extends FirestoreBaseRepository<Approval
    * @param organizationId The organization ID
    * @returns Array of approval workflows that include the specified role
    */
+  /**
+   * Finds approval workflows that include a specific approver role in any step.
+   * @param approverRole The approver role to search for.
+   * @param organizationId The organization ID.
+   * @returns Array of approval workflows that include the specified role.
+   */
   async findByApproverRole(
     approverRole: string,
     organizationId: string,
   ): Promise<ApprovalWorkflow[]> {
-    // Due to Firestore limitations on querying nested arrays, we need to fetch all workflows
-    // and filter in memory
-    const query = this.collection
-      .where('isActive', '==', true)
-      .where('organizationId', '==', organizationId);
-
-    const snapshot = await this.executeQuery(query);
-    const allWorkflows = snapshot.docs.map((doc) =>
-      this.mapSnapshotToEntity(doc),
-    );
-
-    // Filter workflows that include the specified approver role in any step
-    return allWorkflows.filter((workflow) =>
-      workflow.steps.some((step) => step.approverRole === approverRole),
+    const all = await this.find({ filter: { isActive: true, organizationId } });
+    return all.filter(workflow =>
+      workflow.steps.some(step => step.approverRole === approverRole),
     );
   }
 
@@ -109,26 +109,20 @@ export class ApprovalWorkflowRepository extends FirestoreBaseRepository<Approval
    * @param organizationId The organization ID
    * @returns Array of approval workflows that include the specified user
    */
+  /**
+   * Finds approval workflows that include a specific approver user ID in any step.
+   * @param approverUserId The approver user ID to search for.
+   * @param organizationId The organization ID.
+   * @returns Array of approval workflows that include the specified user.
+   */
   async findByApproverUserId(
     approverUserId: string,
     organizationId: string,
   ): Promise<ApprovalWorkflow[]> {
-    // Due to Firestore limitations on querying nested arrays, we need to fetch all workflows
-    // and filter in memory
-    const query = this.collection
-      .where('isActive', '==', true)
-      .where('organizationId', '==', organizationId);
-
-    const snapshot = await this.executeQuery(query);
-    const allWorkflows = snapshot.docs.map((doc) =>
-      this.mapSnapshotToEntity(doc),
-    );
-
-    // Filter workflows that include the specified approver user ID in any step
-    return allWorkflows.filter((workflow) =>
+    const all = await this.find({ filter: { isActive: true, organizationId } });
+    return all.filter(workflow =>
       workflow.steps.some(
-        (step) =>
-          step.approverUserIds && step.approverUserIds.includes(approverUserId),
+        step => step.approverUserIds && step.approverUserIds.includes(approverUserId),
       ),
     );
   }

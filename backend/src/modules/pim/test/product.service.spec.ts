@@ -55,6 +55,8 @@ describe('ProductService', () => {
         ...createProductDto,
         createdAt: new Date(),
         updatedAt: new Date(),
+        isDeleted: false,
+        version: 1,
       };
 
       // Mock repository method
@@ -89,6 +91,8 @@ describe('ProductService', () => {
         attributes: [],
         createdAt: new Date(),
         updatedAt: new Date(),
+        isDeleted: false,
+        version: 1,
       };
 
       // Mock repository method
@@ -133,6 +137,8 @@ describe('ProductService', () => {
         attributes: [],
         createdAt: new Date(),
         updatedAt: new Date(),
+        isDeleted: false,
+        version: 1,
       };
 
       // Mock repository method
@@ -172,6 +178,8 @@ describe('ProductService', () => {
         attributes: [],
         createdAt: new Date(),
         updatedAt: new Date(),
+        isDeleted: false,
+        version: 1,
       };
 
       // Mock repository method

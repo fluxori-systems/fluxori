@@ -13,6 +13,7 @@ import {
   BundleComponent,
   Bundle,
 } from '../models/bundle.model';
+import { ProductAttribute } from '../interfaces/types';
 import { Product, ProductStatus } from '../models/product.model';
 import { BundleRepository } from '../repositories/bundle.repository';
 
@@ -54,7 +55,7 @@ export class BundleService {
       pricingValue?: number | string;
       categoryId?: string;
       images?: string[];
-      attributes?: Record<string, any>;
+      attributes?: ProductAttribute[];
       isActive?: boolean;
     },
     organizationId: string,
@@ -62,6 +63,7 @@ export class BundleService {
     try {
       // Create bundle object
       const bundle: Bundle = {
+        id: '', // Will be set by Firestore after creation
         name: bundleData.name,
         description: bundleData.description || '',
         sku: bundleData.sku,
@@ -75,12 +77,15 @@ export class BundleService {
         pricingValue: bundleData.pricingValue,
         categoryId: bundleData.categoryId,
         images: bundleData.images || [],
-        attributes: bundleData.attributes || {},
+        attributes: bundleData.attributes || [],
         isActive:
           bundleData.isActive !== undefined ? bundleData.isActive : true,
         organizationId,
         createdAt: new Date(),
         updatedAt: new Date(),
+        isDeleted: false,
+        deletedAt: null,
+        version: 1,
       };
 
       // Create product for the bundle
@@ -214,7 +219,7 @@ export class BundleService {
       pricingValue?: number | string;
       categoryId?: string;
       images?: string[];
-      attributes?: Record<string, any>;
+      attributes?: ProductAttribute[];
       isActive?: boolean;
     },
     organizationId: string,
@@ -231,7 +236,13 @@ export class BundleService {
         ...bundle,
         ...updateData,
         updatedAt: new Date(),
+        // Ensure required fields are preserved
+        id: bundle.id,
+        isDeleted: bundle.isDeleted,
+        deletedAt: bundle.deletedAt,
+        version: (bundle.version ?? 1) + 1,
       };
+
 
       // Get the bundle's product
       const bundleProduct = await this.productService.findByBundleId(
@@ -259,7 +270,7 @@ export class BundleService {
       if (updateData.isActive !== undefined) {
         productUpdates.status = updateData.isActive
           ? ProductStatus.ACTIVE
-          : ProductStatus.INACTIVE;
+          : ProductStatus.ARCHIVED;
       }
 
       // Update bundle components if provided
@@ -662,7 +673,7 @@ export class BundleService {
     componentTotal: number;
     discount: number;
     final: number;
-    calculationDetails: Record<string, any>;
+    calculationDetails: import('../models/custom-fields.model').CustomFields;
   }> {
     try {
       // Get bundle

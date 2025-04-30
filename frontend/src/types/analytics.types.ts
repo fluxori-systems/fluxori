@@ -2,6 +2,52 @@
  * Types for analytics and reporting features
  */
 
+/**
+ * Data structure for keyword analytics (search, ranking, volume, etc.)
+ */
+export interface KeywordAnalyticsData {
+  /** Main keyword analyzed */
+  keyword: string;
+  /** Marketplace analyzed (e.g., 'takealot') */
+  marketplace: string;
+  /** Current search volume for the keyword */
+  searchVolume: number;
+  /** Historical search volume data */
+  searchVolumeHistory?: Array<{ period: string; volume: number }>;
+  /** Seasonality analytics */
+  seasonalityData?: {
+    quarterlyTrends: Record<string, number>;
+    monthlyTrends: Record<string, number>;
+    seasonalKeywords: string[];
+    peakMonths: string[];
+    peakScore: number;
+  };
+  /** Competition analytics */
+  competitionAnalysis?: {
+    difficulty: number; // 0-100
+    saturationLevel: number; // 0-100
+    opportunityScore: number; // 0-100
+    topCompetitors?: Array<{
+      brandName: string;
+      dominance: number;
+      productCount: number;
+      averageRanking: number;
+      averagePrice: number;
+    }>;
+  };
+  /** Trend prediction analytics */
+  trendPrediction?: {
+    predictedGrowth: number;
+    trendDirection: "rising" | "falling" | "stable";
+    predictedVolume?: number[];
+    confidence?: number;
+    nextThreeMonths?: Array<{ month: string; predictedVolume: number }>;
+  };
+  /** Additional extensible fields */
+  [key: string]: any;
+}
+
+
 import { ProductStatus, ProductType } from "./product/product.types";
 
 /**

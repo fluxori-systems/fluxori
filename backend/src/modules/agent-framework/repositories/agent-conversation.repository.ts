@@ -125,13 +125,12 @@ export class AgentConversationRepository
       // Update token count and cost if provided in the message metadata
       ...(message.metadata?.tokenCount
         ? {
-            tokensUsed:
-              conversation.tokensUsed + (message.metadata.tokenCount as number),
+            tokensUsed: conversation.tokensUsed + message.metadata.tokenCount,
           }
         : {}),
       ...(message.metadata?.cost
         ? {
-            cost: conversation.cost + (message.metadata.cost as number),
+            cost: conversation.cost + message.metadata.cost,
           }
         : {}),
     });

@@ -48,7 +48,7 @@ export { NetworkAwareStorageService } from './services/network-aware-storage.ser
 export { LoadSheddingResilienceService } from './services/load-shedding-resilience.service';
 export { LoadSheddingService } from './services/load-shedding.service';
 export { TakealotConnectorService } from './services/takealot-connector.service';
-export { ReportExporterService } from './services/report-exporter.service';
+
 
 // Phase 2: African Expansion Services
 export {
@@ -69,14 +69,11 @@ export {
 } from './services/african-tax-framework.service';
 export {
   CrossBorderTradeService,
-  TradeAgreement,
-  ShippingEstimate,
-  ShippingMethod,
   ProductCustomsInfo,
-  ShipmentStatus,
-  DocumentRequirement,
-  DocumentType,
-  TradeRestriction,
+  CrossBorderShippingEstimate,
+  CrossBorderShippingMethod,
+  CrossBorderDocumentType,
+  ProductRestrictionLevel,
 } from './services/cross-border-trade.service';
 
 // Bulk Operations Services
@@ -121,7 +118,7 @@ export {
 } from './services/report-exporter.service';
 export { ImportExportService } from './services/import-export.service';
 export { ValidationService } from './services/validation.service';
-export { TaxRateService } from './services/tax-rate.service';
+
 export { VatServiceFactory } from './services/vat-service.factory';
 export { VatService } from './services/vat.service.interface';
 export { ProductAiService } from './services/product-ai.service';
@@ -171,7 +168,6 @@ export {
   PriceMonitoringConfig,
   PriceAlert,
   CompetitorPriceReport,
-  DateRange,
 } from './models/competitor-price.model';
 
 export {
@@ -197,22 +193,18 @@ export {
 // Interfaces
 export { ProductFilter } from './interfaces/product-filter.interface';
 export { CategoryFilter } from './interfaces/category-filter.interface';
-export { ImageUploadOptions } from './interfaces/image-upload-options.interface';
 export {
-  TaxRate,
   TaxType,
   TaxJurisdiction,
   TaxJurisdictionLevel,
   TaxRateSchedule,
   TaxRateRequest,
   TaxRateResult,
-  TaxRateService,
 } from './interfaces/tax-rate.interface';
 export { NetworkQualityInfo, LoadSheddingInfo } from './interfaces/types';
 export {
   MarketContext,
   ProductType,
-  MarketplaceConnector,
 } from './interfaces/types';
 export {
   IMarketContextProvider,

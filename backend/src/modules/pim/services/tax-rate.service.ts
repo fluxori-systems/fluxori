@@ -13,6 +13,7 @@ import {
   TaxRateSchedule,
   TaxJurisdiction,
   TaxType,
+  TaxJurisdictionLevel,
 } from '../interfaces/tax-rate.interface';
 import { TaxRateRepository } from '../repositories/tax-rate.repository';
 
@@ -57,7 +58,7 @@ export class TaxRateService implements ITaxRateService {
       country: params.country,
       region: params.region,
       city: params.city,
-      level: params.city ? 'city' : params.region ? 'province' : 'country',
+      level: params.city ? TaxJurisdictionLevel.CITY : params.region ? TaxJurisdictionLevel.PROVINCE : TaxJurisdictionLevel.COUNTRY,
     };
 
     // First check for product-specific rates if we have product info
@@ -153,7 +154,7 @@ export class TaxRateService implements ITaxRateService {
       country: params.country,
       region: params.region,
       city: params.city,
-      level: params.city ? 'city' : params.region ? 'province' : 'country',
+      level: params.city ? TaxJurisdictionLevel.CITY : params.region ? TaxJurisdictionLevel.PROVINCE : TaxJurisdictionLevel.COUNTRY,
     };
 
     // Check for zero-rated or exempt product types

@@ -1,4 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
+import { toJSDate } from '../../../common/utils/date.util';
 
 import {
   FirestoreBaseRepository,
@@ -158,7 +159,7 @@ export class DocumentRepository extends FirestoreBaseRepository<Document> {
     }
 
     if (params.toDate) {
-      const toDate = new Date(params.toDate);
+      const toDate = toJSDate(params.toDate);
       documents = documents.filter((doc) => {
         const createdAt =
           doc.createdAt instanceof Date

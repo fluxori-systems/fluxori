@@ -15,8 +15,8 @@ import {
   ApiBearerAuth,
 } from '@nestjs/swagger';
 
-import { ObservabilityService } from '../../../common/observability';
-import { FirebaseAuthGuard } from '../../auth/guards/firebase-auth.guard';
+import { ObservabilityService } from '../../../../common/observability';
+import { FirebaseAuthGuard } from '../../../auth/guards/firebase-auth.guard';
 import { SecurityAuditRecord } from '../interfaces/security.interfaces';
 import { SecurityAuditService } from '../services/security-audit.service';
 
@@ -158,8 +158,11 @@ export class SecurityAuditController {
     this.observability.log('Audit logs exported', {
       service: SecurityAuditController.name,
       userId: request.user.id,
-      action: 'export_audit_logs',
-      data: { format: body.format || 'json' },
+      customFields: {
+        action: 'export_audit_logs',
+        format: body.format || 'json',
+      },
+      timestamp: new Date(),
     });
 
     return { url };
@@ -192,8 +195,12 @@ export class SecurityAuditController {
     this.observability.log('Audit logs purged', {
       service: SecurityAuditController.name,
       userId: request.user.id,
-      action: 'purge_audit_logs',
-      data: { olderThan: body.olderThan, purged },
+      customFields: {
+        action: 'purge_audit_logs',
+        olderThan: body.olderThan,
+        purged,
+      },
+      timestamp: new Date(),
     });
 
     return { purged };

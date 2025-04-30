@@ -4,6 +4,8 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { FirestoreBaseRepository } from '../../../common/repositories/firestore-base.repository';
 import { PriceAlert } from '../models/competitor-price.model';
+import { FirestoreConfigService } from '../../../config/firestore.config';
+import { FirestoreAdvancedFilter, FindOptions } from '../../../common/repositories/base/repository-types';
 
 /**
  * Repository for price alerts
@@ -11,14 +13,14 @@ import { PriceAlert } from '../models/competitor-price.model';
  */
 @Injectable()
 export class PriceAlertRepository extends FirestoreBaseRepository<PriceAlert> {
-  private readonly logger = new Logger(PriceAlertRepository.name);
+  protected readonly logger = new Logger(PriceAlertRepository.name);
 
-  constructor() {
-    super('price-alerts', {
-      enableDataValidation: true,
-      enableQueryCache: true,
-      cacheExpirationMinutes: 15,
-      enableTransactionality: true,
+  constructor(
+    firestoreConfigService: FirestoreConfigService,
+  ) {
+    super(firestoreConfigService, 'price-alerts', {
+      useSoftDeletes: true,
+      useVersioning: true,
     });
   }
 
@@ -27,15 +29,17 @@ export class PriceAlertRepository extends FirestoreBaseRepository<PriceAlert> {
    * @param data Alert data
    */
   async create(
-    data: Omit<PriceAlert, 'id' | 'createdAt'>,
+    data: Omit<PriceAlert, 'id' | 'createdAt' | 'updatedAt' | 'isDeleted' | 'version' | 'deletedAt'>,
   ): Promise<PriceAlert> {
     try {
       const now = new Date();
 
-      const newAlert: PriceAlert = {
+      const newAlert: Omit<PriceAlert, 'createdAt' | 'updatedAt'> = {
         ...data,
         id: uuidv4(),
-        createdAt: now,
+        isDeleted: false,
+        version: 1,
+        deletedAt: null,
       };
 
       return super.create(newAlert);
@@ -113,35 +117,44 @@ export class PriceAlertRepository extends FirestoreBaseRepository<PriceAlert> {
     },
   ): Promise<PriceAlert[]> {
     try {
-      const whereConditions: any[] = [
-        { field: 'productId', operator: '==', value: productId },
-        { field: 'organizationId', operator: '==', value: organizationId },
+      const advancedFilters: FirestoreAdvancedFilter<PriceAlert>[] = [
+        {
+          field: 'productId',
+          operator: '==',
+          value: productId,
+        } as FirestoreAdvancedFilter<PriceAlert>,
+        {
+          field: 'organizationId',
+          operator: '==',
+          value: organizationId,
+        } as FirestoreAdvancedFilter<PriceAlert>,
       ];
 
       if (!options?.includeResolved) {
-        whereConditions.push({
+        advancedFilters.push({
           field: 'isResolved',
           operator: '==',
           value: false,
-        });
+        } as FirestoreAdvancedFilter<PriceAlert>);
       }
 
       if (options?.alertType) {
-        whereConditions.push({
+        advancedFilters.push({
           field: 'alertType',
           operator: '==',
           value: options.alertType,
-        });
+        } as FirestoreAdvancedFilter<PriceAlert>);
       }
 
-      const query = {
-        where: whereConditions,
+      const findOptions: FindOptions<PriceAlert> = {
+        advancedFilters,
         orderBy: [{ field: 'createdAt', direction: 'desc' }],
         limit: options?.limit || 50,
         offset: options?.offset || 0,
+        includeDeleted: false,
       };
 
-      return this.query(query);
+      return this.find(findOptions);
     } catch (error) {
       this.logger.error(
         `Error finding alerts by product: ${error.message}`,
@@ -166,35 +179,44 @@ export class PriceAlertRepository extends FirestoreBaseRepository<PriceAlert> {
     },
   ): Promise<PriceAlert[]> {
     try {
-      const whereConditions: any[] = [
-        { field: 'organizationId', operator: '==', value: organizationId },
-        { field: 'isResolved', operator: '==', value: false },
+      const advancedFilters: FirestoreAdvancedFilter<PriceAlert>[] = [
+        {
+          field: 'organizationId',
+          operator: '==',
+          value: organizationId,
+        } as FirestoreAdvancedFilter<PriceAlert>,
+        {
+          field: 'isResolved',
+          operator: '==',
+          value: false,
+        } as FirestoreAdvancedFilter<PriceAlert>,
       ];
 
       if (options?.severity) {
-        whereConditions.push({
+        advancedFilters.push({
           field: 'severity',
           operator: '==',
           value: options.severity,
-        });
+        } as FirestoreAdvancedFilter<PriceAlert>);
       }
 
       if (options?.alertType) {
-        whereConditions.push({
+        advancedFilters.push({
           field: 'alertType',
           operator: '==',
           value: options.alertType,
-        });
+        } as FirestoreAdvancedFilter<PriceAlert>);
       }
 
-      const query = {
-        where: whereConditions,
+      const findOptions: FindOptions<PriceAlert> = {
+        advancedFilters,
         orderBy: [{ field: 'createdAt', direction: 'desc' }],
         limit: options?.limit || 100,
         offset: options?.offset || 0,
+        includeDeleted: false,
       };
 
-      return this.query(query);
+      return this.find(findOptions);
     } catch (error) {
       this.logger.error(
         `Error finding unresolved alerts: ${error.message}`,
@@ -212,15 +234,26 @@ export class PriceAlertRepository extends FirestoreBaseRepository<PriceAlert> {
     organizationId: string,
   ): Promise<Record<string, number>> {
     try {
-      const query = {
-        where: [
-          { field: 'organizationId', operator: '==', value: organizationId },
-          { field: 'isResolved', operator: '==', value: false },
-        ],
+      const advancedFilters: FirestoreAdvancedFilter<PriceAlert>[] = [
+        {
+          field: 'organizationId',
+          operator: '==',
+          value: organizationId,
+        } as FirestoreAdvancedFilter<PriceAlert>,
+        {
+          field: 'isResolved',
+          operator: '==',
+          value: false,
+        } as FirestoreAdvancedFilter<PriceAlert>,
+      ];
+
+      const findOptions: FindOptions<PriceAlert> = {
+        advancedFilters,
         limit: 1000, // High limit to count all alerts
+        includeDeleted: false,
       };
 
-      const alerts = await this.query(query);
+      const alerts = await this.find(findOptions);
 
       // Count by type
       const counts: Record<string, number> = {};

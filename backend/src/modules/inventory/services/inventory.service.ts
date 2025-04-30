@@ -4,6 +4,7 @@ import {
   NotFoundException,
   ConflictException,
 } from '@nestjs/common';
+import { toJSDate } from '../../../common/utils/date.util';
 
 import { InventoryMetadata } from '../interfaces/types';
 
@@ -305,7 +306,7 @@ export class InventoryService implements IProductService {
         typeof product.createdAt === 'object' &&
         'toDate' in product.createdAt
       ) {
-        createdAt = product.createdAt.toDate();
+        createdAt = toJSDate(product.createdAt);
       } else if (product.createdAt instanceof Date) {
         createdAt = product.createdAt;
       }
@@ -316,7 +317,7 @@ export class InventoryService implements IProductService {
         typeof product.updatedAt === 'object' &&
         'toDate' in product.updatedAt
       ) {
-        updatedAt = product.updatedAt.toDate();
+        updatedAt = toJSDate(product.updatedAt);
       } else if (product.updatedAt instanceof Date) {
         updatedAt = product.updatedAt;
       }
@@ -920,7 +921,7 @@ export class InventoryService implements IProductService {
         typeof params.lastUpdatedAfter === 'object' &&
         'toDate' in params.lastUpdatedAfter
       ) {
-        convertedParams.lastUpdatedAfter = params.lastUpdatedAfter.toDate();
+        convertedParams.lastUpdatedAfter = toJSDate(params.lastUpdatedAfter);
       } else if (params.lastUpdatedAfter instanceof Date) {
         convertedParams.lastUpdatedAfter = params.lastUpdatedAfter;
       } else {
@@ -933,7 +934,7 @@ export class InventoryService implements IProductService {
         typeof params.lastUpdatedBefore === 'object' &&
         'toDate' in params.lastUpdatedBefore
       ) {
-        convertedParams.lastUpdatedBefore = params.lastUpdatedBefore.toDate();
+        convertedParams.lastUpdatedBefore = toJSDate(params.lastUpdatedBefore);
       } else if (params.lastUpdatedBefore instanceof Date) {
         convertedParams.lastUpdatedBefore = params.lastUpdatedBefore;
       } else {
@@ -969,7 +970,7 @@ export class InventoryService implements IProductService {
     // Type-safe conversion of Firestore Timestamp objects to standard JS Date objects
     if (params.fromDate) {
       if (typeof params.fromDate === 'object' && 'toDate' in params.fromDate) {
-        convertedParams.fromDate = params.fromDate.toDate();
+        convertedParams.fromDate = toJSDate(params.fromDate);
       } else if (params.fromDate instanceof Date) {
         convertedParams.fromDate = params.fromDate;
       } else {
@@ -979,7 +980,7 @@ export class InventoryService implements IProductService {
 
     if (params.toDate) {
       if (typeof params.toDate === 'object' && 'toDate' in params.toDate) {
-        convertedParams.toDate = params.toDate.toDate();
+        convertedParams.toDate = toJSDate(params.toDate);
       } else if (params.toDate instanceof Date) {
         convertedParams.toDate = params.toDate;
       } else {

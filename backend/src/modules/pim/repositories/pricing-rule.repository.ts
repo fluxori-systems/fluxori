@@ -1,6 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 
 import { FirestoreBaseRepository } from '../../../common/repositories/firestore-base.repository';
+import { toJSDate } from '../../../common/utils/date.util';
 import { FirestoreConfigService } from '../../../config/firestore.config';
 import { QueryFilterOperator } from '../../../types/google-cloud.types';
 import {
@@ -151,7 +152,7 @@ export class PricingRuleRepository extends FirestoreBaseRepository<PricingRuleEn
       const newExecution = {
         ...execution,
         startTime: execution.startTime,
-        endTime: execution.endTime || null,
+        endTime: execution.endTime ?? undefined, // use undefined instead of null
       };
 
       // Get existing executions or initialize empty array
@@ -270,34 +271,24 @@ export class PricingRuleRepository extends FirestoreBaseRepository<PricingRuleEn
     return {
       ...data,
       id,
-      createdAt: data.createdAt?.toDate?.() || data.createdAt || new Date(),
-      updatedAt: data.updatedAt?.toDate?.() || data.updatedAt || new Date(),
+      createdAt: toJSDate(data.createdAt),
+      updatedAt: toJSDate(data.updatedAt),
       schedule: data.schedule
         ? {
             ...data.schedule,
-            startDate:
-              data.schedule.startDate?.toDate?.() ||
-              data.schedule.startDate ||
-              null,
-            endDate:
-              data.schedule.endDate?.toDate?.() ||
-              data.schedule.endDate ||
-              null,
+            startDate: toJSDate(data.schedule.startDate),
+            endDate: toJSDate(data.schedule.endDate),
           }
         : { type: PricingRuleScheduleType.ALWAYS },
-      recentExecutions: (data.recentExecutions || []).map((execution) => ({
+      recentExecutions: (data.recentExecutions || []).map((execution: any) => ({
         ...execution,
-        startTime:
-          execution.startTime?.toDate?.() || execution.startTime || new Date(),
-        endTime: execution.endTime?.toDate?.() || execution.endTime || null,
+        startTime: toJSDate(execution.startTime),
+        endTime: toJSDate(execution.endTime),
       })),
       executionStats: data.executionStats
         ? {
             ...data.executionStats,
-            lastExecutionTime:
-              data.executionStats.lastExecutionTime?.toDate?.() ||
-              data.executionStats.lastExecutionTime ||
-              null,
+            lastExecutionTime: toJSDate(data.executionStats.lastExecutionTime),
           }
         : undefined,
     } as PricingRule;

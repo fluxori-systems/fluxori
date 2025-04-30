@@ -84,7 +84,7 @@ export function createNavigatorConnectionMock({
   metered = false,
 } = {}): Partial<NetworkInformation> {
   return {
-    effectiveType,
+    effectiveType: "4g",
     downlink,
     rtt,
     saveData,

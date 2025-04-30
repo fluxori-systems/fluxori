@@ -17,5 +17,5 @@ export interface AIModelConfig
   maxTokens: number;
   isDefault: boolean;
   isEnabled: boolean;
-  metadata?: InsightMetadata; // TODO: Refine fields as discovered
+  metadata?: InsightMetadata; // Strictly typed and extensible (see InsightMetadata interface)
 }

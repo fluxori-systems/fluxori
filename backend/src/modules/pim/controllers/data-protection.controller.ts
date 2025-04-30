@@ -23,6 +23,7 @@ import {
 
 import { FirebaseAuthGuard } from '../../auth';
 import { GetUser } from '../../auth/decorators/get-user.decorator';
+import { ProductForScan } from '../interfaces/product-for-scan.interface';
 import {
   DataProtectionService,
   DataProtectionPolicy,
@@ -126,7 +127,7 @@ export class DataProtectionController {
     try {
       // In a real implementation, this would fetch the product from the repository
       // For now, let's mock a product for demonstration
-      const product = {
+      const product: ProductForScan = {
         id: scanDto.productId,
         name: 'Test Product',
         description: 'This is a test product',
@@ -151,6 +152,7 @@ export class DataProtectionController {
         },
       };
 
+      // TODO: Replace 'any' user typing with a strict user type if available
       return this.dataProtectionService.scanProduct(product, user.tenantId, {
         skipRedaction: scanDto.skipRedaction,
         skipFields: scanDto.skipFields,
@@ -211,7 +213,7 @@ export class DataProtectionController {
     try {
       // In a real implementation, this would fetch the product from the repository
       // For now, let's mock a product for demonstration
-      const product = {
+      const product: ProductForScan = {
         id: productId,
         name: 'Test Product',
         description: 'This is a test product',
@@ -265,7 +267,7 @@ export class DataProtectionController {
     try {
       // In a real implementation, this would fetch the product from the repository
       // For now, let's mock a product for demonstration
-      const product = {
+      const product: ProductForScan = {
         id: productId,
         name: 'Test Product',
         description: 'This is a test product',

@@ -56,6 +56,8 @@ describe('CategoryService', () => {
         productCount: 0,
         createdAt: new Date(),
         updatedAt: new Date(),
+        isDeleted: false,
+        version: 1,
       };
 
       // Mock repository methods
@@ -96,6 +98,8 @@ describe('CategoryService', () => {
         productCount: 0,
         createdAt: new Date(),
         updatedAt: new Date(),
+        isDeleted: false,
+        version: 1,
       };
 
       const createCategoryDto = {
@@ -117,6 +121,8 @@ describe('CategoryService', () => {
         productCount: 0,
         createdAt: new Date(),
         updatedAt: new Date(),
+        isDeleted: false,
+        version: 1,
       };
 
       // Mock repository methods
@@ -172,6 +178,8 @@ describe('CategoryService', () => {
         productCount: 0,
         createdAt: new Date(),
         updatedAt: new Date(),
+        isDeleted: false,
+        version: 1,
       };
 
       // Mock repository method
@@ -214,6 +222,8 @@ describe('CategoryService', () => {
         productCount: 0,
         createdAt: new Date(),
         updatedAt: new Date(),
+        isDeleted: false,
+        version: 1,
       };
 
       // Mock repository method
@@ -264,6 +274,8 @@ describe('CategoryService', () => {
               createdAt: new Date(),
               updatedAt: new Date(),
               children: [],
+              isDeleted: false,
+              version: 1,
             },
             {
               id: 'cat-1-2',
@@ -281,9 +293,14 @@ describe('CategoryService', () => {
               createdAt: new Date(),
               updatedAt: new Date(),
               children: [],
+              isDeleted: false,
+              version: 1,
             },
           ],
+          isDeleted: false,
+          version: 1,
         },
+
         {
           id: 'cat-2',
           organizationId: 'org-123',
@@ -300,6 +317,8 @@ describe('CategoryService', () => {
           createdAt: new Date(),
           updatedAt: new Date(),
           children: [],
+          isDeleted: false,
+          version: 1,
         },
       ];
 

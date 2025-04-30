@@ -18,7 +18,7 @@ import {
 
 import { IconAlertCircle, IconUserPlus } from "@tabler/icons-react";
 
-import { useAuth } from "../../hooks/useAuth";
+import { useAuth } from "../../lib/firebase/useAuth";
 import { UserRole } from "../../types/user/user.types";
 
 /**

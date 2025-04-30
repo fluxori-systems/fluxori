@@ -384,7 +384,7 @@ export class RegionalConfigurationService {
             region.businessRules.enableAfricanTaxFramework ?? false,
           enableAdvancedComplianceFramework:
             region.businessRules.enableAdvancedComplianceFramework ?? false,
-          customSettings: region.businessRules.customSettings ?? {},
+          customSettings: region.businessRules.customSettings ?? undefined,
         }
       : {
           defaultTaxRate: 0,

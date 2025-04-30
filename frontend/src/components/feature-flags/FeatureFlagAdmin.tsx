@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 
 import { featureFlagsApi } from "../../api/feature-flags.api";
-import { useAuth } from "../../hooks/useAuth";
+import { useAuth } from "../../lib/firebase/useAuth";
 import {
   FeatureFlag,
   FeatureFlagType,

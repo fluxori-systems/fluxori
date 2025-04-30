@@ -9,8 +9,8 @@ import { Observable, BehaviorSubject } from 'rxjs';
 import { DlpService } from './dlp.service';
 import { FileScannerService } from './file-scanner.service';
 import { SecurityMetricsService } from './security-metrics.service';
-import { ObservabilityService } from '../../../common/observability';
-import { FeatureFlagService } from '../../feature-flags/services/feature-flag.service';
+import { ObservabilityService } from '../../../../common/observability';
+import { FeatureFlagService } from '../../../feature-flags/services/feature-flag.service';
 import {
   SecurityService as ISecurityService,
   SecurityContext,
@@ -574,7 +574,8 @@ export class SecurityService implements ISecurityService {
     // Log via observability service
     this.observability.log(`Security event: ${event}`, {
       service: SecurityService.name,
-      data: logData,
+      customFields: logData,
+      timestamp: new Date(),
     });
 
     // Increment security event counter

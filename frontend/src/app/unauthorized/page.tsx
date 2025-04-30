@@ -34,7 +34,7 @@ import {
   IconUserShield,
 } from "@tabler/icons-react";
 
-import { useAuth } from "../../hooks/useAuth";
+import { useAuth } from "../../lib/firebase/useAuth";
 
 /**
  * Unauthorized Page

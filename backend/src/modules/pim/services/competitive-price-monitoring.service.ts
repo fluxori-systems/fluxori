@@ -17,19 +17,19 @@ import { FeatureFlagService } from '../../feature-flags/services/feature-flag.se
 import {
   CompetitorPrice,
   PriceSourceType,
-  PriceVerificationStatus,
   CompetitorStockStatus,
   MarketPosition,
-  PriceHistoryRecord,
   PriceMonitoringConfig,
   PriceAlert,
   CompetitorPriceReport,
-  DateRange,
 } from '../models/competitor-price.model';
+import { RecordOurPriceOptions, GetCompetitorPricesOptions, GetPriceHistoryOptions, GetPriceAlertsOptions, GeneratePriceReportOptions, RunBatchMonitoringOptions } from '../interfaces/competitive-price-monitoring-options.interface';
+import { PriceHistoryRecord, PriceVerificationStatus } from '../models/price-history.model';
 import { CompetitorPriceRepository } from '../repositories/competitor-price.repository';
 import { PriceAlertRepository } from '../repositories/price-alert.repository';
-import { PriceHistoryRepository } from '../repositories/price-history.repository';
+import { PriceHistoryService } from './price-history.service';
 import { PriceMonitoringConfigRepository } from '../repositories/price-monitoring-config.repository';
+import { mapRawCompetitorPrice, mapRawCompetitorPrices } from './adapters/competitor-price.adapter';
 
 /**
  * AI price analysis result interface
@@ -66,7 +66,7 @@ export class CompetitivePriceMonitoringService {
 
   constructor(
     private readonly competitorPriceRepository: CompetitorPriceRepository,
-    private readonly priceHistoryRepository: PriceHistoryRepository,
+    private readonly priceHistoryService: PriceHistoryService,
     private readonly priceMonitoringConfigRepository: PriceMonitoringConfigRepository,
     private readonly priceAlertRepository: PriceAlertRepository,
     private readonly loadSheddingService: LoadSheddingResilienceService,
@@ -93,10 +93,7 @@ export class CompetitivePriceMonitoringService {
    * @returns Recorded competitor price
    */
   async recordCompetitorPrice(
-    data: Omit<
-      CompetitorPrice,
-      'id' | 'createdAt' | 'updatedAt' | 'organizationId'
-    >,
+    data: Omit<CompetitorPrice, 'id' | 'createdAt' | 'updatedAt' | 'isDeleted' | 'version' | 'deletedAt' | 'organizationId'>,
     organizationId: string,
     userId?: string,
   ): Promise<CompetitorPrice> {
@@ -110,6 +107,9 @@ export class CompetitivePriceMonitoringService {
         data.productId,
         organizationId,
       );
+      if (!product) {
+        throw new ProductNotFoundError(data.productId);
+      }
       if (!product) {
         throw new Error(`Product with ID ${data.productId} not found`);
       }
@@ -152,12 +152,11 @@ export class CompetitivePriceMonitoringService {
             hasBuyBox: data.hasBuyBox || false,
             stockStatus: data.stockStatus || CompetitorStockStatus.UNKNOWN,
             estimatedDeliveryDays: data.estimatedDeliveryDays,
-            metadata: data.metadata,
           },
         );
 
         // Record in price history
-        await this.priceHistoryRepository.recordCompetitorPrice({
+        await this.priceHistoryService.recordCompetitorPrice({
           productId: data.productId,
           organizationId,
           variantId: data.variantId,
@@ -206,11 +205,11 @@ export class CompetitivePriceMonitoringService {
             data.competitorId,
             data.competitorName,
             data.price,
-            product.price,
+            product.pricing.basePrice,
           );
         }
 
-        return updatedPrice;
+        return mapRawCompetitorPrice(updatedPrice);
       } else {
         // Create new price record
         const newPrice = await this.competitorPriceRepository.create({
@@ -225,7 +224,7 @@ export class CompetitivePriceMonitoringService {
         });
 
         // Record in price history
-        await this.priceHistoryRepository.recordCompetitorPrice({
+        await this.priceHistoryService.recordCompetitorPrice({
           productId: data.productId,
           organizationId,
           variantId: data.variantId,
@@ -250,7 +249,7 @@ export class CompetitivePriceMonitoringService {
           data.competitorId,
           data.competitorName,
           data.price,
-          product.price,
+          product.pricing.basePrice,
           data.marketplaceName,
         );
 
@@ -260,7 +259,7 @@ export class CompetitivePriceMonitoringService {
           organizationId,
         );
 
-        return newPrice;
+        return mapRawCompetitorPrice(newPrice);
       }
     } catch (error) {
       this.logger.error(
@@ -286,13 +285,7 @@ export class CompetitivePriceMonitoringService {
     price: number,
     shipping: number,
     currency: string,
-    options?: {
-      variantId?: string;
-      marketplaceId?: string;
-      marketplaceName?: string;
-      hasBuyBox?: boolean;
-      sourceType?: PriceSourceType;
-    },
+    options?: RecordOurPriceOptions,
   ): Promise<PriceHistoryRecord> {
     try {
       this.logger.log(`Recording our price for product ${productId}`);
@@ -307,7 +300,7 @@ export class CompetitivePriceMonitoringService {
       }
 
       // Record in price history
-      const historyRecord = await this.priceHistoryRepository.recordOurPrice(
+      const historyRecord = await this.priceHistoryService.recordOurPrice(
         productId,
         organizationId,
         price,
@@ -370,12 +363,7 @@ export class CompetitivePriceMonitoringService {
   async getCompetitorPrices(
     productId: string,
     organizationId: string,
-    options?: {
-      marketplaceId?: string;
-      includeOutOfStock?: boolean;
-      limit?: number;
-      offset?: number;
-    },
+    options?: GetCompetitorPricesOptions,
   ): Promise<CompetitorPrice[]> {
     try {
       // Verify product exists
@@ -387,11 +375,13 @@ export class CompetitivePriceMonitoringService {
         throw new Error(`Product with ID ${productId} not found`);
       }
 
-      return this.competitorPriceRepository.findByProductId(
+      const raws = await this.competitorPriceRepository.findByProductId(
         productId,
         organizationId,
         options,
       );
+
+      return mapRawCompetitorPrices(raws);
     } catch (error) {
       this.logger.error(
         `Error getting competitor prices: ${error instanceof Error ? error.message : String(error)}`,
@@ -423,12 +413,12 @@ export class CompetitivePriceMonitoringService {
       }
 
       // Assume shipping is 0 if not available
-      const shipping = product.shipping || 0;
+      const shipping = product.pricing.shipping || 0;
 
       return this.competitorPriceRepository.calculateMarketPosition(
         productId,
         organizationId,
-        product.price,
+        product.pricing.basePrice,
         shipping,
         marketplaceId,
       );
@@ -452,10 +442,7 @@ export class CompetitivePriceMonitoringService {
     productId: string,
     organizationId: string,
     days: number = 30,
-    options?: {
-      marketplaceId?: string;
-      includeCompetitors?: boolean;
-    },
+    options?: GetPriceHistoryOptions,
   ): Promise<{
     dates: string[];
     ourPrices: number[];
@@ -472,16 +459,13 @@ export class CompetitivePriceMonitoringService {
       }
 
       // Calculate date range
-      const endDate = new Date();
-      const startDate = new Date();
-      startDate.setDate(startDate.getDate() - days);
+      const end = new Date();
+      const start = new Date();
+      start.setDate(start.getDate() - days);
 
-      const dateRange: DateRange = {
-        startDate,
-        endDate,
-      };
+      const dateRange = { start, end };
 
-      return this.priceHistoryRepository.getAggregatedPriceHistory(
+      return this.priceHistoryService.getAggregatedPriceHistory(
         productId,
         organizationId,
         dateRange,
@@ -542,7 +526,7 @@ export class CompetitivePriceMonitoringService {
         // Default configuration values
         const defaultConfig: Omit<
           PriceMonitoringConfig,
-          'id' | 'createdAt' | 'updatedAt'
+          'id' | 'createdAt' | 'updatedAt' | 'isDeleted' | 'version' | 'deletedAt'
         > = {
           organizationId,
           productId,
@@ -612,12 +596,7 @@ export class CompetitivePriceMonitoringService {
   async getPriceAlerts(
     productId: string,
     organizationId: string,
-    options?: {
-      includeResolved?: boolean;
-      alertType?: string;
-      limit?: number;
-      offset?: number;
-    },
+    options?: GetPriceAlertsOptions,
   ): Promise<PriceAlert[]> {
     try {
       return this.priceAlertRepository.findByProductId(
@@ -711,12 +690,7 @@ export class CompetitivePriceMonitoringService {
   async generatePriceReport(
     productId: string,
     organizationId: string,
-    options?: {
-      marketplaceId?: string;
-      includeHistory?: boolean;
-      daysOfHistory?: number;
-      includeRecommendations?: boolean;
-    },
+    options?: GeneratePriceReportOptions,
   ): Promise<CompetitorPriceReport> {
     try {
       this.logger.log(`Generating price report for product ${productId}`);
@@ -786,17 +760,17 @@ export class CompetitivePriceMonitoringService {
       }
 
       // Shipping defaults to 0 if not available
-      const ourShipping = product.shipping || 0;
+      const ourShipping = product.pricing.shipping || 0;
 
       return {
         organizationId,
         productId,
         productSku: product.sku || '',
         productName: product.name,
-        ourPrice: product.price,
+        ourPrice: product.pricing.basePrice,
         ourShipping,
-        ourTotalPrice: product.price + ourShipping,
-        currency: product.currency || 'ZAR', // Default to ZAR for South African market
+        ourTotalPrice: product.pricing.basePrice + ourShipping,
+        currency: product.pricing.currency || 'ZAR', // Default to ZAR for South African market
         hasBuyBox,
         marketPosition,
         competitorPrices,
@@ -872,7 +846,7 @@ export class CompetitivePriceMonitoringService {
       const strategy = config?.priceStrategy?.type || 'BEAT_BY_PERCENTAGE';
       const strategyValue = config?.priceStrategy?.value || 2; // 2% default
 
-      let recommendedPrice = product.price;
+      let recommendedPrice = product.pricing.basePrice;
       let reasonForRecommendation = 'No price adjustment recommended';
 
       if (currentPosition.rank === 1) {
@@ -883,11 +857,11 @@ export class CompetitivePriceMonitoringService {
           const nextCompetitorPrice =
             competitorPrices.length > 0
               ? competitorPrices[0].totalPrice
-              : product.price;
+              : product.pricing.basePrice;
 
           const increasedPrice = nextCompetitorPrice * 0.98; // 2% cheaper than next competitor
 
-          if (increasedPrice > product.price) {
+          if (increasedPrice > product.pricing.basePrice) {
             recommendedPrice = increasedPrice;
             reasonForRecommendation =
               'Increase price to maximize margin while staying competitive';
@@ -969,7 +943,7 @@ export class CompetitivePriceMonitoringService {
       recommendedPrice = Math.round(recommendedPrice * 100) / 100;
 
       // Calculate potential market position with new price
-      const shipping = product.shipping || 0;
+      const shipping = product.pricing.shipping || 0;
       const potentialPosition = await this.simulateMarketPosition(
         productId,
         organizationId,
@@ -979,7 +953,7 @@ export class CompetitivePriceMonitoringService {
       );
 
       // Only return recommendation if it's different from current price
-      if (Math.abs(recommendedPrice - product.price) < 0.01) {
+      if (Math.abs(recommendedPrice - product.pricing.basePrice) < 0.01) {
         return null;
       }
 
@@ -1078,7 +1052,7 @@ export class CompetitivePriceMonitoringService {
         ? `${competitorName} decreased their price for "${product.name}" by ${Math.abs(priceChangePercentage).toFixed(1)}% (from ${oldPrice.toFixed(2)} to ${newPrice.toFixed(2)})`
         : `${competitorName} increased their price for "${product.name}" by ${priceChangePercentage.toFixed(1)}% (from ${oldPrice.toFixed(2)} to ${newPrice.toFixed(2)})`;
 
-      const alert: Omit<PriceAlert, 'id' | 'createdAt'> = {
+      const alert: Omit<PriceAlert, 'id' | 'createdAt' | 'updatedAt' | 'isDeleted' | 'version' | 'deletedAt'> = {
         organizationId,
         productId,
         alertType,
@@ -1141,7 +1115,7 @@ export class CompetitivePriceMonitoringService {
       // Create message
       const message = `You've lost the BuyBox for "${product.name}" to ${competitorName}. Their price (${competitorPrice.toFixed(2)}) is ${priceDifferencePercentage.toFixed(1)}% lower than yours (${ourPrice.toFixed(2)}).`;
 
-      const alert: Omit<PriceAlert, 'id' | 'createdAt'> = {
+      const alert: Omit<PriceAlert, 'id' | 'createdAt' | 'updatedAt' | 'isDeleted' | 'version' | 'deletedAt'> = {
         organizationId,
         productId,
         alertType: 'BUYBOX_LOST',
@@ -1212,7 +1186,7 @@ export class CompetitivePriceMonitoringService {
       // Create message
       const message = `New competitor ${competitorName} detected for "${product.name}" on ${marketplaceName}. Their price is ${competitorPrice.toFixed(2)}, which is ${priceDifferencePercentage > 0 ? 'higher' : 'lower'} than yours by ${Math.abs(priceDifferencePercentage).toFixed(1)}%.`;
 
-      const alert: Omit<PriceAlert, 'id' | 'createdAt'> = {
+      const alert: Omit<PriceAlert, 'id' | 'createdAt' | 'updatedAt' | 'isDeleted' | 'version' | 'deletedAt'> = {
         organizationId,
         productId,
         alertType: 'NEW_COMPETITOR',
@@ -1281,7 +1255,7 @@ export class CompetitivePriceMonitoringService {
       // Create message
       const message = `Price adjustment recommended for "${product.name}". ${reason}. Suggested price: ${recommendedPrice.toFixed(2)} (${priceChange > 0 ? '+' : ''}${priceChangePercentage.toFixed(1)}%).`;
 
-      const alert: Omit<PriceAlert, 'id' | 'createdAt'> = {
+      const alert: Omit<PriceAlert, 'id' | 'createdAt' | 'updatedAt' | 'isDeleted' | 'version' | 'deletedAt'> = {
         organizationId,
         productId,
         alertType: 'PRICE_ADJUSTMENT_RECOMMENDED',
@@ -1336,8 +1310,8 @@ export class CompetitivePriceMonitoringService {
 
       if (recommendation) {
         // Check if price change is significant (more than 1%)
-        const priceChange = recommendation.recommendedPrice - product.price;
-        const priceChangePercentage = (priceChange / product.price) * 100;
+        const priceChange = recommendation.recommendedPrice - product.pricing.basePrice;
+        const priceChangePercentage = (priceChange / product.pricing.basePrice) * 100;
 
         if (Math.abs(priceChangePercentage) > 1) {
           // Create alert
@@ -1345,7 +1319,7 @@ export class CompetitivePriceMonitoringService {
             productId,
             organizationId,
             recommendation.recommendedPrice,
-            product.price,
+            product.pricing.basePrice,
             recommendation.reasonForRecommendation,
           );
         }
@@ -1412,8 +1386,8 @@ export class CompetitivePriceMonitoringService {
       }
 
       // Check if price change is significant (more than 1%)
-      const priceChange = recommendation.recommendedPrice - product.price;
-      const priceChangePercentage = (priceChange / product.price) * 100;
+      const priceChange = recommendation.recommendedPrice - product.pricing.basePrice;
+      const priceChangePercentage = (priceChange / product.pricing.basePrice) * 100;
 
       if (Math.abs(priceChangePercentage) <= 1) {
         return { adjusted: false };
@@ -1431,8 +1405,8 @@ export class CompetitivePriceMonitoringService {
         productId,
         organizationId,
         recommendation.recommendedPrice,
-        product.shipping || 0,
-        product.currency || 'ZAR',
+        product.pricing.shipping || 0,
+        product.pricing.currency || 'ZAR',
       );
 
       // Create resolved price adjustment alert
@@ -1440,7 +1414,7 @@ export class CompetitivePriceMonitoringService {
         productId,
         organizationId,
         recommendation.recommendedPrice,
-        product.price,
+        product.pricing.basePrice,
         `${recommendation.reasonForRecommendation} (Automatically applied)`,
       );
 
@@ -1451,7 +1425,7 @@ export class CompetitivePriceMonitoringService {
 
       return {
         adjusted: true,
-        oldPrice: product.price,
+        oldPrice: product.pricing.basePrice,
         newPrice: recommendation.recommendedPrice,
         reason: recommendation.reasonForRecommendation,
       };
@@ -1471,10 +1445,7 @@ export class CompetitivePriceMonitoringService {
    */
   async runBatchMonitoring(
     organizationId: string,
-    options?: {
-      limit?: number;
-      autoAdjustPrices?: boolean;
-    },
+    options?: RunBatchMonitoringOptions,
   ): Promise<{
     processingTime: number;
     productsChecked: number;
@@ -1492,8 +1463,10 @@ export class CompetitivePriceMonitoringService {
       const loadSheddingStatus =
         await this.loadSheddingService.getCurrentStatus();
 
+      const currentStage = loadSheddingStatus?.currentStage ?? null;
+
       // Skip during severe load shedding
-      if (loadSheddingStatus.currentStage > 4) {
+      if (currentStage > 4) {
         this.logger.warn(
           'Skipping batch monitoring due to severe load shedding',
         );
@@ -1716,9 +1689,9 @@ export class CompetitivePriceMonitoringService {
         Analyze the competitive pricing data for product "${product.name}" with SKU "${product.sku}".
         
         Product Information:
-        - Current Price: ${product.price}
-        - Shipping: ${product.shipping || 0}
-        - Total Price: ${product.price + (product.shipping || 0)}
+        - Current Price: ${product.pricing.basePrice}
+        - Shipping: ${product.pricing.shipping || 0}
+        - Total Price: ${product.pricing.basePrice + (product.pricing.shipping || 0)}
         - Market Position Rank: ${report.marketPosition.rank} of ${report.marketPosition.totalCompetitors + 1}
         - Has BuyBox: ${report.hasBuyBox ? 'Yes' : 'No'}
         

@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 
-import { useAuth } from "./useAuth";
+import { useAuth } from "../lib/firebase/useAuth";
 import { featureFlagsApi } from "../api/feature-flags.api";
 import { Environment } from "../types/feature-flags/feature-flag.types";
 

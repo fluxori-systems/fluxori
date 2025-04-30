@@ -4,6 +4,8 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { FirestoreBaseRepository } from '../../../common/repositories/firestore-base.repository';
 import { PriceMonitoringConfig } from '../models/competitor-price.model';
+import { FirestoreConfigService } from '../../../config/firestore.config';
+import { FirestoreAdvancedFilter, FindOptions, QueryFilterOperator } from '../../../common/repositories/base/repository-types';
 
 /**
  * Repository for price monitoring configurations
@@ -11,14 +13,16 @@ import { PriceMonitoringConfig } from '../models/competitor-price.model';
  */
 @Injectable()
 export class PriceMonitoringConfigRepository extends FirestoreBaseRepository<PriceMonitoringConfig> {
-  private readonly logger = new Logger(PriceMonitoringConfigRepository.name);
+  protected readonly logger = new Logger(PriceMonitoringConfigRepository.name);
 
-  constructor() {
-    super('price-monitoring-configs', {
-      enableDataValidation: true,
-      enableQueryCache: true,
-      cacheExpirationMinutes: 30,
-      enableTransactionality: true,
+  constructor(
+    firestoreConfigService: FirestoreConfigService,
+  ) {
+    super(firestoreConfigService, 'price-monitoring-configs', {
+      useSoftDeletes: true,
+      useVersioning: true,
+      enableCache: true,
+      cacheTTLMs: 30 * 60 * 1000, // 30 minutes
     });
   }
 
@@ -27,16 +31,17 @@ export class PriceMonitoringConfigRepository extends FirestoreBaseRepository<Pri
    * @param data Configuration data
    */
   async create(
-    data: Omit<PriceMonitoringConfig, 'id' | 'createdAt' | 'updatedAt'>,
+    data: Omit<PriceMonitoringConfig, 'id' | 'createdAt' | 'updatedAt' | 'isDeleted' | 'version' | 'deletedAt'>,
   ): Promise<PriceMonitoringConfig> {
     try {
       const now = new Date();
 
-      const newConfig: PriceMonitoringConfig = {
+      const newConfig: Omit<PriceMonitoringConfig, 'createdAt' | 'updatedAt'> = {
         ...data,
         id: uuidv4(),
-        createdAt: now,
-        updatedAt: now,
+        isDeleted: false,
+        version: 1,
+        deletedAt: null,
       };
 
       return super.create(newConfig);
@@ -86,13 +91,16 @@ export class PriceMonitoringConfigRepository extends FirestoreBaseRepository<Pri
     try {
       const query = {
         where: [
-          { field: 'productId', operator: '==', value: productId },
-          { field: 'organizationId', operator: '==', value: organizationId },
+          { field: 'productId', operator: '==' as QueryFilterOperator, value: productId },
+          { field: 'organizationId', operator: '==' as QueryFilterOperator, value: organizationId },
         ],
         limit: 1,
       };
 
-      const results = await this.query(query);
+      const results = await this.find({
+        advancedFilters: query.where,
+        limit: query.limit,
+      });
 
       return results.length > 0 ? results[0] : null;
     } catch (error) {
@@ -116,13 +124,16 @@ export class PriceMonitoringConfigRepository extends FirestoreBaseRepository<Pri
     try {
       const query = {
         where: [
-          { field: 'organizationId', operator: '==', value: organizationId },
-          { field: 'isEnabled', operator: '==', value: true },
+          { field: 'organizationId', operator: '==' as QueryFilterOperator, value: organizationId },
+          { field: 'isEnabled', operator: '==' as QueryFilterOperator, value: true },
         ],
         limit,
       };
 
-      return this.query(query);
+      return this.find({
+        advancedFilters: query.where,
+        limit: query.limit,
+      });
     } catch (error) {
       this.logger.error(
         `Error finding enabled monitoring configs: ${error.message}`,
@@ -144,13 +155,16 @@ export class PriceMonitoringConfigRepository extends FirestoreBaseRepository<Pri
     try {
       const query = {
         where: [
-          { field: 'productId', operator: 'in', value: productIds },
-          { field: 'organizationId', operator: '==', value: organizationId },
+          { field: 'productId', operator: 'in' as QueryFilterOperator, value: productIds },
+          { field: 'organizationId', operator: '==' as QueryFilterOperator, value: organizationId },
         ],
         limit: productIds.length,
       };
 
-      const configs = await this.query(query);
+      const configs = await this.find({
+        advancedFilters: query.where,
+        limit: query.limit,
+      });
 
       // Convert to record keyed by product ID
       const result: Record<string, PriceMonitoringConfig> = {};
@@ -187,13 +201,16 @@ export class PriceMonitoringConfigRepository extends FirestoreBaseRepository<Pri
 
       const query = {
         where: [
-          { field: 'organizationId', operator: '==', value: organizationId },
-          { field: 'isEnabled', operator: '==', value: true },
+          { field: 'organizationId', operator: '==' as QueryFilterOperator, value: organizationId },
+          { field: 'isEnabled', operator: '==' as QueryFilterOperator, value: true },
         ],
         limit,
       };
 
-      return this.query(query);
+      return this.find({
+        advancedFilters: query.where,
+        limit: query.limit,
+      });
     } catch (error) {
       this.logger.error(
         `Error finding configs for monitoring: ${error.message}`,

@@ -6,7 +6,7 @@ import { SecurityModuleOptions } from '../interfaces/security.interfaces';
 
 import { SecretManagerServiceClient } from '@google-cloud/secret-manager';
 
-import { ObservabilityService } from '../../../common/observability';
+import { ObservabilityService } from '../../../../common/observability';
 import { CredentialManagerService as ICredentialManagerService } from '../interfaces/security.interfaces';
 
 /**

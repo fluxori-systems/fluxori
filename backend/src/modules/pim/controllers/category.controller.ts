@@ -147,7 +147,11 @@ export class CategoryController {
     @GetUser() user: User,
   ): Promise<Category> {
     // Ensure organizationId is set
-    createCategoryDto.organizationId = user.organizationId;
+    const organizationId = user.organizationId;
+    if (!organizationId) {
+      throw new HttpException('Missing organizationId for user', HttpStatus.BAD_REQUEST);
+    }
+    createCategoryDto.organizationId = organizationId;
 
     return await this.categoryService.createCategory(createCategoryDto);
   }

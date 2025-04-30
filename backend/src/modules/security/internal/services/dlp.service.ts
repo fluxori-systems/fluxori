@@ -4,7 +4,7 @@ import { SecurityModuleOptions } from '../interfaces/security.interfaces';
 
 import * as DLP from '@google-cloud/dlp';
 
-import { ObservabilityService } from '../../../common/observability';
+import { ObservabilityService } from '../../../../common/observability';
 
 /**
  * Service for data loss prevention and sensitive data protection

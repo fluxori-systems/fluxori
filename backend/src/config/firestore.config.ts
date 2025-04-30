@@ -1,4 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
+import { toJSDate } from '../common/utils/date.util';
 import { ConfigService } from '@nestjs/config';
 
 import {
@@ -41,15 +42,15 @@ class FirestoreConverter<T extends FirestoreEntity>
 
     // Convert Timestamp objects to JavaScript Date objects
     if (data.createdAt instanceof Timestamp) {
-      converted.createdAt = data.createdAt.toDate();
+      converted.createdAt = toJSDate(data.createdAt);
     }
 
     if (data.updatedAt instanceof Timestamp) {
-      converted.updatedAt = data.updatedAt.toDate();
+      converted.updatedAt = toJSDate(data.updatedAt);
     }
 
     if (data.deletedAt instanceof Timestamp) {
-      converted.deletedAt = data.deletedAt.toDate();
+      converted.deletedAt = toJSDate(data.deletedAt);
     }
 
     return converted as T;

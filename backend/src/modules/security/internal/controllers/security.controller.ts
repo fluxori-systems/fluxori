@@ -17,9 +17,9 @@ import {
   ApiBearerAuth,
 } from '@nestjs/swagger';
 
-import { ObservabilityService } from '../../../common/observability';
+import { ObservabilityService } from '../../../../common/observability';
 import { SecurityModuleOptions } from '../interfaces/security.interfaces';
-import { FirebaseAuthGuard } from '../../auth/guards/firebase-auth.guard';
+import { FirebaseAuthGuard } from '../../../auth/guards/firebase-auth.guard';
 import { SecurityHealthIndicator } from '../health/security-health.indicator';
 import { CloudArmorService } from '../services/cloud-armor.service';
 import { SecurityMetricsService } from '../services/security-metrics.service';

@@ -190,7 +190,7 @@ const mockAnalyticsData: KeywordAnalyticsData = {
       },
     ],
     saturationLevel: 82,
-    entryBarrier: "high",
+
     opportunityScore: 45,
   },
   trendPrediction: {
@@ -201,17 +201,17 @@ const mockAnalyticsData: KeywordAnalyticsData = {
       {
         month: "Jan 2024",
         predictedVolume: 16500,
-        predictedRankingDifficulty: 7.8,
+        
       },
       {
         month: "Feb 2024",
         predictedVolume: 17000,
-        predictedRankingDifficulty: 8.1,
+        
       },
       {
         month: "Mar 2024",
         predictedVolume: 18000,
-        predictedRankingDifficulty: 8.4,
+        
       },
     ],
     trendDirection: "rising",
@@ -561,7 +561,7 @@ export function KeywordAnalytics({ onKeywordSelected }: KeywordAnalyticsProps) {
           </Group>
 
           <NetworkAwareLineChart
-            data={analyticsData.searchVolumeHistory}
+            data={analyticsData.searchVolumeHistory ?? []}
             xAxisDataKey="period"
             yAxisDataKey="volume"
             height={300}
@@ -570,7 +570,7 @@ export function KeywordAnalytics({ onKeywordSelected }: KeywordAnalyticsProps) {
             showDots={true}
             fillArea={true}
             fillOpacity={0.2}
-            textAlternative={`Search volume for "${analyticsData.keyword}" shows a ${analyticsData.trendPrediction.trendDirection} trend over the past year, with peak volumes in ${analyticsData.seasonalityData.peakMonths.join(" and ")}.`}
+            textAlternative={`Search volume for "${analyticsData.keyword}" shows a ${analyticsData.trendPrediction?.trendDirection ?? "-"} trend over the past year${analyticsData.seasonalityData?.peakMonths ? ", with peak volumes in " + analyticsData.seasonalityData.peakMonths.join(" and ") : ""}.`}
           />
 
           {analyticsData.marketShareData && (
@@ -658,14 +658,14 @@ export function KeywordAnalytics({ onKeywordSelected }: KeywordAnalyticsProps) {
               </Title>
 
               <NetworkAwareLineChart
-                data={analyticsData.trendPrediction.nextThreeMonths}
+                data={analyticsData.trendPrediction?.nextThreeMonths ?? []}
                 xAxisDataKey="month"
                 yAxisDataKey={["predictedVolume", "predictedRankingDifficulty"]}
                 height={250}
                 xAxisLabel="Month"
                 yAxisLabel="Volume / Difficulty"
                 showDots={true}
-                textAlternative={`Predicted growth of ${analyticsData.trendPrediction.predictedGrowth}% over the next three months with ${analyticsData.trendPrediction.confidence}% confidence.`}
+                textAlternative={`Predicted growth of ${analyticsData.trendPrediction?.predictedGrowth ?? "-"}% over the next three months with ${analyticsData.trendPrediction?.confidence ?? "-"}% confidence.`}
               />
             </Box>
           )}

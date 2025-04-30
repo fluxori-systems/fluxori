@@ -16,7 +16,7 @@ import { MotionProvider } from "@/lib/motion";
 import { AppProvider as SharedAppProvider } from "@/lib/shared/providers/app-provider";
 import { SouthAfricanMarketProvider } from "@/lib/shared/providers/south-african-market-provider";
 
-import { FirebaseProvider } from "../contexts/firebase-context";
+import { FirebaseProvider } from "../lib/firebase/firebase-context";
 
 // Create a client
 const queryClient = new QueryClient({

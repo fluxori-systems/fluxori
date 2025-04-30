@@ -9,6 +9,19 @@
 import * as crypto from 'crypto';
 
 import { Injectable, Logger } from '@nestjs/common';
+import { toError } from '../../../common/utils/error.util';
+import {
+  MarketplaceOrder,
+  MarketplaceProduct,
+  OperationResult,
+} from '../interfaces/types';
+
+// Minimal WooCommerce customer payload type (expand as needed)
+export interface WooCustomerPayload {
+  id: string;
+  email: string;
+  // Add more fields as needed for strict typing
+}
 
 /**
  * Service for handling webhook events
@@ -48,7 +61,9 @@ export class WebhookHandlerService {
    * @param payload Order payload
    * @returns Processing result
    */
-  async handleWooCommerceOrderCreated(payload: any): Promise<any> {
+  async handleWooCommerceOrderCreated(
+    payload: MarketplaceOrder,
+  ): Promise<OperationResult<{ orderId: string }>> {
     this.logger.log(`Processing WooCommerce order created: ${payload.id}`);
 
     try {
@@ -59,15 +74,15 @@ export class WebhookHandlerService {
 
       return {
         success: true,
-        orderId: payload.id,
-        message: 'Order created and processed',
+        data: { orderId: payload.id },
       };
-    } catch (error) {
+    } catch (error: unknown) {
+      const err = toError(error);
       this.logger.error(
-        `Error processing order created webhook: ${error.message}`,
-        error.stack,
+        `Error processing order created webhook: ${err.message}`,
+        err.stack,
       );
-      throw error;
+      throw err;
     }
   }
 
@@ -76,7 +91,9 @@ export class WebhookHandlerService {
    * @param payload Order payload
    * @returns Processing result
    */
-  async handleWooCommerceOrderUpdated(payload: any): Promise<any> {
+  async handleWooCommerceOrderUpdated(
+    payload: MarketplaceOrder,
+  ): Promise<OperationResult<{ orderId: string }>> {
     this.logger.log(`Processing WooCommerce order updated: ${payload.id}`);
 
     try {
@@ -87,15 +104,15 @@ export class WebhookHandlerService {
 
       return {
         success: true,
-        orderId: payload.id,
-        message: 'Order update processed',
+        data: { orderId: payload.id },
       };
-    } catch (error) {
+    } catch (error: unknown) {
+      const err = toError(error);
       this.logger.error(
-        `Error processing order updated webhook: ${error.message}`,
-        error.stack,
+        `Error processing order updated webhook: ${err.message}`,
+        err.stack,
       );
-      throw error;
+      throw err;
     }
   }
 
@@ -104,7 +121,9 @@ export class WebhookHandlerService {
    * @param payload Product payload
    * @returns Processing result
    */
-  async handleWooCommerceProductUpdated(payload: any): Promise<any> {
+  async handleWooCommerceProductUpdated(
+    payload: MarketplaceProduct,
+  ): Promise<OperationResult<{ productId: string }>> {
     this.logger.log(`Processing WooCommerce product updated: ${payload.id}`);
 
     try {
@@ -115,15 +134,15 @@ export class WebhookHandlerService {
 
       return {
         success: true,
-        productId: payload.id,
-        message: 'Product update processed',
+        data: { productId: payload.id },
       };
-    } catch (error) {
+    } catch (error: unknown) {
+      const err = toError(error);
       this.logger.error(
-        `Error processing product updated webhook: ${error.message}`,
-        error.stack,
+        `Error processing product updated webhook: ${err.message}`,
+        err.stack,
       );
-      throw error;
+      throw err;
     }
   }
 
@@ -132,7 +151,9 @@ export class WebhookHandlerService {
    * @param payload Product payload
    * @returns Processing result
    */
-  async handleWooCommerceProductDeleted(payload: any): Promise<any> {
+  async handleWooCommerceProductDeleted(
+    payload: MarketplaceProduct,
+  ): Promise<OperationResult<{ productId: string }>> {
     this.logger.log(`Processing WooCommerce product deleted: ${payload.id}`);
 
     try {
@@ -143,15 +164,15 @@ export class WebhookHandlerService {
 
       return {
         success: true,
-        productId: payload.id,
-        message: 'Product deletion processed',
+        data: { productId: payload.id },
       };
-    } catch (error) {
+    } catch (error: unknown) {
+      const err = toError(error);
       this.logger.error(
-        `Error processing product deleted webhook: ${error.message}`,
-        error.stack,
+        `Error processing product deleted webhook: ${err.message}`,
+        err.stack,
       );
-      throw error;
+      throw err;
     }
   }
 
@@ -160,7 +181,9 @@ export class WebhookHandlerService {
    * @param payload Customer payload
    * @returns Processing result
    */
-  async handleWooCommerceCustomerCreated(payload: any): Promise<any> {
+  async handleWooCommerceCustomerCreated(
+    payload: WooCustomerPayload,
+  ): Promise<OperationResult<{ customerId: string; email: string }>> {
     this.logger.log(
       `Processing WooCommerce customer created: ${payload.id} (${payload.email})`,
     );
@@ -173,16 +196,15 @@ export class WebhookHandlerService {
 
       return {
         success: true,
-        customerId: payload.id,
-        email: payload.email,
-        message: 'Customer creation processed',
+        data: { customerId: payload.id, email: payload.email },
       };
-    } catch (error) {
+    } catch (error: unknown) {
+      const err = toError(error);
       this.logger.error(
-        `Error processing customer created webhook: ${error.message}`,
-        error.stack,
+        `Error processing customer created webhook: ${err.message}`,
+        err.stack,
       );
-      throw error;
+      throw err;
     }
   }
 
@@ -191,7 +213,9 @@ export class WebhookHandlerService {
    * @param payload Customer payload
    * @returns Processing result
    */
-  async handleWooCommerceCustomerUpdated(payload: any): Promise<any> {
+  async handleWooCommerceCustomerUpdated(
+    payload: WooCustomerPayload,
+  ): Promise<OperationResult<{ customerId: string; email: string }>> {
     this.logger.log(
       `Processing WooCommerce customer updated: ${payload.id} (${payload.email})`,
     );
@@ -204,16 +228,15 @@ export class WebhookHandlerService {
 
       return {
         success: true,
-        customerId: payload.id,
-        email: payload.email,
-        message: 'Customer update processed',
+        data: { customerId: payload.id, email: payload.email },
       };
-    } catch (error) {
+    } catch (error: unknown) {
+      const err = toError(error);
       this.logger.error(
-        `Error processing customer updated webhook: ${error.message}`,
-        error.stack,
+        `Error processing customer updated webhook: ${err.message}`,
+        err.stack,
       );
-      throw error;
+      throw err;
     }
   }
 
@@ -222,7 +245,9 @@ export class WebhookHandlerService {
    * @param payload Customer payload
    * @returns Processing result
    */
-  async handleWooCommerceCustomerDeleted(payload: any): Promise<any> {
+  async handleWooCommerceCustomerDeleted(
+    payload: WooCustomerPayload,
+  ): Promise<OperationResult<{ customerId: string; email: string }>> {
     this.logger.log(
       `Processing WooCommerce customer deleted: ${payload.id} (${payload.email})`,
     );
@@ -235,16 +260,15 @@ export class WebhookHandlerService {
 
       return {
         success: true,
-        customerId: payload.id,
-        email: payload.email,
-        message: 'Customer deletion processed',
+        data: { customerId: payload.id, email: payload.email },
       };
-    } catch (error) {
+    } catch (error: unknown) {
+      const err = toError(error);
       this.logger.error(
-        `Error processing customer deleted webhook: ${error.message}`,
-        error.stack,
+        `Error processing customer deleted webhook: ${err.message}`,
+        err.stack,
       );
-      throw error;
+      throw err;
     }
   }
 }

@@ -1,4 +1,4 @@
-import { Controller, Get, UseGuards } from '@nestjs/common';
+import { Controller, Get } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 
 // Import services
@@ -123,7 +123,7 @@ export class HealthController {
   @ApiOperation({ summary: 'Liveness check for health probes' })
   @ApiResponse({ status: 200, description: 'Service is alive' })
   @ApiResponse({ status: 503, description: 'Service needs restart' })
-  async getLiveness(): Promise<{ status: string; uptime: number }> {
+  getLiveness(): { status: string; uptime: number } {
     // For liveness, we just need to verify the service responds
     // A successful response indicates the service is alive
     return {

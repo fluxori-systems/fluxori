@@ -22,6 +22,7 @@ import {
   ConnectorErrorType,
 } from '../interfaces/types';
 import { NetworkAwareClient } from '../utils/network-aware-client';
+import { toError } from '../../../common/utils/error.util';
 
 /**
  * Bob Shop API Connector
@@ -93,16 +94,18 @@ export class BobShopConnector extends BaseMarketplaceConnector {
         message: 'Connection to Bob Shop API successful',
         lastChecked: new Date(),
       };
-    } catch (error) {
+    } catch (error: unknown) {
+      const err = toError(error);
+
       this.logger.error(
-        `Bob Shop connection test failed: ${error.message}`,
-        error.stack,
+        `Bob Shop connection test failed: ${err.message}`,
+        err.stack,
       );
 
       return {
         connected: false,
         quality: ConnectionQuality.POOR,
-        message: `Connection error: ${error.message}`,
+        message: `Connection error: ${err.message}`,
         lastChecked: new Date(),
       };
     }

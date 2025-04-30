@@ -100,6 +100,10 @@ export enum ImageSize {
  */
 export interface PriceInfo {
   /**
+   * Shipping cost for the product (if applicable)
+   */
+  shipping?: number;
+  /**
    * Base price amount (without tax)
    */
   basePrice: number;
@@ -154,7 +158,21 @@ export interface PriceInfo {
 /**
  * Product attribute (field) definition
  */
-export interface ProductAttribute {
+import { FirestoreEntityWithMetadata } from '../../../common/repositories/base/repository-types';
+
+export interface ProductAttribute extends FirestoreEntityWithMetadata {
+  /** Unique identifier */
+  id: string;
+  /** Soft delete flag */
+  isDeleted: boolean;
+  /** Version for optimistic locking */
+  version: number;
+  /** Creation timestamp */
+  createdAt: Date;
+  /** Last update timestamp */
+  updatedAt: Date;
+  /** Deletion timestamp (optional) */
+  deletedAt?: Date | undefined;
   /**
    * Attribute code/name
    */
@@ -173,7 +191,11 @@ export interface ProductAttribute {
   /**
    * Attribute value
    */
-  value: any;
+  /**
+   * Attribute value - strictly typed union for common types
+   */
+  value: string | number | boolean | Date | string[] | number[] | boolean[] | null;
+  // TODO: If more complex types are needed, extend this union or use generics.
 
   /**
    * Whether this attribute is required
@@ -266,7 +288,10 @@ export interface MarketplaceMapping {
   /**
    * Marketplace-specific configuration
    */
-  marketplaceConfig?: Record<string, any>;
+  /**
+   * Marketplace-specific configuration. Use 'unknown' for safe extensibility, validate at runtime.
+   */
+  marketplaceConfig?: Record<string, unknown>;
 }
 
 /**

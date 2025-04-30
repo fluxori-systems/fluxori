@@ -16,38 +16,41 @@ import { Request, Response } from 'express';
 export class GlobalExceptionFilter implements ExceptionFilter {
   private readonly logger = new Logger(GlobalExceptionFilter.name);
 
-  catch(exception: any, host: ArgumentsHost) {
+  catch(exception: unknown, host: ArgumentsHost): void {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
     const request = ctx.getRequest<Request>();
 
-    // Determine the status code and error message
-    const status =
-      exception instanceof HttpException
-        ? exception.getStatus()
-        : HttpStatus.INTERNAL_SERVER_ERROR;
+    let status: number;
+    let message: string;
+    let stack: string | undefined;
 
-    const message =
-      exception instanceof HttpException
-        ? exception.message
-        : 'Internal server error';
+    if (exception instanceof HttpException) {
+      status = exception.getStatus();
+      message = exception.message;
+      stack = exception.stack;
+    } else if (exception instanceof Error) {
+      status = HttpStatus.INTERNAL_SERVER_ERROR;
+      message = exception.message;
+      stack = exception.stack;
+    } else {
+      status = HttpStatus.INTERNAL_SERVER_ERROR;
+      message = 'Internal server error';
+      stack = undefined;
+    }
 
-    // Log the error
     this.logger.error(
       `${request.method} ${request.url} - ${status} ${message}`,
-      exception instanceof Error ? exception.stack : '',
+      stack ?? '',
     );
 
-    // Send a standardized error response
     response.status(status).json({
       statusCode: status,
       timestamp: new Date().toISOString(),
       path: request.url,
       method: request.method,
       message,
-      ...(process.env.NODE_ENV === 'development' && {
-        stack: exception instanceof Error ? exception.stack : undefined,
-      }),
+      ...(process.env.NODE_ENV === 'development' && { stack }),
     });
   }
 }

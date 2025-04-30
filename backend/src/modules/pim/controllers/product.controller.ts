@@ -173,7 +173,11 @@ export class ProductController {
     @GetUser() user: User,
   ): Promise<Product> {
     // Ensure organizationId is set
-    createProductDto.organizationId = user.organizationId;
+    const organizationId = user.organizationId;
+    if (!organizationId) {
+      throw new HttpException('Missing organizationId for user', HttpStatus.BAD_REQUEST);
+    }
+    createProductDto.organizationId = organizationId;
 
     return await this.productService.createProduct(createProductDto);
   }

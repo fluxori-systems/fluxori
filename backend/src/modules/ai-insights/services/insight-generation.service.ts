@@ -80,6 +80,7 @@ export class InsightGenerationService {
         modelConfig,
         request.dataType,
         request.data,
+        request.organizationId,
       );
 
       // Record processing time
@@ -187,10 +188,17 @@ export class InsightGenerationService {
    * @param data Data to analyze
    * @returns AI analysis result
    */
+  /**
+   * @param modelConfig Model configuration
+   * @param dataType Type of data
+   * @param data Strictly typed insight data (see InsightData interface)
+   * @returns AI analysis result
+   */
   private async processWithAI(
     modelConfig: AIModelConfig,
     dataType: string,
-    data: Record<string, any>,
+    data: InsightData,
+    organizationId: string,
   ): Promise<AIAnalysisResult> {
     // This is a placeholder for the actual AI processing implementation
     // In a real implementation, this would use an API client for the specified model provider
@@ -203,7 +211,8 @@ export class InsightGenerationService {
     await new Promise((resolve) => setTimeout(resolve, 2000));
 
     // Example response with mock insights
-    const organizationId = data.organizationId || 'unknown';
+    // organizationId is now passed explicitly from the request (never from data)
+    // const organizationId = data.organizationId || 'unknown';
     const mockInsights: CreateInsightDto[] = [];
 
     // Generate mock insights based on data type
@@ -219,18 +228,9 @@ export class InsightGenerationService {
         confidence: 0.87,
         data: {
           affectedProducts: [
-            {
-              id: 'product-1',
-              name: 'Product 1',
-              stock: 5,
-              salesVelocity: 2.3,
-            },
-            {
-              id: 'product-2',
-              name: 'Product 2',
-              stock: 8,
-              salesVelocity: 1.8,
-            },
+            // Example: only id, yourPrice, newCompetitorPrice are allowed per InsightData
+            { id: 'product-1', yourPrice: 0, newCompetitorPrice: 0 },
+            { id: 'product-2', yourPrice: 0, newCompetitorPrice: 0 },
           ],
           recommendation:
             'Restock these items within 3 days to avoid stockouts',
@@ -247,11 +247,9 @@ export class InsightGenerationService {
         severity: InsightSeverity.MEDIUM,
         confidence: 0.92,
         data: {
-          category: 'Electronics',
-          previousPeriod: { revenue: 24500, units: 126 },
-          currentPeriod: { revenue: 32340, units: 165 },
-          growthRate: 0.32,
-          topProducts: ['product-5', 'product-12', 'product-8'],
+          recommendation:
+            'Electronics category has shown 32% growth over the last 30 days.',
+          // Additional fields (category, previousPeriod, etc.) are omitted to match InsightData strict typing
         },
       });
     } else if (dataType === 'marketplaces') {
@@ -265,16 +263,9 @@ export class InsightGenerationService {
         severity: InsightSeverity.MEDIUM,
         confidence: 0.78,
         data: {
-          marketplace: 'Marketplace X',
-          potentialRevenue: 45000,
-          competitiveAdvantage: 'Lower price point and faster shipping',
-          recommendedProducts: [
-            'product-3',
-            'product-7',
-            'product-9',
-            'product-11',
-            'product-15',
-          ],
+          recommendation:
+            'Your top 5 products have high potential on Marketplace X based on competitive analysis.',
+          // Additional fields omitted to match InsightData strict typing
         },
       });
     } else if (dataType === 'competitors') {
@@ -288,7 +279,6 @@ export class InsightGenerationService {
         severity: InsightSeverity.HIGH,
         confidence: 0.85,
         data: {
-          competitor: 'Competitor A',
           averagePriceReduction: 0.12,
           affectedProducts: [
             { id: 'product-4', yourPrice: 49.99, newCompetitorPrice: 42.99 },

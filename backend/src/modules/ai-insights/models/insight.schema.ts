@@ -16,7 +16,7 @@ export interface Insight extends TenantEntity, FirestoreEntityWithMetadata {
   type: InsightType;
   title: string;
   description: string;
-  data: InsightData; // TODO: Refine fields as discovered
+  data: InsightData; // Strictly typed and extensible (see InsightData interface)
   severity: InsightSeverity;
   status: InsightStatus;
   confidence: number;

@@ -4,6 +4,8 @@
  * Interfaces and types for the Centralized Tax Rate Service
  */
 
+import { FirestoreEntityWithMetadata } from '../../../common/repositories/base/repository-types';
+
 /**
  * Tax type enum
  */
@@ -59,7 +61,7 @@ export interface TaxJurisdiction {
 /**
  * Tax rate schedule - a tax rate valid for a specific period
  */
-export interface TaxRateSchedule {
+export interface TaxRateSchedule extends FirestoreEntityWithMetadata {
   /**
    * Unique identifier
    */
@@ -188,7 +190,11 @@ export interface TaxRateRequest {
   /**
    * Additional context data
    */
-  context?: Record<string, any>;
+  /**
+   * Additional context data. Use a strict union for allowed types.
+   */
+  context?: Record<string, string | number | boolean | Date | null | undefined>;
+  // TODO: If extensibility is needed, consider using 'unknown' with runtime validation.
 }
 
 /**

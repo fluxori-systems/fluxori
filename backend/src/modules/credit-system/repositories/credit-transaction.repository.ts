@@ -1,4 +1,5 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
+import { toJSDate } from '../../../common/utils/date.util';
 
 import { FirestoreBaseRepository } from '../../../common/repositories/firestore-base.repository';
 import { FirestoreConfigService } from '../../../config/firestore.config';
@@ -175,7 +176,7 @@ export class CreditTransactionRepository extends FirestoreBaseRepository<CreditT
           typeof transaction.createdAt.toDate === 'function'
         ) {
           // Handle Firestore Timestamp
-          createdAt = transaction.createdAt.toDate();
+          createdAt = toJSDate(transaction.createdAt);
         } else {
           createdAt = new Date(); // Fallback
         }

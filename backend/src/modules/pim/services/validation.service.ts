@@ -64,8 +64,9 @@ export interface ValidationRule {
    */
   validator: (
     product: Product,
-    context?: ValidationContext,
+    context?: ValidationContext
   ) => ValidationIssue[];
+
 }
 
 /**
@@ -231,12 +232,17 @@ export class ValidationService {
   ): Promise<ValidationResult> {
     // Execute validation with load shedding resilience
     return this.loadSheddingService.executeWithResilience(
-      async () => {
-        return this.performValidation(product, tenantId, options);
-      },
       'product-validation',
-      { priority: 'medium' },
-    );
+      {},
+      async () => {
+        const result = await this.performValidation(product, tenantId, options);
+        if (!result) {
+          throw new Error('Validation failed to return a result');
+        }
+        return result;
+      },
+      { priority: 1 },
+    ) as Promise<ValidationResult>;
   }
 
   /**
@@ -281,7 +287,7 @@ export class ValidationService {
       const primaryCategory = product.categories.find((c) => c.isPrimary);
 
       if (primaryCategory) {
-        const category = await this.categoryService.findById(
+        const category = await this.categoryService.getCategoryById(
           primaryCategory.id,
           tenantId,
         );
@@ -308,16 +314,18 @@ export class ValidationService {
     const skippedRules: string[] = [];
 
     // Filter by ruleIds if specified
-    if (validationOptions.ruleIds?.length) {
+    const ruleIds = validationOptions.ruleIds ?? [];
+    if (ruleIds.length) {
       rulesToRun = rulesToRun.filter((rule) =>
-        validationOptions.ruleIds.includes(rule.id),
+        ruleIds.includes(rule.id),
       );
     }
 
     // Exclude rules by skipRuleIds if specified
-    if (validationOptions.skipRuleIds?.length) {
+    const skipRuleIds = validationOptions.skipRuleIds ?? [];
+    if (skipRuleIds.length) {
       rulesToRun = rulesToRun.filter((rule) => {
-        const shouldSkip = validationOptions.skipRuleIds.includes(rule.id);
+        const shouldSkip = skipRuleIds.includes(rule.id);
         if (shouldSkip) {
           skippedRules.push(rule.id);
         }
@@ -332,7 +340,7 @@ export class ValidationService {
         (rule) =>
           !rule.categoryIds ||
           rule.categoryIds.length === 0 ||
-          rule.categoryIds.includes(context.category.id),
+          (context.category && rule.categoryIds.includes(context.category.id)),
       );
     } else {
       // Keep only general rules
@@ -355,11 +363,13 @@ export class ValidationService {
     for (const rule of rulesToRun) {
       try {
         const ruleIssues = rule.validator(product, context);
-        issues.push(...ruleIssues);
-      } catch (error) {
+        if (Array.isArray(ruleIssues)) {
+          issues.push(...ruleIssues);
+        }
+      } catch (error: any) {
         this.logger.error(
-          `Error running validation rule ${rule.id}: ${error.message}`,
-          error.stack,
+          `Error running validation rule ${rule.id}: ${error?.message}`,
+          error?.stack,
         );
 
         // Add an issue for the failed rule
@@ -806,7 +816,7 @@ export class ValidationService {
         // Check for duplicate words in name
         if (product.name) {
           const words = product.name.toLowerCase().split(/\s+/);
-          const wordCounts = words.reduce((acc, word) => {
+          const wordCounts: Record<string, number> = words.reduce((acc: Record<string, number>, word: string) => {
             if (word.length >= 3) {
               // Only count meaningful words
               acc[word] = (acc[word] || 0) + 1;
@@ -873,7 +883,7 @@ export class ValidationService {
       description: 'Validates South African specific requirements',
       fields: ['regional.southAfrica', 'compliance.southAfrica'],
       severity: ValidationSeverity.WARNING,
-      validator: (product: Product, context: ValidationContext) => {
+      validator: (product: Product, context?: ValidationContext) => {
         const issues: ValidationIssue[] = [];
 
         // Only apply for South African market context
@@ -933,7 +943,7 @@ export class ValidationService {
       fields: ['type', 'variants'],
       severity: ValidationSeverity.ERROR,
       productTypes: [ProductType.SIMPLE],
-      validator: (product: Product, context: ValidationContext) => {
+      validator: (product: Product, context?: ValidationContext) => {
         const issues: ValidationIssue[] = [];
 
         // Only apply to products with variants
@@ -1024,7 +1034,7 @@ export class ValidationService {
     score -= info.length * 1;
 
     // Bonus for completeness
-    if (product.images?.gallery?.length >= 3) {
+    if (product.images?.gallery && product.images.gallery.length >= 3) {
       score += 5;
     }
 
@@ -1084,10 +1094,10 @@ export class ValidationService {
    */
   private isElectronicsProduct(
     product: Product,
-    context: ValidationContext,
+    context?: ValidationContext,
   ): boolean {
     // Check categories
-    const categoryNames = product.categories.map((c) => c.name.toLowerCase());
+    const categoryNames = (product.categories || []).map((c) => c.name?.toLowerCase?.() || "");
 
     return categoryNames.some(
       (name) =>
@@ -1106,13 +1116,8 @@ export class ValidationService {
    * Check if a product has a South African barcode
    */
   private hasSouthAfricanBarcode(product: Product): boolean {
-    // Check in regional data
-    if (product.regional?.southAfrica?.saBarcode) {
-      return true;
-    }
-
     // Check in attributes
-    const barcodeAttribute = product.attributes.find(
+    const barcodeAttribute = (product.attributes || []).find(
       (attr) =>
         attr.code === 'barcode' ||
         attr.code === 'sa_barcode' ||

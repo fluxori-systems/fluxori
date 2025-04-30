@@ -1,4 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
+import { toJSDate } from '../../../common/utils/date.util';
 
 import { FirestoreConfigService } from '../../../config/firestore.config';
 
@@ -147,7 +148,7 @@ export class BuyBoxHistoryRepository extends FirestoreBaseRepository<BuyBoxHisto
     }
 
     if (params.toDate) {
-      const toDate = new Date(params.toDate);
+      const toDate = toJSDate(params.toDate);
       histories = histories.filter((history) => {
         const timestamp =
           history.timestamp instanceof Date

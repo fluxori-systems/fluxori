@@ -132,7 +132,11 @@ export class AttributeTemplateController {
     @GetUser() user: User,
   ): Promise<AttributeTemplate> {
     // Ensure organizationId is set
-    createAttributeTemplateDto.organizationId = user.organizationId;
+    const organizationId = user.organizationId;
+    if (!organizationId) {
+      throw new HttpException('Missing organizationId for user', HttpStatus.BAD_REQUEST);
+    }
+    createAttributeTemplateDto.organizationId = organizationId;
 
     return await this.attributeTemplateService.createAttributeTemplate(
       createAttributeTemplateDto,

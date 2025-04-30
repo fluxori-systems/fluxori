@@ -15,7 +15,7 @@ import { SecurityModuleOptions } from '../interfaces/security.interfaces';
 import { Request } from 'express';
 import Redis from 'ioredis';
 
-import { ObservabilityService } from '../../../common/observability';
+import { ObservabilityService } from '../../../../common/observability';
 
 /**
  * Metadata key for rate limit configuration

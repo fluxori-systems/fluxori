@@ -8,7 +8,7 @@ import { SecurityModuleOptions } from '../interfaces/security.interfaces';
 import { CloudFunctionsServiceClient } from '@google-cloud/functions';
 import { Storage } from '@google-cloud/storage';
 
-import { ObservabilityService } from '../../../common/observability';
+import { ObservabilityService } from '../../../../common/observability';
 
 /**
  * Service for scanning files for malware and other security threats

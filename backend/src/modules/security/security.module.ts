@@ -1,21 +1,21 @@
 import { DynamicModule, Module, Provider } from '@nestjs/common';
 import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 
-import { SecurityController } from './controllers/security.controller';
-import { CredentialController } from './controllers/credential.controller';
-import { SecurityAuditController } from './controllers/security-audit.controller';
-import { RateLimitGuard } from './guards/rate-limit.guard';
-import { SecurityHealthIndicator } from './health/security-health.indicator';
-import { SecurityInterceptor } from './interceptors/security.interceptor';
-import { SecurityModuleOptions } from './interfaces/security.interfaces';
-import { CloudArmorService } from './services/cloud-armor.service';
-import { CredentialManagerService } from './services/credential-manager.service';
-import { DlpService } from './services/dlp.service';
-import { FileScannerService } from './services/file-scanner.service';
-import { SecurityAuditService } from './services/security-audit.service';
-import { SecurityMetricsService } from './services/security-metrics.service';
-import { SecurityService } from './services/security.service';
-import { VpcServiceControlsService } from './services/vpc-service-controls.service';
+import { SecurityController } from './internal/controllers/security.controller';
+import { CredentialController } from './internal/controllers/credential.controller';
+import { SecurityAuditController } from './internal/controllers/security-audit.controller';
+import { RateLimitGuard } from './internal/guards/rate-limit.guard';
+import { SecurityHealthIndicator } from './internal/health/security-health.indicator';
+import { SecurityInterceptor } from './internal/interceptors/security.interceptor';
+import { SecurityModuleOptions } from './internal/interfaces/security.interfaces';
+import { CloudArmorService } from './internal/services/cloud-armor.service';
+import { CredentialManagerService } from './internal/services/credential-manager.service';
+import { DlpService } from './internal/services/dlp.service';
+import { FileScannerService } from './internal/services/file-scanner.service';
+import { SecurityAuditService } from './internal/services/security-audit.service';
+import { SecurityMetricsService } from './internal/services/security-metrics.service';
+import { SecurityService } from './internal/services/security.service';
+import { VpcServiceControlsService } from './internal/services/vpc-service-controls.service';
 
 /**
  * Security module for the Fluxori platform

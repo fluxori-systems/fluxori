@@ -7,7 +7,10 @@ import {
   PriceHistoryRecord,
   DateRange,
   PriceSourceType,
+  PriceVerificationStatus,
 } from '../models/competitor-price.model';
+import { FirestoreConfigService } from '../../../config/firestore.config';
+import { FirestoreAdvancedFilter, FindOptions } from '../../../common/repositories/base/repository-types';
 
 /**
  * Repository for price history
@@ -15,14 +18,16 @@ import {
  */
 @Injectable()
 export class PriceHistoryRepository extends FirestoreBaseRepository<PriceHistoryRecord> {
-  private readonly logger = new Logger(PriceHistoryRepository.name);
+  protected readonly logger = new Logger(PriceHistoryRepository.name);
 
-  constructor() {
-    super('price-history', {
-      enableDataValidation: true,
-      enableQueryCache: true,
-      cacheExpirationMinutes: 60, // Price history can be cached longer
-      enableTransactionality: false, // Historical data is append-only
+  constructor(
+    firestoreConfigService: FirestoreConfigService,
+  ) {
+    super(firestoreConfigService, 'price-history', {
+      useSoftDeletes: true,
+      useVersioning: true,
+      // useCache is not a valid option in the current repository pattern
+      // cacheExpirationMinutes is not a valid option in the current repository pattern
     });
   }
 
@@ -31,15 +36,20 @@ export class PriceHistoryRepository extends FirestoreBaseRepository<PriceHistory
    * @param data Price history data
    */
   async create(
-    data: Omit<PriceHistoryRecord, 'id' | 'createdAt'>,
+    data: Omit<PriceHistoryRecord, 'id' | 'createdAt' | 'updatedAt' | 'isDeleted' | 'version' | 'deletedAt'>,
   ): Promise<PriceHistoryRecord> {
     try {
       const now = new Date();
 
-      const newRecord: PriceHistoryRecord = {
+      // Generate a new id but don't include it in the data object
+      // The base repository will handle id generation
+      const newId = uuidv4();
+      
+      const newRecord: Omit<PriceHistoryRecord, 'id' | 'createdAt' | 'updatedAt'> = {
         ...data,
-        id: uuidv4(),
-        createdAt: now,
+        isDeleted: false,
+        version: 1,
+        deletedAt: null,
       };
 
       return super.create(newRecord);
@@ -71,45 +81,62 @@ export class PriceHistoryRepository extends FirestoreBaseRepository<PriceHistory
     },
   ): Promise<PriceHistoryRecord[]> {
     try {
-      const whereConditions: any[] = [
-        { field: 'productId', operator: '==', value: productId },
-        { field: 'organizationId', operator: '==', value: organizationId },
-        { field: 'recordedAt', operator: '>=', value: dateRange.startDate },
-        { field: 'recordedAt', operator: '<=', value: dateRange.endDate },
+      const advancedFilters: FirestoreAdvancedFilter<PriceHistoryRecord>[] = [
+        {
+          field: 'productId',
+          operator: '==',
+          value: productId,
+        } as FirestoreAdvancedFilter<PriceHistoryRecord>,
+        {
+          field: 'organizationId',
+          operator: '==',
+          value: organizationId,
+        } as FirestoreAdvancedFilter<PriceHistoryRecord>,
+        {
+          field: 'recordedAt',
+          operator: '>=',
+          value: dateRange.start,
+        } as FirestoreAdvancedFilter<PriceHistoryRecord>,
+        {
+          field: 'recordedAt',
+          operator: '<=',
+          value: dateRange.end,
+        } as FirestoreAdvancedFilter<PriceHistoryRecord>,
       ];
 
       // Add optional filters
       if (options?.competitorId) {
-        whereConditions.push({
+        advancedFilters.push({
           field: 'competitorId',
           operator: '==',
           value: options.competitorId,
-        });
+        } as FirestoreAdvancedFilter<PriceHistoryRecord>);
       }
 
       if (options?.marketplaceId) {
-        whereConditions.push({
+        advancedFilters.push({
           field: 'marketplaceId',
           operator: '==',
           value: options.marketplaceId,
-        });
+        } as FirestoreAdvancedFilter<PriceHistoryRecord>);
       }
 
       if (options?.recordType) {
-        whereConditions.push({
+        advancedFilters.push({
           field: 'recordType',
           operator: '==',
           value: options.recordType,
-        });
+        } as FirestoreAdvancedFilter<PriceHistoryRecord>);
       }
 
-      const query = {
-        where: whereConditions,
+      const findOptions: FindOptions<PriceHistoryRecord> = {
+        advancedFilters,
         orderBy: [{ field: 'recordedAt', direction: 'asc' }],
         limit: options?.limit || 1000,
+        includeDeleted: false,
       };
 
-      return this.query(query);
+      return this.find(findOptions);
     } catch (error) {
       this.logger.error(
         `Error finding price history: ${error.message}`,
@@ -137,37 +164,54 @@ export class PriceHistoryRepository extends FirestoreBaseRepository<PriceHistory
     },
   ): Promise<Record<string, PriceHistoryRecord[]>> {
     try {
-      const whereConditions: any[] = [
-        { field: 'productId', operator: 'in', value: productIds },
-        { field: 'organizationId', operator: '==', value: organizationId },
-        { field: 'recordedAt', operator: '>=', value: dateRange.startDate },
-        { field: 'recordedAt', operator: '<=', value: dateRange.endDate },
+      const advancedFilters: FirestoreAdvancedFilter<PriceHistoryRecord>[] = [
+        {
+          field: 'productId',
+          operator: 'in',
+          value: productIds,
+        } as FirestoreAdvancedFilter<PriceHistoryRecord>,
+        {
+          field: 'organizationId',
+          operator: '==',
+          value: organizationId,
+        } as FirestoreAdvancedFilter<PriceHistoryRecord>,
+        {
+          field: 'recordedAt',
+          operator: '>=',
+          value: dateRange.start,
+        } as FirestoreAdvancedFilter<PriceHistoryRecord>,
+        {
+          field: 'recordedAt',
+          operator: '<=',
+          value: dateRange.end,
+        } as FirestoreAdvancedFilter<PriceHistoryRecord>,
       ];
 
       // Add optional filters
       if (options?.marketplaceId) {
-        whereConditions.push({
+        advancedFilters.push({
           field: 'marketplaceId',
           operator: '==',
           value: options.marketplaceId,
-        });
+        } as FirestoreAdvancedFilter<PriceHistoryRecord>);
       }
 
       if (options?.recordType) {
-        whereConditions.push({
+        advancedFilters.push({
           field: 'recordType',
           operator: '==',
           value: options.recordType,
-        });
+        } as FirestoreAdvancedFilter<PriceHistoryRecord>);
       }
 
-      const query = {
-        where: whereConditions,
+      const findOptions: FindOptions<PriceHistoryRecord> = {
+        advancedFilters,
         orderBy: [{ field: 'recordedAt', direction: 'asc' }],
         limit: options?.limit || productIds.length * 100, // 100 records per product
+        includeDeleted: false,
       };
 
-      const results = await this.query(query);
+      const results = await this.find(findOptions);
 
       // Group by product ID
       const groupedResults: Record<string, PriceHistoryRecord[]> = {};
@@ -218,28 +262,45 @@ export class PriceHistoryRepository extends FirestoreBaseRepository<PriceHistory
   }> {
     try {
       // Get all price history records
-      const whereConditions: any[] = [
-        { field: 'productId', operator: '==', value: productId },
-        { field: 'organizationId', operator: '==', value: organizationId },
-        { field: 'recordedAt', operator: '>=', value: dateRange.startDate },
-        { field: 'recordedAt', operator: '<=', value: dateRange.endDate },
+      const advancedFilters: FirestoreAdvancedFilter<PriceHistoryRecord>[] = [
+        {
+          field: 'productId',
+          operator: '==',
+          value: productId,
+        } as FirestoreAdvancedFilter<PriceHistoryRecord>,
+        {
+          field: 'organizationId',
+          operator: '==',
+          value: organizationId,
+        } as FirestoreAdvancedFilter<PriceHistoryRecord>,
+        {
+          field: 'recordedAt',
+          operator: '>=',
+          value: dateRange.start,
+        } as FirestoreAdvancedFilter<PriceHistoryRecord>,
+        {
+          field: 'recordedAt',
+          operator: '<=',
+          value: dateRange.end,
+        } as FirestoreAdvancedFilter<PriceHistoryRecord>,
       ];
 
       if (options?.marketplaceId) {
-        whereConditions.push({
+        advancedFilters.push({
           field: 'marketplaceId',
           operator: '==',
           value: options.marketplaceId,
-        });
+        } as FirestoreAdvancedFilter<PriceHistoryRecord>);
       }
 
-      const query = {
-        where: whereConditions,
+      const findOptions: FindOptions<PriceHistoryRecord> = {
+        advancedFilters,
         orderBy: [{ field: 'recordedAt', direction: 'asc' }],
         limit: 5000, // Generous limit for history records
+        includeDeleted: false,
       };
 
-      const records = await this.query(query);
+      const records = await this.find(findOptions);
 
       // Group records by day
       const dayMap = new Map<
@@ -260,14 +321,16 @@ export class PriceHistoryRepository extends FirestoreBaseRepository<PriceHistory
         }
 
         const dayData = dayMap.get(day);
-
-        if (record.recordType === 'OUR_PRICE') {
-          dayData.ourPrice = record.price;
-        } else if (
-          record.competitorId &&
-          options?.includeCompetitors !== false
-        ) {
-          dayData.competitors.set(record.competitorId, record.price);
+        
+        if (dayData) {
+          if (record.recordType === 'OUR_PRICE') {
+            dayData.ourPrice = record.price;
+          } else if (
+            record.competitorId &&
+            options?.includeCompetitors !== false
+          ) {
+            dayData.competitors.set(record.competitorId, record.price);
+          }
         }
       });
 
@@ -280,9 +343,11 @@ export class PriceHistoryRepository extends FirestoreBaseRepository<PriceHistory
       const allCompetitorIds = new Set<string>();
 
       dayMap.forEach((dayData) => {
-        dayData.competitors.forEach((_, competitorId) => {
-          allCompetitorIds.add(competitorId);
-        });
+        if (dayData && dayData.competitors) {
+          dayData.competitors.forEach((_, competitorId) => {
+            allCompetitorIds.add(competitorId);
+          });
+        }
       });
 
       // Initialize competitor price arrays
@@ -295,16 +360,23 @@ export class PriceHistoryRepository extends FirestoreBaseRepository<PriceHistory
         .sort(([dayA], [dayB]) => dayA.localeCompare(dayB))
         .forEach(([day, dayData]) => {
           dates.push(day);
-          ourPrices.push(dayData.ourPrice ?? null);
+          ourPrices.push(dayData?.ourPrice ?? 0);
 
           // Add competitor prices for this day
-          allCompetitorIds.forEach((competitorId) => {
-            competitorPrices[competitorId].push(
-              dayData.competitors.has(competitorId)
-                ? dayData.competitors.get(competitorId)
-                : null,
-            );
-          });
+          if (dayData && dayData.competitors) {
+            allCompetitorIds.forEach((competitorId) => {
+              competitorPrices[competitorId].push(
+                dayData.competitors.has(competitorId)
+                  ? dayData.competitors.get(competitorId) ?? 0
+                  : 0,
+              );
+            });
+          } else {
+            // If dayData or competitors is undefined, add 0 for all competitors
+            allCompetitorIds.forEach((competitorId) => {
+              competitorPrices[competitorId].push(0);
+            });
+          }
         });
 
       return {
@@ -347,7 +419,7 @@ export class PriceHistoryRepository extends FirestoreBaseRepository<PriceHistory
     try {
       const now = new Date();
 
-      const record: Omit<PriceHistoryRecord, 'id' | 'createdAt'> = {
+      const record: Omit<PriceHistoryRecord, 'id' | 'createdAt' | 'updatedAt' | 'isDeleted' | 'version' | 'deletedAt'> = {
         organizationId,
         productId,
         variantId: options?.variantId,
@@ -362,8 +434,8 @@ export class PriceHistoryRepository extends FirestoreBaseRepository<PriceHistory
         hasBuyBox: options?.hasBuyBox,
         recordType: 'OUR_PRICE',
         verificationStatus: PriceSourceType.MARKETPLACE_API
-          ? 'VERIFIED'
-          : 'UNVERIFIED',
+          ? PriceVerificationStatus.VERIFIED
+          : PriceVerificationStatus.UNVERIFIED,
       };
 
       return this.create(record);
@@ -393,13 +465,13 @@ export class PriceHistoryRepository extends FirestoreBaseRepository<PriceHistory
     currency: string;
     hasBuyBox: boolean;
     sourceType: PriceSourceType;
-    verificationStatus: 'VERIFIED' | 'PENDING' | 'FAILED' | 'UNVERIFIED';
+    verificationStatus: PriceVerificationStatus.VERIFIED | PriceVerificationStatus.PENDING | PriceVerificationStatus.FAILED | PriceVerificationStatus.UNVERIFIED;
     stockStatus?: string;
   }): Promise<PriceHistoryRecord> {
     try {
       const now = new Date();
 
-      const record: Omit<PriceHistoryRecord, 'id' | 'createdAt'> = {
+      const record: Omit<PriceHistoryRecord, 'id' | 'createdAt' | 'updatedAt' | 'isDeleted' | 'version' | 'deletedAt'> = {
         organizationId: competitorPrice.organizationId,
         productId: competitorPrice.productId,
         variantId: competitorPrice.variantId,
@@ -445,42 +517,51 @@ export class PriceHistoryRepository extends FirestoreBaseRepository<PriceHistory
     },
   ): Promise<PriceHistoryRecord | null> {
     try {
-      const whereConditions: any[] = [
-        { field: 'productId', operator: '==', value: productId },
-        { field: 'organizationId', operator: '==', value: organizationId },
+      const advancedFilters: FirestoreAdvancedFilter<PriceHistoryRecord>[] = [
+        {
+          field: 'productId',
+          operator: '==',
+          value: productId,
+        } as FirestoreAdvancedFilter<PriceHistoryRecord>,
+        {
+          field: 'organizationId',
+          operator: '==',
+          value: organizationId,
+        } as FirestoreAdvancedFilter<PriceHistoryRecord>,
       ];
 
       if (options?.recordType) {
-        whereConditions.push({
+        advancedFilters.push({
           field: 'recordType',
           operator: '==',
           value: options.recordType,
-        });
+        } as FirestoreAdvancedFilter<PriceHistoryRecord>);
       }
 
       if (options?.competitorId) {
-        whereConditions.push({
+        advancedFilters.push({
           field: 'competitorId',
           operator: '==',
           value: options.competitorId,
-        });
+        } as FirestoreAdvancedFilter<PriceHistoryRecord>);
       }
 
       if (options?.marketplaceId) {
-        whereConditions.push({
+        advancedFilters.push({
           field: 'marketplaceId',
           operator: '==',
           value: options.marketplaceId,
-        });
+        } as FirestoreAdvancedFilter<PriceHistoryRecord>);
       }
 
-      const query = {
-        where: whereConditions,
+      const findOptions: FindOptions<PriceHistoryRecord> = {
+        advancedFilters,
         orderBy: [{ field: 'recordedAt', direction: 'desc' }],
         limit: 1,
+        includeDeleted: false,
       };
 
-      const results = await this.query(query);
+      const results = await this.find(findOptions);
 
       return results.length > 0 ? results[0] : null;
     } catch (error) {

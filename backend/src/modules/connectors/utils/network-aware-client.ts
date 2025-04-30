@@ -26,6 +26,8 @@ import {
   ConnectorErrorType,
 } from '../interfaces/types';
 
+import { toError } from '../../../common/utils/error.util';
+
 /**
  * Network-aware HTTP client optimized for South African conditions
  */
@@ -205,15 +207,15 @@ export class NetworkAwareClient {
 
     try {
       return await this.axios.request<T>(requestConfig);
-    } catch (error) {
-      // Enhanced error handling with network context
-      this.logger.error(`Request failed: ${error.message}`, error.stack);
+    } catch (error: unknown) {
+      const err = toError(error);
+      this.logger.error(`Request failed: ${err.message}`, err.stack);
 
       // Add network context to error
-      error.networkQuality = networkStatus.quality;
-      error.isLoadShedding = networkStatus.possibleLoadShedding || false;
+      (err as any).networkQuality = networkStatus.quality;
+      (err as any).isLoadShedding = networkStatus.possibleLoadShedding || false;
 
-      throw error;
+      throw err;
     }
   }
 

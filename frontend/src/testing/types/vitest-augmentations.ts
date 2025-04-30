@@ -25,7 +25,9 @@ interface SimpleMock<TReturn = any, TArgs extends any[] = any[]> {
 export function createMock<TReturn = any, TArgs extends any[] = any[]>(
   implementation?: (...args: TArgs) => TReturn,
 ): SimpleMock<TReturn, TArgs> {
-  return vi.fn(implementation) as unknown as SimpleMock<TReturn, TArgs>;
+  // Always pass a defined function to vi.fn for type safety
+  const impl = implementation ?? ((..._args: TArgs) => undefined as unknown as TReturn);
+  return vi.fn(impl) as unknown as SimpleMock<TReturn, TArgs>;
 }
 
 /**

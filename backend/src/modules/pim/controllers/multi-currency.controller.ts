@@ -409,7 +409,7 @@ export class MultiCurrencyController {
       // Parse parameters
       const priceNum = Number(price);
       const showSymbolBool =
-        showSymbol === undefined ? undefined : showSymbol === 'true';
+        typeof showSymbol === 'string' ? showSymbol === 'true' : undefined;
 
       const formatted = await this.multiCurrencyService.formatPrice(
         priceNum,

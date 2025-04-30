@@ -4,10 +4,10 @@
  * Repository for managing tax rate data
  */
 
-import { Injectable } from '@nestjs/common';
-
-import { TenantAwareRepository } from '../../../common/repositories/firestore-base.repository';
+import { Injectable, Logger } from '@nestjs/common';
+import { QueryFilterOperator } from '../../../types/google-cloud.types';
 import { FirestoreConfigService } from '../../../config/firestore.config';
+import { FirestoreBaseRepository } from '../../../common/repositories/firestore-base.repository';
 import {
   TaxRateSchedule,
   TaxJurisdiction,
@@ -20,20 +20,16 @@ import {
  * Repository for storing and retrieving tax rate information
  */
 @Injectable()
-export class TaxRateRepository extends TenantAwareRepository<TaxRateSchedule> {
+export class TaxRateRepository extends FirestoreBaseRepository<TaxRateSchedule> {
+  protected readonly logger = new Logger(TaxRateRepository.name);
+
   /**
    * Constructor
    *
    * @param firestoreConfigService Firestore configuration service
    */
-  constructor(firestoreConfigService: FirestoreConfigService) {
-    super(firestoreConfigService, 'tax-rates', {
-      useSoftDeletes: true,
-      useVersioning: true,
-      enableCache: true,
-      cacheTTLMs: 3600000, // 1 hour cache (tax rates change infrequently)
-      requiredFields: ['jurisdiction', 'taxType', 'rate', 'name', 'validFrom'],
-    });
+  constructor(protected readonly firestoreConfigService: FirestoreConfigService) {
+    super(firestoreConfigService, 'tax-rates');
   }
 
   /**

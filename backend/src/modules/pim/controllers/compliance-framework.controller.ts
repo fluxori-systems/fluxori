@@ -47,7 +47,10 @@ class CreateComplianceRuleDto {
   references?: string[];
   effectiveDate!: Date;
   expirationDate?: Date;
-  version!: string;
+  // Required metadata fields for FirestoreEntityWithMetadata
+  isDeleted: boolean = false;
+  version: number = 1;
+  deletedAt?: Date | null = null;
 }
 
 /**
@@ -67,7 +70,10 @@ class UpdateComplianceRuleDto {
   references?: string[];
   effectiveDate?: Date;
   expirationDate?: Date;
-  version?: string;
+  // Required metadata fields for FirestoreEntityWithMetadata
+  isDeleted?: boolean;
+  version?: number;
+  deletedAt?: Date | null;
 }
 
 /**

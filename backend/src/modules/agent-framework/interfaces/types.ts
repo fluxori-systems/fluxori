@@ -21,14 +21,24 @@ export interface AgentMetadata {
  * Placeholder for Agent Framework arguments fields. TODO: Add concrete fields as discovered.
  */
 export interface AgentArguments {
-  // TODO: Add concrete arguments fields here as they are discovered in the codebase
+  // Placeholder: No concrete argument fields defined yet. Awaiting business requirements.
+  // TODO: Add fields as soon as usage is clarified in the codebase.
 }
 
 /**
  * Placeholder for Agent Framework parameters fields. TODO: Add concrete fields as discovered.
  */
 export interface AgentParameters {
-  // TODO: Add concrete parameters fields here as they are discovered in the codebase
+  /**
+   * Aggressively refined: Model/agent configuration parameters.
+   * Add new fields as business requirements clarify.
+   */
+  temperature: number;
+  topP?: number;
+  maxOutputTokens: number;
+  presencePenalty?: number;
+  frequencyPenalty?: number;
+  // TODO: Add additional fields as discovered in the codebase
 }
 
 /**

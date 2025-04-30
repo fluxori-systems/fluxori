@@ -20,14 +20,25 @@ export enum ResizeOption {
   CUSTOM = 'custom', // Custom dimensions
 }
 
+import { FirestoreEntityWithMetadata } from '../../../common/repositories/base/repository-types';
+
 /**
  * Product image entity
  */
-export interface ProductImage {
-  /**
-   * Unique identifier
-   */
+export interface ProductImage extends FirestoreEntityWithMetadata {
+  /** Unique identifier */
   id: string;
+  /** Soft delete flag */
+  isDeleted: boolean;
+  /** Version for optimistic locking */
+  version: number;
+  /** Creation timestamp */
+  createdAt: Date;
+  /** Last update timestamp */
+  updatedAt: Date;
+  /** Deletion timestamp (optional) */
+  deletedAt?: Date | undefined;
+
 
   /**
    * ID of the product this image belongs to
@@ -119,18 +130,18 @@ export interface ProductImage {
    */
   metadata?: Record<string, string>;
 
-  /**
-   * Creation date
-   */
-  createdAt: Date;
 
-  /**
-   * Last update date
-   */
-  updatedAt: Date;
+
+
 
   /**
    * Optional tags for the image
    */
   tags?: string[];
+
+  /** Organization ID */
+  organizationId: string;
+
+  /** Tenant ID (optional) */
+  tenantId?: string;
 }

@@ -59,6 +59,8 @@ export interface TakealotCategory {
 /**
  * Takealot product data
  */
+import { ProductAttribute } from '../interfaces/types';
+
 export interface TakealotProduct {
   /**
    * Takealot offer ID
@@ -118,7 +120,7 @@ export interface TakealotProduct {
   /**
    * Product attributes
    */
-  attributes: Record<string, any>;
+  attributes: ProductAttribute[];
 
   /**
    * Product status
@@ -203,7 +205,7 @@ export interface TakealotVariant {
   /**
    * Variant attributes
    */
-  attributes: Record<string, any>;
+  attributes: ProductAttribute[];
 }
 
 /**
@@ -875,44 +877,39 @@ export class TakealotConnectorService {
   private extractTakealotAttributes(
     product: Product,
     mapping?: ProductMarketplaceMapping,
-  ): Record<string, any> {
+  ): ProductAttribute[] {
     // Start with standard attributes
-    const attributes: Record<string, any> = {};
-
-    // Convert PIM attributes to simple key-value pairs
-    product.attributes.forEach((attr) => {
-      attributes[attr.code] = attr.value;
-    });
+    const attributes: ProductAttribute[] = [...(product.attributes || [])];
 
     // Add dimensions as separate attributes if available
     if (product.dimensions && product.dimensions.length === 3) {
-      attributes.length_cm = product.dimensions[0];
-      attributes.width_cm = product.dimensions[1];
-      attributes.height_cm = product.dimensions[2];
+      attributes.push({ code: 'length_cm', label: 'Length (cm)', type: 'number', value: product.dimensions[0] });
+      attributes.push({ code: 'width_cm', label: 'Width (cm)', type: 'number', value: product.dimensions[1] });
+      attributes.push({ code: 'height_cm', label: 'Height (cm)', type: 'number', value: product.dimensions[2] });
     }
 
     // Add weight as a separate attribute if available
     if (product.weight) {
-      attributes.weight_kg = product.weight;
+      attributes.push({ code: 'weight_kg', label: 'Weight (kg)', type: 'number', value: product.weight });
     }
 
     // Add Takealot-specific fields from mapping overrides
     if (mapping?.attributeOverrides) {
-      Object.assign(attributes, mapping.attributeOverrides);
+      for (const [code, value] of Object.entries(mapping.attributeOverrides)) {
+        attributes.push({ code, label: code, type: typeof value, value });
+      }
     }
 
     // Add South African specific attributes
     if (product.regional?.southAfrica) {
       if (product.regional.southAfrica.icasaApproved) {
-        attributes.icasa_approved = true;
+        attributes.push({ code: 'icasa_approved', label: 'ICASA Approved', type: 'boolean', value: true });
       }
-
       if (product.regional.southAfrica.sabsApproved) {
-        attributes.sabs_approved = true;
+        attributes.push({ code: 'sabs_approved', label: 'SABS Approved', type: 'boolean', value: true });
       }
-
       if (product.regional.southAfrica.nrcsApproved) {
-        attributes.nrcs_approved = true;
+        attributes.push({ code: 'nrcs_approved', label: 'NRCS Approved', type: 'boolean', value: true });
       }
     }
 
@@ -924,19 +921,14 @@ export class TakealotConnectorService {
    */
   private extractTakealotVariantAttributes(
     variant: ProductVariant,
-  ): Record<string, any> {
+  ): ProductAttribute[] {
     // Start with standard variant attributes
-    const attributes: Record<string, any> = {};
-
-    // Convert variant attributes to simple key-value pairs
-    variant.attributes.forEach((attr) => {
-      attributes[attr.code] = attr.value;
-    });
+    const attributes: ProductAttribute[] = [...(variant.attributes || [])];
 
     // Add South African specific attributes
     if (variant.regional?.southAfrica) {
       if (variant.regional.southAfrica.saBarcode) {
-        attributes.barcode = variant.regional.southAfrica.saBarcode;
+        attributes.push({ code: 'barcode', label: 'SA Barcode', type: 'string', value: variant.regional.southAfrica.saBarcode });
       }
     }
 

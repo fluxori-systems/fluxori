@@ -19,40 +19,74 @@ export interface OrganizationEntity {
   id: string;
   externalId: string;
   name: string;
-  // TODO: Replace with explicit fields as requirements become clear
-  [key: string]: unknown;
-}
+  legalName?: string;
+  address?: string;
+  taxNumber?: string;
+  email?: string;
+  phone?: string;
+  // Add more fields as your domain requires
+} // No loose fields, explicit structure only
 
 export interface ContactEntity {
   id: string;
   externalId: string;
   name: string;
-  // TODO: Replace with explicit fields as requirements become clear
-  [key: string]: unknown;
-}
+  email?: string;
+  phone?: string;
+  address?: string;
+  organizationId?: string;
+  // Add more fields as needed
+} // No loose fields, explicit structure only
 
 export interface InvoiceEntity {
   id: string;
   externalId: string;
-  // TODO: Replace with explicit fields as requirements become clear
-  [key: string]: unknown;
+  invoiceNumber?: string;
+  dateIssued?: Date;
+  dueDate?: Date;
+  amount?: number;
+  currency?: string;
+  status?: 'draft' | 'sent' | 'paid' | 'overdue' | 'cancelled';
+  organizationId?: string;
+  contactId?: string;
+  lineItems?: InvoiceLineItem[];
+  // Add more fields as needed
+} // No loose fields, explicit structure only
+
+export interface InvoiceLineItem {
+  id: string;
+  description?: string;
+  quantity: number;
+  unitPrice: number;
+  total: number;
+  taxRateId?: string;
 }
 
 export interface PaymentEntity {
   id: string;
   externalId: string;
-  // TODO: Replace with explicit fields as requirements become clear
-  [key: string]: unknown;
-}
+  paymentNumber?: string;
+  datePaid?: Date;
+  amount?: number;
+  currency?: string;
+  method?: string;
+  status?: 'pending' | 'completed' | 'failed' | 'refunded';
+  invoiceId?: string;
+  organizationId?: string;
+  contactId?: string;
+  // Add more fields as needed
+} // No loose fields, explicit structure only
 
 export interface TaxRateEntity {
   id: string;
   externalId: string;
   name: string;
   rate: number;
-  // TODO: Replace with explicit fields as requirements become clear
-  [key: string]: unknown;
-}
+  description?: string;
+  isCompound?: boolean;
+  isRecoverable?: boolean;
+  // Add more fields as needed
+} // No loose fields, explicit structure only
 
 /**
  * Financial connector interface definition

@@ -19,6 +19,7 @@ import {
   QueryFilterOperator,
   TransactionContext,
 } from '../../../types/google-cloud.types';
+export type { QueryFilterOperator } from '../../../types/google-cloud.types';
 
 /**
  * Base entity interface all models should implement, aligned with FirestoreEntity

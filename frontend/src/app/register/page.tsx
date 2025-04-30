@@ -36,7 +36,7 @@ import {
 } from "@tabler/icons-react";
 import { useForm } from "react-hook-form";
 
-import { useFirebase } from "../../contexts/firebase-context";
+import { useFirebase } from "../../lib/firebase/firebase-context";
 import { IndustrySector } from "../../types/organization/organization.types";
 
 interface RegistrationData {

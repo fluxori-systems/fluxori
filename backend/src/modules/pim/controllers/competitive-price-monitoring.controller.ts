@@ -30,6 +30,7 @@ import {
   PriceSourceType,
   CompetitorPriceReport,
 } from '../models/competitor-price.model';
+import { PriceHistoryRecord } from '../models/price-history.model';
 import { CompetitivePriceMonitoringService } from '../services/competitive-price-monitoring.service';
 
 /**
@@ -55,18 +56,10 @@ export class CompetitivePriceMonitoringController {
    */
   @Post('competitor-prices')
   @ApiOperation({ summary: 'Record a competitor price for a product' })
-  @ApiResponse({
-    status: 201,
-    description: 'Competitor price recorded successfully',
-    type: Object,
-  })
+  @ApiResponse({ status: 201, description: 'Competitor price recorded successfully', type: Object })
   @ApiBody({ description: 'Competitor price data', type: Object })
   async recordCompetitorPrice(
-    @Body()
-    data: Omit<
-      CompetitorPrice,
-      'id' | 'createdAt' | 'updatedAt' | 'organizationId'
-    >,
+    @Body() data: Omit<CompetitorPrice, 'id' | 'createdAt' | 'updatedAt' | 'isDeleted' | 'version' | 'deletedAt' | 'organizationId'>,
     @GetUser() user: User,
   ): Promise<CompetitorPrice> {
     const organizationId = user.organizationId;
@@ -92,7 +85,7 @@ export class CompetitivePriceMonitoringController {
    */
   @Post('our-prices')
   @ApiOperation({ summary: 'Record our own price for a product' })
-  @ApiResponse({ status: 201, description: 'Price recorded successfully' })
+  @ApiResponse({ status: 201, description: 'Price recorded successfully', type: Object })
   @ApiBody({ description: 'Our price data', type: Object })
   async recordOurPrice(
     @Body()
@@ -108,7 +101,7 @@ export class CompetitivePriceMonitoringController {
       sourceType?: PriceSourceType;
     },
     @GetUser() user: User,
-  ) {
+  ): Promise<PriceHistoryRecord> {
     const organizationId = user.organizationId;
     if (!organizationId) {
       throw new HttpException(

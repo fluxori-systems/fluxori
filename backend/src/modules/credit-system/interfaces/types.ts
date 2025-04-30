@@ -2,19 +2,11 @@
  * Types for the Credit System module
  */
 
-/**
- * Placeholder for Credit Alert arguments. TODO: Add concrete fields as discovered.
- */
-export interface CreditAlertArguments {
-  // TODO: Add concrete argument fields here
-}
-
-/**
- * Placeholder for Credit Alert message. TODO: Add concrete fields as discovered.
- */
-export interface CreditAlertMessage {
-  // TODO: Add concrete message fields here
-}
+// The following legacy placeholder interfaces were removed due to lack of usage and concrete business requirements:
+// - CreditAlertArguments
+// - CreditAlertMessage
+// - CreditMessage
+// If future business needs arise, reintroduce these interfaces with strict typing based on actual usage.
 
 /**
  * Placeholder for Credit System metadata fields. TODO: Add concrete fields as discovered.
@@ -30,13 +22,15 @@ export interface CreditSystemMetadata {
   operationType?: string;
   /** Arbitrary notes or audit info */
   notes?: string;
-  /** Custom fields for extensibility */
-  customFields?: Record<string, unknown>;
-  /** Add further fields as real usage emerges */
+  /** Allocation ID related to the operation, if applicable */
+  allocationId?: string;
+  /** Whether the allocation was newly created */
+  allocationCreated?: boolean;
+  // Further extensibility must be justified by concrete business requirements. Avoid generic Record<string, unknown>.
 }
 
 /**
- * Placeholder for Credit System arguments fields. TODO: Add concrete fields as discovered.
+ * Placeholder for Credit System arguments fields.
  */
 export interface CreditArguments {
   /** Model involved in the credit operation */
@@ -54,11 +48,9 @@ export interface CreditArguments {
     organizationId?: string;
     userId?: string;
     environment?: string;
-    [key: string]: unknown;
+    // Further extensibility must be justified by concrete business requirements.
   };
-  /** Additional arguments as needed */
-  [key: string]: unknown;
-  /** Add further fields as real usage emerges */
+  // Further extensibility must be justified by concrete business requirements. Avoid generic index signatures.
 }
 
 /**
@@ -106,7 +98,9 @@ export interface CreditAllocation extends FirestoreEntity {
   resetDate?: Date;
   expirationDate?: Date;
   isActive: boolean;
-  // TODO: Refine metadata type as requirements become clear
+  /**
+   * Strictly typed metadata for reservation. Further extensibility must be justified by business needs.
+   */
   metadata?: CreditSystemMetadata;
 }
 
@@ -129,7 +123,9 @@ export interface CreditTransaction extends FirestoreEntity {
   operationId?: string;
   resourceId?: string;
   resourceType?: string;
-  // TODO: Refine metadata type as requirements become clear
+  /**
+   * Strictly typed metadata for reservation. Further extensibility must be justified by business needs.
+   */
   metadata?: CreditSystemMetadata;
 }
 
@@ -151,7 +147,9 @@ export interface CreditUsageLog extends FirestoreEntity {
   errorMessage?: string;
   resourceId?: string;
   resourceType?: string;
-  // TODO: Refine metadata type as requirements become clear
+  /**
+   * Strictly typed metadata for reservation. Further extensibility must be justified by business needs.
+   */
   metadata?: CreditSystemMetadata;
 }
 
@@ -211,7 +209,9 @@ export interface CreditReservation extends FirestoreEntity {
   usageType: CreditUsageType;
   status: 'pending' | 'confirmed' | 'released' | 'expired';
   expirationDate: Date;
-  // TODO: Refine metadata type as requirements become clear
+  /**
+   * Strictly typed metadata for reservation. Further extensibility must be justified by business needs.
+   */
   metadata?: CreditSystemMetadata;
 }
 
@@ -231,13 +231,15 @@ export interface CreditAlert extends FirestoreEntity {
   createdBy: string;
   notificationChannels: string[];
   /**
-   * Arguments for the credit alert. TODO: Refine fields as discovered.
+   * Arguments for the credit alert. Strict typing required if alert arguments are used in business logic.
+   * Replace 'unknown' with a concrete type if/when requirements emerge.
    */
-  arguments: CreditAlertArguments;
+  arguments: unknown;
   /**
-   * Messages related to the credit alert. TODO: Refine fields as discovered.
+   * Messages related to the credit alert. Strict typing required if alert messages are used in business logic.
+   * Replace 'unknown[]' with a concrete type if/when requirements emerge.
    */
-  messages: CreditAlertMessage[];
+  messages: unknown[];
   isActive: boolean;
 }
 
@@ -264,7 +266,9 @@ export interface CreditCheckRequest {
   modelId: string;
   usageType: CreditUsageType;
   operationId?: string;
-  // TODO: Refine metadata type as requirements become clear
+  /**
+   * Strictly typed metadata for reservation. Further extensibility must be justified by business needs.
+   */
   metadata?: CreditSystemMetadata;
 }
 
@@ -297,7 +301,9 @@ export interface CreditUsageRequest {
   resourceType?: string;
   success: boolean;
   errorMessage?: string;
-  // TODO: Refine metadata type as requirements become clear
+  /**
+   * Strictly typed metadata for reservation. Further extensibility must be justified by business needs.
+   */
   metadata?: CreditSystemMetadata;
 }
 

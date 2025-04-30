@@ -5,8 +5,8 @@
  */
 import { useCallback } from "react";
 
-import { useFirebase } from "../contexts/firebase-context";
-import { User, UserRole } from "../types/user/user.types";
+import { useFirebase } from "./firebase-context";
+import { User, UserRole } from "../../types/user/user.types";
 
 interface UseAuthResult {
   user: User | null;

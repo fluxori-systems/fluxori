@@ -8,7 +8,7 @@
 import { Injectable } from '@nestjs/common';
 
 import { FirestoreBaseRepository } from '../../../common/repositories/firestore-base.repository';
-import { FirestoreService } from '../../../config/firestore.config';
+import { FirestoreConfigService } from '../../../config/firestore.config';
 import { ProductMarketplaceMapping } from '../models/marketplace-mapping.model';
 
 /**
@@ -21,8 +21,8 @@ export class ProductMarketplaceMappingRepository extends FirestoreBaseRepository
    */
   protected collectionName = 'product-marketplace-mappings';
 
-  constructor(protected readonly firestoreService: FirestoreService) {
-    super(firestoreService);
+  constructor(protected readonly firestoreConfigService: FirestoreConfigService) {
+    super(firestoreConfigService, 'product-marketplace-mappings');
   }
 
   /**
@@ -37,8 +37,8 @@ export class ProductMarketplaceMappingRepository extends FirestoreBaseRepository
     tenantId: string,
   ): Promise<ProductMarketplaceMapping[]> {
     return this.find({
-      tenantId,
-      filters: [{ field: 'productId', operator: '==', value: productId }],
+      
+      filter: { productId },
     });
   }
 
@@ -58,10 +58,8 @@ export class ProductMarketplaceMappingRepository extends FirestoreBaseRepository
     const { page = 0, pageSize = 100 } = options;
 
     return this.find({
-      tenantId,
-      filters: [
-        { field: 'marketplaceId', operator: '==', value: marketplaceId },
-      ],
+      
+      filter: { marketplaceId },
       limit: pageSize,
       offset: page * pageSize,
     });
@@ -81,11 +79,8 @@ export class ProductMarketplaceMappingRepository extends FirestoreBaseRepository
     tenantId: string,
   ): Promise<ProductMarketplaceMapping | null> {
     const mappings = await this.find({
-      tenantId,
-      filters: [
-        { field: 'productId', operator: '==', value: productId },
-        { field: 'marketplaceId', operator: '==', value: marketplaceId },
-      ],
+      
+      filter: { productId, marketplaceId },
       limit: 1,
     });
 
@@ -106,11 +101,8 @@ export class ProductMarketplaceMappingRepository extends FirestoreBaseRepository
     tenantId: string,
   ): Promise<ProductMarketplaceMapping | null> {
     const mappings = await this.find({
-      tenantId,
-      filters: [
-        { field: 'marketplaceId', operator: '==', value: marketplaceId },
-        { field: 'externalId', operator: '==', value: externalId },
-      ],
+      
+      filter: { marketplaceId, externalId },
       limit: 1,
     });
 
@@ -131,11 +123,8 @@ export class ProductMarketplaceMappingRepository extends FirestoreBaseRepository
     tenantId: string,
   ): Promise<ProductMarketplaceMapping | null> {
     const mappings = await this.find({
-      tenantId,
-      filters: [
-        { field: 'marketplaceId', operator: '==', value: marketplaceId },
-        { field: 'externalSku', operator: '==', value: externalSku },
-      ],
+      
+      filter: { marketplaceId, externalSku },
       limit: 1,
     });
 
@@ -165,9 +154,11 @@ export class ProductMarketplaceMappingRepository extends FirestoreBaseRepository
       });
     }
 
+    // Only include marketplaceId if not null
+    const filterObj: Record<string, any> = { status };
+    if (marketplaceId) filterObj.marketplaceId = marketplaceId;
     return this.find({
-      tenantId,
-      filters,
+      filter: filterObj,
     });
   }
 
@@ -210,9 +201,14 @@ export class ProductMarketplaceMappingRepository extends FirestoreBaseRepository
       });
     }
 
+    // Only include marketplaceId if not null
+    const filterObj: Record<string, any> = {
+      lastSyncedAt: filters[0].value,
+      status: filters[1].value,
+    };
+    if (marketplaceId) filterObj.marketplaceId = marketplaceId;
     return this.find({
-      tenantId,
-      filters,
+      filter: filterObj,
       orderBy: [{ field: 'lastSyncedAt', direction: 'asc' }],
       limit,
     });
@@ -244,6 +240,6 @@ export class ProductMarketplaceMappingRepository extends FirestoreBaseRepository
       update.lastSyncError = null;
     }
 
-    return this.update(id, update, tenantId);
+    return this.update(id, update);
   }
 }

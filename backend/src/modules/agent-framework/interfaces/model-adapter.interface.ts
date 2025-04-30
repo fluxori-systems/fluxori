@@ -21,7 +21,17 @@ export interface AdapterArguments {
  * Placeholder for Adapter metadata fields. TODO: Add concrete fields as discovered.
  */
 export interface AdapterMetadata {
-  // TODO: Add concrete metadata fields here as they are discovered in the codebase
+  /**
+   * Aggressively refined: Metadata for model adapters.
+   * Extend as new metadata requirements emerge.
+   */
+  provider?: string;
+  model?: string;
+  version?: string;
+  tokenCount?: number;
+  cost?: number;
+  attachments?: { type: string; content: unknown }[];
+  [key: string]: unknown; // Extensibility for future metadata fields
 }
 
 /**
@@ -52,9 +62,9 @@ export interface AdapterConfig {
  */
 export interface VertexAIClientConfig {
   projectId: string;
-  location: string;
+  location?: string; // Optional, defaults in code
   apiEndpoint?: string;
-  credentials?: VertexAICredentials;
+  credentials: VertexAICredentials; // Required for API access
 }
 
 /**
@@ -62,6 +72,14 @@ export interface VertexAIClientConfig {
  * TODO: Refine fields as requirements become clear
  */
 export interface VertexAICredentials {
+  /**
+   * Aggressively refined: Required fields for Vertex AI service account credentials.
+   * Add new fields as provider requirements expand.
+   */
+  type: 'service_account';
+  client_email: string;
+  private_key: string;
+  // Allow extensibility for additional fields
   [key: string]: unknown;
 }
 

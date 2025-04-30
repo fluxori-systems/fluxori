@@ -7,6 +7,7 @@
 import { ConnectorHealth } from '../interfaces/connector-health';
 
 import { Injectable, Logger, OnModuleDestroy } from '@nestjs/common';
+import { ModuleRef } from '@nestjs/core';
 
 import {
   IConnector,
@@ -19,6 +20,7 @@ import {
   OrderAcknowledgment,
 } from '../interfaces/types';
 import { ConnectorCredentialsRepository } from '../repositories/connector-credentials.repository';
+import { toError } from '../../../common/utils/error.util';
 
 /**
  * Service for creating and managing connector instances
@@ -27,23 +29,21 @@ import { ConnectorCredentialsRepository } from '../repositories/connector-creden
 export class ConnectorFactoryService implements OnModuleDestroy {
   private readonly logger = new Logger(ConnectorFactoryService.name);
   private readonly connectors = new Map<string, IConnector>();
-  private readonly connectorClasses = new Map<
-    string,
-    new (...args: any[]) => IConnector
-  >();
+  private readonly connectorClasses = new Map<string, any>(); // Store class references
 
   constructor(
     private readonly credentialsRepository: ConnectorCredentialsRepository,
+    private readonly moduleRef: ModuleRef,
   ) {}
 
   /**
    * Register a connector class with the factory
    * @param id Unique identifier for the connector
-   * @param connectorClass Constructor for the connector
+   * @param connectorClass Class reference for the connector
    */
   registerConnector<T extends IConnector>(
     id: string,
-    connectorClass: new (...args: any[]) => T,
+    connectorClass: any,
   ): void {
     this.logger.log(`Registering connector: ${id}`);
     this.connectorClasses.set(id, connectorClass);
@@ -85,8 +85,11 @@ export class ConnectorFactoryService implements OnModuleDestroy {
       );
     }
 
-    // Create instance
-    const connector = new ConnectorClass() as T;
+    // Resolve instance via NestJS DI
+    const connector = this.moduleRef.get(ConnectorClass, { strict: false }) as T;
+    if (!connector) {
+      throw new Error(`Failed to resolve connector instance for ${connectorId}`);
+    }
 
     // Initialize connector
     await connector.initialize(credentials.credentials);
@@ -157,15 +160,16 @@ export class ConnectorFactoryService implements OnModuleDestroy {
       await connector.close();
 
       return status;
-    } catch (error) {
+    } catch (error: unknown) {
+      const err = toError(error);
       this.logger.error(
-        `Error testing connection for ${connectorId}: ${error.message}`,
-        error.stack,
+        `Error testing connection for ${connectorId}: ${err.message}`,
+        err.stack,
       );
 
       return {
         connected: false,
-        message: `Connection test failed: ${error.message}`,
+        message: `Connection test failed: ${err.message}`,
         lastChecked: new Date(),
       };
     }
@@ -192,17 +196,17 @@ export class ConnectorFactoryService implements OnModuleDestroy {
    * Get health status for all active connectors
    */
   async getConnectorsHealth() {
-    // TODO: Refine ConnectorHealth type as requirements become clear
     const health: Record<string, ConnectorHealth> = {};
 
     for (const [key, connector] of this.connectors.entries()) {
       try {
         const status = await connector.getHealthStatus();
         health[key] = status;
-      } catch (error) {
+      } catch (error: unknown) {
+        const err = toError(error);
         health[key] = {
           connected: false,
-          message: `Error getting health: ${error.message}`,
+          message: `Error getting health: ${err.message}`,
           lastChecked: new Date(),
         };
       }
@@ -221,8 +225,9 @@ export class ConnectorFactoryService implements OnModuleDestroy {
       try {
         await connector.close();
         this.logger.log(`Closed connector: ${key}`);
-      } catch (error) {
-        this.logger.error(`Error closing connector ${key}: ${error.message}`);
+      } catch (error: unknown) {
+        const err = toError(error);
+        this.logger.error(`Error closing connector ${key}: ${err.message}`, err.stack);
       }
     }
 

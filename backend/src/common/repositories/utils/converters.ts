@@ -15,6 +15,8 @@ import {
   isFirestoreTimestamp,
 } from '../../../types/google-cloud.types';
 
+import { toJSDate } from '../../utils/date.util';
+
 // Import the EntityConverter type
 import type { EntityConverter } from '../types';
 // Re-export the EntityConverter type
@@ -43,9 +45,8 @@ export function createEntityConverter<
       const documentData: DocumentData = { ...entity };
 
       // Convert dates to Firestore Timestamps
-      for (const [key, value] of Object.entries(
-        entity as Record<string, any>,
-      )) {
+      // Modernized: Prefer strict FirestoreEntity usage. Use generics only for utility flexibility, but document that concrete interfaces are expected for all real entities.
+      for (const [key, value] of Object.entries(entity as FirestoreEntity)) {
         if (value instanceof Date) {
           documentData[key] = Timestamp.fromDate(value);
         }
@@ -65,11 +66,12 @@ export function createEntityConverter<
       } as T;
 
       // Convert Firestore Timestamps to JavaScript Dates
-      for (const [key, value] of Object.entries(
-        entity as Record<string, any>,
-      )) {
+      // Modernized: Prefer strict FirestoreEntity usage. Use generics only for utility flexibility, but document that concrete interfaces are expected for all real entities.
+      for (const [key, value] of Object.entries(entity as FirestoreEntity)) {
         if (isFirestoreTimestamp(value)) {
-          (entity as Record<string, any>)[key] = value.toDate();
+          (entity as Record<string, unknown>)[key] = (
+            toJSDate(value)
+          );
         }
       }
 

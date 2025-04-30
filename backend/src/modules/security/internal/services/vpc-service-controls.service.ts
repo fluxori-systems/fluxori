@@ -5,7 +5,7 @@ import { SecurityModuleOptions } from '../interfaces/security.interfaces';
 import { AccessContextManagerClient } from '@google-cloud/access-context-manager';
 import { ServiceUsageClient } from '@google-cloud/service-usage';
 
-import { ObservabilityService } from '../../../common/observability';
+import { ObservabilityService } from '../../../../common/observability';
 import {
   VpcServiceControlsService as IVpcServiceControlsService,
   VpcScConfiguration,
@@ -445,7 +445,7 @@ export class VpcServiceControlsService implements IVpcServiceControlsService {
       // For now, log the emergency access event
       this.observability.log('Emergency access granted', {
         service: VpcServiceControlsService.name,
-        data: {
+        customFields: {
           email,
           durationHours,
           reason,
@@ -454,6 +454,7 @@ export class VpcServiceControlsService implements IVpcServiceControlsService {
             Date.now() + durationHours * 60 * 60 * 1000,
           ).toISOString(),
         },
+        timestamp: new Date(),
       });
 
       // Create a future task to revoke access

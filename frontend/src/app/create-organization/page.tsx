@@ -14,7 +14,7 @@ import {
   Loader,
 } from "@mantine/core";
 
-import { useAuth } from "../../hooks/useAuth";
+import { useAuth } from "../../lib/firebase/useAuth";
 import {
   IndustrySector,
   OrganizationStatus,

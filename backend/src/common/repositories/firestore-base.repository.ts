@@ -475,13 +475,13 @@ export abstract class FirestoreBaseRepository<
       // Add timestamps and metadata
       if (options.useServerTimestamp) {
         entityData = applyServerTimestamps(
-          entityData as any,
+          entityData,
           this.serverTimestamp,
           true, // is new entity
         ) as any;
       } else {
         entityData = applyClientTimestamps(
-          entityData as any,
+          entityData,
           true, // is new entity
         ) as any;
       }
@@ -564,7 +564,7 @@ export abstract class FirestoreBaseRepository<
         let updateData = { ...(data as Partial<T>) } as any;
 
         // Update timestamp and version if needed
-        (updateData as any).updatedAt = this.serverTimestamp;
+        updateData.updatedAt = this.serverTimestamp;
 
         if (this.useVersioning && options.incrementVersion !== false) {
           updateData.version = (existingDoc.version || 0) + 1;
@@ -602,7 +602,7 @@ export abstract class FirestoreBaseRepository<
         let updateData = { ...(data as Partial<T>) } as any;
 
         // Update timestamp
-        (updateData as any).updatedAt = new Date();
+        updateData.updatedAt = new Date();
 
         // Update version if needed
         if (this.useVersioning && options.incrementVersion !== false) {
@@ -1163,7 +1163,7 @@ export abstract class FirestoreBaseRepository<
           let updateData = { ...(data as Partial<T>) } as any;
 
           // Update timestamp
-          (updateData as any).updatedAt = this.serverTimestamp;
+          updateData.updatedAt = this.serverTimestamp;
 
           // Update version if needed
           if (this.useVersioning && options.incrementVersion !== false) {
@@ -1219,7 +1219,7 @@ export abstract class FirestoreBaseRepository<
             let updateData = { ...(data as Partial<T>) } as any;
 
             // Update timestamp
-            (updateData as any).updatedAt = new Date();
+            updateData.updatedAt = new Date();
 
             // Update version if needed
             if (this.useVersioning && options.incrementVersion !== false) {

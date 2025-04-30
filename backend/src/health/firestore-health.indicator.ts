@@ -5,6 +5,7 @@
  */
 
 import { Injectable, Logger } from '@nestjs/common';
+import { toJSDate } from '../common/utils/date.util';
 import { HealthIndicatorResult, HealthIndicator } from '@nestjs/terminus';
 
 import { Timestamp } from '@google-cloud/firestore';
@@ -110,7 +111,7 @@ export class FirestoreHealthIndicator extends HealthIndicator {
       let timestampString = 'unknown';
       if (docData?.timestamp) {
         if (isFirestoreTimestamp(docData.timestamp)) {
-          timestampString = docData.timestamp.toDate().toISOString();
+          timestampString = toJSDate(docData.timestamp).toISOString();
         } else if (docData.timestamp instanceof Date) {
           timestampString = docData.timestamp.toISOString();
         } else {

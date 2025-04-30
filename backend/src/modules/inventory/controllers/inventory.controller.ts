@@ -13,6 +13,8 @@ import {
   UseGuards,
 } from '@nestjs/common';
 
+import { toJSDate } from '../../../common/utils/date.util';
+
 import {
   FirebaseAuthGuard,
   GetUser,
@@ -438,7 +440,7 @@ export class InventoryController {
 
     // Parse date parameters
     const fromDateObj = fromDate ? new Date(fromDate) : undefined;
-    const toDateObj = toDate ? new Date(toDate) : undefined;
+    const toDateObj = toDate ? toJSDate(toDate) : undefined;
 
     return this.inventoryService.findStockMovementsWithFilters({
       organizationId,

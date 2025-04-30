@@ -6,6 +6,13 @@ import { ModelRegistryRepository } from '../../agent-framework/repositories/mode
 import { TokenEstimator } from '../../agent-framework/utils/token-estimator';
 import { CreditSystemService } from '../../credit-system';
 import { CreditUsageType } from '../../credit-system/interfaces/types';
+
+import { ProductAttribute } from '../interfaces/types';
+
+export interface ProductSpecifications {
+  [key: string]: string | number | null;
+}
+
 import { FeatureFlagService } from '../../feature-flags';
 
 // Define interfaces for ProductAI service
@@ -23,7 +30,7 @@ export interface ProductDescriptionOptions {
 export interface ProductData {
   name: string;
   category: string;
-  attributes: Record<string, any>;
+  attributes: ProductAttribute[];
   features?: string[];
   keywords?: string[];
   targetAudience?: string;
@@ -238,7 +245,7 @@ export class ProductAiService {
       name: string;
       description: string;
       category: string;
-      attributes: Record<string, any>;
+      attributes: ProductAttributes; // TODO: Replace ProductAttributes with a concrete interface per domain model
     },
     organizationId: string,
     userId: string,
@@ -391,14 +398,14 @@ export class ProductAiService {
     productData: {
       name: string;
       description: string;
-      attributes?: Record<string, any>;
+      attributes?: ProductAttribute[];
       features?: string[];
     },
     organizationId: string,
     userId: string,
   ): Promise<{
-    categories: Array<{ path: string; confidence: number }>;
-    attributeSuggestions?: Record<string, any>;
+    categories: string[];
+    attributeSuggestions: ProductAttribute[];
     success: boolean;
     tokenUsage?: { input: number; output: number; total: number };
   }> {
@@ -413,6 +420,7 @@ export class ProductAiService {
         this.logger.warn('Product classification feature is disabled');
         return {
           categories: [],
+          attributeSuggestions: [], // TODO: Populate with default/empty ProductAttribute[] if needed
           success: false,
         };
       }
@@ -450,6 +458,7 @@ export class ProductAiService {
         this.logger.warn('Insufficient credits for product classification');
         return {
           categories: [],
+          attributeSuggestions: [], // TODO: Populate with default/empty ProductAttribute[] if needed
           success: false,
         };
       }
@@ -504,11 +513,11 @@ export class ProductAiService {
         categories: result.categories || [],
         attributeSuggestions: result.attributeSuggestions || {},
         success: true,
-        tokenUsage: {
+        tokenUsage: response.usage ? {
           input: response.usage.promptTokens,
           output: response.usage.completionTokens,
           total: response.usage.totalTokens,
-        },
+        } : undefined,
       };
     } catch (error) {
       this.logger.error(
@@ -533,9 +542,9 @@ export class ProductAiService {
     organizationId: string,
     userId: string,
   ): Promise<{
-    extractedAttributes: Record<string, any>;
+    extractedAttributes: ProductAttribute[];
     features: string[];
-    specifications: Record<string, string | number>;
+    specifications: ProductSpecifications; // TODO: Replace ProductSpecifications with a concrete interface per domain model
     success: boolean;
     tokenUsage?: { input: number; output: number; total: number };
   }> {
@@ -642,11 +651,11 @@ export class ProductAiService {
         features: result.features || [],
         specifications: result.specifications || {},
         success: true,
-        tokenUsage: {
+        tokenUsage: response.usage ? {
           input: response.usage.promptTokens,
           output: response.usage.completionTokens,
           total: response.usage.totalTokens,
-        },
+        } : undefined,
       };
     } catch (error) {
       this.logger.error(
@@ -659,6 +668,7 @@ export class ProductAiService {
         specifications: {},
         success: false,
       };
+      // TODO: Consider adding error details or logging for better diagnostics.
     }
   }
 

@@ -9,17 +9,17 @@
 
 import { useState, useCallback, useEffect } from "react";
 
-import { useFirebase } from "../contexts/firebase-context";
+import { useFirebase } from "./firebase-context";
 import {
   FirestoreService,
   TenantFirestoreService,
-} from "../lib/firebase/firestore.service";
+} from "./firestore.service";
 import {
   BaseEntity,
   TenantEntity,
   QueryOptions,
   PaginatedResponse,
-} from "../types/core/entity.types";
+} from "../../types/core/entity.types";
 
 /**
  * State interface for the Firestore hook

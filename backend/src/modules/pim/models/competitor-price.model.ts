@@ -58,17 +58,11 @@ export enum PriceVerificationStatus {
 /**
  * Date range type for price history queries
  */
-export type DateRange = {
-  /**
-   * Start date
-   */
-  startDate: Date;
+export interface DateRange {
+  start: Date;
+  end: Date;
+}
 
-  /**
-   * End date
-   */
-  endDate: Date;
-};
 
 /**
  * Stock status enum
@@ -142,20 +136,52 @@ export interface MarketPosition {
   isExcludingShipping: boolean;
 }
 
+import { FirestoreEntityWithMetadata } from '../../../common/repositories/base/repository-types';
+
 /**
  * Competitor price model
  * Represents a price for a product from a competitor
  */
-export interface CompetitorPrice {
+export interface CompetitorPrice extends FirestoreEntityWithMetadata {
   /**
    * Record ID
    */
-  id?: string;
+  id: string;
 
   /**
    * Organization ID
    */
   organizationId: string;
+
+  /**
+   * Tenant ID (optional)
+   */
+  tenantId?: string;
+
+  /**
+   * When this record was created
+   */
+  createdAt: Date;
+
+  /**
+   * When this record was updated
+   */
+  updatedAt: Date;
+
+  /**
+   * Soft delete flag
+   */
+  isDeleted: boolean;
+
+  /**
+   * Soft delete timestamp (nullable)
+   */
+  deletedAt?: Date | null;
+
+  /**
+   * Version for optimistic locking
+   */
+  version: number;
 
   /**
    * Product ID in our system
@@ -248,31 +274,16 @@ export interface CompetitorPrice {
   estimatedDeliveryDays?: number;
 
   /**
-   * Additional competitor data
+   * Additional competitor data. Use a strict union for allowed types.
    */
-  metadata?: Record<string, any>;
-
-  /**
-   * When this record was created
-   */
-  createdAt: Date;
-
-  /**
-   * When this record was updated
-   */
-  updatedAt: Date;
+  metadata?: import('./custom-fields.model').CustomFields;
 }
 
 /**
  * Price history record
  * Represents a historical price point for a product
  */
-export interface PriceHistoryRecord {
-  /**
-   * Record ID
-   */
-  id?: string;
-
+export interface PriceHistoryRecord extends FirestoreEntityWithMetadata {
   /**
    * Organization ID
    */
@@ -362,22 +373,12 @@ export interface PriceHistoryRecord {
    * Stock status at the time
    */
   stockStatus?: CompetitorStockStatus;
-
-  /**
-   * When this record was created
-   */
-  createdAt: Date;
 }
 
 /**
  * Price monitoring configuration for a product
  */
-export interface PriceMonitoringConfig {
-  /**
-   * Configuration ID
-   */
-  id?: string;
-
+export interface PriceMonitoringConfig extends FirestoreEntityWithMetadata {
   /**
    * Organization ID
    */
@@ -468,16 +469,6 @@ export interface PriceMonitoringConfig {
   };
 
   /**
-   * When the configuration was created
-   */
-  createdAt: Date;
-
-  /**
-   * When the configuration was last updated
-   */
-  updatedAt: Date;
-
-  /**
    * Who created this configuration
    */
   createdBy?: string;
@@ -492,12 +483,7 @@ export interface PriceMonitoringConfig {
  * Price alert type
  * Represents an alert for price monitoring
  */
-export interface PriceAlert {
-  /**
-   * Alert ID
-   */
-  id?: string;
-
+export interface PriceAlert extends FirestoreEntityWithMetadata {
   /**
    * Organization ID
    */
@@ -537,7 +523,7 @@ export interface PriceAlert {
   /**
    * Alert details
    */
-  details: Record<string, any>;
+  details: import('./custom-fields.model').CustomFields;
 
   /**
    * Whether the alert has been read
@@ -548,11 +534,6 @@ export interface PriceAlert {
    * Whether the alert has been resolved
    */
   isResolved: boolean;
-
-  /**
-   * When the alert was created
-   */
-  createdAt: Date;
 
   /**
    * When the alert was read

@@ -18,6 +18,7 @@ import {
   PaginationOptions,
   PaginatedResponse,
 } from '../interfaces/types';
+import { toError } from '../../../common/utils/error.util';
 
 /**
  * Abstract base class for marketplace connectors
@@ -47,11 +48,13 @@ export abstract class BaseMarketplaceConnector
         () => this.getProductByIdInternal(productId),
         `getProductById(${productId})`,
       );
-    } catch (error) {
+    } catch (error: unknown) {
+      const err = toError(error);
+      const e = error as any;
       return this.createErrorResult(
-        error.code || 'PRODUCT_FETCH_ERROR',
-        `Failed to fetch product with ID ${productId}: ${error.message}`,
-        error.details || error,
+        e.code || 'PRODUCT_FETCH_ERROR',
+        `Failed to fetch product with ID ${productId}: ${err.message}`,
+        e.details || err,
       );
     }
   }
@@ -88,8 +91,7 @@ export abstract class BaseMarketplaceConnector
         () => this.getOrdersInternal(mergedOptions),
         `getOrders(page ${mergedOptions.page}, size ${mergedOptions.pageSize})`,
       );
-    } catch (error) {
-      // Return an empty paginated response on error
+    } catch {
       return {
         data: [],
         pagination: {
@@ -124,11 +126,13 @@ export abstract class BaseMarketplaceConnector
         () => this.getProductBySkuInternal(sku),
         `getProductBySku(${sku})`,
       );
-    } catch (error) {
+    } catch (error: unknown) {
+      const err = toError(error);
+      const e = error as any;
       return this.createErrorResult(
-        error.code || 'PRODUCT_FETCH_ERROR',
-        `Failed to fetch product with SKU ${sku}: ${error.message}`,
-        error.details || error,
+        e.code || 'PRODUCT_FETCH_ERROR',
+        `Failed to fetch product with SKU ${sku}: ${err.message}`,
+        e.details || err,
       );
     }
   }
@@ -156,11 +160,13 @@ export abstract class BaseMarketplaceConnector
         () => this.getProductsBySkusInternal(skus),
         `getProductsBySkus(${skus.length} SKUs)`,
       );
-    } catch (error) {
+    } catch (error: unknown) {
+      const err = toError(error);
+      const e = error as any;
       return this.createErrorResult(
-        error.code || 'PRODUCTS_FETCH_ERROR',
-        `Failed to fetch products by SKUs: ${error.message}`,
-        error.details || error,
+        e.code || 'PRODUCTS_FETCH_ERROR',
+        `Failed to fetch products by SKUs: ${err.message}`,
+        e.details || err,
       );
     }
   }
@@ -190,8 +196,7 @@ export abstract class BaseMarketplaceConnector
         () => this.getProductsInternal(mergedOptions),
         `getProducts(page ${mergedOptions.page}, size ${mergedOptions.pageSize})`,
       );
-    } catch (error) {
-      // Return an empty paginated response on error
+    } catch {
       return {
         data: [],
         pagination: {
@@ -217,11 +222,13 @@ export abstract class BaseMarketplaceConnector
         () => this.getOrderByIdInternal(id),
         `getOrderById(${id})`,
       );
-    } catch (error) {
+    } catch (error: unknown) {
+      const err = toError(error);
+      const e = error as any;
       return this.createErrorResult(
-        error.code || 'ORDER_FETCH_ERROR',
-        `Failed to fetch order with ID ${id}: ${error.message}`,
-        error.details || error,
+        e.code || 'ORDER_FETCH_ERROR',
+        `Failed to fetch order with ID ${id}: ${err.message}`,
+        e.details || err,
       );
     }
   }
@@ -253,8 +260,7 @@ export abstract class BaseMarketplaceConnector
         () => this.getRecentOrdersInternal(sinceDate, mergedOptions),
         `getRecentOrders(since ${sinceDate.toISOString()})`,
       );
-    } catch (error) {
-      // Return an empty paginated response on error
+    } catch {
       return {
         data: [],
         pagination: {
@@ -282,11 +288,13 @@ export abstract class BaseMarketplaceConnector
         () => this.acknowledgeOrderInternal(orderId),
         `acknowledgeOrder(${orderId})`,
       );
-    } catch (error) {
+    } catch (error: unknown) {
+      const err = toError(error);
+      const e = error as any;
       return this.createErrorResult(
-        error.code || 'ORDER_ACKNOWLEDGMENT_ERROR',
-        `Failed to acknowledge order ${orderId}: ${error.message}`,
-        error.details || error,
+        e.code || 'ORDER_ACKNOWLEDGMENT_ERROR',
+        `Failed to acknowledge order ${orderId}: ${err.message}`,
+        e.details || err,
       );
     }
   }
@@ -323,11 +331,13 @@ export abstract class BaseMarketplaceConnector
         () => this.updateStockInternal(updates),
         `updateStock(${updates.length} products)`,
       );
-    } catch (error) {
+    } catch (error: unknown) {
+      const err = toError(error);
+      const e = error as any;
       return this.createErrorResult(
-        error.code || 'STOCK_UPDATE_ERROR',
-        `Failed to update stock levels: ${error.message}`,
-        error.details || error,
+        e.code || 'STOCK_UPDATE_ERROR',
+        `Failed to update stock levels: ${err.message}`,
+        e.details || err,
       );
     }
   }
@@ -365,11 +375,13 @@ export abstract class BaseMarketplaceConnector
         () => this.updatePricesInternal(updates),
         `updatePrices(${updates.length} products)`,
       );
-    } catch (error) {
+    } catch (error: unknown) {
+      const err = toError(error);
+      const e = error as any;
       return this.createErrorResult(
-        error.code || 'PRICE_UPDATE_ERROR',
-        `Failed to update prices: ${error.message}`,
-        error.details || error,
+        e.code || 'PRICE_UPDATE_ERROR',
+        `Failed to update prices: ${err.message}`,
+        e.details || err,
       );
     }
   }

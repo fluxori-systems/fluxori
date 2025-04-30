@@ -124,7 +124,7 @@ export interface PricingRuleScope {
   /**
    * Apply to products with these attributes (key-value pairs)
    */
-  attributeFilters?: Record<string, any>;
+  attributeFilters?: import('./custom-fields.model').CustomFields;
 
   /**
    * Apply to products with these types
@@ -278,11 +278,22 @@ export interface CompetitorReference {
  * Pricing rule model
  * Defines how product prices should be calculated and updated
  */
-export interface PricingRule {
-  /**
-   * Rule ID (auto-generated)
-   */
-  id?: string;
+import { FirestoreEntityWithMetadata } from '../../../common/repositories/base/repository-types';
+
+export interface PricingRule extends FirestoreEntityWithMetadata {
+  /** Unique identifier */
+  id: string;
+  /** Soft delete flag */
+  isDeleted: boolean;
+  /** Version for optimistic locking */
+  version: number;
+  /** Creation timestamp */
+  createdAt: Date;
+  /** Last update timestamp */
+  updatedAt: Date;
+  /** Deletion timestamp (optional) */
+  deletedAt?: Date | undefined;
+
 
   /**
    * Organization ID
@@ -369,7 +380,7 @@ export interface PricingRule {
   /**
    * Custom fields for extensions
    */
-  customFields?: Record<string, any>;
+  customFields?: import('./custom-fields.model').CustomFields;
 
   /**
    * Recent rule executions
@@ -387,15 +398,7 @@ export interface PricingRule {
     lastExecutionTime?: Date;
   };
 
-  /**
-   * Creation timestamp
-   */
-  createdAt: Date;
 
-  /**
-   * Last update timestamp
-   */
-  updatedAt: Date;
 
   /**
    * User who created the rule

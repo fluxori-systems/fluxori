@@ -45,6 +45,14 @@ export enum PriceListType {
  */
 export interface PriceListEntry {
   /**
+   * Date/time this price entry was created (for repository compatibility)
+   */
+  createdAt?: Date;
+  /**
+   * Date/time this price entry was last updated (for repository compatibility)
+   */
+  updatedAt?: Date;
+  /**
    * Product ID for this price entry
    */
   productId: string;
@@ -155,6 +163,25 @@ import { BaseEntity } from '../../../../common/repositories/base/repository-type
 
 export interface B2BPriceList extends BaseEntity {
   /**
+   * Array of product IDs for compatibility with repository filtering logic
+   * (derived from prices array, but present for query efficiency)
+   */
+  productIds?: string[];
+
+  /**
+   * Date from which this price list is valid (for repository compatibility)
+   */
+  validFrom?: Date;
+  /**
+   * Date until which this price list is valid (for repository compatibility)
+   */
+  validTo?: Date;
+  id: string;
+  isDeleted: boolean;
+  version: number;
+  createdAt: Date;
+  updatedAt: Date;
+  /**
    * Organization that owns this price list
    */
   organizationId: string;
@@ -247,5 +274,5 @@ export interface B2BPriceList extends BaseEntity {
   /**
    * Additional custom fields specific to this price list
    */
-  customFields?: Record<string, any>;
+  customFields?: import('../custom-fields.model').CustomFields;
 }

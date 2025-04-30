@@ -1,4 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
+import { QueryFilterOperator } from '../../../types/google-cloud.types';
 
 import { v4 as uuidv4 } from 'uuid';
 
@@ -10,20 +11,19 @@ import {
   PriceVerificationStatus,
 } from '../models/competitor-price.model';
 
+import { FirestoreConfigService } from '../../../config/firestore.config';
+
 /**
  * Repository for competitor prices
  * Handles persistence of competitor price data
  */
 @Injectable()
 export class CompetitorPriceRepository extends FirestoreBaseRepository<CompetitorPrice> {
-  private readonly logger = new Logger(CompetitorPriceRepository.name);
+  protected readonly logger = new Logger(CompetitorPriceRepository.name);
 
-  constructor() {
-    super('competitor-prices', {
-      enableDataValidation: true,
-      enableQueryCache: true,
-      cacheExpirationMinutes: 15, // Short cache for price data
-      enableTransactionality: true,
+  constructor(protected readonly firestoreConfigService: FirestoreConfigService) {
+    super(firestoreConfigService, 'competitor-prices', {
+      // No extra options for now
     });
   }
 
@@ -32,7 +32,7 @@ export class CompetitorPriceRepository extends FirestoreBaseRepository<Competito
    * @param data Competitor price data
    */
   async create(
-    data: Omit<CompetitorPrice, 'id' | 'createdAt' | 'updatedAt'>,
+    data: Omit<CompetitorPrice, 'id' | 'createdAt' | 'updatedAt' | 'isDeleted' | 'version' | 'deletedAt'>,
   ): Promise<CompetitorPrice> {
     try {
       const now = new Date();
@@ -42,6 +42,9 @@ export class CompetitorPriceRepository extends FirestoreBaseRepository<Competito
         id: uuidv4(),
         createdAt: now,
         updatedAt: now,
+        isDeleted: false,
+        version: 1,
+        deletedAt: null,
       };
 
       return super.create(newRecord);
@@ -96,16 +99,16 @@ export class CompetitorPriceRepository extends FirestoreBaseRepository<Competito
     },
   ): Promise<CompetitorPrice[]> {
     try {
-      const whereConditions: any[] = [
-        { field: 'productId', operator: '==', value: productId },
-        { field: 'organizationId', operator: '==', value: organizationId },
+      const whereConditions: import('../../../common/repositories/base/repository-types').FirestoreAdvancedFilter<CompetitorPrice>[] = [
+        { field: 'productId', operator: '==' as QueryFilterOperator, value: productId },
+        { field: 'organizationId', operator: '==' as QueryFilterOperator, value: organizationId },
       ];
 
       // Add marketplace filter if specified
       if (options?.marketplaceId) {
         whereConditions.push({
           field: 'marketplaceId',
-          operator: '==',
+          operator: '==' as QueryFilterOperator,
           value: options.marketplaceId,
         });
       }
@@ -114,19 +117,19 @@ export class CompetitorPriceRepository extends FirestoreBaseRepository<Competito
       if (!options?.includeOutOfStock) {
         whereConditions.push({
           field: 'stockStatus',
-          operator: '==',
+          operator: '==' as QueryFilterOperator,
           value: 'IN_STOCK',
         });
       }
 
-      const query = {
-        where: whereConditions,
-        orderBy: [{ field: 'totalPrice', direction: 'asc' }],
+      const queryOptions = {
+        advancedFilters: whereConditions,
         limit: options?.limit || 100,
         offset: options?.offset || 0,
+        orderBy: [{ field: 'totalPrice', direction: 'asc' as const }],
       };
 
-      return this.query(query);
+      return this.find(queryOptions);
     } catch (error) {
       this.logger.error(
         `Error finding competitor prices: ${error.message}`,
@@ -148,37 +151,38 @@ export class CompetitorPriceRepository extends FirestoreBaseRepository<Competito
     marketplaceId?: string,
   ): Promise<Record<string, CompetitorPrice[]>> {
     try {
-      const whereConditions: any[] = [
-        { field: 'productId', operator: 'in', value: productIds },
-        { field: 'organizationId', operator: '==', value: organizationId },
+      const whereConditions: import('../../../common/repositories/base/repository-types').FirestoreAdvancedFilter<CompetitorPrice>[] = [
+        { field: 'productId', operator: 'in' as QueryFilterOperator, value: productIds },
+        { field: 'organizationId', operator: '==' as QueryFilterOperator, value: organizationId },
       ];
 
       // Add marketplace filter if specified
       if (marketplaceId) {
         whereConditions.push({
           field: 'marketplaceId',
-          operator: '==',
+          operator: '==' as QueryFilterOperator,
           value: marketplaceId,
         });
       }
 
-      const query = {
-        where: whereConditions,
-        limit: productIds.length * 20, // Allow up to 20 competitors per product
+      const queryOptions = {
+        advancedFilters: whereConditions,
+        limit: productIds.length * 20,
+        orderBy: [{ field: 'totalPrice', direction: 'asc' as const }],
       };
 
-      const prices = await this.query(query);
+      const prices = await this.find(queryOptions);
 
       // Group by product ID
       const result: Record<string, CompetitorPrice[]> = {};
 
       // Initialize with empty arrays for all product IDs
-      productIds.forEach((id) => {
+      productIds.forEach((id: string) => {
         result[id] = [];
       });
 
       // Group prices by product ID
-      prices.forEach((price) => {
+      prices.forEach((price: CompetitorPrice) => {
         const productId = price.productId;
 
         if (result[productId]) {
@@ -187,7 +191,7 @@ export class CompetitorPriceRepository extends FirestoreBaseRepository<Competito
       });
 
       // Sort each group by total price
-      Object.keys(result).forEach((productId) => {
+      Object.keys(result).forEach((productId: string) => {
         result[productId].sort((a, b) => a.totalPrice - b.totalPrice);
       });
 
@@ -213,15 +217,16 @@ export class CompetitorPriceRepository extends FirestoreBaseRepository<Competito
     limit: number = 100,
   ): Promise<CompetitorPrice[]> {
     try {
-      const query = {
-        where: [
-          { field: 'competitorId', operator: '==', value: competitorId },
-          { field: 'organizationId', operator: '==', value: organizationId },
+      const queryOptions = {
+        advancedFilters: [
+          { field: 'competitorId', operator: '==' as QueryFilterOperator, value: competitorId },
+          { field: 'organizationId', operator: '==' as QueryFilterOperator, value: organizationId },
         ],
         limit,
+        orderBy: [{ field: 'lastUpdated', direction: 'desc' as const }],
       };
 
-      return this.query(query);
+      return this.find(queryOptions);
     } catch (error) {
       this.logger.error(
         `Error finding prices by competitor: ${error.message}`,
@@ -243,16 +248,16 @@ export class CompetitorPriceRepository extends FirestoreBaseRepository<Competito
     limit: number = 100,
   ): Promise<CompetitorPrice[]> {
     try {
-      const query = {
-        where: [
-          { field: 'marketplaceId', operator: '==', value: marketplaceId },
-          { field: 'organizationId', operator: '==', value: organizationId },
+      const queryOptions = {
+        advancedFilters: [
+          { field: 'marketplaceId', operator: '==' as QueryFilterOperator, value: marketplaceId },
+          { field: 'organizationId', operator: '==' as QueryFilterOperator, value: organizationId },
         ],
         limit,
-        orderBy: [{ field: 'lastUpdated', direction: 'desc' }],
+        orderBy: [{ field: 'lastUpdated', direction: 'desc' as const }],
       };
 
-      return this.query(query);
+      return this.find(queryOptions);
     } catch (error) {
       this.logger.error(
         `Error finding prices by marketplace: ${error.message}`,
@@ -277,16 +282,16 @@ export class CompetitorPriceRepository extends FirestoreBaseRepository<Competito
       const cutoffTime = new Date();
       cutoffTime.setMinutes(cutoffTime.getMinutes() - minutesAgo);
 
-      const query = {
-        where: [
-          { field: 'organizationId', operator: '==', value: organizationId },
-          { field: 'lastUpdated', operator: '>=', value: cutoffTime },
+      const queryOptions = {
+        advancedFilters: [
+          { field: 'organizationId', operator: '==' as QueryFilterOperator, value: organizationId },
+          { field: 'lastUpdated', operator: '>=' as QueryFilterOperator, value: cutoffTime },
         ],
         limit,
-        orderBy: [{ field: 'lastUpdated', direction: 'desc' }],
+        orderBy: [{ field: 'lastUpdated', direction: 'desc' as const }],
       };
 
-      return this.query(query);
+      return this.find(queryOptions);
     } catch (error) {
       this.logger.error(
         `Error finding recently updated prices: ${error.message}`,
@@ -306,20 +311,16 @@ export class CompetitorPriceRepository extends FirestoreBaseRepository<Competito
     limit: number = 50,
   ): Promise<CompetitorPrice[]> {
     try {
-      const query = {
-        where: [
-          { field: 'organizationId', operator: '==', value: organizationId },
-          {
-            field: 'verificationStatus',
-            operator: '==',
-            value: PriceVerificationStatus.PENDING,
-          },
+      const queryOptions = {
+        advancedFilters: [
+          { field: 'organizationId', operator: '==' as QueryFilterOperator, value: organizationId },
+          { field: 'verificationStatus', operator: '==' as QueryFilterOperator, value: PriceVerificationStatus.PENDING },
         ],
         limit,
-        orderBy: [{ field: 'lastUpdated', direction: 'asc' }],
+        orderBy: [{ field: 'lastUpdated', direction: 'asc' as const }],
       };
 
-      return this.query(query);
+      return this.find(queryOptions);
     } catch (error) {
       this.logger.error(
         `Error finding prices pending verification: ${error.message}`,
@@ -363,7 +364,7 @@ export class CompetitorPriceRepository extends FirestoreBaseRepository<Competito
           price: ourPrice,
           shipping: ourShipping,
         },
-        ...competitors.map((c) => ({
+        ...competitors.map((c: CompetitorPrice) => ({
           id: c.id,
           totalPrice: c.totalPrice,
           price: c.price,
@@ -416,17 +417,17 @@ export class CompetitorPriceRepository extends FirestoreBaseRepository<Competito
     marketplaceId: string,
   ): Promise<CompetitorPrice | null> {
     try {
-      const query = {
-        where: [
-          { field: 'productId', operator: '==', value: productId },
-          { field: 'organizationId', operator: '==', value: organizationId },
-          { field: 'marketplaceId', operator: '==', value: marketplaceId },
-          { field: 'hasBuyBox', operator: '==', value: true },
+      const queryOptions = {
+        advancedFilters: [
+          { field: 'productId', operator: '==' as QueryFilterOperator, value: productId },
+          { field: 'organizationId', operator: '==' as QueryFilterOperator, value: organizationId },
+          { field: 'marketplaceId', operator: '==' as QueryFilterOperator, value: marketplaceId },
+          { field: 'hasBuyBox', operator: '==' as QueryFilterOperator, value: true },
         ],
         limit: 1,
       };
 
-      const results = await this.query(query);
+      const results = await this.find(queryOptions);
 
       return results.length > 0 ? results[0] : null;
     } catch (error) {
@@ -453,16 +454,16 @@ export class CompetitorPriceRepository extends FirestoreBaseRepository<Competito
       const thresholdDate = new Date();
       thresholdDate.setMinutes(thresholdDate.getMinutes() - thresholdMinutes);
 
-      const query = {
-        where: [
-          { field: 'organizationId', operator: '==', value: organizationId },
-          { field: 'lastUpdated', operator: '<=', value: thresholdDate },
+      const queryOptions = {
+        advancedFilters: [
+          { field: 'organizationId', operator: '==' as QueryFilterOperator, value: organizationId },
+          { field: 'lastUpdated', operator: '<=' as QueryFilterOperator, value: thresholdDate },
         ],
         limit,
-        orderBy: [{ field: 'lastUpdated', direction: 'asc' }],
+        orderBy: [{ field: 'lastUpdated', direction: 'asc' as const }],
       };
 
-      return this.query(query);
+      return this.find(queryOptions);
     } catch (error) {
       this.logger.error(
         `Error finding prices needing update: ${error.message}`,

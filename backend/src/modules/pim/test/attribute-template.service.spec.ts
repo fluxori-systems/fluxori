@@ -87,6 +87,8 @@ describe('AttributeTemplateService', () => {
         position: 1,
         createdAt: new Date(),
         updatedAt: new Date(),
+        isDeleted: false,
+        version: 1,
       };
 
       // Mock repository methods
@@ -153,6 +155,8 @@ describe('AttributeTemplateService', () => {
           position: 1,
           createdAt: new Date(),
           updatedAt: new Date(),
+          isDeleted: false,
+          version: 1,
         },
       ];
 
@@ -192,6 +196,8 @@ describe('AttributeTemplateService', () => {
         position: 1,
         createdAt: new Date(),
         updatedAt: new Date(),
+        isDeleted: false,
+        version: 1,
       };
 
       // Mock repository method
@@ -227,6 +233,8 @@ describe('AttributeTemplateService', () => {
         position: 1,
         createdAt: new Date(),
         updatedAt: new Date(),
+        isDeleted: false,
+        version: 1,
       };
 
       // Mock repository method
@@ -264,6 +272,8 @@ describe('AttributeTemplateService', () => {
           position: 1,
           createdAt: new Date(),
           updatedAt: new Date(),
+          isDeleted: false,
+          version: 1,
         },
       ];
 
@@ -281,6 +291,8 @@ describe('AttributeTemplateService', () => {
           position: 2,
           createdAt: new Date(),
           updatedAt: new Date(),
+          isDeleted: false,
+          version: 1,
         },
       ];
 
@@ -298,6 +310,8 @@ describe('AttributeTemplateService', () => {
           position: 3,
           createdAt: new Date(),
           updatedAt: new Date(),
+          isDeleted: false,
+          version: 1,
         },
       ];
 
@@ -315,6 +329,8 @@ describe('AttributeTemplateService', () => {
           position: 4,
           createdAt: new Date(),
           updatedAt: new Date(),
+          isDeleted: false,
+          version: 1,
         },
       ];
 

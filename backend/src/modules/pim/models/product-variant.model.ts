@@ -5,7 +5,7 @@
  */
 
 import { Product } from './product.model';
-import { TenantEntity } from '../../../types/google-cloud.types';
+import { FirestoreEntityWithMetadata } from '../../../common/repositories/base/repository-types';
 import { ProductAttribute } from '../interfaces/types';
 
 /**
@@ -14,7 +14,29 @@ import { ProductAttribute } from '../interfaces/types';
  * A product variant is a specific version of a product with unique attributes
  * (e.g., different color, size, etc.)
  */
-export interface ProductVariant extends TenantEntity {
+export interface ProductVariant extends FirestoreEntityWithMetadata {
+  /** Unique identifier */
+  id: string;
+  /** Soft delete flag */
+  isDeleted: boolean;
+  /** Version for optimistic locking */
+  version: number;
+  /** Creation timestamp */
+  createdAt: Date;
+  /** Last update timestamp */
+  updatedAt: Date;
+  /** Deletion timestamp (optional) */
+  deletedAt?: Date | undefined;
+  /**
+   * Organization ID
+   */
+  organizationId: string;
+
+  /**
+   * Tenant ID (optional)
+   */
+  tenantId?: string;
+
   /**
    * Reference to the parent product ID
    */
@@ -184,6 +206,8 @@ export interface ProductVariant extends TenantEntity {
    * URL key/slug for this variant
    */
   urlKey?: string;
+
+
 }
 
 /**

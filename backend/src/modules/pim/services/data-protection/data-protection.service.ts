@@ -8,7 +8,8 @@
 
 import { Injectable, Logger, Inject } from '@nestjs/common';
 
-import { DlpService } from '../../../security/services/dlp.service';
+import { DlpService } from '../../../security/internal/services/dlp.service';
+import { ProductForScan } from '../../interfaces/product-for-scan.interface';
 import { RegionalConfigurationService } from '../enhanced-regional/regional-configuration.service';
 import { MarketContextService } from '../market-context.service';
 
@@ -119,7 +120,7 @@ export interface ProductScanResult {
   violatesPolicy: boolean;
 
   /** Redacted version of the product */
-  redactedProduct?: Record<string, any>;
+  redactedProduct?: ProductForScan;
 
   /** Actions recommended to fix policy violations */
   recommendedActions?: string[];
@@ -154,7 +155,7 @@ export interface ConsentRecord {
   withdrawalDate?: Date;
 
   /** Additional metadata */
-  metadata?: Record<string, any>;
+  metadata?: Record<string, string | number | boolean | Date | null | undefined>;
 }
 
 /**
@@ -445,12 +446,12 @@ export class DataProtectionService {
    * Scan a product for sensitive information
    *
    * @param product The product to scan
-   * @param tenantId Tenant ID
-   * @param options Scan options
-   * @returns Product scan result
+   * @param tenantId The tenant ID
+   * @param options Optional scan options
+   * @returns ProductScanResult
    */
-  async scanProduct(
-    product: Record<string, any>,
+  public async scanProduct(
+    product: ProductForScan,
     tenantId: string,
     options?: {
       skipRedaction?: boolean;
@@ -479,15 +480,15 @@ export class DataProtectionService {
       const productText = JSON.stringify(product);
       const dlpResult = await this.dlpService.scanText(productText);
 
-      scanResult.hasSensitiveInfo = dlpResult.hasSensitiveInfo;
+      scanResult.hasSensitiveInfo = Boolean(dlpResult.hasSensitiveInfo);
 
       // If sensitive information is found, do a detailed field scan
       if (dlpResult.hasSensitiveInfo) {
         // Get fields to scan
-        const fieldsToScan: Record<string, any> = {};
+        const fieldsToScan: Record<string, string | number | boolean | Date | null | undefined> = {};
 
         // Helper function to extract field paths from a nested object
-        const extractFields = (obj: any, path = '') => {
+        const extractFields = (obj: Record<string, unknown>, path = ''): void => {
           if (!obj || typeof obj !== 'object') return;
 
           for (const [key, value] of Object.entries(obj)) {
@@ -509,9 +510,12 @@ export class DataProtectionService {
               fieldsToScan[fieldPath] = String(value);
             } else if (value instanceof Date) {
               fieldsToScan[fieldPath] = value.toISOString();
+            } else if (Array.isArray(value)) {
+              // Skip arrays for field scanning
+              continue;
             } else if (typeof value === 'object' && value !== null) {
               // Handle nested objects recursively
-              extractFields(value, fieldPath);
+              extractFields(value as Record<string, unknown>, fieldPath);
             }
           }
         };
@@ -526,7 +530,7 @@ export class DataProtectionService {
           if (!value) continue;
 
           // Scan the field value
-          const fieldScan = await this.dlpService.scanText(value);
+          const fieldScan = await this.dlpService.scanText(typeof value === 'string' ? value : String(value));
 
           // Find matching data policy
           const matchedPolicy = this.findMatchingPolicy(field, region);
@@ -560,7 +564,7 @@ export class DataProtectionService {
             scanResult.violatesPolicy = true;
 
             // Add recommended action
-            scanResult.recommendedActions.push(
+            (scanResult.recommendedActions ??= []).push(
               `Remove sensitive information from '${field}': ${fieldScan.infoTypes.join(', ')}`,
             );
           }
@@ -858,7 +862,7 @@ export class DataProtectionService {
    * @returns Whether the product is exportable and reasons for any restrictions
    */
   async isProductDataExportable(
-    product: Record<string, any>,
+    product: ProductForScan,
     region: string,
     tenantId: string,
   ): Promise<{
@@ -882,7 +886,10 @@ export class DataProtectionService {
       // Generate reasons for restrictions
       const reasons = restrictedFields.map((field) => {
         const fieldResult = scanResult.fields.find((f) => f.field === field);
-        return `Field '${field}' contains ${fieldResult.infoTypes.join(', ')} and cannot be exported`;
+        if (fieldResult && fieldResult.infoTypes) {
+          return `Field '${field}' contains ${fieldResult.infoTypes.join(', ')} and cannot be exported`;
+        }
+        return `Field '${field}' cannot be exported (reason unavailable)`;
       });
 
       return {
@@ -908,10 +915,10 @@ export class DataProtectionService {
    * @returns Export-safe product
    */
   async prepareProductForExport(
-    product: Record<string, any>,
+    product: ProductForScan,
     region: string,
     tenantId: string,
-  ): Promise<Record<string, any>> {
+  ): Promise<ProductForScan> {
     try {
       // Scan the product
       const scanResult = await this.scanProduct(product, tenantId, {
@@ -1161,9 +1168,9 @@ export class DataProtectionService {
    * Create a redacted version of a product
    */
   private async createRedactedProduct(
-    product: Record<string, any>,
+    product: ProductForScan,
     fieldResults: FieldScanResult[],
-  ): Promise<Record<string, any>> {
+  ): Promise<ProductForScan> {
     try {
       // Create a deep copy of the product
       const redactedProduct = JSON.parse(JSON.stringify(product));

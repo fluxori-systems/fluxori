@@ -8,6 +8,7 @@
 
 import { FirestoreEntity } from '../../../types/google-cloud.types';
 import { ConnectorCredentials, ConnectionStatus } from '../interfaces/types';
+import { ConnectorSettings } from '../interfaces/connector.types';
 
 /**
  * Connector credential entity for storage in Firestore
@@ -46,7 +47,7 @@ export interface ConnectorCredentialEntity extends FirestoreEntity {
   tokenExpiresAt?: Date;
 
   /** API-specific settings and configuration */
-  settings?: Record<string, any>;
+  settings?: ConnectorSettings; // Use explicit interface
 
   /** Notes about these credentials */
   notes?: string;
@@ -78,7 +79,7 @@ export class CreateConnectorCredentialDto {
   tokenExpiresAt?: Date;
 
   /** Optional API-specific settings */
-  settings?: Record<string, any>;
+  settings?: ConnectorSettings; // Use explicit interface
 
   /** Optional notes */
   notes?: string;
@@ -101,7 +102,7 @@ export class UpdateConnectorCredentialDto {
   tokenExpiresAt?: Date;
 
   /** Optional API-specific settings */
-  settings?: Record<string, any>;
+  settings?: ConnectorSettings; // Use explicit interface
 
   /** Optional status update */
   isActive?: boolean;

@@ -5,12 +5,22 @@
  * and their corresponding listings on various marketplaces.
  */
 
-import { TenantEntity } from '../../../types/google-cloud.types';
+import { FirestoreEntityWithMetadata } from '../../../common/repositories/base/repository-types';
 
 /**
  * Product marketplace mapping entity
  */
-export interface ProductMarketplaceMapping extends TenantEntity {
+export interface ProductMarketplaceMapping extends FirestoreEntityWithMetadata {
+  /**
+   * Organization ID
+   */
+  organizationId: string;
+
+  /**
+   * Tenant ID (optional)
+   */
+  tenantId?: string;
+
   /**
    * Product ID in the PIM system
    */
@@ -162,7 +172,7 @@ export interface ProductMarketplaceMapping extends TenantEntity {
  */
 export type CreateProductMarketplaceMappingDto = Omit<
   ProductMarketplaceMapping,
-  'id' | 'createdAt' | 'updatedAt' | 'isDeleted' | 'deletedAt' | 'version'
+  'id' | 'createdAt' | 'updatedAt'
 >;
 
 /**
@@ -213,5 +223,5 @@ export interface MarketplaceSyncResult {
   /**
    * Additional metadata about the sync operation
    */
-  metadata?: Record<string, any>;
+  metadata?: import('./custom-fields.model').CustomFields;
 }

@@ -37,12 +37,14 @@ export interface BundleComponent {
  * Bundle model
  */
 import { FirestoreEntityWithMetadata } from '../../../common/repositories/base/repository-types';
+import { ProductAttribute } from '../interfaces/types';
+import { Timestamp } from '../../../types/google-cloud.types';
 
 export interface Bundle extends FirestoreEntityWithMetadata {
   /**
-   * Bundle ID (auto-generated)
+   * Bundle ID (auto-generated, required by FirestoreEntityWithMetadata)
    */
-  id?: string;
+  id: string;
 
   /**
    * Name of the bundle
@@ -91,7 +93,7 @@ export interface Bundle extends FirestoreEntityWithMetadata {
   /**
    * Additional attributes for the bundle
    */
-  attributes: Record<string, any>;
+  attributes: ProductAttribute[];
 
   /**
    * Whether the bundle is active
@@ -104,12 +106,27 @@ export interface Bundle extends FirestoreEntityWithMetadata {
   organizationId: string;
 
   /**
-   * Creation timestamp
+   * Creation timestamp (required by FirestoreEntityWithMetadata)
    */
-  createdAt: Date;
+  createdAt: Date | Timestamp;
 
   /**
-   * Last update timestamp
+   * Last update timestamp (required by FirestoreEntityWithMetadata)
    */
-  updatedAt: Date;
+  updatedAt: Date | Timestamp;
+
+  /**
+   * Whether the bundle is deleted (required by FirestoreEntityWithMetadata)
+   */
+  isDeleted: boolean;
+
+  /**
+   * Deletion timestamp (optional, required by FirestoreEntityWithMetadata)
+   */
+  deletedAt?: Date | Timestamp | null;
+
+  /**
+   * Version for optimistic concurrency (required by FirestoreEntityWithMetadata)
+   */
+  version: number;
 }

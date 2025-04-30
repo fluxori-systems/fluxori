@@ -12,6 +12,7 @@ import { ComplianceRequirementRepository } from '../../repositories/compliance-r
 import { ComplianceRuleRepository } from '../../repositories/compliance-rule.repository';
 import { ProductRepository } from '../../repositories/product.repository';
 import { MarketContextService } from '../../services/market-context.service';
+import { FirestoreEntityWithMetadata } from '../../../../common/repositories/base/repository-types';
 
 /**
  * Compliance check status
@@ -82,7 +83,7 @@ export enum ComplianceAuthority {
 /**
  * Compliance rule with requirements and validation logic
  */
-export interface ComplianceRule {
+export interface ComplianceRule extends FirestoreEntityWithMetadata {
   id: string;
   name: string;
   description: string;
@@ -97,9 +98,11 @@ export interface ComplianceRule {
   references?: string[]; // Documentation links
   effectiveDate: Date;
   expirationDate?: Date; // For temporary regulations
-  version: string;
-  updatedAt: Date;
+  version: number;
+  isDeleted: boolean;
+  deletedAt?: Date | null;
   createdAt: Date;
+  updatedAt: Date;
 }
 
 /**
@@ -123,7 +126,7 @@ export interface ComplianceValidationRule {
 /**
  * Compliance requirement for a product
  */
-export interface ComplianceRequirement {
+export interface ComplianceRequirement extends FirestoreEntityWithMetadata {
   id: string;
   productId: string;
   ruleId: string;
@@ -135,6 +138,11 @@ export interface ComplianceRequirement {
   assignedTo?: string; // User responsible
   lastChecked?: Date;
   history: ComplianceStatusChange[];
+  createdAt: Date;
+  updatedAt: Date;
+  version: number;
+  isDeleted: boolean;
+  deletedAt?: Date | null;
 }
 
 /**
@@ -699,6 +707,11 @@ export class ComplianceFrameworkService {
             notes: checkResult.recommendations.join('; '),
           },
         ],
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        version: 1,
+        isDeleted: false,
+        deletedAt: null,
       };
 
       await this.complianceRequirementRepository.create(
@@ -724,6 +737,9 @@ export class ComplianceFrameworkService {
       id: `rule_${Date.now()}`, // In a real system, use a proper ID generator
       createdAt: new Date(),
       updatedAt: new Date(),
+      version: 1,
+      isDeleted: false,
+      deletedAt: null,
     };
 
     const createdRule = await this.complianceRuleRepository.create(

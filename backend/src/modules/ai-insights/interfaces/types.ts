@@ -27,14 +27,30 @@ export enum InsightStatus {
 
 // TODO: Replace InsightData with a more specific structure as requirements become clear
 export interface InsightData {
-  // Add concrete fields here as the data model matures
-  [key: string]: unknown; // Use unknown for strictness
+  /**
+   * Aggressively refined: Known fields for insight data, based on current usage and mock data.
+   * Extend as new data requirements emerge.
+   */
+  averagePriceReduction?: number;
+  affectedProducts?: Array<{
+    id: string;
+    yourPrice: number;
+    newCompetitorPrice: number;
+  }>;
+  recommendation?: string;
+  [key: string]: unknown; // Extensibility for future data fields
 }
 
 // TODO: Replace InsightMetadata with a more specific structure as requirements become clear
 export interface InsightMetadata {
-  // Add concrete fields here as the metadata model matures
-  [key: string]: unknown; // Use unknown for strictness
+  /**
+   * Aggressively refined: Known fields for insight metadata, based on current usage and mock data.
+   * Extend as new metadata requirements emerge.
+   */
+  modelUsed?: string;
+  processingTime?: number;
+  tokensUsed?: number;
+  [key: string]: unknown; // Extensibility for future metadata fields
 }
 
 export interface IInsight {

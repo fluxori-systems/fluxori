@@ -20,13 +20,21 @@ export class RepositoryValidationError extends BadRequestException {
 /**
  * Validate an entity against a schema or rules
  */
-export function validateEntity<T extends Record<string, any>>(
+// TODO: Replace Record<string, unknown> with a concrete interface if entity shape is known.
+// Modernized: Prefer strict FirestoreEntity usage. Use generics only for utility flexibility, but document that concrete interfaces are expected for all real entities.
+export function validateEntity<T extends FirestoreEntity>(
   entity: T,
-  rules: Record<string, any> = {},
+  rules: Record<string, unknown> = {},
 ): boolean {
   // Simple validation - can be expanded with more complex validation logic
   for (const [key, rule] of Object.entries(rules)) {
-    if (rule.required && (entity[key] === undefined || entity[key] === null)) {
+    if (
+      typeof rule === 'object' &&
+      rule !== null &&
+      'required' in rule &&
+      (rule as { required?: boolean }).required &&
+      (entity[key] === undefined || entity[key] === null)
+    ) {
       throw new RepositoryValidationError(`Missing required field: ${key}`);
     }
   }

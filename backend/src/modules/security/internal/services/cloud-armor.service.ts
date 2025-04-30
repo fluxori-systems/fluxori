@@ -4,7 +4,7 @@ import { ConfigService } from '@nestjs/config';
 // Import just the Service clients we need
 import { SecurityPoliciesClient } from '@google-cloud/compute/build/src/v1/security_policies_client';
 
-import { ObservabilityService } from '../../../common/observability';
+import { ObservabilityService } from '../../../../common/observability';
 import {
   WafConfiguration,
   SecurityModuleOptions,

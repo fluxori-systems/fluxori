@@ -11,7 +11,7 @@ import { Request, Response } from 'express';
 import { Observable } from 'rxjs';
 import { tap, catchError } from 'rxjs/operators';
 
-import { ObservabilityService } from '../../../common/observability';
+import { ObservabilityService } from '../../../../common/observability';
 import {
   SecurityContext,
   SecurityModuleOptions,

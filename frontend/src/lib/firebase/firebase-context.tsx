@@ -9,12 +9,12 @@
 
 import React, { createContext, useContext, useState, ReactNode } from "react";
 
-import { firebaseAuth } from "../lib/firebase/config";
+import { firebaseAuth } from "./config";
 import {
   OrganizationStatus,
   SubscriptionPlan,
-} from "../types/organization/organization.types";
-import { User, UserRole, UserStatus } from "../types/user/user.types";
+} from "../../types/organization/organization.types";
+import { User, UserRole, UserStatus } from "../../types/user/user.types";
 
 // Mock user repository
 const userRepository = {

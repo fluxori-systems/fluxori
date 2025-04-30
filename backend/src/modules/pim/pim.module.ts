@@ -1,4 +1,9 @@
 import { DynamicModule, Module, forwardRef, Inject } from '@nestjs/common';
+import { AgentFrameworkModule } from '../agent-framework/agent-framework.module';
+import { CreditSystemModule } from '../credit-system/credit-system.module';
+import { FeatureFlagsModule } from '../feature-flags/feature-flags.module';
+import { FirestoreConfigService } from '../../config/firestore.config';
+import { InventoryModule } from '../inventory/inventory.module';
 
 import { AdvancedImageController } from './controllers/advanced-image.controller';
 import { AfricanTaxFrameworkController } from './controllers/african-tax-framework.controller';
@@ -46,21 +51,26 @@ import { PricingRuleRepository } from './repositories/pricing-rule.repository';
 import { ProductReviewRepository } from './repositories/product-review.repository';
 import { CompetitorPriceRepository } from './repositories/competitor-price.repository';
 import { PriceHistoryRepository } from './repositories/price-history.repository';
+import { PriceHistoryService } from './services/price-history.service';
+import { PriceHistoryController } from './controllers/price-history.controller';
 import { PriceMonitoringConfigRepository } from './repositories/price-monitoring-config.repository';
 import { PriceAlertRepository } from './repositories/price-alert.repository';
 import { ProductAiService } from './services/product-ai.service';
 import { MarketplaceSyncService } from './services/marketplace-sync.service';
 import { MarketplaceValidationService } from './services/marketplace-validation.service';
-import { ProductBatchService } from './services/product-batch.service';
+
 import { PimStorageService } from './services/pim-storage.service';
 import { MarketContextService } from './services/market-context.service';
 import { NetworkAwareStorageService } from './services/network-aware-storage.service';
 import { LoadSheddingResilienceService } from './services/load-shedding-resilience.service';
+import { OfferController } from './controllers/offer.controller';
+import { OfferRepository } from './repositories/offer.repository';
 import { LoadSheddingService } from './services/load-shedding.service';
 import { MultiCurrencyService } from './services/multi-currency.service';
 import { AfricanTaxFrameworkService } from './services/african-tax-framework.service';
 import { CrossBorderTradeService } from './services/cross-border-trade.service';
 import { CrossBorderTradeController } from './controllers/cross-border-trade.controller';
+import { OfferService } from './services/offer.service';
 import {
   BulkOperationsService,
   ProductBulkOperationsService,
@@ -84,9 +94,9 @@ import { RegionalConfigurationRepository } from './repositories/regional-configu
 import { ProductAttributeRepository } from './repositories/product-attribute.repository';
 import { DataProtectionService } from './services/data-protection/data-protection.service';
 import { DataProtectionController } from './controllers/data-protection.controller';
-import { DataPolicyRepository } from './repositories/data-policy.repository';
-import { ConsentRecordRepository } from './repositories/consent-record.repository';
-import { DataSubjectRequestRepository } from './repositories/data-subject-request.repository';
+
+
+
 import { B2BService } from './services/b2b/b2b-service';
 import { B2BCustomerRepository } from './repositories/b2b-customer.repository';
 import { CustomerTierRepository } from './repositories/customer-tier.repository';
@@ -227,10 +237,10 @@ export class PimModule {
       module: PimModule,
       imports: [
         // Import required modules
-        import('../agent-framework').then((m) => m.AgentFrameworkModule),
-        import('../credit-system').then((m) => m.CreditSystemModule),
-        import('../feature-flags').then((m) => m.FeatureFlagsModule),
-        import('../inventory').then((m) => m.InventoryModule),
+        AgentFrameworkModule,
+        CreditSystemModule,
+        FeatureFlagsModule,
+        InventoryModule,
       ],
       controllers: [
         ProductController,
@@ -259,16 +269,19 @@ export class PimModule {
         ComplianceFrameworkController,
         RegionalConfigurationController,
         RegionalProductController,
+        PriceHistoryController,
         DataProtectionController,
         ...(moduleOptions.enableAdvancedB2BSupport ? [B2BController] : []),
+        OfferController,
       ],
       providers: [
         // Core services
         ProductService,
+        FirestoreConfigService,
         CategoryService,
         AttributeTemplateService,
         ProductVariantService,
-        ProductBatchService,
+        
         PimStorageService,
         ImportExportService,
         ValidationService,
@@ -279,6 +292,7 @@ export class PimModule {
         ProductReviewService,
         CompetitivePriceMonitoringService,
         ImageAnalysisService,
+        PriceHistoryService,
 
         // Marketplace integration services
         MarketplaceSyncService,
@@ -323,6 +337,9 @@ export class PimModule {
         // Advanced B2B Support services
         ...(moduleOptions.enableAdvancedB2BSupport ? [B2BService] : []),
 
+        OfferService,
+        OfferRepository,
+
         // Repositories
         ProductRepository,
         CategoryRepository,
@@ -341,9 +358,7 @@ export class PimModule {
         PriceHistoryRepository,
         PriceMonitoringConfigRepository,
         PriceAlertRepository,
-        DataPolicyRepository,
-        ConsentRecordRepository,
-        DataSubjectRequestRepository,
+
 
         // B2B Repositories
         ...(moduleOptions.enableAdvancedB2BSupport
@@ -415,7 +430,7 @@ export class PimModule {
         CategoryService,
         AttributeTemplateService,
         ProductVariantService,
-        ProductBatchService,
+        
         PimStorageService,
         ImportExportService,
         ValidationService,
@@ -426,6 +441,7 @@ export class PimModule {
         ProductReviewService,
         CompetitivePriceMonitoringService,
         ImageAnalysisService,
+        PriceHistoryService,
         NetworkAwareStorageService,
         LoadSheddingResilienceService,
         MarketContextService,
